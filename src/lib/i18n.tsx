@@ -52,7 +52,20 @@ const TRANSLATIONS = {
     es: 'Por favor, verifica tu correo primero.',
     ja: 'まずメールを確認してください。',
   },
+  'auth.disposableEmail': {
+    en: 'Please use a valid email address.',
+    ko: '유효한 이메일 주소를 사용해주세요.',
+    es: 'Por favor, usa una dirección de correo válida.',
+    ja: '有効なメールアドレスをご使用ください。',
+  },
   'auth.back': { en: 'Back', ko: '뒤로', es: 'Volver', ja: '戻る' },
+  'auth.continueWithGoogle': {
+    en: 'Continue with Google',
+    ko: 'Google로 계속하기',
+    es: 'Continuar con Google',
+    ja: 'Googleで続ける',
+  },
+  'auth.orDivider': { en: 'or', ko: '또는', es: 'o', ja: 'または' },
 
   // ── Navigation ──
   'nav.freeMaterials': { en: 'Free Materials', ko: '무료 자료', es: 'Materiales Gratuitos', ja: '無料教材' },
@@ -110,6 +123,127 @@ const TRANSLATIONS = {
   'game.home': { en: 'Home', ko: '홈', es: 'Inicio', ja: 'ホーム' },
   'game.leaderboard': { en: '🌍 Global Ranking', ko: '🌍 전체 랭킹', es: '🌍 Clasificación Global', ja: '🌍 グローバルランキング' },
   'game.live': { en: 'LIVE', ko: 'LIVE', es: 'EN VIVO', ja: 'ライブ' },
+
+  // ── In-game play ──
+  'game.listenInstruction': {
+    en: 'Select the word you hear',
+    ko: '들리는 단어를 선택하세요',
+    es: 'Selecciona la palabra que escuchas',
+    ja: '聞こえた単語を選んでください',
+  },
+  'game.listenAgain': {
+    en: 'Listen\nagain',
+    ko: '다시\n듣기',
+    es: 'Escuchar\nde nuevo',
+    ja: 'もう一度\n聞く',
+  },
+  'game.correctNow': { en: 'If correct now', ko: '지금 맞추면', es: 'Si aciertas ahora', ja: '今正解で' },
+  'game.pts': { en: 'pts', ko: '점', es: 'pts', ja: '点' },
+  'game.replayPenalty': { en: 'Replay', ko: '재생', es: 'Repetir', ja: '再生' },
+  'game.answerLabel': { en: 'Correct ✓', ko: '정답 ✓', es: 'Correcto ✓', ja: '正解 ✓' },
+  'game.feedbackCorrect': { en: 'Correct! 🎯', ko: '정확해요! 🎯', es: '¡Correcto! 🎯', ja: '正解！🎯' },
+  'game.feedbackWrong': { en: 'Incorrect 💔', ko: '틀렸어요 💔', es: 'Incorrecto 💔', ja: '不正解 💔' },
+
+  // ── Level clear ──
+  'game.levelClearFmt': {
+    en: 'Level {n} Clear!',
+    ko: '레벨 {n} 클리어!',
+    es: '¡Nivel {n} superado!',
+    ja: 'レベル {n} クリア！',
+  },
+  'game.levelClearSub': {
+    en: 'Choose your next action',
+    ko: '다음 행동을 선택하세요',
+    es: 'Elige tu próxima acción',
+    ja: '次のアクションを選んでください',
+  },
+  'game.currentScore': { en: 'Current Score', ko: '현재 점수', es: 'Puntuación actual', ja: '現在のスコア' },
+  'game.reviewWrongFmt': {
+    en: '📝 Review Wrong Answers ({n})',
+    ko: '📝 틀린 문제 복습하기 ({n}개)',
+    es: '📝 Revisar incorrectas ({n})',
+    ja: '📝 間違えた問題を復習 ({n}問)',
+  },
+  'game.nextLevelFmt': {
+    en: 'Level {n} →',
+    ko: '레벨 {n} 진행하기 →',
+    es: 'Nivel {n} →',
+    ja: 'レベル {n} へ →',
+  },
+  'game.finalResultBtn': {
+    en: 'Final Results →',
+    ko: '최종 결과 보기 →',
+    es: 'Resultados finales →',
+    ja: '最終結果を見る →',
+  },
+
+  // ── Review mode ──
+  'game.reviewMode': { en: 'Review Mode', ko: '복습 모드', es: 'Modo repaso', ja: '復習モード' },
+  'game.reviewTitle': {
+    en: 'Pronunciation Comparison',
+    ko: '발음 비교 연습',
+    es: 'Comparación de pronunciación',
+    ja: '発音比較練習',
+  },
+  'game.correctIndicator': { en: '→ Correct:', ko: '→ 정답:', es: '→ Correcto:', ja: '→ 正解：' },
+  'game.tapInstruction': {
+    en: 'Tap each word to hear the pronunciation',
+    ko: '각 단어를 탭해서 발음을 들어보세요',
+    es: 'Toca cada palabra para escuchar la pronunciación',
+    ja: '各単語をタップして発音を聞いてみましょう',
+  },
+  'game.wordCorrect': { en: '✓ Correct', ko: '✓ 정답', es: '✓ Correcto', ja: '✓ 正解' },
+  'game.wordWrong': { en: '× Wrong', ko: '× 오답', es: '× Incorrecto', ja: '× 不正解' },
+  'game.tap': { en: 'Tap', ko: '탭', es: 'Tocar', ja: 'タップ' },
+  'game.reviewComplete': {
+    en: '✅ Review Complete → Next Level',
+    ko: '✅ 복습 완료 → 다음 레벨 진행하기',
+    es: '✅ Repaso completo → Siguiente nivel',
+    ja: '✅ 復習完了 → 次のレベルへ',
+  },
+  'game.next': { en: 'Next →', ko: '다음 →', es: 'Siguiente →', ja: '次へ →' },
+
+  // ── Result ──
+  'game.winTitle': { en: 'Level 4 Clear!', ko: '레벨 4 클리어!', es: '¡Nivel 4 superado!', ja: 'レベル 4 クリア！' },
+  'game.loseTitle': { en: 'Game Over', ko: '게임 오버', es: 'Fin del juego', ja: 'ゲームオーバー' },
+  'game.winSub': {
+    en: 'You passed all levels!',
+    ko: '모든 레벨을 통과했습니다!',
+    es: '¡Superaste todos los niveles!',
+    ja: 'すべてのレベルをクリアしました！',
+  },
+  'game.eliminatedFmt': {
+    en: 'Eliminated at Level {n}',
+    ko: '레벨 {n}에서 탈락했습니다',
+    es: 'Eliminado en el nivel {n}',
+    ja: 'レベル {n} で敗退しました',
+  },
+  'game.tiedRankFmt': { en: 'Tied #{n}', ko: '공동 {n}등', es: 'Empate #{n}', ja: '同率 {n}位' },
+  'game.rankFmt': { en: '#{n}', ko: '{n}등', es: '#{n}', ja: '{n}位' },
+  'game.othersFmt': { en: '+{n} others', ko: '그 외 {n}명', es: '+{n} más', ja: '他{n}名' },
+  'game.noRecords': {
+    en: 'No records yet',
+    ko: '아직 기록이 없습니다',
+    es: 'Sin registros aún',
+    ja: 'まだ記録がありません',
+  },
+
+  // ── Dictation game ──
+  'dictation.listenAgain': { en: 'Listen Again', ko: '다시 듣기', es: 'Escuchar de nuevo', ja: 'もう一度聞く' },
+  'dictation.autoPlaying': { en: 'Playing…', ko: '재생 중…', es: 'Reproduciendo…', ja: '再生中…' },
+  'dictation.typeAnswer': { en: 'Type what you hear', ko: '들은 내용을 입력하세요', es: 'Escribe lo que escuchas', ja: '聞こえた内容を入力してください' },
+  'dictation.submit': { en: 'Submit →', ko: '제출 →', es: 'Enviar →', ja: '提出 →' },
+  'dictation.correct': { en: 'Correct! 🎯', ko: '정답입니다! 🎯', es: '¡Correcto! 🎯', ja: '正解！🎯' },
+  'dictation.incorrect': { en: 'Incorrect 💔', ko: '틀렸습니다 💔', es: 'Incorrecto 💔', ja: '不正解 💔' },
+  'dictation.correctAnswer': { en: 'Answer:', ko: '정답:', es: 'Respuesta:', ja: '正解：' },
+  'dictation.question': { en: 'Question', ko: '문제', es: 'Pregunta', ja: '問題' },
+  'dictation.score': { en: 'Score', ko: '점수', es: 'Puntaje', ja: 'スコア' },
+  'dictation.correct10': { en: 'Correct', ko: '정답', es: 'Aciertos', ja: '正解数' },
+  'dictation.result': { en: 'Results', ko: '결과', es: 'Resultados', ja: '結果' },
+  'dictation.playAgain': { en: '🔄 Play Again', ko: '🔄 다시 하기', es: '🔄 Jugar de nuevo', ja: '🔄 もう一度' },
+  'dictation.backHome': { en: 'Home', ko: '홈', es: 'Inicio', ja: 'ホーム' },
+  'dictation.outOf': { en: 'out of', ko: '/ ', es: 'de', ja: '/' },
+  'dictation.hint': { en: 'Hint', ko: '힌트', es: 'Pista', ja: 'ヒント' },
 
   // ── Materials ──
   'materials.title': { en: 'Free Materials', ko: '무료 자료', es: 'Materiales Gratuitos', ja: '無料教材' },
