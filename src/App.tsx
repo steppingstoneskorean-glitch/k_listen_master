@@ -5,6 +5,7 @@ import Layout from '@/components/layout/Layout'
 import StartPage from '@/pages/StartPage'
 import HomePage from '@/pages/HomePage'
 import GamePage from '@/pages/GamePage'
+import DictationPage from '@/pages/DictationPage'
 import ErrorHistoryPage from '@/pages/ErrorHistoryPage'
 import MaterialsPage from '@/pages/MaterialsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -17,6 +18,7 @@ export default function App() {
           {/* Full-screen (no header/footer) */}
           <Route path="/" element={<StartPage />} />
           <Route path="/game" element={<GamePage />} />
+          <Route path="/dictation" element={<DictationPage />} />
 
           {/* Layout-wrapped pages */}
           <Route element={<Layout />}>
