@@ -11,6 +11,7 @@ const LEVELS = [
     hover: 'hover:border-green-500/40 hover:shadow-green-500/5 cursor-pointer',
     rounds: 'Level 1–4 · Card tap',
     comingSoon: false,
+    to: '/game',
   },
   {
     emoji: '🗣️',
@@ -18,9 +19,10 @@ const LEVELS = [
     title: 'Real-Life Dictation',
     desc: 'Restaurants, subways, phone calls — type exactly what you hear in everyday situations.',
     badge: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    hover: 'cursor-not-allowed opacity-50',
-    rounds: '',
-    comingSoon: true,
+    hover: 'hover:border-blue-500/40 hover:shadow-blue-500/5 cursor-pointer',
+    rounds: '10 questions · Dictation',
+    comingSoon: false,
+    to: '/dictation?mode=intermediate',
   },
   {
     emoji: '🎙️',
@@ -28,9 +30,10 @@ const LEVELS = [
     title: 'Media & Professional',
     desc: 'Master connected speech from news briefings, business meetings, and variety shows.',
     badge: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-    hover: 'cursor-not-allowed opacity-50',
-    rounds: '',
-    comingSoon: true,
+    hover: 'hover:border-indigo-500/40 hover:shadow-indigo-500/5 cursor-pointer',
+    rounds: '10 questions · Dictation',
+    comingSoon: false,
+    to: '/dictation?mode=advanced',
   },
 ]
 
@@ -73,7 +76,7 @@ export default function HomePage() {
             return card.comingSoon ? (
               <div key={card.labelKey} className={cls}>{inner}</div>
             ) : (
-              <Link key={card.labelKey} to="/game" className={cls}>{inner}</Link>
+              <Link key={card.labelKey} to={card.to} className={cls}>{inner}</Link>
             )
           })}
         </div>
@@ -92,49 +95,18 @@ export default function HomePage() {
 
       {/* ── Below-fold ── */}
       <section className="border-t border-gray-800 px-6 py-10 text-center">
-        <h1 className="text-lg font-extrabold tracking-tight text-white leading-snug">
+        <h1 className="text-[1.4625rem] font-extrabold tracking-tight text-white leading-snug">
           Stop feeling nervous when speaking Korean.{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
             Speak like a local.
           </span>
         </h1>
-        <p className="mt-2 text-xs text-gray-500 leading-relaxed max-w-xl mx-auto">
+        <p className="mt-2 text-[0.975rem] text-gray-500 leading-relaxed max-w-xl mx-auto">
           Whether you are a beginner struggling to hear or an advanced learner blocked by
           pronunciation barriers — start practicing with Step Korean to open your ears and
           perfect your accent.
         </p>
       </section>
-
-      {/* ── Social proof ── */}
-      <div className="border-t border-gray-800 py-8 bg-gray-900/30">
-        <div className="mx-auto max-w-4xl px-6 flex flex-col sm:flex-row justify-center gap-10 text-center">
-          {[
-            { value: '128K+', label: 'Active Learners' },
-            { value: '97%', label: 'Accent Improvement' },
-            { value: '12+', label: 'Countries' },
-          ].map(stat => (
-            <div key={stat.label}>
-              <div className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                {stat.value}
-              </div>
-              <div className="text-xs text-gray-600 mt-0.5">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Bottom CTA ── */}
-      <div className="bg-gradient-to-br from-indigo-950 to-gray-950 border-t border-indigo-900/30 py-14 text-center">
-        <p className="text-gray-500 font-serif text-sm mb-6 max-w-md mx-auto leading-relaxed">
-          Ready to stop guessing and start speaking with confidence?
-        </p>
-        <Link
-          to="/game"
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white hover:opacity-90 transition-opacity shadow-lg shadow-indigo-500/30"
-        >
-          Check My Korean Accent ➜
-        </Link>
-      </div>
     </div>
   )
 }

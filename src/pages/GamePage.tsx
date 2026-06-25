@@ -84,6 +84,8 @@ function LevelClearScreen({
   onReview: () => void
   onNext: () => void
 }) {
+  const { t } = useLang()
+
   useEffect(() => {
     const audio = new Audio('/audio/fanfare.wav')
     audio.play().catch(() => {})
@@ -94,12 +96,12 @@ function LevelClearScreen({
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center gap-6 px-4">
       <div className="text-7xl animate-bounce">🎉</div>
       <div className="text-center">
-        <h2 className="text-4xl font-black">레벨 {level} 클리어!</h2>
-        <p className="text-gray-400 mt-2">다음 행동을 선택하세요</p>
+        <h2 className="text-4xl font-black">{t('game.levelClearFmt').replace('{n}', String(level))}</h2>
+        <p className="text-gray-400 mt-2">{t('game.levelClearSub')}</p>
       </div>
       <div className="px-8 py-4 rounded-2xl bg-gray-900 border border-gray-800 text-center">
-        <p className="text-gray-500 text-sm">현재 점수</p>
-        <p className="text-3xl font-black text-yellow-400">{score.toLocaleString()}점</p>
+        <p className="text-gray-500 text-sm">{t('game.currentScore')}</p>
+        <p className="text-3xl font-black text-yellow-400">{score.toLocaleString()}{t('game.pts')}</p>
       </div>
       <div className="flex flex-col gap-3 w-full max-w-xs">
         {wrongAnswers.length > 0 && (
@@ -107,14 +109,14 @@ function LevelClearScreen({
             onClick={onReview}
             className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-black font-black text-base hover:opacity-90 transition-opacity"
           >
-            📝 틀린 문제 복습하기 ({wrongAnswers.length}개)
+            {t('game.reviewWrongFmt').replace('{n}', String(wrongAnswers.length))}
           </button>
         )}
         <button
           onClick={onNext}
           className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-base hover:opacity-90 transition-opacity"
         >
-          {level < 4 ? `레벨 ${level + 1} 진행하기 →` : '최종 결과 보기 →'}
+          {level < 4 ? t('game.nextLevelFmt').replace('{n}', String(level + 1)) : t('game.finalResultBtn')}
         </button>
       </div>
     </div>
@@ -130,6 +132,7 @@ function ReviewModeScreen({
   wrongAnswers: WrongAnswerData[]
   onComplete: () => void
 }) {
+  const { t } = useLang()
   const [idx, setIdx] = useState(0)
   const [heardWords, setHeardWords] = useState<Set<string>>(new Set())
   const [playingWord, setPlayingWord] = useState<string | null>(null)
@@ -167,18 +170,18 @@ function ReviewModeScreen({
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center px-4 py-10">
       <div className="mb-6 text-center">
-        <p className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-1">복습 모드</p>
-        <h2 className="text-2xl font-black">발음 비교 연습</h2>
+        <p className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-1">{t('game.reviewMode')}</p>
+        <h2 className="text-2xl font-black">{t('game.reviewTitle')}</h2>
         <p className="text-gray-600 text-sm mt-1">{idx + 1} / {wrongAnswers.length}</p>
       </div>
 
       <div className="mb-5 text-center text-sm">
         <span className="text-red-400 font-bold">{current.userAnswer}</span>
-        <span className="text-gray-600 mx-2">→ 정답:</span>
+        <span className="text-gray-600 mx-2">{t('game.correctIndicator')}</span>
         <span className="text-green-400 font-bold">{current.correct}</span>
       </div>
 
-      <p className="text-gray-600 text-xs mb-4">각 단어를 탭해서 발음을 들어보세요</p>
+      <p className="text-gray-600 text-xs mb-4">{t('game.tapInstruction')}</p>
 
       <div
         className={`grid gap-4 w-full max-w-xs mb-8 ${
@@ -204,8 +207,8 @@ function ReviewModeScreen({
                 }`}
             >
               <div className="text-4xl font-black text-white">{word}</div>
-              {isCorrect && <div className="mt-1 text-xs text-green-400 font-bold">✓ 정답</div>}
-              {wasWrong && !isCorrect && <div className="mt-1 text-xs text-red-400 font-bold">× 오답</div>}
+              {isCorrect && <div className="mt-1 text-xs text-green-400 font-bold">{t('game.wordCorrect')}</div>}
+              {wasWrong && !isCorrect && <div className="mt-1 text-xs text-red-400 font-bold">{t('game.wordWrong')}</div>}
               {playing ? (
                 <div className="absolute top-2 right-2 flex gap-0.5 items-end h-3">
                   {[4, 6, 4].map((h, i) => (
@@ -219,7 +222,7 @@ function ReviewModeScreen({
               ) : heard ? (
                 <div className="absolute top-2 right-2 text-gray-500 text-xs">🔊</div>
               ) : (
-                <div className="mt-1 text-xs text-gray-600">탭</div>
+                <div className="mt-1 text-xs text-gray-600">{t('game.tap')}</div>
               )}
             </button>
           )
@@ -230,7 +233,7 @@ function ReviewModeScreen({
         onClick={handleNext}
         className="w-full max-w-xs py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-base hover:opacity-90 transition-opacity"
       >
-        {isLast ? '✅ 복습 완료 → 다음 레벨 진행하기' : '다음 →'}
+        {isLast ? t('game.reviewComplete') : t('game.next')}
       </button>
     </div>
   )
@@ -260,6 +263,7 @@ function GamePlayScreen({
   onWrong: (data: WrongAnswerData) => void
   onScorePenalty: (pts: number) => void
 }) {
+  const { t } = useLang()
   const levelData = GAME_LEVELS[level]
   const [pairs, setPairs] = useState<string[][]>([])
   const [pairIdx, setPairIdx] = useState(0)
@@ -402,7 +406,7 @@ function GamePlayScreen({
 
       {/* Game Area */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 pb-8 max-w-lg mx-auto w-full gap-5">
-        <p className="text-gray-500 text-sm">들리는 단어를 선택하세요</p>
+        <p className="text-gray-500 text-sm">{t('game.listenInstruction')}</p>
 
         {/* Fixed-height row: [left pad] [play button] [score indicator] — prevents CLS */}
         <div className="flex items-center justify-center gap-5 w-full" style={{ height: '7rem' }}>
@@ -436,7 +440,7 @@ function GamePlayScreen({
                 <svg className="w-6 h-6 text-gray-300 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                <span className="text-gray-400 text-[11px] leading-tight text-center">다시<br/>듣기</span>
+                <span className="text-gray-400 text-[11px] leading-tight text-center whitespace-pre-line">{t('game.listenAgain')}</span>
                 <span className="text-red-400 text-[9px]">-{REPLAY_PENALTY}pt</span>
               </>
             ) : (
@@ -450,13 +454,13 @@ function GamePlayScreen({
           <div className="w-28 flex flex-col justify-center">
             {timerStart !== null && feedback === 'idle' ? (
               <>
-                <span className="text-xs text-gray-500">지금 맞추면</span>
+                <span className="text-xs text-gray-500">{t('game.correctNow')}</span>
                 <span className={`text-2xl font-black tabular-nums ${ptsColor}`}>
-                  +{potentialPts}점
+                  +{potentialPts}{t('game.pts')}
                 </span>
                 {replayCount > 0 && (
                   <span className="text-red-400 text-[10px] mt-0.5">
-                    재생 -{replayCount * REPLAY_PENALTY}pts
+                    {t('game.replayPenalty')} -{replayCount * REPLAY_PENALTY}pts
                   </span>
                 )}
               </>
@@ -485,7 +489,7 @@ function GamePlayScreen({
                 <span className="text-4xl font-black text-white">{word}</span>
                 {feedback !== 'idle' && word === chosenWord && (
                   <span className="absolute bottom-2 left-0 right-0 text-center text-xs text-green-400 font-bold">
-                    정답 ✓
+                    {t('game.answerLabel')}
                   </span>
                 )}
               </button>
@@ -496,10 +500,10 @@ function GamePlayScreen({
         {/* Fixed-height feedback — prevents word buttons from shifting */}
         <div className="h-8 flex items-center justify-center">
           {feedback === 'correct' && (
-            <p className="text-green-400 font-bold text-lg animate-pulse">정확해요! 🎯</p>
+            <p className="text-green-400 font-bold text-lg animate-pulse">{t('game.feedbackCorrect')}</p>
           )}
           {feedback === 'wrong' && (
-            <p className="text-red-400 font-bold text-lg animate-pulse">틀렸어요 💔</p>
+            <p className="text-red-400 font-bold text-lg animate-pulse">{t('game.feedbackWrong')}</p>
           )}
         </div>
       </div>
@@ -510,6 +514,7 @@ function GamePlayScreen({
 // ── Result Screen ───────────────────────────────────────────────────────────
 
 function TiedGroup({ entries }: { entries: RankedEntry[] }) {
+  const { t } = useLang()
   const [expanded, setExpanded] = useState(false)
   if (entries.length === 0) return null
   const first = entries[0]
@@ -520,7 +525,7 @@ function TiedGroup({ entries }: { entries: RankedEntry[] }) {
     <span className="inline-flex items-center gap-1.5 flex-wrap">
       <span className="text-white font-semibold truncate max-w-[100px]">{first.name}</span>
       <button onClick={() => setExpanded(e => !e)} className="text-xs text-gray-500 hover:text-gray-300 underline underline-offset-2">
-        그 외 {entries.length - 1}명
+        {t('game.othersFmt').replace('{n}', String(entries.length - 1))}
       </button>
       {expanded && (
         <span className="w-full text-xs text-gray-400 pl-2">
@@ -578,17 +583,17 @@ function ResultScreen({
           <div className="flex flex-col items-center gap-4 text-center">
             <div className="text-7xl">{result === 'win' ? '🏆' : '💔'}</div>
             <div>
-              <h2 className="text-3xl font-black">{result === 'win' ? '레벨 4 클리어!' : '게임 오버'}</h2>
+              <h2 className="text-3xl font-black">{result === 'win' ? t('game.winTitle') : t('game.loseTitle')}</h2>
               <p className="text-gray-500 text-sm mt-1">
-                {result === 'win' ? '모든 레벨을 통과했습니다!' : `레벨 ${highestLevel}에서 탈락했습니다`}
+                {result === 'win' ? t('game.winSub') : t('game.eliminatedFmt').replace('{n}', String(highestLevel))}
               </p>
             </div>
             <div className="px-8 py-4 rounded-2xl bg-gray-900 border border-gray-800 text-center min-w-[200px]">
               <p className="text-gray-500 text-xs">{playerName}</p>
-              <p className="text-3xl font-black text-yellow-400">{totalScore.toLocaleString()}점</p>
+              <p className="text-3xl font-black text-yellow-400">{totalScore.toLocaleString()}{t('game.pts')}</p>
               {myRank && !isGuest && (
                 <p className="text-sm font-bold text-indigo-300 mt-0.5">
-                  {isTied ? `공동 ${myRank}등` : `${myRank}등`}
+                  {isTied ? t('game.tiedRankFmt').replace('{n}', String(myRank)) : t('game.rankFmt').replace('{n}', String(myRank))}
                 </p>
               )}
             </div>
@@ -611,14 +616,14 @@ function ResultScreen({
                   return (
                     <div key={rank} className={`flex items-start px-5 py-3.5 gap-3 ${isMe ? 'bg-indigo-500/10 border-l-2 border-indigo-500' : ''}`}>
                       <span className="text-lg w-5 text-center mt-0.5">{RANK_BADGE[rank] ?? '⭐'}</span>
-                      <span className="text-gray-500 text-xs w-16 mt-1">{isTiedGroup ? `공동 ${rank}등` : `${rank}등`}</span>
+                      <span className="text-gray-500 text-xs w-16 mt-1">{isTiedGroup ? t('game.tiedRankFmt').replace('{n}', String(rank)) : t('game.rankFmt').replace('{n}', String(rank))}</span>
                       <div className="flex-1 min-w-0"><TiedGroup entries={group} /></div>
                       <span className="font-bold text-yellow-400 text-sm tabular-nums mt-1">{group[0].score.toLocaleString()}</span>
                     </div>
                   )
                 })}
                 {leaderboard.length === 0 && (
-                  <div className="px-5 py-6 text-center text-gray-600 text-sm">아직 기록이 없습니다</div>
+                  <div className="px-5 py-6 text-center text-gray-600 text-sm">{t('game.noRecords')}</div>
                 )}
               </div>
             </div>
