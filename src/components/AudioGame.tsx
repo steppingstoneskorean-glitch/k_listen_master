@@ -35,7 +35,7 @@ interface WrongAnswer {
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const PAYHIP_URL = 'https://payhip.com/StepKorean'
+const PAYHIP_URL = import.meta.env.VITE_PAYHIP_URL ?? 'https://payhip.com/StepKorean'
 const MAX_LIVES = 3
 const BASE_POINTS = 100
 const STREAK_BONUS = 50

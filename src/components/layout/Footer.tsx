@@ -1,3 +1,5 @@
+const PAYHIP_URL = import.meta.env.VITE_PAYHIP_URL ?? 'https://payhip.com/StepKorean'
+
 export default function Footer() {
   return (
     <footer className="border-t border-gray-800 bg-gray-950 py-8">
@@ -10,7 +12,7 @@ export default function Footer() {
           © {new Date().getFullYear()} Step Korean. All rights reserved.
         </p>
         <a
-          href="https://payhip.com/StepKorean"
+          href={PAYHIP_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-indigo-400 hover:text-indigo-300 hover:underline font-medium transition-colors"

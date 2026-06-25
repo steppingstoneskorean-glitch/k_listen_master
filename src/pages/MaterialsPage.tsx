@@ -1,7 +1,6 @@
 import { useLang } from '@/lib/i18n'
 
-// Replace NOTION_URL with your actual Notion page URL
-const NOTION_URL = 'https://notion.so'
+const NOTION_URL = import.meta.env.VITE_NOTION_URL ?? 'https://notion.so'
 
 export default function MaterialsPage() {
   const { t } = useLang()
