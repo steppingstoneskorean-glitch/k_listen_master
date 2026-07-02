@@ -4,7 +4,6 @@ import {
   getErrors,
   clearErrors,
   getMasteryStatus,
-  seedMockErrors,
   type ErrorRecord,
   type MasteryStatus,
 } from '@/lib/errorHistory'
@@ -89,7 +88,6 @@ export default function ErrorHistoryPage() {
   const [filter, setFilter] = useState<MasteryStatus | 'all'>('all')
 
   const reload = () => {
-    seedMockErrors()
     setRecords(getErrors())
   }
 

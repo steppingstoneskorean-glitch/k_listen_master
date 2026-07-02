@@ -1,4 +1,4 @@
-const PAYHIP_URL = import.meta.env.VITE_PAYHIP_URL ?? 'https://payhip.com/StepKorean'
+import { Link } from 'react-router-dom'
 
 export default function Footer() {
   return (
@@ -8,17 +8,14 @@ export default function Footer() {
           <span className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Step</span>
           <span className="text-sm font-black text-white">Korean</span>
         </div>
-        <p className="text-xs text-gray-600">
-          © {new Date().getFullYear()} Step Korean. All rights reserved.
-        </p>
-        <a
-          href={PAYHIP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-indigo-400 hover:text-indigo-300 hover:underline font-medium transition-colors"
-        >
-          Lessons & Guide →
-        </a>
+        <div className="flex items-center gap-4">
+          <Link to="/privacy" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
+            개인정보처리방침
+          </Link>
+          <p className="text-xs text-gray-600">
+            © {new Date().getFullYear()} Step Korean. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   )

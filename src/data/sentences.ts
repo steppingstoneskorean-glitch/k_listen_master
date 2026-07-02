@@ -3,265 +3,318 @@ export interface DictationSentence {
   level: 'intermediate' | 'advanced'
   audioUrl: string
   fullSentence: string
+}
+
+export interface GeneratedQuestion {
+  sentence: DictationSentence
   displayText: string
   answer: string
+  blankCount: 1 | 2
 }
 
-export const INTERMEDIATE_SENTENCES: DictationSentence[] = [
-  { id: 1,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_1.wav',
-    fullSentence: '여기 메뉴판 좀 다시 갖다 주시겠어요?',
-    displayText:  '여기 [      ] 좀 다시 갖다 주시겠어요?',
-    answer: '메뉴판' },
+// Strip trailing punctuation so users don't need to type it
+function stripPunct(w: string): string {
+  return w.replace(/[.,!?。]+$/, '').trim()
+}
 
-  { id: 2,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_2.wav',
-    fullSentence: '교통카드를 단말기에 태그할 때 잔액이 부족하대요.',
-    displayText:  '[        ]를 단말기에 태그할 때 잔액이 부족하대요.',
-    answer: '교통카드' },
+export function generateBlank(sentence: DictationSentence, gameLevel: 1 | 2): GeneratedQuestion {
+  const words = sentence.fullSentence.split(' ')
+  const lastIdx = words.length - 1
 
-  { id: 3,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_3.wav',
-    fullSentence: '카페라떼에 우유 대신 두유로 변경해 주세요.',
-    displayText:  '카페라떼에 우유 대신 [    ]로 변경해 주세요.',
-    answer: '두유' },
+  if (gameLevel === 1 || words.length < 3) {
+    // Level 1 — hide 1 word; exclude the final word and prefer length >= 2
+    const eligible = words
+      .map((w, i) => ({ w, i }))
+      .filter(({ w, i }) => stripPunct(w).length >= 2 && i !== lastIdx)
+    const { w, i } =
+      eligible.length > 0
+        ? eligible[Math.floor(Math.random() * eligible.length)]
+        : { w: words[0], i: 0 }  // fallback: first word (never last when length > 1)
+    return {
+      sentence,
+      displayText: words.map((word, idx) => (idx === i ? '[_]' : word)).join(' '),
+      answer: stripPunct(w),
+      blankCount: 1,
+    }
+  }
 
-  { id: 4,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_4.wav',
-    fullSentence: '텀블러에 담아 주시면 이백 원 할인되나요?',
-    displayText:  '[      ]에 담아 주시면 이백 원 할인되나요?',
-    answer: '텀블러' },
-
-  { id: 5,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_5.wav',
-    fullSentence: '포인트 적립은 핸드폰 번호로 하시면 됩니다.',
-    displayText:  '포인트 [    ]은 핸드폰 번호로 하시면 됩니다.',
-    answer: '적립' },
-
-  { id: 6,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_6.wav',
-    fullSentence: '비닐봉투는 한 장에 백 원인데 구매하시겠습니까?',
-    displayText:  '[      ]는 한 장에 백 원인데 구매하시겠습니까?',
-    answer: '비닐봉투' },
-
-  { id: 7,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_7.wav',
-    fullSentence: '냉동 식품은 집에 가자마자 냉동실에 넣어야 해요.',
-    displayText:  '냉동 식품은 집에 가자마자 [    ]에 넣어야 해요.',
-    answer: '냉동실' },
-
-  { id: 8,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_8.wav',
-    fullSentence: '옷을 사기 전에 탈의실에서 한번 입어 봐도 될까요?',
-    displayText:  '옷을 사기 전에 [    ]에서 한번 입어 봐도 될까요?',
-    answer: '탈의실' },
-
-  { id: 9,  level: 'intermediate', audioUrl: '/audio/level2/intermediate_9.wav',
-    fullSentence: '신발이 발에 꽉 끼어서 한 사이즈 큰 걸로 바꿨어요.',
-    displayText:  '신발이 발에 꽉 끼어서 한 [    ] 큰 걸로 바꿨어요.',
-    answer: '사이즈' },
-
-  { id: 10, level: 'intermediate', audioUrl: '/audio/level2/intermediate_10.wav',
-    fullSentence: '계산대에 줄이 너무 길어서 한참을 기다렸습니다.',
-    displayText:  '[    ]에 줄이 너무 길어서 한참을 기다렸습니다.',
-    answer: '계산대' },
-
-  { id: 11, level: 'intermediate', audioUrl: '/audio/level2/intermediate_11.wav',
-    fullSentence: '기차표를 미리 예매하지 않으면 좌석이 없을 거예요.',
-    displayText:  '[    ]를 미리 예매하지 않으면 좌석이 없을 거예요.',
-    answer: '기차표' },
-
-  { id: 12, level: 'intermediate', audioUrl: '/audio/level2/intermediate_12.wav',
-    fullSentence: '병원에 가기 전에 미리 예약 전화를 해 두었어요.',
-    displayText:  '병원에 가기 전에 미리 [   ] 전화를 해 두었어요.',
-    answer: '예약' },
-
-  { id: 13, level: 'intermediate', audioUrl: '/audio/level2/intermediate_13.wav',
-    fullSentence: '이 약은 식후 삼십 분에 세 번 챙겨 드셔야 합니다.',
-    displayText:  '이 약은 [   ] 삼십 분에 세 번 챙겨 드셔야 합니다.',
-    answer: '식후' },
-
-  { id: 14, level: 'intermediate', audioUrl: '/audio/level2/intermediate_14.wav',
-    fullSentence: '외국인등록증을 발급받으려면 서류가 많이 필요해요.',
-    displayText:  '[          ]을 발급받으려면 서류가 많이 필요해요.',
-    answer: '외국인등록증' },
-
-  { id: 15, level: 'intermediate', audioUrl: '/audio/level2/intermediate_15.wav',
-    fullSentence: '해외로 송금할 때 수수료가 얼마나 나오나요?',
-    displayText:  '해외로 [   ]할 때 수수료가 얼마나 나오나요?',
-    answer: '송금' },
-
-  { id: 16, level: 'intermediate', audioUrl: '/audio/level2/intermediate_16.wav',
-    fullSentence: '내일부터 장마가 시작된다고 하니 우산을 챙기세요.',
-    displayText:  '내일부터 [   ]가 시작된다고 하니 우산을 챙기세요.',
-    answer: '장마' },
-
-  { id: 17, level: 'intermediate', audioUrl: '/audio/level2/intermediate_17.wav',
-    fullSentence: '미세먼지 농도가 높아서 마스크를 써야겠습니다.',
-    displayText:  '[     ] 농도가 높아서 마스크를 써야겠습니다.',
-    answer: '미세먼지' },
-
-  { id: 18, level: 'intermediate', audioUrl: '/audio/level2/intermediate_18.wav',
-    fullSentence: '고장이 난 세탁기를 고치려고 서비스센터에 접수했어요.',
-    displayText:  '고장이 난 [    ]를 고치려고 서비스센터에 접수했어요.',
-    answer: '세탁기' },
-
-  { id: 19, level: 'intermediate', audioUrl: '/audio/level2/intermediate_19.wav',
-    fullSentence: '통장을 개설하려면 도장이나 서명이 필요합니다.',
-    displayText:  '[   ]을 개설하려면 도장이나 서명이 필요합니다.',
-    answer: '통장' },
-
-  { id: 20, level: 'intermediate', audioUrl: '/audio/level2/intermediate_20.wav',
-    fullSentence: '주차장이 만차라서 차를 세울 곳을 찾지 못했어요.',
-    displayText:  '[    ]이 만차라서 차를 세울 곳을 찾지 못했어요.',
-    answer: '주차장' },
-
-  { id: 21, level: 'intermediate', audioUrl: '/audio/level2/intermediate_21.wav',
-    fullSentence: '카트를 이용하려면 백 원짜리 동전이 필요합니다.',
-    displayText:  '[   ]를 이용하려면 백 원짜리 동전이 필요합니다.',
-    answer: '카트' },
-
-  { id: 22, level: 'intermediate', audioUrl: '/audio/level2/intermediate_22.wav',
-    fullSentence: '수저와 젓가락은 테이블 옆 서랍에 들어 있습니다.',
-    displayText:  '[   ]와 젓가락은 테이블 옆 서랍에 들어 있습니다.',
-    answer: '수저' },
-
-  { id: 23, level: 'intermediate', audioUrl: '/audio/level2/intermediate_23.wav',
-    fullSentence: '주말이라 그런지 카페에 빈자리가 하나도 없네요.',
-    displayText:  '주말이라 그런지 카페에 [    ]가 하나도 없네요.',
-    answer: '빈자리' },
-
-  { id: 24, level: 'intermediate', audioUrl: '/audio/level2/intermediate_24.wav',
-    fullSentence: '진동벨이 울리면 주문하신 음료를 받으러 오세요.',
-    displayText:  '[    ]이 울리면 주문하신 음료를 받으러 오세요.',
-    answer: '진동벨' },
-
-  { id: 25, level: 'intermediate', audioUrl: '/audio/level2/intermediate_25.wav',
-    fullSentence: '영수증 필요 없으니까 그냥 버려 주세요.',
-    displayText:  '[    ] 필요 없으니까 그냥 버려 주세요.',
-    answer: '영수증' },
-]
-
-export const ADVANCED_SENTENCES: DictationSentence[] = [
-  { id: 1,  level: 'advanced', audioUrl: '/audio/level3/advanced_1.wav',
-    fullSentence: '최근 1인 가구가 늘어나면서 소형 가전제품의 판매량이 급증하고 있습니다.',
-    displayText:  '최근 1인 가구가 늘어나면서 소형 가전제품의 판매량이 [       ] 있습니다.',
-    answer: '급증하고' },
-
-  { id: 2,  level: 'advanced', audioUrl: '/audio/level3/advanced_2.wav',
-    fullSentence: '인터넷 익명성을 악용해 타인을 비방하는 댓글 문화는 시급히 개선되어야 합니다.',
-    displayText:  '인터넷 익명성을 악용해 타인을 [      ] 댓글 문화는 시급히 개선되어야 합니다.',
-    answer: '비방하는' },
-
-  { id: 3,  level: 'advanced', audioUrl: '/audio/level3/advanced_3.wav',
-    fullSentence: '환경 보호를 위해 일회용품 사용을 제한하는 제도가 본격적으로 시행되었습니다.',
-    displayText:  '환경 보호를 위해 일회용품 사용을 제한하는 제도가 [       ] 시행되었습니다.',
-    answer: '본격적으로' },
-
-  { id: 4,  level: 'advanced', audioUrl: '/audio/level3/advanced_4.wav',
-    fullSentence: '스마트폰 과의존은 아동 및 청소년의 성장에 부정적인 영향을 미칠 수 있습니다.',
-    displayText:  '스마트폰 과의존은 아동 및 청소년의 성장에 [      ] 영향을 미칠 수 있습니다.',
-    answer: '부정적인' },
-
-  { id: 5,  level: 'advanced', audioUrl: '/audio/level3/advanced_5.wav',
-    fullSentence: '반려동물을 가족처럼 생각하는 인구가 늘면서 관련 시장이 급성장하고 있습니다.',
-    displayText:  '반려동물을 가족처럼 생각하는 인구가 늘면서 관련 시장이 [        ] 있습니다.',
-    answer: '급성장하고' },
-
-  { id: 6,  level: 'advanced', audioUrl: '/audio/level3/advanced_6.wav',
-    fullSentence: '청년들의 주거 안정을 위해 정부에서 여러 대책을 마련하고 있습니다.',
-    displayText:  '청년들의 주거 [   ]을 위해 정부에서 여러 대책을 마련하고 있습니다.',
-    answer: '안정' },
-
-  { id: 7,  level: 'advanced', audioUrl: '/audio/level3/advanced_7.wav',
-    fullSentence: '디지털 기기에 서툰 고령층이 점차 소외되고 있습니다.',
-    displayText:  '디지털 기기에 [   ] 고령층이 점차 소외되고 있습니다.',
-    answer: '서툰' },
-
-  { id: 8,  level: 'advanced', audioUrl: '/audio/level3/advanced_8.wav',
-    fullSentence: '쓰레기 분리배출을 생활화하는 것만으로도 환경 오염을 크게 줄일 수 있습니다.',
-    displayText:  '쓰레기 [      ]을 생활화하는 것만으로도 환경 오염을 크게 줄일 수 있습니다.',
-    answer: '분리배출' },
-
-  { id: 9,  level: 'advanced', audioUrl: '/audio/level3/advanced_9.wav',
-    fullSentence: '의견 차이가 좁혀지지 않아 합의점을 찾기까지 시간이 걸릴 예정입니다.',
-    displayText:  '의견 차이가 [       ] 않아 합의점을 찾기까지 시간이 걸릴 예정입니다.',
-    answer: '좁혀지지' },
-
-  { id: 10, level: 'advanced', audioUrl: '/audio/level3/advanced_10.wav',
-    fullSentence: '급변하는 비즈니스 환경에 유연하게 대처할 수 있는 조직 문화가 필요합니다.',
-    displayText:  '급변하는 비즈니스 환경에 [     ] 대처할 수 있는 조직 문화가 필요합니다.',
-    answer: '유연하게' },
-
-  { id: 11, level: 'advanced', audioUrl: '/audio/level3/advanced_11.wav',
-    fullSentence: '특별 단속 기간 동안 음주운전 및 신호 위반 행위를 집중적으로 처벌합니다.',
-    displayText:  '특별 단속 기간 동안 음주운전 및 신호 위반 행위를 [       ] 처벌합니다.',
-    answer: '집중적으로' },
-
-  { id: 12, level: 'advanced', audioUrl: '/audio/level3/advanced_12.wav',
-    fullSentence: '개인정보 유출을 방지하기 위해 비밀번호를 정기적으로 변경해 주세요.',
-    displayText:  '개인정보 [   ]을 방지하기 위해 비밀번호를 정기적으로 변경해 주세요.',
-    answer: '유출' },
-
-  { id: 13, level: 'advanced', audioUrl: '/audio/level3/advanced_13.wav',
-    fullSentence: '인공지능의 발전이 인간의 일자리에 미치는 영향에 대한 연구가 활발합니다.',
-    displayText:  '[      ]의 발전이 인간의 일자리에 미치는 영향에 대한 연구가 활발합니다.',
-    answer: '인공지능' },
-
-  { id: 14, level: 'advanced', audioUrl: '/audio/level3/advanced_14.wav',
-    fullSentence: '기후 변화로 인한 자연재해가 전 세계적으로 빈번하게 발생하고 있습니다.',
-    displayText:  '기후 변화로 인한 자연재해가 전 세계적으로 [      ] 발생하고 있습니다.',
-    answer: '빈번하게' },
-
-  { id: 15, level: 'advanced', audioUrl: '/audio/level3/advanced_15.wav',
-    fullSentence: '다문화 가정이 늘어남에 따라 서로의 문화를 존중하는 태도가 중요해졌습니다.',
-    displayText:  '다문화 가정이 늘어남에 따라 서로의 문화를 [      ] 태도가 중요해졌습니다.',
-    answer: '존중하는' },
-
-  { id: 16, level: 'advanced', audioUrl: '/audio/level3/advanced_16.wav',
-    fullSentence: '정부가 발표한 새로운 부동산 정책에 대해 시장의 관심이 집중되고 있습니다.',
-    displayText:  '정부가 발표한 새로운 [     ] 정책에 대해 시장의 관심이 집중되고 있습니다.',
-    answer: '부동산' },
-
-  { id: 17, level: 'advanced', audioUrl: '/audio/level3/advanced_17.wav',
-    fullSentence: '제품을 출시하기 전에 소비자의 욕구를 정확히 파악하는 것이 중요합니다.',
-    displayText:  '제품을 출시하기 전에 소비자의 욕구를 정확히 [      ] 것이 중요합니다.',
-    answer: '파악하는' },
-
-  { id: 18, level: 'advanced', audioUrl: '/audio/level3/advanced_18.wav',
-    fullSentence: '대도시 집중 현상을 해결하기 위해 지방 도시를 활성화하려는 노력이 필요합니다.',
-    displayText:  '대도시 집중 현상을 해결하기 위해 지방 도시를 [         ] 노력이 필요합니다.',
-    answer: '활성화하려는' },
-
-  { id: 19, level: 'advanced', audioUrl: '/audio/level3/advanced_19.wav',
-    fullSentence: '고객의 불만 사항을 실시간으로 접수하고 대처하는 시스템이 시급합니다.',
-    displayText:  '고객의 불만 사항을 [       ]으로 접수하고 대처하는 시스템이 시급합니다.',
-    answer: '실시간' },
-
-  { id: 20, level: 'advanced', audioUrl: '/audio/level3/advanced_20.wav',
-    fullSentence: '농촌 지역의 인구 감소 문제를 해결하기 위한 귀농 지원 정책이 활발합니다.',
-    displayText:  '농촌 지역의 인구 [   ] 문제를 해결하기 위한 귀농 지원 정책이 활발합니다.',
-    answer: '감소' },
-
-  { id: 21, level: 'advanced', audioUrl: '/audio/level3/advanced_21.wav',
-    fullSentence: '과도한 스마트폰 사용은 수면 장애를 유발하는 주요 원인 중 하나입니다.',
-    displayText:  '과도한 스마트폰 사용은 수면 장애를 [      ] 주요 원인 중 하나입니다.',
-    answer: '유발하는' },
-
-  { id: 22, level: 'advanced', audioUrl: '/audio/level3/advanced_22.wav',
-    fullSentence: '소방차와 구급차가 신속히 이동할 수 있도록 길을 양보해 주십시오.',
-    displayText:  '소방차와 구급차가 [    ] 이동할 수 있도록 길을 양보해 주십시오.',
-    answer: '신속히' },
-
-  { id: 23, level: 'advanced', audioUrl: '/audio/level3/advanced_23.wav',
-    fullSentence: '현대 사회에서는 기계화로 인해 인간의 노동 가치가 점차 변화하고 있습니다.',
-    displayText:  '현대 사회에서는 기계화로 인해 인간의 노동 가치가 [   ] 변화하고 있습니다.',
-    answer: '점차' },
-
-  { id: 24, level: 'advanced', audioUrl: '/audio/level3/advanced_24.wav',
-    fullSentence: '에너지 절약을 위해 여름철 실내 적정 온도를 유지해야 합니다.',
-    displayText:  '에너지 [   ]을 위해 여름철 실내 적정 온도를 유지해야 합니다.',
-    answer: '절약' },
-
-  { id: 25, level: 'advanced', audioUrl: '/audio/level3/advanced_25.wav',
-    fullSentence: '주말마다 전통 시장에서는 시민들을 위한 다양한 문화 행사가 열립니다.',
-    displayText:  '주말마다 [   ] 시장에서는 시민들을 위한 다양한 문화 행사가 열립니다.',
-    answer: '전통' },
-]
+  // Level 2 — hide 2 consecutive words
+  const maxStart = words.length - 2
+  const startIdx = Math.floor(Math.random() * (maxStart + 1))
+  const pair = words.slice(startIdx, startIdx + 2)
+  return {
+    sentence,
+    displayText: [
+      ...words.slice(0, startIdx),
+      '[__]',
+      ...words.slice(startIdx + 2),
+    ].join(' '),
+    answer: pair.map(stripPunct).join(' '),
+    blankCount: 2,
+  }
+}
 
 export function pickRandom(arr: DictationSentence[], count = 10): DictationSentence[] {
-  const shuffled = [...arr].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, Math.min(count, shuffled.length))
+  return [...arr].sort(() => Math.random() - 0.5).slice(0, Math.min(count, arr.length))
 }
+
+// Compact builders
+function int(id: number, s: string): DictationSentence {
+  return {
+    id,
+    level: 'intermediate',
+    audioUrl: `/audio/Intermediate/int_${String(id).padStart(2, '0')}.mp3`,
+    fullSentence: s,
+  }
+}
+function adv(id: number, s: string): DictationSentence {
+  return {
+    id,
+    level: 'advanced',
+    audioUrl: `/audio/Advanced/adv_${String(id).padStart(2, '0')}.mp3`,
+    fullSentence: s,
+  }
+}
+
+// ── Intermediate 132문장 ──────────────────────────────────────────
+export const INTERMEDIATE_SENTENCES: DictationSentence[] = [
+  // 식당 / 카페 (1-30)
+  int(1,  '여기 메뉴판 좀 갖다 주시겠어요?'),
+  int(2,  '저기요, 저희가 주문한 음식이 아직 안 나왔어요.'),
+  int(3,  '김치찌개는 매울 것 같으니까 된장찌개로 시킬게요.'),
+  int(4,  '혹시 견과류 알레르기가 있는데 이 음식에 들어가나요?'),
+  int(5,  '양파는 빼고 소스를 조금만 더 뿌려 주세요.'),
+  int(6,  '고기는 더 구워야 하니까 야채 먼저 드세요.'),
+  int(7,  '여기 밑반찬이 정말 맛있어서 한 번 더 리필했어요.'),
+  int(8,  '남은 피자가 아까우니까 포장해 달라고 합시다.'),
+  int(9,  '계산은 카드 두 개로 나누어서 결제할 수 있나요?'),
+  int(10, '포인트 적립은 핸드폰 번호로 하시면 됩니다.'),
+  int(11, '영수증 필요 없으니까 그냥 버려 주세요.'),
+  int(12, '따뜻한 라떼 한 잔이랑 치즈 케이크 하나 주세요.'),
+  int(13, '텀블러에 담아 주시면 이백 원 할인되나요?'),
+  int(14, '카페라떼에 우유 대신 두유로 변경해 주세요.'),
+  int(15, '진동벨이 울리면 주문하신 음료를 받으러 오세요.'),
+  int(16, '주말이라 그런지 카페에 빈자리가 하나도 없네요.'),
+  int(17, '여기 와이파이 비밀번호는 어디에 적혀 있나요?'),
+  int(18, '점심시간에는 직장인들이 많아서 줄을 서야 해요.'),
+  int(19, '식사 후에 마시는 시원한 커피가 최고예요.'),
+  int(20, '새로 생긴 베이커리 카페에 빵 종류가 정말 많아요.'),
+  int(21, '물과 냅킨은 셀프 바에서 직접 가져오시면 됩니다.'),
+  int(22, '너무 배가 불러서 디저트는 도저히 못 먹겠어요.'),
+  int(23, '맛집이라고 해서 찾아왔는데 생각보다 별로였어요.'),
+  int(24, '창가 쪽 자리가 경치가 좋으니까 저기로 앉읍시다.'),
+  int(25, '이 식당은 예약을 안 하면 한 시간 넘게 기다려야 해요.'),
+  int(26, '한국 식당에서는 기본 반찬이 무료로 제공되어서 좋아요.'),
+  int(27, '고기를 구울 때 연기가 많이 나니까 환풍기를 켜 주세요.'),
+  int(28, '수저와 젓가락은 테이블 옆 서랍에 들어 있습니다.'),
+  int(29, '매운 음식을 먹었더니 시원한 아이스크림이 당기네요.'),
+  int(30, '오늘 저녁은 제가 살 테니까 부담 갖지 말고 많이 드세요.'),
+  // 쇼핑 / 마트 (31-53)
+  int(31, '대형 마트는 둘째 넷째 일요일에 문을 닫아요.'),
+  int(32, '카트를 이용하려면 백 원짜리 동전이 필요합니다.'),
+  int(33, '신선한 과일을 고르려면 냄새를 먼저 맡아 보세요.'),
+  int(34, '이 우유는 유통기한이 내일까지라서 세일하네요.'),
+  int(35, '계란 한 판이랑 두부 한 모만 사 오세요.'),
+  int(36, '비닐봉투는 한 장에 백 원인데 구매하시겠습니까?'),
+  int(37, '편의점에서 원 플러스 원 행사를 자주 하더라고요.'),
+  int(38, '결제는 삼성페이나 카카오페이로도 가능합니다.'),
+  int(39, '이 과자는 인기가 많아서 벌써 품절되었네요.'),
+  int(40, '수박이 너무 무거워서 배달 서비스를 신청했어요.'),
+  int(41, '시장에서 물건을 살 때는 현금을 내는 게 편해요.'),
+  int(42, '냉동 식품은 집에 가자마자 냉동실에 넣어야 해요.'),
+  int(43, '이 제품은 환불을 요청하려고 해요.'),
+  int(44, '구매한 지 일주일 이내에 영수증을 가지고 오셔야 환불돼요.'),
+  int(45, '포장을 뜯으면 교환이나 반품이 불가능합니다.'),
+  int(46, '가성비가 좋은 가구들이 많아서 구경하는 재미가 있어요.'),
+  int(47, '옷을 사기 전에 탈의실에서 한번 입어 봐도 될까요?'),
+  int(48, '이 셔츠는 디자인은 예쁜데 사이즈가 조금 작네요.'),
+  int(49, '신발이 발에 꽉 끼어서 한 사이즈 큰 걸로 바꿨어요.'),
+  int(50, '백화점 세일 기간이라 사람들이 엄청 몰렸어요.'),
+  int(51, '계산대에 줄이 너무 길어서 한참을 기다렸습니다.'),
+  int(52, '인터넷 쇼핑몰이 오프라인 매장보다 가격이 저렴해요.'),
+  int(53, '택배 상자를 뜯을 때는 칼을 조심히 사용하세요.'),
+  // 교통 / 이동 (54-80)
+  int(54, '이번 역은 우리 열차가 오랫동안 정차하는 역입니다.'),
+  int(55, '지하철 이호선으로 갈아타려면 어디로 가야 하나요?'),
+  int(56, '출퇴근 시간에는 지하철에 사람이 너무 많아서 힘들어요.'),
+  int(57, '교통카드를 단말기에 태그할 때 잔액이 부족하대요.'),
+  int(58, '버스 정류장에 도착 예정 시간이 안내되어 있어요.'),
+  int(59, '이번 정류장에서 내리지 못하면 한참 걸어가야 해요.'),
+  int(60, '광역버스를 타면 서울까지 한 번에 갈 수 있습니다.'),
+  int(61, '기차표를 미리 예매하지 않으면 좌석이 없을 거예요.'),
+  int(62, '입석표라도 끊어서 가야 할 만큼 급한 상황입니다.'),
+  int(63, '택시를 타고 목적지까지 가장 빠른 길로 가 주세요.'),
+  int(64, '차가 막히는 시간에는 지하철을 타는 게 훨씬 빨라요.'),
+  int(65, '저기 신호등에서 우회전하시면 목적지가 보일 겁니다.'),
+  int(66, '길을 잘 모를 때는 스마트폰 지도를 켜는 게 제일 좋아요.'),
+  int(67, '혹시 근처에 가장 가까운 은행이 어디에 있는지 아세요?'),
+  int(68, '횡단보도를 건널 때는 초록불로 바뀌고 나서 건너세요.'),
+  int(69, '이 근처는 일방통행 도로라서 운전할 때 조심해야 해요.'),
+  int(70, '골목길이 너무 복잡해서 길을 잃어버리기 쉽습니다.'),
+  int(71, '주차장이 만차라서 차를 세울 곳을 찾지 못했어요.'),
+  int(72, '공항버스 승차장은 저 건물 건너편에 있습니다.'),
+  int(73, '비행기 탑승 시간 두 시간 전에는 공항에 도착해야 해요.'),
+  int(74, '여권을 집에 두고 와서 여행을 못 갈 뻔했어요.'),
+  int(75, '국내선은 신분증만 있으면 비행기를 탈 수 있습니다.'),
+  int(76, '고속도로 통행료를 내려면 하이패스 차선으로 가야 해요.'),
+  int(77, '휴게소에 들러서 맛있는 간식을 먹고 출발합시다.'),
+  int(78, '무단횡단은 아주 위험하니까 절대로 하면 안 됩니다.'),
+  int(79, '안내 방송을 놓쳐서 내려야 할 역을 지나쳤어요.'),
+  int(80, '막차가 끊기기 전에 서둘러서 집으로 돌아갑시다.'),
+  // 병원 / 건강 (81-93)
+  int(81, '어제부터 열이 나고 온몸이 으슬으슬 추워요.'),
+  int(82, '감기 기운이 있어서 오늘은 집에서 쉬려고 합니다.'),
+  int(83, '병원에 가기 전에 미리 예약 전화를 해 두었어요.'),
+  int(84, '처음 오셨으면 여기 접수증에 인적 사항을 적어 주세요.'),
+  int(85, '의사 선생님께 증상을 자세히 말씀드려야 해요.'),
+  int(86, '배가 아프고 설사를 계속하는데 장염인 것 같아요.'),
+  int(87, '주사를 맞고 나니까 통증이 훨씬 줄어든 느낌이에요.'),
+  int(88, '처방전을 들고 일층에 있는 약국으로 가세요.'),
+  int(89, '이 약은 식후 삼십 분에 세 번 챙겨 드셔야 합니다.'),
+  int(90, '부작용이 있을 수 있으니 졸음이 오면 운전하지 마세요.'),
+  int(91, '상처 부위에 연고를 바르고 밴드를 붙였습니다.'),
+  int(92, '치과 치료는 미루면 비용이 더 많이 들게 돼요.'),
+  int(93, '건강검진 결과가 나오면 이메일로 보내 주신대요.'),
+  // 행정 / 은행 (94-104)
+  int(94,  '비자를 연장하러 출입국사무소에 방문해야 합니다.'),
+  int(95,  '번호표를 뽑고 대기석에서 차례를 기다려 주세요.'),
+  int(96,  '외국인등록증을 발급받으려면 서류가 많이 필요해요.'),
+  int(97,  '주민센터에 가서 등본을 한 통 발급받아 오세요.'),
+  int(98,  '통장을 개설하려면 도장이나 서명이 필요합니다.'),
+  int(99,  '해외로 송금할 때 수수료가 얼마나 나오나요?'),
+  int(100, '우체국에서 택배를 보내려고 상자를 포장하고 있어요.'),
+  int(101, '세금을 기한 내에 내지 않으면 연체료가 붙습니다.'),
+  int(102, '도서관에서 책을 빌리려면 회원증을 만들어야 해요.'),
+  int(103, '대출한 도서는 이주일 이내에 반드시 반납해야 합니다.'),
+  int(104, '소음이 심하니까 도서관 안에서는 조용히 해 주세요.'),
+  // 날씨 / 일상 / 취미 (105-119)
+  int(105, '오늘 날씨가 참 좋아서 산책하기에 딱이네요.'),
+  int(106, '내일부터 장마가 시작된다고 하니 우산을 챙기세요.'),
+  int(107, '미세먼지 농도가 높아서 마스크를 써야겠습니다.'),
+  int(108, '주말에 친구들과 영화를 보기로 약속을 잡았어요.'),
+  int(109, '약속 시간에 늦을 것 같아서 미리 연락을 했습니다.'),
+  int(110, '오랜만에 고향 친구를 만나서 밤새 수다를 떨었어요.'),
+  int(111, '취미로 요리를 배우기 시작했는데 정말 재미있어요.'),
+  int(112, '건강을 위해서 일주일에 세 번씩 헬스장에 갑니다.'),
+  int(113, '퇴근 후에 집 근처 공원을 한 바퀴씩 돌고 와요.'),
+  int(114, '이번 휴가에는 가족들과 제주도로 여행을 갈까 해요.'),
+  int(115, '숙소를 예약할 때 침대가 두 개 있는 방으로 선택했어요.'),
+  int(116, '비행기 표 값이 성수기라서 평소보다 두 배나 비싸요.'),
+  int(117, '새로 산 카메라로 예쁜 풍경 사진을 많이 찍었습니다.'),
+  int(118, '가을은 독서의 계절이라고 하는데 책 좀 읽어야겠어요.'),
+  int(119, '이 노래는 가사가 너무 감동적이라서 자주 들어요.'),
+  // 집안일 / 생활 (120-132)
+  int(120, '집안일 중에서 설거지하는 게 제일 귀찮더라고요.'),
+  int(121, '주말에는 밀린 빨래를 하고 집안 청소를 싹 합니다.'),
+  int(122, '분리수거를 할 때는 플라스틱과 캔을 따로 나누세요.'),
+  int(123, '집들이 선물로 휴지나 세제를 많이 사 가곤 해요.'),
+  int(124, '전기 요금이 생각보다 많이 나와서 깜짝 놀랐습니다.'),
+  int(125, '에어컨을 너무 오래 틀면 냉방병에 걸릴 수 있어요.'),
+  int(126, '겨울에는 보일러를 약하게 틀어두는 게 효율적입니다.'),
+  int(127, '고장이 난 세탁기를 고치려고 서비스센터에 접수했어요.'),
+  int(128, '스마트폰 배터리가 빨리 닳아서 서비스센터에 갔습니다.'),
+  int(129, '요즘 잠이 잘 안 와서 따뜻한 우유를 마시고 자요.'),
+  int(130, '아침에 알람 소리를 못 들어서 회사에 지각할 뻔했습니다.'),
+  int(131, '새해 목표로 한국어 공부를 열심히 하기로 다짐했어요.'),
+  int(132, '힘든 일이 있어도 긍정적으로 생각하면 이겨낼 수 있어요.'),
+]
+
+// ── Advanced 92문장 ───────────────────────────────────────────────
+export const ADVANCED_SENTENCES: DictationSentence[] = [
+  // 사회 / 환경 / 복지 (1-21)
+  adv(1,  '최근 1인 가구가 늘어나면서 소형 가전제품의 판매량이 급증하고 있습니다.'),
+  adv(2,  '환경 보호를 위해 일회용품 사용을 제한하는 제도가 본격적으로 시행되었습니다.'),
+  adv(3,  '타인을 비방하는 댓글 문화는 개선되어야 합니다.'),
+  adv(4,  '대도시 집중 현상을 해결하기 위해 지방 도시를 활성화하려는 노력이 필요합니다.'),
+  adv(5,  '주말마다 전통 시장에서는 시민들을 위한 다양한 문화 행사가 열립니다.'),
+  adv(6,  '다문화 가정이 늘어남에 따라 서로의 문화를 존중하는 태도가 중요해졌습니다.'),
+  adv(7,  '스마트폰 과의존은 아동 및 청소년의 성장에 부정적인 영향을 미칠 수 있습니다.'),
+  adv(8,  '반려동물을 가족처럼 생각하는 인구가 늘면서 관련 시장이 급성장하고 있습니다.'),
+  adv(9,  '청년들의 주거 안정을 위해 정부에서 여러 대책을 제안하고 있습니다.'),
+  adv(10, '디지털 기기에 서툰 고령층이 소외되고 있습니다.'),
+  adv(11, '쓰레기 분리배출을 생활화하는 것만으로도 환경 오염을 크게 줄일 수 있습니다.'),
+  adv(12, '요즘은 취미 생활을 통해 스트레스를 해소하고 자아를 실현하는 사람이 많습니다.'),
+  adv(13, '농촌 지역의 인구 감소 문제를 해결하기 위한 귀농 지원 정책이 활발합니다.'),
+  adv(14, '바쁜 일상 속에서 건강을 유지하기 위해 규칙적인 운동은 필수 조건입니다.'),
+  adv(15, '지역 사회의 발전을 위해서는 주민들의 자발적인 참여가 무엇보다 중요합니다.'),
+  adv(16, '주차난을 해소하기 위해 공용 주차장을 추가로 설치합니다.'),
+  adv(17, '에너지 절약을 위해 여름철 실내 적정 온도를 유지해야 합니다.'),
+  adv(18, '청소년기에는 다양한 독서 활동을 통해 균형 잡힌 시각을 기르는 게 좋습니다.'),
+  adv(19, '과도한 스마트폰 사용은 수면 장애를 유발하는 주요 원인 중 하나입니다.'),
+  adv(20, '현대 사회에서는 기계화로 인해 인간의 노동 가치가 점차 변화하고 있습니다.'),
+  adv(21, '기후 변화로 인한 자연재해가 전 세계적으로 빈번하게 발생하고 있습니다.'),
+  // 경제 / 비즈니스 (22-30)
+  adv(22, '의견 차이가 좁혀지지 않아 합의점을 찾기까지 시간이 걸릴 예정입니다.'),
+  adv(23, '제품을 출시하기 전에 소비자의 욕구를 정확히 파악하는 것이 중요합니다.'),
+  adv(24, '원인을 분석하고 대책을 수립해야 합니다.'),
+  adv(25, '고객의 불만 사항을 실시간으로 접수하고 대처하는 시스템이 시급합니다.'),
+  adv(26, '급변하는 비즈니스 환경에 유연하게 대처할 수 있는 조직 문화가 필요합니다.'),
+  adv(27, '소비자에게 보다 합리적인 가격으로 제품을 공급합니다.'),
+  adv(28, '정부가 발표한 새로운 부동산 정책에 대해 시장의 관심이 집중되고 있습니다.'),
+  adv(29, '인터넷 쇼핑몰의 성장으로 오프라인 매장들이 큰 타격을 입고 있습니다.'),
+  adv(30, '고령층의 경제 활동 참여가 늘면서 노인 맞춤형 일자리가 다양해지고 있습니다.'),
+  // 공지 / 안내 (31-49)
+  adv(31, '열차가 들어올 때는 안전선 밖으로 물러서 주시고 무리하게 타지 마십시오.'),
+  adv(32, '본 건물은 전 구역이 금연 구역이므로 흡연 시 과태료가 부과됩니다.'),
+  adv(33, '긴급 재난 문자 수신 시 안전한 장소로 대피하십시오.'),
+  adv(34, '시스템 점검으로 인해 오늘 자정부터 서비스가 일시 중단됩니다.'),
+  adv(35, '전시물 보호를 위해 관람 시 작품을 손으로 만지지 마시기 바랍니다.'),
+  adv(36, '시설물 이용 중 불편한 점이 있으면 안내 데스크에 말씀해 주세요.'),
+  adv(37, '특별 단속 기간 동안 음주운전 및 신호 위반 행위를 집중적으로 처벌합니다.'),
+  adv(38, '개인정보 유출을 방지하기 위해 비밀번호를 정기적으로 변경해 주세요.'),
+  adv(39, '미세먼지 농도가 높은 날에는 외출을 자제하고 마스크를 착용하세요.'),
+  adv(40, '국립공원 내 야영 및 취사 행위는 자연 보호를 위해 금지되어 있습니다.'),
+  adv(41, '장학금 신청 기한을 넘길 경우 지급 대상에서 제외되니 주의하십시오.'),
+  adv(42, '도서관 내에서는 다른 사람에게 방해가 되지 않도록 조용히 해 주십시오.'),
+  adv(43, '물품을 분실하신 분은 지하에 위치한 유실물 센터를 방문하시기 바랍니다.'),
+  adv(44, '에스컬레이터를 이용할 때는 손잡이를 잡고 안전하게 서 계십시오.'),
+  adv(45, '투표는 민주주의의 기본 권리이므로 소중한 한 표를 꼭 행사해 주세요.'),
+  adv(46, '여권 발급을 원하시면 최근 육 개월 이내에 촬영한 사진을 제출해야 합니다.'),
+  adv(47, '아파트 층간소음 예방을 위해 늦은 시간 가전제품 사용을 자제합시다.'),
+  adv(48, '본 공사로 소음이 발생할 수 있으니 주민 여러분의 양해를 부탁드립니다.'),
+  adv(49, '소방차와 구급차가 신속히 이동할 수 있도록 길을 양보해 주십시오.'),
+  // 시사 / 논설 (50-92)
+  adv(50, '인공지능의 발전이 인간의 일자리에 미치는 영향에 대한 연구가 활발합니다.'),
+  adv(51, '지속적인 금리 인상으로 인해 가계 부채에 대한 우려가 커지고 있습니다.'),
+  adv(52, '인구 고령화는 사회 복지 제도의 근본적인 개편을 요구하고 있습니다.'),
+  adv(53, '환경오염 문제의 심각성을 인식해야 할 때입니다.'),
+  adv(54, '기업과 정부의 긴밀한 협력이 필수적입니다.'),
+  adv(55, '여야 간의 팽팽한 의견 대립이 지속되고 있습니다.'),
+  adv(56, '기술의 급격한 발전이 가져올 윤리적 문제에 대한 사회적 합의가 시급합니다.'),
+  adv(57, '기업들의 데이터 관리 책임이 무거워졌습니다.'),
+  adv(58, '이번 선거 결과는 현 정권의 정책에 대한 국민들의 냉혹한 평가로 해석됩니다.'),
+  adv(59, '수도권과 지방의 교육 격차를 줄이기 위한 실질적인 방안이 마련되어야 합니다.'),
+  adv(60, '잦은 기상이변은 물가 상승을 부추기고 있습니다.'),
+  adv(61, '새로운 바이러스의 출현 가능성에 대비하여 방역 체계를 재점검해야 합니다.'),
+  adv(62, '소비자의 권리 의식이 향상되면서 기업의 투명한 경영이 더욱 중요해졌습니다.'),
+  adv(63, '자율주행 자동차의 상용화를 위해서는 관련 법규의 정비가 선행되어야 합니다.'),
+  adv(64, '익명성을 악용한 사이버 폭력은 심각한 사회적 범죄로 인식되어야 마땅합니다.'),
+  adv(65, '이번 사태에 대한 책임자들의 진정성 있는 사과와 재발 방지 대책이 요구됩니다.'),
+  adv(66, '소득 불평등 심화는 사회적 갈등을 유발하고 경제 성장을 저해하는 요인이 됩니다.'),
+  adv(67, '성공적인 프로젝트 수행을 위해서는 팀원들 간의 원활한 의사소통이 전제되어야 합니다.'),
+  adv(68, '역사적 사실을 왜곡하는 행위는 어떠한 이유로도 정당화될 수 없습니다.'),
+  adv(69, '다가오는 우주 시대에 발맞춰 항공우주 산업에 대한 투자를 확대해야 합니다.'),
+  adv(70, '무분별한 개발로 인해 파괴된 생태계를 복원하는 데는 막대한 시간과 비용이 소요됩니다.'),
+  adv(71, '긍정적인 사고방식은 역경을 극복하고 심리적 안정을 유지하는 데 큰 도움이 됩니다.'),
+  adv(72, '공정한 경쟁을 저해하는 독과점 기업에 대한 강력한 규제가 필요하다는 목소리가 높습니다.'),
+  adv(73, '저출산 기조가 장기화되면서 생산가능인구의 감소가 현실화되고 있습니다.'),
+  adv(74, '언론은 객관적인 사실 전달을 통해 국민의 알 권리를 충족시켜야 할 의무가 있습니다.'),
+  adv(75, '예술 작품을 평가할 때는 작가의 의도뿐만 아니라 시대적 배경도 함께 고려해야 합니다.'),
+  adv(76, '스트레스는 만병의 근원이므로 자신만의 적절한 해소법을 찾는 것이 바람직합니다.'),
+  adv(77, '다국적 기업의 조세 회피 행위를 막기 위한 국제적인 규범 마련이 논의되고 있습니다.'),
+  adv(78, '인간의 감정을 모방하는 인공지능 로봇이 돌봄 서비스 분야에 도입되고 있습니다.'),
+  adv(79, '전통문화의 보존과 현대적 계승 사이에서 균형을 찾는 노력이 요구됩니다.'),
+  adv(80, '도시 재생 사업은 기존 주민들의 주거권을 침해하지 않는 방향으로 추진되어야 합니다.'),
+  adv(81, '현대인들은 방대한 정보의 홍수 속에서 유의미한 자료를 선별하는 능력이 필요합니다.'),
+  adv(82, '노동 시장의 유연성 확보와 근로자의 고용 안정이라는 두 마리 토끼를 잡아야 할 때입니다.'),
+  adv(83, '이번 국제 회의에서는 기후 위기 극복을 위한 각국의 구체적인 감축 목표가 제시되었습니다.'),
+  adv(84, '타인과의 비교를 멈추고 자신의 내면에 집중할 때 비로소 진정한 행복을 찾을 수 있습니다.'),
+  adv(85, '반려동물 유기 행위에 대한 처벌 수위를 높여 생명 존중 의식을 고취해야 합니다.'),
+  adv(86, '비대면 진료의 도입은 의료 서비스의 접근성을 높이는 반면 오진의 위험성도 내포하고 있습니다.'),
+  adv(87, '기초 과학에 대한 지속적인 투자는 국가 경쟁력을 좌우하는 핵심 동력입니다.'),
+  adv(88, '다수결의 원칙이 항상 옳은 결과를 담보하는 것은 아니므로 소수의 의견도 경청해야 합니다.'),
+  adv(89, '지역 이기주의로 인해 필수적인 혐오 시설의 건립이 번번이 무산되고 있습니다.'),
+  adv(90, '청소년의 참정권 확대를 통해 정치에 대한 관심을 유도하고 민주 시민 의식을 함양해야 합니다.'),
+  adv(91, '외모 지상주의가 만연한 사회 분위기는 섭식 장애와 같은 심각한 부작용을 초래합니다.'),
+  adv(92, '갈수록 교묘해지는 보이스피싱 수법에 속지 않기 위해서는 각별한 주의가 요망됩니다.'),
+]

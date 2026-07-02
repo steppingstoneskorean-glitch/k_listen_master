@@ -65,11 +65,25 @@ const TRANSLATIONS = {
     es: 'Continuar con Google',
     ja: 'Googleで続ける',
   },
+  'auth.continueWithApple': {
+    en: 'Continue with Apple',
+    ko: 'Apple로 계속하기',
+    es: 'Continuar con Apple',
+    ja: 'Appleで続ける',
+  },
   'auth.orDivider': { en: 'or', ko: '또는', es: 'o', ja: 'または' },
+  'auth.guestNotice': {
+    en: 'Game records will not be saved, and you cannot review errors later.',
+    ko: '게임 기록을 남길 수 없고, 오답을 후에 확인할 수 없습니다.',
+    es: 'No se guardarán los récords del juego y no podrás revisar los errores más tarde.',
+    ja: 'ゲーム記録は保存されず、後で誤答を確認することはできません。',
+  },
 
   // ── Navigation ──
+  'nav.game': { en: 'Games', ko: '게임', es: 'Juegos', ja: 'ゲーム' },
   'nav.freeMaterials': { en: 'Free Materials', ko: '무료 자료', es: 'Materiales Gratuitos', ja: '無料教材' },
   'nav.reviewErrors': { en: 'Review Errors', ko: '오답 확인', es: 'Revisar Errores', ja: '誤答確認' },
+  'nav.lessonsGuide': { en: 'Lessons & Text book', ko: '수업 & 교재', es: 'Lecciones y Libro de texto', ja: '授業＆ 教材' },
   'nav.logout': { en: 'Log Out', ko: '로그아웃', es: 'Cerrar Sesión', ja: 'ログアウト' },
   'nav.login': { en: 'Log In', ko: '로그인', es: 'Iniciar Sesión', ja: 'ログイン' },
 
@@ -83,6 +97,51 @@ const TRANSLATIONS = {
   'home.comingSoon': { en: 'Coming Soon', ko: '준비 중', es: 'Próximamente', ja: '近日公開' },
   'home.startNow': { en: 'Start Now →', ko: '지금 시작하기 →', es: 'Empezar →', ja: '今すぐ始める →' },
   'home.scrollMore': { en: 'Scroll for more ↓', ko: '스크롤하여 더 알아보기 ↓', es: 'Desplaza para más ↓', ja: 'スクロールで詳細を見る ↓' },
+  'home.pitchLine1': {
+    en: 'Stop feeling nervous when speaking Korean.',
+    ko: '한국어로 말할 때 긴장하지 마세요.',
+    es: 'Deja de sentirte nervioso al hablar coreano.',
+    ja: '韓国語を話すときの緊張をなくしましょう。',
+  },
+  'home.pitchLine2': {
+    en: 'Speak like a local.',
+    ko: '현지인처럼 말하세요.',
+    es: 'Habla como un local.',
+    ja: 'ネイティブのように話せます。',
+  },
+  'home.pitchDesc': {
+    en: 'Whether you are a beginner struggling to hear or an advanced learner blocked by pronunciation barriers — start practicing with Step Korean to open your ears and perfect your accent.',
+    ko: '듣기가 힘든 초급자든, 발음 장벽을 넘지 못한 고급 학습자든 — Step Korean으로 연습을 시작해 귀를 열고 발음을 완성해보세요.',
+    es: 'Ya seas un principiante que lucha por escuchar o un aprendiz avanzado bloqueado por barreras de pronunciación — empieza a practicar con Step Korean para abrir tus oídos y perfeccionar tu acento.',
+    ja: '聞き取りに苦労している初級者でも、発音の壁に阻まれた上級者でも — Step Koreanで練習を始め、耳を開いて発音を磨きましょう。',
+  },
+  'home.level1.label': { en: 'BEGINNER', ko: '초급', es: 'PRINCIPIANTE', ja: '初級' },
+  'home.level1.title': { en: 'Ear-Opening Room', ko: '듣기 게임', es: 'Sala Auditiva', ja: '耳開きルーム' },
+  'home.level1.desc': {
+    en: '불 vs 뿔, 살 vs 쌀 — catch subtle phonetic differences through card-tap drills.',
+    ko: '불 vs 뿔, 살 vs 쌀 — 카드 탭 훈련으로 미묘한 발음 차이를 잡아보세요.',
+    es: '불 vs 뿔, 살 vs 쌀 — detecta diferencias fonéticas sutiles con ejercicios de tarjetas.',
+    ja: '불 vs 뿔, 살 vs 쌀 — カードタップ練習で微妙な音の違いを聞き分けましょう。',
+  },
+  'home.level1.rounds': { en: 'Level 1–4 · Card tap', ko: '레벨 1–4 · 카드 탭', es: 'Nivel 1–4 · Tarjetas', ja: 'レベル 1–4 · カードタップ' },
+  'home.level2.label': { en: 'INTERMEDIATE', ko: '중급', es: 'INTERMEDIO', ja: '中級' },
+  'home.level2.title': { en: 'Real-Life Dictation', ko: '실생활 받아쓰기', es: 'Dictado de la Vida Real', ja: '実生活ディクテーション' },
+  'home.level2.desc': {
+    en: 'Restaurants, subways, phone calls — type exactly what you hear in everyday situations.',
+    ko: '식당, 지하철, 전화 통화 — 일상 상황에서 들리는 내용을 정확하게 입력하세요.',
+    es: 'Restaurantes, metro, llamadas — escribe exactamente lo que escuchas en situaciones cotidianas.',
+    ja: 'レストラン、地下鉄、電話通話 — 日常の場面で聞こえた内容をそのまま入力してください。',
+  },
+  'home.level2.rounds': { en: '10 questions · Dictation', ko: '10문제 · 받아쓰기', es: '10 preguntas · Dictado', ja: '10問 · ディクテーション' },
+  'home.level3.label': { en: 'ADVANCED', ko: '고급', es: 'AVANZADO', ja: '上級' },
+  'home.level3.title': { en: 'Media & Professional', ko: '미디어 & 전문', es: 'Medios y Profesional', ja: 'メディア＆プロ' },
+  'home.level3.desc': {
+    en: 'Master connected speech from news briefings, business meetings, and variety shows.',
+    ko: '뉴스 브리핑, 비즈니스 회의, 예능 — 연결 발화를 마스터하세요.',
+    es: 'Domina el habla conectada de informativos, reuniones de negocios y programas de variedades.',
+    ja: 'ニュース、ビジネス会議、バラエティ番組 — 連続発話をマスターしましょう。',
+  },
+  'home.level3.rounds': { en: '10 questions · Dictation', ko: '10문제 · 받아쓰기', es: '10 preguntas · Dictado', ja: '10問 · ディクテーション' },
 
   // ── Error history ──
   'errors.title': { en: 'Error History', ko: '오답 기록', es: 'Historial de Errores', ja: '誤答履歴' },
@@ -244,6 +303,23 @@ const TRANSLATIONS = {
   'dictation.backHome': { en: 'Home', ko: '홈', es: 'Inicio', ja: 'ホーム' },
   'dictation.outOf': { en: 'out of', ko: '/ ', es: 'de', ja: '/' },
   'dictation.hint': { en: 'Hint', ko: '힌트', es: 'Pista', ja: 'ヒント' },
+  'dictation.penaltyHint': {
+    en: '-100 pts per replay',
+    ko: '다시 듣기마다 -100점',
+    es: '-100 pts por repetición',
+    ja: '再生ごとに-100点',
+  },
+  'dictation.totalScore': { en: 'Total Score', ko: '총 점수', es: 'Puntaje total', ja: '合計スコア' },
+  'dictation.rank': { en: 'Rank', ko: '순위', es: 'Rango', ja: '順位' },
+
+  // ── Dictation level select ──
+  'dictation.selectLevel': { en: 'Choose Difficulty', ko: '레벨 선택', es: 'Elegir dificultad', ja: '難易度選択' },
+  'dictation.level1Label': { en: 'Level 1', ko: 'Level 1', es: 'Nivel 1', ja: 'レベル 1' },
+  'dictation.level2Label': { en: 'Level 2', ko: 'Level 2', es: 'Nivel 2', ja: 'レベル 2' },
+  'dictation.level1Desc': { en: 'One-word blank', ko: '한 단어 빈칸', es: 'Espacio de una palabra', ja: '1語の空欄' },
+  'dictation.level2Desc': { en: 'Two-word blank', ko: '두 단어 빈칸', es: 'Espacio de dos palabras', ja: '2語の空欄' },
+  'dictation.level1Detail': { en: 'Hide 1 word unit', ko: '1개 어절 가리기', es: 'Ocultar 1 unidad', ja: '1語節を隠す' },
+  'dictation.level2Detail': { en: 'Hide 2 word units', ko: '2개 어절 가리기', es: 'Ocultar 2 unidades', ja: '2語節を隠す' },
 
   // ── Materials ──
   'materials.title': { en: 'Free Materials', ko: '무료 자료', es: 'Materiales Gratuitos', ja: '無料教材' },

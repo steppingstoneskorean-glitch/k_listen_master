@@ -422,19 +422,6 @@ export function LayerThumbnail({
 }) {
   const { thumbViewBox } = LAYER_CATEGORIES[category]
 
-  const getSvgContent = () => {
-    switch (category) {
-      case 'body':
-        return <BodySvg variant={variant} />
-      case 'head':
-        return <HeadSvg variant={variant} />
-      case 'outfit':
-        return <OutfitSvg variant={variant} />
-      case 'shoes':
-        return <ShoesSvg variant={variant} />
-    }
-  }
-
   return (
     <div style={{ width: size, height: size, position: 'relative', overflow: 'hidden', borderRadius: 8 }}>
       <svg
