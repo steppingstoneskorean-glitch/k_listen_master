@@ -31,3 +31,9 @@ Thumbs.db
 
 # Test artifacts
 screenshots/
+
+node_modules/
+dist/
+.firebase/
+firebase-debug.log
+.env
