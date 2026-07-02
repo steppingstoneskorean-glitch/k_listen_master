@@ -1,97 +1,47 @@
-import { useState, FormEvent } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
-import { isDisposableEmail } from '@/lib/emailValidation'
 import logoImg from '../../assets/images/logo.jpg'
-
-type Panel = 'choice' | 'signin' | 'signup' | 'verify'
 
 export default function StartPage() {
   const { t } = useLang()
-  const { signIn, signUp, signInWithGoogle, setIsGuest, user, loading } = useAuth()
+  const { signInWithGoogle, signInWithApple, setIsGuest, user, loading } = useAuth()
   const navigate = useNavigate()
 
-  const [panel, setPanel] = useState<Panel>('choice')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [displayName, setDisplayName] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  // Already logged in → redirect
   if (!loading && user) {
-    navigate('/home', { replace: true })
+    navigate('/', { replace: true })
     return null
   }
 
-  const reset = () => { setEmail(''); setPassword(''); setDisplayName(''); setError('') }
-
   const handleGuest = () => {
     setIsGuest(true)
-    navigate('/home')
+    navigate('/')
   }
 
-  const handleGoogleSignIn = async () => {
+  const handleSocialSignIn = async (provider: 'google' | 'apple') => {
     setError('')
     setSubmitting(true)
     try {
-      const { email } = await signInWithGoogle()
-      console.log('[Auth] Google sign-in success — email:', email)
-      navigate('/home')
+      if (provider === 'google') {
+        await signInWithGoogle()
+      } else {
+        await signInWithApple()
+      }
+      navigate('/')
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code
-      // User closed the popup — not an error worth showing
       if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return
       const msg = err instanceof Error ? err.message : ''
       if (msg === 'auth_unavailable') {
         setError('Authentication service unavailable.')
-      } else {
+      } else if (provider === 'google') {
         setError('Google sign-in failed. Please try again.')
-      }
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleSignIn = async (e: FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setSubmitting(true)
-    try {
-      await signIn(email, password)
-      navigate('/home')
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : ''
-      if (msg === 'email_not_verified') {
-        setError(t('auth.emailNotVerified'))
       } else {
-        setError('Invalid email or password.')
-      }
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleSignUp = async (e: FormEvent) => {
-    e.preventDefault()
-    setError('')
-    if (displayName.trim().length < 2) { setError('Display name must be at least 2 characters.'); return }
-    if (isDisposableEmail(email)) { setError(t('auth.disposableEmail')); return }
-    setSubmitting(true)
-    try {
-      await signUp(email, password, displayName.trim())
-      setPanel('verify')
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : ''
-      if (msg === 'disposable_email') {
-        setError(t('auth.disposableEmail'))
-      } else if (msg.includes('email-already-in-use')) {
-        setError('Email already in use.')
-      } else if (msg.includes('weak-password')) {
-        setError('Password must be at least 6 characters.')
-      } else {
-        setError('Sign up failed. Please try again.')
+        setError('Apple sign-in failed. Please try again.')
       }
     } finally {
       setSubmitting(false)
@@ -124,116 +74,28 @@ export default function StartPage() {
           </p>
         </div>
 
-        {/* ── Choice panel ── */}
-        {panel === 'choice' && (
-          <div className="w-full flex flex-col gap-3">
-            <GoogleBtn label={t('auth.continueWithGoogle')} onClick={handleGoogleSignIn} disabled={submitting} />
-            <OrDivider label={t('auth.orDivider')} />
-            <button
-              onClick={() => { reset(); setPanel('signin') }}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-base hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-indigo-500/25"
-            >
-              {t('start.login')}
-            </button>
-            <button
-              onClick={handleGuest}
-              className="w-full py-3.5 rounded-2xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-base hover:border-gray-500 hover:text-white transition-colors"
-            >
-              {t('start.guest')}
-            </button>
-            {error && <p className="text-red-400 text-xs px-1 text-center">{error}</p>}
-          </div>
-        )}
-
-        {/* ── Sign In panel ── */}
-        {panel === 'signin' && (
-          <form onSubmit={handleSignIn} className="w-full flex flex-col gap-3">
-            <GoogleBtn label={t('auth.continueWithGoogle')} onClick={handleGoogleSignIn} disabled={submitting} />
-            <OrDivider label={t('auth.orDivider')} />
-            <Field label={t('auth.email')} type="email" value={email} onChange={setEmail} />
-            <Field label={t('auth.password')} type="password" value={password} onChange={setPassword} />
-            {error && <p className="text-red-400 text-xs px-1">{error}</p>}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-sm hover:opacity-90 disabled:opacity-40 transition-all"
-            >
-              {submitting ? '…' : t('auth.signIn')}
-            </button>
-            <button type="button" onClick={() => { reset(); setPanel('signup') }} className="text-gray-500 text-xs hover:text-gray-300 transition-colors text-center">
-              {t('auth.toSignUp')}
-            </button>
-            <BackBtn onClick={() => { reset(); setPanel('choice') }} label={t('auth.back')} />
-          </form>
-        )}
-
-        {/* ── Sign Up panel ── */}
-        {panel === 'signup' && (
-          <form onSubmit={handleSignUp} className="w-full flex flex-col gap-3">
-            <GoogleBtn label={t('auth.continueWithGoogle')} onClick={handleGoogleSignIn} disabled={submitting} />
-            <OrDivider label={t('auth.orDivider')} />
-            <Field label={t('auth.displayName')} type="text" value={displayName} onChange={setDisplayName} />
-            <Field label={t('auth.email')} type="email" value={email} onChange={setEmail} />
-            <Field label={t('auth.password')} type="password" value={password} onChange={setPassword} />
-            {error && <p className="text-red-400 text-xs px-1">{error}</p>}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-sm hover:opacity-90 disabled:opacity-40 transition-all"
-            >
-              {submitting ? '…' : t('auth.signUp')}
-            </button>
-            <button type="button" onClick={() => { reset(); setPanel('signin') }} className="text-gray-500 text-xs hover:text-gray-300 transition-colors text-center">
-              {t('auth.toSignIn')}
-            </button>
-            <BackBtn onClick={() => { reset(); setPanel('choice') }} label={t('auth.back')} />
-          </form>
-        )}
-
-        {/* ── Verify notice ── */}
-        {panel === 'verify' && (
-          <div className="w-full flex flex-col items-center gap-5 text-center">
-            <div className="text-5xl">📧</div>
-            <p className="text-white font-bold">{t('auth.verifyNotice')}</p>
-            <button
-              onClick={() => { reset(); setPanel('signin') }}
-              className="px-6 py-3 rounded-2xl bg-gray-800 border border-gray-700 text-gray-300 text-sm font-medium hover:border-gray-500 transition-colors"
-            >
-              {t('auth.signIn')}
-            </button>
-          </div>
-        )}
+        <div className="w-full flex flex-col gap-3">
+          <GoogleBtn
+            label={t('auth.continueWithGoogle')}
+            onClick={() => handleSocialSignIn('google')}
+            disabled={submitting}
+          />
+          <AppleBtn
+            label={t('auth.continueWithApple')}
+            onClick={() => handleSocialSignIn('apple')}
+            disabled={submitting}
+          />
+          <button
+            onClick={handleGuest}
+            disabled={submitting}
+            className="w-full py-3.5 rounded-2xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-base hover:border-gray-500 hover:text-white disabled:opacity-40 transition-colors"
+          >
+            {t('start.guest')}
+          </button>
+          {error && <p className="text-red-400 text-xs px-1 text-center">{error}</p>}
+        </div>
       </div>
     </div>
-  )
-}
-
-function Field({ label, type, value, onChange }: {
-  label: string; type: string; value: string; onChange: (v: string) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-gray-500 text-xs px-1">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        required
-        className="w-full px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white placeholder:text-gray-600 outline-none focus:border-indigo-500 transition-colors text-sm"
-      />
-    </div>
-  )
-}
-
-function BackBtn({ onClick, label }: { onClick: () => void; label: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex items-center justify-center gap-1 text-gray-600 text-xs hover:text-gray-400 transition-colors mt-1"
-    >
-      ← {label}
-    </button>
   )
 }
 
@@ -251,13 +113,17 @@ function GoogleBtn({ label, onClick, disabled }: { label: string; onClick: () =>
   )
 }
 
-function OrDivider({ label }: { label: string }) {
+function AppleBtn({ label, onClick, disabled }: { label: string; onClick: () => void; disabled?: boolean }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex-1 h-px bg-gray-700" />
-      <span className="text-gray-500 text-xs">{label}</span>
-      <div className="flex-1 h-px bg-gray-700" />
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl border border-gray-600 bg-black text-white font-bold text-sm hover:bg-gray-900 active:scale-[0.98] disabled:opacity-40 transition-all shadow-sm"
+    >
+      <AppleIcon />
+      {label}
+    </button>
   )
 }
 
@@ -268,6 +134,14 @@ function GoogleIcon() {
       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
       <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+    </svg>
+  )
+}
+
+function AppleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="currentColor" aria-hidden="true">
+      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4zm-3.1-17.6c.06 2.3-1.67 4.2-3.9 4.3-1.05-2.6 1.43-4.35 3.9-4.3z" />
     </svg>
   )
 }

@@ -55,6 +55,8 @@ const GAME_LEVELS: Record<number, { name: string; pairs: string[][] }> = {
   },
 }
 
+const LEVEL_PAIR_COUNTS: Record<number, number> = { 1: 15, 2: 10, 3: 10, 4: 10 }
+
 const MAX_LIVES = 3
 const BASE_POINTS = 500
 const TIME_DECAY_PER_SEC = 30
@@ -274,12 +276,14 @@ function GamePlayScreen({
   const [timerStart, setTimerStart] = useState<number | null>(null)
   const [potentialPts, setPotentialPts] = useState(BASE_POINTS)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [needsTap, setNeedsTap] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const advancingRef = useRef(false)
 
   useEffect(() => {
-    const shuffled = shuffle(levelData.pairs)
+    const count = LEVEL_PAIR_COUNTS[level] ?? levelData.pairs.length
+    const shuffled = shuffle(levelData.pairs).slice(0, count)
     setPairs(shuffled)
     setPairIdx(0)
     advancingRef.current = false
@@ -306,8 +310,8 @@ function GamePlayScreen({
         if (pts <= 0 && tickRef.current) clearInterval(tickRef.current)
       }, 200)
     }
-    audio.onerror = () => setIsPlaying(false)
-    audio.play().catch(() => setIsPlaying(false))
+    audio.onerror = () => { setIsPlaying(false); setNeedsTap(true) }
+    audio.play().catch(() => { setIsPlaying(false); setNeedsTap(true) })
   }, [])
 
   useEffect(() => {
@@ -319,6 +323,7 @@ function GamePlayScreen({
     setFeedback('idle')
     setReplayCount(0)
     setHasPlayed(false)
+    setNeedsTap(false)
     setPotentialPts(BASE_POINTS)
     playAudio(word)
   }, [pairs, pairIdx, playAudio])
@@ -359,6 +364,7 @@ function GamePlayScreen({
 
   const handlePlayButtonClick = useCallback(() => {
     if (feedback !== 'idle' || isPlaying) return
+    setNeedsTap(false)
     if (hasPlayed) {
       setReplayCount(prev => prev + 1)
       onScorePenalty(REPLAY_PENALTY)
@@ -422,6 +428,8 @@ function GamePlayScreen({
                 ? 'bg-indigo-500 shadow-xl shadow-indigo-500/40 scale-105'
                 : hasPlayed
                 ? 'bg-gray-800 hover:bg-gray-700 border-2 border-gray-600'
+                : needsTap
+                ? 'bg-gray-800 hover:bg-gray-700 border-2 border-indigo-500 animate-pulse'
                 : 'bg-gray-800 hover:bg-gray-700 border-2 border-gray-700'
               }`}
           >
@@ -804,9 +812,9 @@ function GamePlayWithExhaust({
   onPairsExhausted: () => void
 }) {
   const levelData = GAME_LEVELS[level]
-  const totalPairs = levelData.pairs.length
+  const totalPairs = LEVEL_PAIR_COUNTS[level] ?? levelData.pairs.length
   const [pairsKey, setPairsKey] = useState(0)
-  const [completedCount, setCompletedCount] = useState(0)
+  const [, setCompletedCount] = useState(0)
   const exhaustedRef = useRef(false)
 
   useEffect(() => {
