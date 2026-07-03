@@ -178,6 +178,7 @@ const TRANSLATIONS = {
   'guest.score': { en: 'Your Score', ko: '내 점수', es: 'Tu Puntuación', ja: 'あなたのスコア' },
 
   // ── Game / Result ──
+  'game.levelFmt': { en: 'Level {n}', ko: '레벨 {n}', es: 'Nivel {n}', ja: 'レベル {n}' },
   'game.restart': { en: '🔄 Restart', ko: '🔄 다시 시작', es: '🔄 Reiniciar', ja: '🔄 もう一度' },
   'game.home': { en: 'Home', ko: '홈', es: 'Inicio', ja: 'ホーム' },
   'game.leaderboard': { en: '🌍 Global Ranking', ko: '🌍 전체 랭킹', es: '🌍 Clasificación Global', ja: '🌍 グローバルランキング' },
@@ -330,6 +331,10 @@ const TRANSLATIONS = {
     ja: '厳選された韓国語学習教材の閲覧専用アクセス。',
   },
   'materials.open': { en: 'Open in Notion', ko: 'Notion에서 열기', es: 'Abrir en Notion', ja: 'Notionで開く' },
+  'materials.comingSoon': { en: 'Coming soon.', ko: '준비 중입니다.', es: 'Próximamente.', ja: '準備中です。' },
+
+  // ── Common ──
+  'common.ok': { en: 'OK', ko: '확인', es: 'Aceptar', ja: 'OK' },
 } as const
 
 interface LangCtx {

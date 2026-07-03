@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logoImg from '../../../assets/images/logo.jpg'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
@@ -7,6 +8,7 @@ export default function Header() {
   const { t } = useLang()
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [showComingSoon, setShowComingSoon] = useState(false)
 
   const handleLogout = async () => {
     await logout()
@@ -34,12 +36,13 @@ export default function Header() {
           </Link>
 
           {/* 무료 자료 */}
-          <Link
-            to="/materials"
+          <button
+            type="button"
+            onClick={() => setShowComingSoon(true)}
             className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-all border border-transparent hover:border-gray-700"
           >
             {t('nav.freeMaterials')}
-          </Link>
+          </button>
 
           {/* 오답 확인 */}
           <Link
@@ -85,6 +88,28 @@ export default function Header() {
           )}
         </nav>
       </div>
+
+      {/* Free Materials — Coming soon modal */}
+      {showComingSoon && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          onClick={() => setShowComingSoon(false)}
+        >
+          <div
+            className="w-full max-w-xs bg-gray-900 border border-gray-700 rounded-2xl p-6 text-center shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <p className="text-lg font-bold text-white">{t('materials.comingSoon')}</p>
+            <button
+              type="button"
+              onClick={() => setShowComingSoon(false)}
+              className="mt-5 w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              {t('common.ok')}
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   )
 }

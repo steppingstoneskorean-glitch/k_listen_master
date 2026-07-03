@@ -18,9 +18,14 @@ try {
     })
     _auth = getAuth(app)
     _db = getFirestore(app)
+  } else {
+    console.error(
+      '[firebase] VITE_FIREBASE_API_KEY is missing at build time — auth/db disabled. ' +
+      'Check that VITE_FIREBASE_* env vars are set in the deploy/build environment (not just .env.local).',
+    )
   }
 } catch (err) {
-  console.warn('Firebase init skipped:', err)
+  console.error('[firebase] init failed — auth/db disabled:', err)
 }
 
 export const auth = _auth
