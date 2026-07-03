@@ -29,6 +29,19 @@ export default function Header() {
             </Link>
 
             <div className="flex items-center gap-2">
+              {/* YouTube channel */}
+              <a
+                href="https://www.youtube.com/@steppingstones.Korean"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Step Korean YouTube channel"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#FF0000] transition-all hover:bg-red-50"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                  <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z" />
+                </svg>
+              </a>
+
               {/* Language switcher */}
               <LanguageSwitcher compact />
 
