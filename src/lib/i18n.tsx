@@ -333,6 +333,116 @@ const TRANSLATIONS = {
   'materials.open': { en: 'Open in Notion', ko: 'Notion에서 열기', es: 'Abrir en Notion', ja: 'Notionで開く' },
   'materials.comingSoon': { en: 'Coming soon.', ko: '준비 중입니다.', es: 'Próximamente.', ja: '準備中です。' },
 
+  // ── Landing (CRO redesign) ──
+  'landing.badge': {
+    en: 'Developed by Professional Korean Language Teachers',
+    ko: '현직 전문 한국어 교사들이 직접 개발했습니다',
+    es: 'Desarrollado por profesores profesionales de coreano',
+    ja: 'プロの韓国語教師が開発しました',
+  },
+  'landing.heroTitle1': {
+    en: 'Speak Korean with',
+    ko: '한국어, 이제',
+    es: 'Habla coreano con',
+    ja: '韓国語を',
+  },
+  'landing.heroTitle2': {
+    en: 'Real Confidence',
+    ko: '진짜 자신감 있게',
+    es: 'Confianza Real',
+    ja: '本物の自信で',
+  },
+  'landing.heroSub': {
+    en: '"When your ears open, your pronunciation becomes as confident as a native\'s."',
+    ko: '"잘 들려야, 내 발음도 현지인처럼 당당해집니다."',
+    es: '"Cuando escuchas bien, tu pronunciación se vuelve tan segura como la de un nativo."',
+    ja: '「よく聞き取れてこそ、発音もネイティブのように堂々とできます。」',
+  },
+  'landing.loginBenefit': {
+    en: 'Play instantly for free. Log in with Google/Apple to save your mistakes and unlock advanced levels!',
+    ko: '무료로 바로 플레이하세요. Google/Apple 로그인 시 오답 저장 & 고급 레벨 잠금 해제!',
+    es: 'Juega gratis al instante. ¡Inicia sesión con Google/Apple para guardar tus errores y desbloquear niveles avanzados!',
+    ja: '無料ですぐプレイ。Google/Appleでログインすると、間違いの保存と上級レベルの解放ができます！',
+  },
+  'landing.step1.title': {
+    en: 'Train Your Ears',
+    ko: '귀 트이기 훈련',
+    es: 'Entrena tus Oídos',
+    ja: '耳を鍛える',
+  },
+  'landing.step1.desc': {
+    en: 'Diagnose the subtle pronunciation differences your ears have been missing — and master them the fun way.',
+    ko: '무료 듣기 게임으로 내 귀가 놓치고 있던 미세한 발음 차이를 진단하고 재미있게 익힙니다.',
+    es: 'Diagnostica las sutiles diferencias de pronunciación que tus oídos pasaban por alto — y domínalas jugando.',
+    ja: '耳が聞き逃していた微妙な発音の違いを診断し、楽しく身につけます。',
+  },
+  'landing.step1.bold': {
+    en: 'Free Diagnostic Listening Game',
+    ko: '무료 진단 듣기 게임',
+    es: 'Juego de Escucha de Diagnóstico Gratis',
+    ja: '無料診断リスニングゲーム',
+  },
+  'landing.step2.title': {
+    en: 'Master Concept',
+    ko: '개념 마스터',
+    es: 'Domina el Concepto',
+    ja: '概念をマスター',
+  },
+  'landing.step2.desc': {
+    en: 'Build rock-solid fundamentals with a guidebook PDF packed with the secrets of native pronunciation.',
+    ko: '원어민 발음의 비밀을 담은 가이드북 PDF 자료로 탄탄한 기본기를 다집니다.',
+    es: 'Construye una base sólida con una guía en PDF llena de los secretos de la pronunciación nativa.',
+    ja: 'ネイティブ発音の秘密を詰め込んだガイドブックPDFで、確かな基礎を固めます。',
+  },
+  'landing.step2.sub': {
+    en: 'Exclusive guidebook crafted from years of real classroom experience.',
+    ko: '수년간의 실제 강의 경험으로 빚어낸 단 하나의 가이드북.',
+    es: 'Guía exclusiva creada a partir de años de experiencia real en el aula.',
+    ja: '長年の実際の教室経験から生まれた特別なガイドブック。',
+  },
+  'landing.step3.title': {
+    en: 'Speak Proudly',
+    ko: '당당하게 말하기',
+    es: 'Habla con Orgullo',
+    ja: '堂々と話す',
+  },
+  'landing.step3.desc': {
+    en: 'Perfect natural, native-like speaking through premium 1:1 classes.',
+    ko: '1:1 수업을 통해 현지인처럼 자연스러운 스피킹을 완성합니다.',
+    es: 'Perfecciona un habla natural, como la de un nativo, con clases premium 1:1.',
+    ja: '1:1レッスンで、ネイティブのような自然なスピーキングを完成させます。',
+  },
+  'landing.ctaTitle1': {
+    en: 'Stop Studying Korean Just with Your Eyes.',
+    ko: '눈으로만 하는 한국어 공부는 이제 그만.',
+    es: 'Deja de estudiar coreano solo con los ojos.',
+    ja: '目だけで学ぶ韓国語はもう終わり。',
+  },
+  'landing.ctaTitle2': {
+    en: 'Start Speaking Proudly Today.',
+    ko: '오늘부터 당당하게 말하세요.',
+    es: 'Empieza a hablar con orgullo hoy.',
+    ja: '今日から堂々と話しましょう。',
+  },
+  'landing.ctaSub': {
+    en: 'Listen properly and speak proudly — with Step Korean!',
+    ko: 'Step Korean과 함께 제대로 듣고, 당당하게 말하세요!',
+    es: 'Escucha bien y habla con orgullo — ¡con Step Korean!',
+    ja: 'Step Koreanと一緒に、しっかり聞いて堂々と話しましょう！',
+  },
+  'landing.ctaGuide': {
+    en: 'Get Free Pronunciation Guide (PDF)',
+    ko: '무료 발음 가이드 받기 (PDF)',
+    es: 'Obtén la Guía de Pronunciación Gratis (PDF)',
+    ja: '無料発音ガイドを受け取る (PDF)',
+  },
+  'landing.ctaStart': {
+    en: 'Start Free Game Now',
+    ko: '지금 무료 게임 시작하기',
+    es: 'Empieza el Juego Gratis Ahora',
+    ja: '今すぐ無料ゲームを開始',
+  },
+
   // ── Common ──
   'common.ok': { en: 'OK', ko: '확인', es: 'Aceptar', ja: 'OK' },
 } as const
