@@ -17,21 +17,51 @@ export default function Header() {
 
   return (
     <>
-      <header className="border-b border-gray-800 bg-gray-950/90 backdrop-blur-sm sticky top-0 z-50">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3 gap-4">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <img src={logoImg} alt="Step Korean" className="h-8 w-auto rounded-lg object-contain" />
-            <span className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Step</span>
-            <span className="text-xl font-black text-white">Korean</span>
-          </Link>
+      <header className="border-b border-emerald-100/60 bg-[#e9fbf2]/90 backdrop-blur-sm sticky top-0 z-50">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-3">
+          {/* Top row: logo + language / auth */}
+          <div className="flex items-center justify-between gap-4">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2.5 shrink-0">
+              <img src={logoImg} alt="Step Korean" className="h-8 w-auto rounded-lg object-contain" />
+              <span className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">Step</span>
+              <span className="text-xl font-black text-slate-900">Korean</span>
+            </Link>
 
-          {/* Right nav */}
-          <nav className="flex items-center gap-2 flex-wrap justify-end">
+            <div className="flex items-center gap-2">
+              {/* Language switcher */}
+              <LanguageSwitcher compact />
+
+              {/* Auth */}
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400 hidden sm:block truncate max-w-[100px]">
+                    {user.displayName || user.email}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-red-500 hover:bg-red-50 transition-all border border-slate-200 hover:border-red-200"
+                  >
+                    {t('nav.logout')}
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-indigo-500/20"
+                >
+                  {t('nav.login')}
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom row: primary navigation, kept on a single horizontal row */}
+          <nav className="flex flex-nowrap items-center gap-1.5 overflow-x-auto">
             {/* 게임 */}
             <Link
               to="/"
-              className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-all border border-transparent hover:border-gray-700"
+              className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
             >
               {t('nav.game')}
             </Link>
@@ -40,7 +70,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setShowComingSoon(true)}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-all border border-transparent hover:border-gray-700"
+              className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
             >
               {t('nav.freeMaterials')}
             </button>
@@ -48,7 +78,7 @@ export default function Header() {
             {/* 오답 확인 */}
             <Link
               to="/errors"
-              className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-all border border-transparent hover:border-gray-700"
+              className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
             >
               {t('nav.reviewErrors')}
             </Link>
@@ -58,35 +88,10 @@ export default function Header() {
               href={import.meta.env.VITE_PAYHIP_URL ?? 'https://payhip.com/StepKorean'}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-lg text-sm font-semibold text-indigo-300 hover:text-white hover:bg-indigo-500/20 transition-all border border-indigo-500/30 hover:border-indigo-400/60"
+              className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 transition-all border border-indigo-200 hover:border-indigo-300"
             >
               {t('nav.lessonsGuide')}
             </a>
-
-            {/* Language switcher */}
-            <LanguageSwitcher compact />
-
-            {/* Auth */}
-            {user ? (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-600 hidden sm:block truncate max-w-[100px]">
-                  {user.displayName || user.email}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-all border border-gray-800 hover:border-red-500/30"
-                >
-                  {t('nav.logout')}
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-indigo-500/20"
-              >
-                {t('nav.login')}
-              </Link>
-            )}
           </nav>
         </div>
       </header>
