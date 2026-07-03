@@ -335,9 +335,9 @@ const TRANSLATIONS = {
 
   // ── Landing (CRO redesign) ──
   'landing.badge': {
-    en: 'Developed by Professional Korean Language Teachers',
-    ko: '현직 전문 한국어 교사들이 직접 개발했습니다',
-    es: 'Desarrollado por profesores profesionales de coreano',
+    en: 'Developed by Professional Korean Language Teacher',
+    ko: '현직 전문 한국어 강사가 직접 개발했습니다',
+    es: 'Desarrollado por un profesorado de coreano',
     ja: 'プロの韓国語教師が開発しました',
   },
   'landing.heroTitle1': {
@@ -377,10 +377,10 @@ const TRANSLATIONS = {
     ja: '耳が聞き逃していた微妙な発音の違いを診断し、楽しく身につけます。',
   },
   'landing.step1.bold': {
-    en: 'Free Diagnostic Listening Game',
-    ko: '무료 진단 듣기 게임',
-    es: 'Juego de Escucha de Diagnóstico Gratis',
-    ja: '無料診断リスニングゲーム',
+    en: 'Free Listening Game',
+    ko: '무료 듣기 게임',
+    es: 'Juego de Escucha Gratuito',
+    ja: '無料リスニングゲーム',
   },
   'landing.step2.title': {
     en: 'Master Concept',
@@ -436,11 +436,17 @@ const TRANSLATIONS = {
     es: 'Obtén la Guía de Pronunciación Gratis (PDF)',
     ja: '無料発音ガイドを受け取る (PDF)',
   },
-  'landing.ctaStart': {
-    en: 'Start Free Game Now',
-    ko: '지금 무료 게임 시작하기',
-    es: 'Empieza el Juego Gratis Ahora',
-    ja: '今すぐ無料ゲームを開始',
+  'landing.ctaBookLesson': {
+    en: 'Book a 1:1 Class',
+    ko: '1:1 수업 신청하기',
+    es: 'Reservar una Clase 1:1',
+    ja: '1:1レッスンを申し込む',
+  },
+  'landing.ctaBookLessonSub': {
+    en: '(Speaking, Grammar, Pronunciation, TOPIK)',
+    ko: '(말하기,문법,발음,TOPIK)',
+    es: '(Conversación, Gramática, Pronunciación, TOPIK)',
+    ja: '(スピーキング、文法、発音、TOPIK)',
   },
 
   // ── Common ──

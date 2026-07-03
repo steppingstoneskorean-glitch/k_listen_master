@@ -49,6 +49,7 @@ export default function HomePage() {
   const { user, isGuest } = useAuth()
   const navigate = useNavigate()
   const [modalTarget, setModalTarget] = useState<string | null>(null)
+  const [showComingSoon, setShowComingSoon] = useState(false)
 
   const handlePlay = (to: string) => {
     if (user || isGuest) {
@@ -160,6 +161,27 @@ export default function HomePage() {
         />
       )}
 
+      {showComingSoon && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          onClick={() => setShowComingSoon(false)}
+        >
+          <div
+            className="w-full max-w-xs bg-gray-900 border border-gray-700 rounded-2xl p-6 text-center shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <p className="text-lg font-bold text-white">{t('materials.comingSoon')}</p>
+            <button
+              type="button"
+              onClick={() => setShowComingSoon(false)}
+              className="mt-5 w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              {t('common.ok')}
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="bg-gradient-to-b from-white via-slate-50 to-indigo-50 text-slate-900">
         {/* ══ 1. Hero + Game Selection ══ */}
         <section className="relative overflow-hidden px-6 pt-14 pb-20">
@@ -198,8 +220,7 @@ export default function HomePage() {
                   <button
                     type="button"
                     onClick={() => handlePlay(card.to)}
-                    className={`animate-card-float group flex h-full w-full flex-col rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-md shadow-slate-200/60 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl active:scale-[0.98] cursor-pointer ${card.accent}`}
-                    style={{ animationDelay: `${i * 0.7}s` }}
+                    className={`group flex h-full w-full flex-col rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-md shadow-slate-200/60 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl active:scale-[0.98] cursor-pointer ${card.accent}`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-3xl transition-transform duration-300 group-hover:scale-110">{card.emoji}</span>
@@ -266,21 +287,22 @@ export default function HomePage() {
               </p>
 
               <div className="relative mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => setShowComingSoon(true)}
+                  className="w-full rounded-full bg-white px-8 py-4 text-sm font-extrabold text-indigo-600 shadow-lg transition-all duration-200 hover:scale-[1.04] hover:shadow-xl active:scale-[0.97] sm:w-auto cursor-pointer"
+                >
+                  {t('landing.ctaGuide')}
+                </button>
                 <a
                   href={PAYHIP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full rounded-full bg-white px-8 py-4 text-sm font-extrabold text-indigo-600 shadow-lg transition-all duration-200 hover:scale-[1.04] hover:shadow-xl active:scale-[0.97] sm:w-auto"
+                  className="flex w-full flex-col items-center rounded-full bg-gradient-to-r from-indigo-500 to-emerald-500 px-8 py-3 text-sm font-extrabold leading-tight text-white shadow-lg shadow-indigo-500/30 transition-all duration-200 hover:scale-[1.04] hover:shadow-xl hover:shadow-emerald-500/30 active:scale-[0.97] sm:w-auto"
                 >
-                  {t('landing.ctaGuide')}
+                  <span>{t('landing.ctaBookLesson')}</span>
+                  <span className="text-xs font-semibold opacity-90">{t('landing.ctaBookLessonSub')}</span>
                 </a>
-                <button
-                  type="button"
-                  onClick={() => handlePlay('/game')}
-                  className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-emerald-500 px-8 py-4 text-sm font-extrabold text-white shadow-lg shadow-indigo-500/30 transition-all duration-200 hover:scale-[1.04] hover:shadow-xl hover:shadow-emerald-500/30 active:scale-[0.97] sm:w-auto cursor-pointer"
-                >
-                  {t('landing.ctaStart')}
-                </button>
               </div>
             </div>
           </Reveal>
