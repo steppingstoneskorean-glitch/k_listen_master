@@ -15,6 +15,9 @@ import {
   RankedDictationEntry,
 } from '@/lib/leaderboard'
 import GuestPromptModal from '@/components/GuestPromptModal'
+import InstallSuccessModal from '@/components/InstallSuccessModal'
+import { usePwaInstall } from '@/lib/pwaInstall'
+import { isInstallModalHidden } from '@/lib/installPrompts'
 
 const QUESTIONS_PER_SESSION = 10
 const BASE_POINTS = 500
@@ -527,14 +530,24 @@ function ResultScreen({
   onUpgrade?: () => void   // Level 1 → Level 2 upgrade (undefined when already at Level 2)
 }) {
   const { t } = useLang()
+  const { isInstalled } = usePwaInstall()
   const [showGuestModal, setShowGuestModal] = useState(isGuest)
+  const [showInstallModal, setShowInstallModal] = useState(() => !isGuest && !isInstalled && !isInstallModalHidden())
   const myEntry = leaderboard.find(e => e.name === playerName && e.score === totalScore)
   const isAdv = mode === 'advanced'
+
+  const handleGuestModalClose = () => {
+    setShowGuestModal(false)
+    if (!isInstalled && !isInstallModalHidden()) setShowInstallModal(true)
+  }
 
   return (
     <>
       {showGuestModal && (
-        <GuestPromptModal score={totalScore} level={gameLevel} onClose={() => setShowGuestModal(false)} />
+        <GuestPromptModal score={totalScore} level={gameLevel} onClose={handleGuestModalClose} />
+      )}
+      {!showGuestModal && showInstallModal && (
+        <InstallSuccessModal onClose={() => setShowInstallModal(false)} />
       )}
       <div className="min-h-screen bg-gray-950 text-white">
         <div className="max-w-lg mx-auto px-4 py-10 flex flex-col gap-6">

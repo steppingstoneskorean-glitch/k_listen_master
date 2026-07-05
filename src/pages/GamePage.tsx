@@ -4,6 +4,9 @@ import { useAuth } from '@/lib/auth'
 import { useLang } from '@/lib/i18n'
 import { recordError, recordCorrect } from '@/lib/errorHistory'
 import GuestPromptModal from '@/components/GuestPromptModal'
+import InstallSuccessModal from '@/components/InstallSuccessModal'
+import { usePwaInstall } from '@/lib/pwaInstall'
+import { isInstallModalHidden } from '@/lib/installPrompts'
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -566,7 +569,9 @@ function ResultScreen({
   onRestart: () => void
 }) {
   const { t } = useLang()
+  const { isInstalled } = usePwaInstall()
   const [showGuestModal, setShowGuestModal] = useState(isGuest)
+  const [showInstallModal, setShowInstallModal] = useState(() => !isGuest && !isInstalled && !isInstallModalHidden())
 
   const rankGroups = leaderboard.reduce<Record<number, RankedEntry[]>>((acc, e) => {
     ;(acc[e.rank] = acc[e.rank] || []).push(e)
@@ -576,14 +581,22 @@ function ResultScreen({
   const myRank = myEntry?.rank
   const isTied = myRank !== undefined && (rankGroups[myRank]?.length ?? 0) > 1
 
+  const handleGuestModalClose = () => {
+    setShowGuestModal(false)
+    if (!isInstalled && !isInstallModalHidden()) setShowInstallModal(true)
+  }
+
   return (
     <>
       {showGuestModal && (
         <GuestPromptModal
           score={totalScore}
           level={highestLevel}
-          onClose={() => setShowGuestModal(false)}
+          onClose={handleGuestModalClose}
         />
+      )}
+      {!showGuestModal && showInstallModal && (
+        <InstallSuccessModal onClose={() => setShowInstallModal(false)} />
       )}
 
       <div className="min-h-screen bg-gray-950 text-white">

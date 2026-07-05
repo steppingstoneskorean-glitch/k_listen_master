@@ -451,6 +451,51 @@ const TRANSLATIONS = {
 
   // ── Common ──
   'common.ok': { en: 'OK', ko: '확인', es: 'Aceptar', ja: 'OK' },
+
+  // ── PWA install ──
+  'install.bannerMessage': {
+    en: '📱 Add the app to your home screen for easy daily practice!',
+    ko: '📱 홈 화면에 앱 추가하고 매일 편하게 학습하세요!',
+    es: '📱 ¡Añade la app a tu pantalla de inicio y practica cada día fácilmente!',
+    ja: '📱 ホーム画面にアプリを追加して、毎日気軽に練習しましょう！',
+  },
+  'install.installBtn': {
+    en: 'Install App',
+    ko: '앱 설치하기',
+    es: 'Instalar app',
+    ja: 'アプリをインストール',
+  },
+  'install.successTitle': {
+    en: '🎉 Congrats on your first lesson!',
+    ko: '🎉 첫 학습 완료를 축하합니다!',
+    es: '🎉 ¡Felicidades por tu primera lección!',
+    ja: '🎉 初めての学習完了、おめでとうございます！',
+  },
+  'install.successBody': {
+    en: 'Add the app to your phone so tomorrow\'s practice is just one tap away!',
+    ko: '내일도 쉽게 접속해서 연습하려면 스마트폰에 앱을 추가해 보세요!',
+    es: '¡Añade la app a tu teléfono para practicar mañana con solo un toque!',
+    ja: '明日も気軽に練習できるよう、スマホにアプリを追加してみましょう！',
+  },
+  'install.installHomeBtn': {
+    en: 'Add App to Home Screen',
+    ko: '바탕화면에 앱 설치하기',
+    es: 'Añadir app a la pantalla de inicio',
+    ja: 'ホーム画面にアプリを追加',
+  },
+  'install.notTodayBtn': {
+    en: "Don't show today",
+    ko: '오늘 하루 보지 않기',
+    es: 'No mostrar hoy',
+    ja: '今日は表示しない',
+  },
+  'install.closeBtn': { en: 'Close', ko: '닫기', es: 'Cerrar', ja: '閉じる' },
+  'install.iosHint': {
+    en: 'On iPhone, tap the Share [↑] button in Safari, then choose "Add to Home Screen"!',
+    ko: '아이폰은 사파리 하단의 공유 [↑] 버튼을 누른 뒤 \'홈 화면에 추가\'를 선택해 주세요!',
+    es: 'En iPhone, toca el botón Compartir [↑] en Safari y luego elige "Añadir a pantalla de inicio"',
+    ja: 'iPhoneでは、Safari下部の共有[↑]ボタンをタップし、「ホーム画面に追加」を選んでください！',
+  },
 } as const
 
 interface LangCtx {
