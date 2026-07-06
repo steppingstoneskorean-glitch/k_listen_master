@@ -71,9 +71,9 @@ export default function Header() {
 
           {/* Bottom row: primary navigation, kept on a single horizontal row */}
           <nav className="flex flex-nowrap items-center gap-1.5 overflow-x-auto">
-            {/* 게임 */}
+            {/* 게임 (통합 게임 허브) */}
             <Link
-              to="/"
+              to="/games"
               className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
             >
               {t('nav.game')}

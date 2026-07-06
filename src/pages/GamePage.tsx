@@ -5,6 +5,9 @@ import { useLang } from '@/lib/i18n'
 import { recordError, recordCorrect } from '@/lib/errorHistory'
 import GuestPromptModal from '@/components/GuestPromptModal'
 import InstallSuccessModal from '@/components/InstallSuccessModal'
+import ChallengeShare from '@/components/ChallengeShare'
+import { Stars } from '@/components/kartist/ui'
+import { LEVEL_STARS } from '@/data/gameLevels'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
 
@@ -608,6 +611,10 @@ function ResultScreen({
               <p className="text-gray-500 text-sm mt-1">
                 {result === 'win' ? t('game.winSub') : t('game.eliminatedFmt').replace('{n}', String(highestLevel))}
               </p>
+              {/* 레벨 별점 — Beginner(Ear-Opening Room) = ★1 */}
+              <div className="mt-2 flex justify-center">
+                <Stars count={LEVEL_STARS.beginner} ariaLabel={t('kartist.starsAria').replace('{n}', String(LEVEL_STARS.beginner))} className="h-5 w-5" />
+              </div>
             </div>
             <div className="px-8 py-4 rounded-2xl bg-gray-900 border border-gray-800 text-center min-w-[200px]">
               <p className="text-gray-500 text-xs">{playerName}</p>
@@ -658,6 +665,9 @@ function ResultScreen({
               {t('guest.loginBtn')} →
             </button>
           )}
+
+          {/* 친구에게 도전장 보내기 */}
+          <ChallengeShare gameName={t('home.level1.title')} score={totalScore} gamePath="/game" />
 
           <div className="flex gap-3">
             <button

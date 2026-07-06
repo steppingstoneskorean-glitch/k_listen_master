@@ -497,6 +497,14 @@ const TRANSLATIONS = {
     ja: 'iPhoneでは、Safari下部の共有[↑]ボタンをタップし、「ホーム画面に追加」を選んでください！',
   },
 
+  // ── Real Sound Master (레벨 카드 섹션 타이틀) ──
+  'realsound.subtitle': {
+    en: 'Master natural Korean pronunciation step by step',
+    ko: '자연스러운 한국어 발음을 단계별로 마스터하세요',
+    es: 'Domina la pronunciación coreana natural paso a paso',
+    ja: '自然な韓国語の発音を段階的にマスターしよう',
+  },
+
   // ── K-Artist Live ──
   'kartist.subtitle': {
     en: 'Build your listening skills with real conversations from your favorite artists',
@@ -507,6 +515,47 @@ const TRANSLATIONS = {
   'kartist.filterArtist': { en: 'By Artist', ko: 'Artist별', es: 'Por artista', ja: 'アーティスト別' },
   'kartist.filterLevel': { en: 'By Level', ko: '레벨별', es: 'Por nivel', ja: 'レベル別' },
   'kartist.all': { en: 'All', ko: '전체', es: 'Todos', ja: 'すべて' },
+  'kartist.viewAll': { en: 'View All', ko: '모두 보기', es: 'Ver todo', ja: 'すべて見る' },
+  'kartist.showLess': { en: 'Show Less', ko: '접기', es: 'Ver menos', ja: '折りたたむ' },
+
+  // ── Game Hub (통합 게임 탭) ──
+  'hub.title': { en: 'Game Hub', ko: '게임 허브', es: 'Centro de juegos', ja: 'ゲームハブ' },
+  'hub.subtitle': {
+    en: 'K-Artist Live and Step & Step Quiz — all your listening challenges in one place',
+    ko: 'K-Artist Live 와 Step & Step 퀴즈, 모든 듣기 도전을 한곳에서',
+    es: 'K-Artist Live y Step & Step Quiz — todos tus retos de escucha en un solo lugar',
+    ja: 'K-Artist Live と Step & Step クイズ — すべてのリスニング挑戦をひとつに',
+  },
+  'hub.sortLabel': { en: 'Sort', ko: '정렬', es: 'Ordenar', ja: '並び替え' },
+  'hub.sortPopular': { en: 'Most Played', ko: '많이 도전한 순', es: 'Más jugados', ja: '挑戦が多い順' },
+  'hub.sortNewest': { en: 'Newest', ko: '최신순', es: 'Más recientes', ja: '新着順' },
+  'hub.dirAsc': { en: 'Ascending', ko: '오름차순', es: 'Ascendente', ja: '昇順' },
+  'hub.dirDesc': { en: 'Descending', ko: '내림차순', es: 'Descendente', ja: '降順' },
+  'hub.playsFmt': { en: '{n} plays', ko: '{n}회 도전', es: '{n} partidas', ja: '{n}回挑戦' },
+  'hub.stepQuiz': { en: 'Step & Step', ko: 'Step & Step', es: 'Step & Step', ja: 'Step & Step' },
+  'hub.empty': {
+    en: 'No games match this filter yet. Try another one!',
+    ko: '조건에 맞는 게임이 아직 없어요. 다른 필터를 선택해 보세요!',
+    es: 'No hay juegos con este filtro. ¡Prueba otro!',
+    ja: 'この条件に合うゲームはまだありません。他のフィルターを試してください！',
+  },
+
+  // ── Challenge Share (결과 페이지 도전장 공유) ──
+  'challenge.title': {
+    en: '📣 Send a challenge to a friend',
+    ko: '📣 친구에게 도전장 보내기',
+    es: '📣 Envía un reto a un amigo',
+    ja: '📣 友達に挑戦状を送る',
+  },
+  'challenge.message': {
+    en: "🎵 [Step Korean] Challenge received! I scored {score} points in the '{game}' game. Can you beat me? Try it now!",
+    ko: "🎵 [Step Korean] 도전장 도착! 내가 '{game}' 게임에서 총 {score}점을 받았어. 너도 나보다 잘할 수 있을까? 지금 도전해봐!",
+    es: "🎵 [Step Korean] ¡Reto recibido! Conseguí {score} puntos en el juego '{game}'. ¿Puedes superarme? ¡Inténtalo ahora!",
+    ja: "🎵 [Step Korean] 挑戦状が届いた！ '{game}' ゲームで合計{score}点を取ったよ。あなたは私に勝てるかな？今すぐ挑戦してみて！",
+  },
+  'challenge.copy': { en: '📋 Copy link', ko: '📋 링크 복사', es: '📋 Copiar enlace', ja: '📋 リンクをコピー' },
+  'challenge.copied': { en: '✔ Copied!', ko: '✔ 복사됨!', es: '✔ ¡Copiado!', ja: '✔ コピー済み！' },
+  'challenge.shareX': { en: 'Share on 𝕏', ko: '𝕏 로 공유', es: 'Compartir en 𝕏', ja: '𝕏 でシェア' },
   'kartist.tryQuiz': { en: 'Try the listening quiz', ko: '듣기 퀴즈 도전', es: 'Prueba el quiz de escucha', ja: 'リスニングクイズに挑戦' },
   'kartist.play': { en: 'Play →', ko: 'Play →', es: 'Jugar →', ja: 'プレイ →' },
   'kartist.comingSoon': { en: 'Coming Soon', ko: 'Coming Soon', es: 'Próximamente', ja: '近日公開' },

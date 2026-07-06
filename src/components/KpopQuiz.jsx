@@ -21,6 +21,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
+import { ARTISTS } from '@/data/kArtistLive';
+
+// 운영자 아티스트 태깅 옵션 ('__all__' 제외 — 필터 시스템과 동일 소스)
+const ARTIST_OPTIONS = ARTISTS.filter((a) => a !== '__all__');
 
 // ── 샘플 데이터: 멀티 문장 배열 (두 번째 문제는 해설 숨김 테스트용) ────────────
 const quizList = [
@@ -485,23 +489,23 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
       {/* ── 상단: 학습 기록 뱃지 + 진행 상황 ────────────────────────────── */}
       <header className="mb-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+        <div className="min-w-0 text-center sm:text-left">
+          <h1 className="text-balance break-keep text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
             {t('kpop.title')}
           </h1>
-          <p className="text-sm text-slate-500">{t('kpop.subtitle')}</p>
+          <p className="text-balance break-keep text-sm text-slate-500">{t('kpop.subtitle')}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-3 py-1.5 text-sm font-bold text-indigo-700 shadow-sm">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
+          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-indigo-100 px-3 py-1.5 text-sm font-bold text-indigo-700 shadow-sm">
             📄{' '}
             {t('kpop.progress')
               .replace('{i}', String(Math.min(index + 1, total)))
               .replace('{n}', String(total))}
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-3 py-1.5 text-sm font-bold text-orange-700 shadow-sm">
+          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-orange-100 px-3 py-1.5 text-sm font-bold text-orange-700 shadow-sm">
             🔥 {t('kpop.streak').replace('{n}', String(stats.streak))}
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1.5 text-sm font-bold text-emerald-700 shadow-sm">
+          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-emerald-100 px-3 py-1.5 text-sm font-bold text-emerald-700 shadow-sm">
             ⭐ {t('kpop.points').replace('{n}', String(stats.score))}
           </span>
         </div>
@@ -527,7 +531,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           {quiz.hasHardcodedSubs && playerReady && (
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-[18%] items-center justify-center bg-black/40 backdrop-blur-md"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-[22%] items-center justify-center bg-black/40 backdrop-blur-md"
             >
               <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-white/60 sm:text-sm">
                 <span>🔒</span>
@@ -849,10 +853,10 @@ function FinalResult({
       {/* 성적 요약 */}
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm">
         <p className="text-4xl">🎉</p>
-        <h2 className="mt-2 text-xl font-extrabold text-slate-900">
+        <h2 className="mt-2 text-balance break-keep text-xl font-extrabold text-slate-900">
           {t('kpop.doneTitle')}
         </h2>
-        <p className="mt-2 text-sm font-semibold text-slate-500">
+        <p className="mt-2 text-balance break-keep text-sm font-semibold text-slate-500">
           {t('kpop.doneSummary')
             .replace('{total}', String(total))
             .replace('{correct}', String(correctCount))
@@ -1066,6 +1070,8 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     blankWord: currentQuiz.blankWord,
     explanation: currentQuiz.explanation,
     hasHardcodedSubs: Boolean(currentQuiz.hasHardcodedSubs),
+    stars: Number(currentQuiz.stars) || 1, // 별점 레벨 1~5
+    artist: currentQuiz.artist || ARTIST_OPTIONS[0], // 아티스트 태그
   });
   const [copied, setCopied] = useState(false);
 
@@ -1096,6 +1102,8 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     blankWord: form.blankWord,
     explanation: form.explanation,
     hasHardcodedSubs: Boolean(form.hasHardcodedSubs),
+    stars: Number(form.stars) || 1,
+    artist: form.artist,
   });
 
   const json = JSON.stringify(buildData(), null, 2);
@@ -1189,6 +1197,47 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
                 value={form.explanation}
                 onChange={set('explanation')}
               />
+            </label>
+            <label className="text-xs font-semibold text-slate-500 sm:col-span-2">
+              아티스트 (By Artist) — Game Hub 필터 태그
+              <select
+                value={form.artist}
+                onChange={(e) => setForm((f) => ({ ...f, artist: e.target.value }))}
+                className={`mt-1 ${field}`}
+              >
+                {ARTIST_OPTIONS.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-xs font-semibold text-slate-500 sm:col-span-2">
+              별점 레벨 (stars) — Game Hub 난이도 표시 (1~5)
+              <div className="mt-1 flex items-center gap-3">
+                <select
+                  value={form.stars}
+                  onChange={(e) => setForm((f) => ({ ...f, stars: Number(e.target.value) }))}
+                  className={field}
+                >
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {'★'.repeat(n)} ({n})
+                    </option>
+                  ))}
+                </select>
+                {/* 선택한 별점 미리보기 */}
+                <span className="flex items-center gap-0.5" aria-label={`별점 ${form.stars}개`}>
+                  {Array.from({ length: Number(form.stars) || 1 }).map((_, i) => (
+                    <svg key={i} viewBox="0 0 24 24" className="h-4 w-4 text-yellow-400">
+                      <path
+                        d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.4 7.2 16.9l.9-5.4L4.2 7.7l5.4-.8L12 2Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  ))}
+                </span>
+              </div>
             </label>
             <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 sm:col-span-2">
               <input

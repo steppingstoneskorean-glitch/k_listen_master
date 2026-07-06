@@ -12,6 +12,7 @@ import MaterialsPage from '@/pages/MaterialsPage'
 import PrivacyPolicy from '@/pages/PrivacyPolicy'
 import NotFoundPage from '@/pages/NotFoundPage'
 import KpopQuiz from '@/components/KpopQuiz'
+import GameHubPage from '@/pages/GameHubPage'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="/errors" element={<ErrorHistoryPage />} />
               <Route path="/materials" element={<MaterialsPage />} />
+              <Route path="/games" element={<GameHubPage />} />
               <Route path="/kpop-quiz" element={<KpopQuiz />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFoundPage />} />

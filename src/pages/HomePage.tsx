@@ -4,6 +4,8 @@ import { useLang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import AuthModal from '@/components/AuthModal'
 import KArtistLive from '@/components/KArtistLive'
+import { Stars } from '@/components/kartist/ui'
+import { LEVEL_STARS } from '@/data/gameLevels'
 
 /* Scroll-triggered reveal: slides children up once they enter the viewport */
 function Reveal({ children, delay = 0, className = '' }: { children: ReactNode; delay?: number; className?: string }) {
@@ -70,6 +72,7 @@ export default function HomePage() {
       badge: 'bg-emerald-50 text-emerald-600 border-emerald-200',
       accent: 'hover:border-emerald-300 hover:shadow-emerald-500/10',
       rounds: t('home.level1.rounds'),
+      stars: LEVEL_STARS.beginner,
       to: '/game',
     },
     {
@@ -81,6 +84,7 @@ export default function HomePage() {
       badge: 'bg-blue-50 text-blue-600 border-blue-200',
       accent: 'hover:border-blue-300 hover:shadow-blue-500/10',
       rounds: t('home.level2.rounds'),
+      stars: LEVEL_STARS.intermediate,
       to: '/dictation?mode=intermediate',
     },
     {
@@ -92,6 +96,7 @@ export default function HomePage() {
       badge: 'bg-indigo-50 text-indigo-600 border-indigo-200',
       accent: 'hover:border-indigo-300 hover:shadow-indigo-500/10',
       rounds: t('home.level3.rounds'),
+      stars: LEVEL_STARS.advanced,
       to: '/dictation?mode=advanced',
     },
   ]
@@ -215,8 +220,16 @@ export default function HomePage() {
               <KArtistLive onPlay={handlePlay} className="" />
             </div>
 
+            {/* Real Sound Master — 레벨 카드 섹션 타이틀 (K-Artist Live 와 통일감) */}
+            <div className="animate-hero-fade-up mt-16 text-center" style={{ animationDelay: '260ms' }}>
+              <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl" translate="no">
+                🎯 Real Sound <span className="text-emerald-500">Master</span>
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-balance break-keep text-sm font-semibold text-slate-500">{t('realsound.subtitle')}</p>
+            </div>
+
             {/* Game selection cards */}
-            <div className="mt-12 grid w-full grid-cols-1 gap-5 md:grid-cols-3">
+            <div className="mt-8 grid w-full grid-cols-1 gap-5 md:grid-cols-3">
               {LEVELS.map((card, i) => (
                 <div
                   key={card.id}
@@ -228,13 +241,16 @@ export default function HomePage() {
                     onClick={() => handlePlay(card.to)}
                     className={`group flex h-full w-full flex-col rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-md shadow-slate-200/60 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl active:scale-[0.98] cursor-pointer ${card.accent}`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <span className="text-3xl transition-transform duration-300 group-hover:scale-110">{card.emoji}</span>
-                      <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${card.badge}`}>
+                      <span className={`shrink-0 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${card.badge}`}>
                         {card.label}
                       </span>
                     </div>
-                    <h3 className="mt-4 text-lg font-black text-slate-900">{card.title}</h3>
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                      <h3 className="break-keep text-lg font-black text-slate-900">{card.title}</h3>
+                      <Stars count={card.stars} ariaLabel={t('kartist.starsAria').replace('{n}', String(card.stars))} className="h-4 w-4 shrink-0" />
+                    </div>
                     <p className="mt-1.5 flex-1 text-xs leading-relaxed text-slate-500">{card.desc}</p>
                     <div className="mt-4 flex items-center justify-between text-xs">
                       <span className="text-slate-400">{card.rounds}</span>

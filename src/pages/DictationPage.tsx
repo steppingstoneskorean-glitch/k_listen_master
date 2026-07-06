@@ -16,6 +16,9 @@ import {
 } from '@/lib/leaderboard'
 import GuestPromptModal from '@/components/GuestPromptModal'
 import InstallSuccessModal from '@/components/InstallSuccessModal'
+import ChallengeShare from '@/components/ChallengeShare'
+import { Stars } from '@/components/kartist/ui'
+import { LEVEL_STARS } from '@/data/gameLevels'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
 
@@ -559,6 +562,14 @@ function ResultScreen({
             <p className="text-sm text-gray-500">
               {isAdv ? '🎙️ ADVANCED' : '🗣️ INTERMEDIATE'} · Level {gameLevel}
             </p>
+            {/* 레벨 별점 — Intermediate ★2 · Advanced ★4 */}
+            <div className="flex justify-center">
+              <Stars
+                count={isAdv ? LEVEL_STARS.advanced : LEVEL_STARS.intermediate}
+                ariaLabel={t('kartist.starsAria').replace('{n}', String(isAdv ? LEVEL_STARS.advanced : LEVEL_STARS.intermediate))}
+                className="h-5 w-5"
+              />
+            </div>
 
             <div className="inline-flex items-center gap-6 px-8 py-5 rounded-2xl bg-gray-900 border border-gray-800">
               <div className="text-center">
@@ -643,6 +654,13 @@ function ResultScreen({
               </div>
             </button>
           )}
+
+          {/* 친구에게 도전장 보내기 */}
+          <ChallengeShare
+            gameName={isAdv ? t('home.level3.title') : t('home.level2.title')}
+            score={totalScore}
+            gamePath={`/dictation?mode=${mode}`}
+          />
 
           {/* Action buttons */}
           <div className="flex gap-3">
