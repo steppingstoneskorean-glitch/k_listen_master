@@ -32,6 +32,7 @@ const quizList = [
     fullSentence: '말은 그렇게 했는데.. 혼자 자면 좋지',
     blankWord: '혼자 자면',
     explanation: '',
+    hasHardcodedSubs: true, // 영상에 박힌 한글 자막 → 하단 블라인드 오버레이 ON
   },
   {
     id: 'bts_02',
@@ -41,6 +42,7 @@ const quizList = [
     fullSentence: '재밌게 놀다 오자',
     blankWord: '재밌게',
     explanation: '',
+    hasHardcodedSubs: true,
   },
 ];
 
@@ -436,6 +438,21 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           {!playerReady && (
             <div className="absolute inset-0 flex items-center justify-center text-sm text-white/70">
               {t('kpop.loadingPlayer')}
+            </div>
+          )}
+          {/* 하드코딩 자막 블라인드: Frosted Glass 오버레이
+              - 비율(%) 기반 높이라 모바일에서도 하단 영역을 동일하게 가림
+              - pointer-events-none: 유튜브 기본 컨트롤 바 클릭을 방해하지 않음
+              - 움직임은 은은히 비치되 텍스트는 판독 불가 (bg-black/40 + backdrop-blur-md) */}
+          {quiz.hasHardcodedSubs && playerReady && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-[18%] items-center justify-center bg-black/40 backdrop-blur-md"
+            >
+              <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-white/60 sm:text-sm">
+                <span>🔒</span>
+                {t('kpop.listenCarefully')}
+              </p>
             </div>
           )}
         </div>
@@ -968,6 +985,7 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     fullSentence: currentQuiz.fullSentence,
     blankWord: currentQuiz.blankWord,
     explanation: currentQuiz.explanation,
+    hasHardcodedSubs: Boolean(currentQuiz.hasHardcodedSubs),
   });
   const [copied, setCopied] = useState(false);
 
@@ -997,6 +1015,7 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     fullSentence: form.fullSentence,
     blankWord: form.blankWord,
     explanation: form.explanation,
+    hasHardcodedSubs: Boolean(form.hasHardcodedSubs),
   });
 
   const json = JSON.stringify(buildData(), null, 2);
@@ -1090,6 +1109,17 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
                 value={form.explanation}
                 onChange={set('explanation')}
               />
+            </label>
+            <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 sm:col-span-2">
+              <input
+                type="checkbox"
+                checked={form.hasHardcodedSubs}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, hasHardcodedSubs: e.target.checked }))
+                }
+                className="h-4 w-4 rounded border-slate-300 accent-indigo-600"
+              />
+              영상에 박힌 자막 있음 (hasHardcodedSubs) — 체크 시 하단 블라인드 오버레이 표시
             </label>
           </div>
 
