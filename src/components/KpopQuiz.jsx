@@ -73,6 +73,56 @@ const quizList = [
   "blankWord": "청소도",
   "explanation": "Korean usually follows the **SOV (Subject–Object–Verb)** word order. However, in everyday conversation, the word order is often flexible. As long as the particles (은/는, 이/가, 을/를, etc.) are correct, speakers can move words around to emphasize different parts of the sentence or to sound more natural.\n\n*깍두기 is a special role often used in children's games when there is an odd number of players or when someone is much younger or less experienced. A ​깍두기 may switch between teams, help both sides, or play without affecting the final result. The exact role depends on the game, but the purpose is to let everyone join and have fun.",
   "hasHardcodedSubs": true
+},
+{
+  "id": "bts_06",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 889.5,
+  "endTime": 892.5,
+  "fullSentence": "이기는 사람이 하는 거야.",
+  "blankWord": "이기는",
+  "explanation": "Verb + -(으)ㄴ/는 사람이 하는 거야 = The person who (does something) is the one who does it.\nOften used to explain a rule or decide who will do something.\n\n지는 사람이 청소 하는 거야.\n이기는 사람이 치킨 먹는 거야. ",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "bts_07",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 1068,
+  "endTime": 1070,
+  "fullSentence": "자, 저희 먼저 자리 잡을게요.",
+  "blankWord": "잡을게요.",
+  "explanation": "Verb + -(으)ㄹ게요 = I'll...\nIt is used when the speaker makes a decision, promise, or offer at the moment of speaking, often in response to the listener.\n제가 할게요, 먼저 갈게요, 오늘부터 운동할게요...\n\n*자리를 잡다 = to find a seat, to take a seat ...",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "bts_08",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 1118,
+  "endTime": 1121,
+  "fullSentence": "진 형 어디 갔어요?   진 형, 밑에!",
+  "blankWord": "어디 갔어요",
+  "explanation": "In Korean, 에 is often omitted in everyday conversation when talking about destinations. Native speakers naturally say 어디 갔어요? instead of 어디에 갔어요? because the meaning is already clear from the context.",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "bts_09",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 1378,
+  "endTime": 1380,
+  "fullSentence": "이미 진 것 같은데!?!",
+  "blankWord": "같은",
+  "explanation": "Verb/Adjective + -(으)ㄴ/는 것 같다 = I think... / It seems like... / It looks like...\nUsed to express a guess, opinion, or impression.\nBTS는 멋있는 것 같아요...\n\nVerb/Adjective + -는데(요)\nSoftens the statement, provides background or context, and often invites the listener's response or implies that more is coming.\n맛있는데요? (It's good.. what do you think?)....\n",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "bts_10",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 1462,
+  "endTime": 1465,
+  "fullSentence": "야, 종료! 종료! 이건 우리가 이겼어",
+  "blankWord": "우리가 이겼어",
+  "explanation": "*이기다 win   이겼다 won\n  (지다  lost   졌다  lost)\n\n우리 팀이 이겼어요, 누가 이겼어요? 이번에는 우리가 졌어요...",
+  "hasHardcodedSubs": true
 }
 ];
 
