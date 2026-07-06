@@ -24,26 +24,56 @@ import { useLang } from '@/lib/i18n';
 
 // ── 샘플 데이터: 멀티 문장 배열 (두 번째 문제는 해설 숨김 테스트용) ────────────
 const quizList = [
+{
+  "id": "bts_01",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 78.5,
+  "endTime": 80,
+  "fullSentence": "야,야. 피자 같이 먹자",
+  "blankWord": "같이 먹자",
+  "explanation": "Verb+자 = Let's V\ncommonly used with friends or people you are close to.\n놀자, 먹자, 마시자, 만나자, 공부하자 ...",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "bts_02",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 290,
+  "endTime": 295,
+  "fullSentence": "나도 말은 그렇게 했는데.. 혼자 자면 좋지",
+  "blankWord": "혼자 자면",
+  "explanation": "",
+  "hasHardcodedSubs": true
+},
   {
-    id: 'bts_01',
-    videoId: 'wu6bA3zK_us',
-    startTime: 294,
-    endTime: 296,
-    fullSentence: '말은 그렇게 했는데.. 혼자 자면 좋지',
-    blankWord: '혼자 자면',
-    explanation: '',
-    hasHardcodedSubs: true, // 영상에 박힌 한글 자막 → 하단 블라인드 오버레이 ON
-  },
-  {
-    id: 'bts_02',
-    videoId: 'wu6bA3zK_us',
-    startTime: 430,
-    endTime: 433,
-    fullSentence: '재밌게 놀다 오자',
-    blankWord: '재밌게',
-    explanation: '',
-    hasHardcodedSubs: true,
-  },
+  "id": "bts_03",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 784,
+  "endTime": 787,
+  "fullSentence": "나는 제일 조용한 방, 내가 선택한 거야.",
+  "blankWord": "조용한 방",
+  "explanation": "The ㅎ sound is often very weak or disappears in natural speech when it is not at the beginning of a word. Instead of pronouncing ㅎ clearly, many native speakers produce little or no h sound.\n",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "bts_04",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 836.5,
+  "endTime": 840,
+  "fullSentence": "지민아, 같은 팀이 걸렸으면 좋겠다.  그럼요, 형님.",
+  "blankWord": "좋겠다",
+  "explanation": "Verb + -았/었으면 좋겠다 = I wish... / I hope... / It would be nice if...\n시험에 합격했으면 좋겠어요, 날씨가 좋았으면 좋겠....\n\n*같은 팀이 걸리다 be on the same team",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "bts_05",
+  "videoId": "wu6bA3zK_us",
+  "startTime": 859,
+  "endTime": 862,
+  "fullSentence": "자, 청소도 안 합니다, 깍두기는.",
+  "blankWord": "청소도",
+  "explanation": "Korean usually follows the **SOV (Subject–Object–Verb)** word order. However, in everyday conversation, the word order is often flexible. As long as the particles (은/는, 이/가, 을/를, etc.) are correct, speakers can move words around to emphasize different parts of the sentence or to sound more natural.\n\n*깍두기 is a special role often used in children's games when there is an odd number of players or when someone is much younger or less experienced. A ​깍두기 may switch between teams, help both sides, or play without affecting the final result. The exact role depends on the game, but the purpose is to let everyone join and have fun.",
+  "hasHardcodedSubs": true
+}
 ];
 
 const STORAGE_KEY = 'kpop_quiz_stats_v1';
