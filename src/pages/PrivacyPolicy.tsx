@@ -57,7 +57,7 @@ export default function PrivacyPolicy() {
           <li>수집된 개인정보는 원칙적으로 본 서비스가 지속되는 동안(서비스 종료 시까지) 보관 및 이용됩니다.</li>
           <li>
             단, 이용자가 관리자 이메일(
-            <span className="text-gray-500">[steppingstoneskorean@gmail.com]</span>
+            <span className="text-gray-500">steppingstoneskorean@gmail.com</span>
             )을 통해 개인정보 삭제를 요청하거나, 소셜 계정 연동을 해제하는 경우 해당 정보를 지체 없이 파기합니다.
           </li>
         </ul>
