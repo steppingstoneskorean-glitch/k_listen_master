@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import AuthModal from '@/components/AuthModal'
+import KArtistLive from '@/components/KArtistLive'
 
 /* Scroll-triggered reveal: slides children up once they enter the viewport */
 function Reveal({ children, delay = 0, className = '' }: { children: ReactNode; delay?: number; className?: string }) {
@@ -208,6 +209,11 @@ export default function HomePage() {
               </svg>
               {t('landing.badge')}
             </p>
+
+            {/* K-Artist Live — 초·중·고급 레벨 카드보다 상단 배치 */}
+            <div className="animate-hero-fade-up mt-12 w-full" style={{ animationDelay: '220ms' }}>
+              <KArtistLive onPlay={handlePlay} className="" />
+            </div>
 
             {/* Game selection cards */}
             <div className="mt-12 grid w-full grid-cols-1 gap-5 md:grid-cols-3">
