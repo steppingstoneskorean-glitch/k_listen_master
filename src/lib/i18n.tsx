@@ -614,6 +614,12 @@ const TRANSLATIONS = {
     ja: '全文復習リストはログインユーザーのみ閲覧できます。',
   },
   'kpop.loginCta': { en: 'Log in to review', ko: '로그인하고 복습하기', es: 'Inicia sesión para repasar', ja: 'ログインして復習する' },
+  'kpop.listenCarefully': {
+    en: '🎧 Listen carefully!',
+    ko: '🎧 자막 없이 귀로만 들어보세요!',
+    es: '🎧 ¡Escucha con atención!',
+    ja: '🎧 耳を澄まして聞いてみましょう！',
+  },
 } as const
 
 interface LangCtx {
