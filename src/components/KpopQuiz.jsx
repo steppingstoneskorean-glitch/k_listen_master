@@ -3,7 +3,7 @@
 // K-Listen Master — K-pop 영상 기반 외국인 대상 한국어 듣기 퀴즈 모듈
 //
 // ⚠️ 이 파일은 독립적인 컴포넌트입니다. 기존 파일은 import(읽기)만 하고 수정하지 않습니다.
-//    라우팅: /kpop-quiz (App.tsx 에 연결됨)
+//    라우팅: /kpop-quiz/:videoId (App.tsx 에 연결됨) — videoId별로 퀴즈 필터링
 //
 // 포함 기능
 //   1) 멀티 문장 배열(quizList) 순차 진행 + 유튜브 구간 반복 플레이어 (useRef)
@@ -19,9 +19,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
-import { ARTISTS } from '@/data/kArtistLive';
+import { ARTISTS, LIVE_VIDEOS } from '@/data/kArtistLive';
 
 // 운영자 아티스트 태깅 옵션 ('__all__' 제외 — 필터 시스템과 동일 소스)
 const ARTIST_OPTIONS = ARTISTS.filter((a) => a !== '__all__');
@@ -127,6 +128,26 @@ const quizList = [
   "blankWord": "우리가 이겼어",
   "explanation": "*이기다 win   이겼다 won\n  (지다  lost   졌다  lost)\n\n우리 팀이 이겼어요, 누가 이겼어요? 이번에는 우리가 졌어요...",
   "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_01",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 12,
+  "endTime": 13,
+  "fullSentence": "옆에 있는 아미 분들과 같이",
+  "blankWord": "옆에 있는",
+  "explanation": "있는 = that is / which is / located somewhere.\n\n옆에 있는 친구, 집에 있는 강아지..",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_02",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 13,
+  "endTime": 15,
+  "fullSentence": "같이 '슈퍼 참치'하면서 놀면 너무 재미있을 것 같습니다.",
+  "blankWord": "재미있을 것",
+  "explanation": "Verb + -(으)ㄹ 것 같다 = I think... / It seems like... / It looks like... / Probably... \n\n 내일은 날씨가 좋을 것 같아요.",
+  "hasHardcodedSubs": true
 }
 ];
 
@@ -192,6 +213,9 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // UI 텍스트는 중앙 번역 시스템(kpop.* 키) 사용 — 딕테이션 원문은 한국어 고정
   const { t } = useLang();
 
+  // 라우트 파라미터에서 videoId 추출
+  const { videoId: routeVideoId } = useParams();
+
   // 로그인 상태: 외부 주입(prop) 우선, 없으면 Firebase Auth 컨텍스트 참조
   const authCtx = useAuth();
   const currentUser = userProp !== undefined ? userProp : authCtx && authCtx.user;
@@ -202,7 +226,11 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const isAdmin = Boolean(currentUser && currentUser.email === ADMIN_EMAIL);
 
   // ── 멀티 퀴즈 진행 state ───────────────────────────────────────────────────
-  const [list, setList] = useState(quizList);
+  // routeVideoId에 맞는 퀴즈만 필터링
+  const filteredQuizList = routeVideoId ? quizList.filter(q => q.videoId === routeVideoId) : quizList;
+  // 현재 영상의 정보 (난이도 등) 가져오기
+  const currentVideo = LIVE_VIDEOS.find(v => v.videoId === routeVideoId);
+  const [list, setList] = useState(filteredQuizList);
   const [index, setIndex] = useState(0);
   const [results, setResults] = useState([]); // index별 'correct'|'partial'|'wrong'
   const [phase, setPhase] = useState('quiz'); // 'quiz' | 'done'
@@ -1070,8 +1098,6 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     blankWord: currentQuiz.blankWord,
     explanation: currentQuiz.explanation,
     hasHardcodedSubs: Boolean(currentQuiz.hasHardcodedSubs),
-    stars: Number(currentQuiz.stars) || 1, // 별점 레벨 1~5
-    artist: currentQuiz.artist || ARTIST_OPTIONS[0], // 아티스트 태그
   });
   const [copied, setCopied] = useState(false);
 
@@ -1102,8 +1128,6 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     blankWord: form.blankWord,
     explanation: form.explanation,
     hasHardcodedSubs: Boolean(form.hasHardcodedSubs),
-    stars: Number(form.stars) || 1,
-    artist: form.artist,
   });
 
   const json = JSON.stringify(buildData(), null, 2);
@@ -1197,47 +1221,6 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
                 value={form.explanation}
                 onChange={set('explanation')}
               />
-            </label>
-            <label className="text-xs font-semibold text-slate-500 sm:col-span-2">
-              아티스트 (By Artist) — Game Hub 필터 태그
-              <select
-                value={form.artist}
-                onChange={(e) => setForm((f) => ({ ...f, artist: e.target.value }))}
-                className={`mt-1 ${field}`}
-              >
-                {ARTIST_OPTIONS.map((a) => (
-                  <option key={a} value={a}>
-                    {a}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-xs font-semibold text-slate-500 sm:col-span-2">
-              별점 레벨 (stars) — Game Hub 난이도 표시 (1~5)
-              <div className="mt-1 flex items-center gap-3">
-                <select
-                  value={form.stars}
-                  onChange={(e) => setForm((f) => ({ ...f, stars: Number(e.target.value) }))}
-                  className={field}
-                >
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>
-                      {'★'.repeat(n)} ({n})
-                    </option>
-                  ))}
-                </select>
-                {/* 선택한 별점 미리보기 */}
-                <span className="flex items-center gap-0.5" aria-label={`별점 ${form.stars}개`}>
-                  {Array.from({ length: Number(form.stars) || 1 }).map((_, i) => (
-                    <svg key={i} viewBox="0 0 24 24" className="h-4 w-4 text-yellow-400">
-                      <path
-                        d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.4 7.2 16.9l.9-5.4L4.2 7.7l5.4-.8L12 2Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  ))}
-                </span>
-              </div>
             </label>
             <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 sm:col-span-2">
               <input

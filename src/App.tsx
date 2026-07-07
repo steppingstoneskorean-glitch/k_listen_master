@@ -34,7 +34,7 @@ export default function App() {
                 <Route path="/errors" element={<ErrorHistoryPage />} />
                 <Route path="/materials" element={<MaterialsPage />} />
                 <Route path="/games" element={<GameHubPage />} />
-                <Route path="/kpop-quiz" element={<KpopQuiz />} />
+                <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
