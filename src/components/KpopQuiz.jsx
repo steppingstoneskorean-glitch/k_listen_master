@@ -132,21 +132,81 @@ const quizList = [
 {
   "id": "runseokjin_01",
   "videoId": "ADw_zMarJdk",
-  "startTime": 12,
-  "endTime": 13,
+  "startTime": 13.5,
+  "endTime": 19,
   "fullSentence": "옆에 있는 아미 분들과 같이",
-  "blankWord": "옆에 있는",
+  "blankWord": "있는",
   "explanation": "있는 = that is / which is / located somewhere.\n\n옆에 있는 친구, 집에 있는 강아지..",
   "hasHardcodedSubs": true
 },
 {
   "id": "runseokjin_02",
   "videoId": "ADw_zMarJdk",
-  "startTime": 13,
-  "endTime": 15,
-  "fullSentence": "같이 '슈퍼 참치'하면서 놀면 너무 재미있을 것 같습니다.",
-  "blankWord": "재미있을 것",
+  "startTime": 16.7,
+  "endTime": 19,
+  "fullSentence": "너무 재미있을 것 같습니다.",
+  "blankWord": "재미있을 ㄱ",
   "explanation": "Verb + -(으)ㄹ 것 같다 = I think... / It seems like... / It looks like... / Probably... \n\n 내일은 날씨가 좋을 것 같아요.",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_03",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 36,
+  "endTime": 38,
+  "fullSentence": "팝콘 먹는 게 제일 맛있죠.",
+  "blankWord": "먹는",
+  "explanation": "먹는[멍는]\n\n Verb + -는 게 / -는 것이 = the act of... / ...ing\n\n This pattern is often used when talking about an action in a general way. In everyday conversation, -는 게 is much more common than -는 것이.\n\n BTS 영상을 보는 게 좋아요. I like watching BTS videos.",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_04",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 38,
+  "endTime": 42,
+  "fullSentence": "저도 가끔 (그..) 영화 다 보고 나서 인증 샷 같은 거 찍거든요",
+  "blankWord": "보고 나서",
+  "explanation": "Verb + -고 나서 = after doing...\n\n is expression means that one action happens after another action is completed.\n\n 밥을 먹고 나서 공부했어요. I studied after eating.",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_05",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 55,
+  "endTime": 59,
+  "fullSentence": "열심히 한번 달려 보도록 하겠습니다.",
+  "blankWord": "하겠습니다",
+  "explanation": "Verb + -도록 하겠습니다 = I'll make sure to... / I'll do my best to...\nA polite way to express the speaker's intention or determination to do something.\n\n열심히 공부하도록 하겠습니다. I'll do my best to study hard.\n더 조심하도록 하겠습니다. I'll make sure to be more careful.",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_06",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 65,
+  "endTime": 67,
+  "fullSentence": " 우리 아미 여러분들하고 있으면 ",
+  "blankWord": "있으면",
+  "explanation": "Verb/Adjective + -(으)면 = if... / when...\nThis expression is used to talk about a condition or situation. It means that one thing will happen if or when another thing happens.\n\n시간이 있으면 만나요.  Let's meet if you have time.\n비가 오면 안 갈 거예요.  If it rains, I won't go.",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_07",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 67.5,
+  "endTime": 70,
+  "fullSentence": "마음이 편안해지고 따뜻해지는 거 같아요. (것 같아요.)",
+  "blankWord": "따뜻해지는",
+  "explanation": "Verb + -는 것 같아요 = I think... / It seems like... / It looks like...\nThis expression is used to express a guess, opinion, or impression about a present or ongoing action.\n\n비 오는 것 같아요. → I think it's raining.\n많이 바쁜 것 같아요. → It seems like they're very busy.",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "runseokjin_08",
+  "videoId": "ADw_zMarJdk",
+  "startTime": 73,
+  "endTime": 76,
+  "fullSentence": " 감사합니다 앞으로도 잘 부탁드리겠습니다.",
+  "blankWord": "부탁드리겠습니다.",
+  "explanation": "앞으로도 = from now on, going forward, in the future, or still (in the future)\n\n잘 부탁드리겠습니다 = I look forward to your support. / Thank you in advance. / Please take good care of me.",
   "hasHardcodedSubs": true
 }
 ];
