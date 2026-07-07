@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import logoImg from '../../../assets/images/logo.jpg'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
+import { useGamification } from '@/lib/gamification'
 
 export default function Header() {
   const { t } = useLang()
   const { user, logout } = useAuth()
+  const { progress } = useGamification()
   const navigate = useNavigate()
   const [showComingSoon, setShowComingSoon] = useState(false)
 
@@ -48,6 +50,12 @@ export default function Header() {
               {/* Auth */}
               {user ? (
                 <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-600 text-xs font-bold whitespace-nowrap">
+                    🔥 {t('gamification.streakFmt').replace('{n}', String(progress.currentStreak))}
+                  </span>
+                  <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-bold whitespace-nowrap">
+                    🎬 {t('gamification.completedFmt').replace('{n}', String(progress.completedVideosToday))}
+                  </span>
                   <span className="text-xs text-slate-400 hidden sm:block truncate max-w-[100px]">
                     {user.displayName || user.email}
                   </span>

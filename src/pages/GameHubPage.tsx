@@ -14,6 +14,7 @@ import AuthModal from '@/components/AuthModal'
 import { LIVE_VIDEOS, pickText, STAR_LEVELS, type StarFilter } from '@/data/kArtistLive'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { VideoCard, FilterDropdown, Stars } from '@/components/kartist/ui'
+import wordGuessImg from '../../assets/images/단어 맞히기.png'
 
 // ── 통합 아이템 모델 ────────────────────────────────────────────────────────
 interface HubItem {
@@ -25,6 +26,7 @@ interface HubItem {
   url: string // 빈 문자열이면 Coming Soon
   videoId?: string
   emoji?: string // 퀴즈 카드용 (썸네일 대체)
+  imageSrc?: string // 퀴즈 카드용 썸네일 이미지
   plays: number // 인기순
   addedAt: number // 최신순 (클수록 최신)
 }
@@ -44,12 +46,13 @@ const STEP_QUIZZES: {
   titleKey: 'home.level1.title' | 'home.level2.title' | 'home.level3.title'
   descKey: 'home.level1.desc' | 'home.level2.desc' | 'home.level3.desc'
   emoji: string
+  imageSrc?: string
   stars: number
   url: string
   plays: number
   addedAt: number
 }[] = [
-  { key: 'q1', titleKey: 'home.level1.title', descKey: 'home.level1.desc', emoji: '🎯', stars: LEVEL_STARS.beginner, url: '/game', plays: 2100, addedAt: 9 },
+  { key: 'q1', titleKey: 'home.level1.title', descKey: 'home.level1.desc', emoji: '🎯', imageSrc: wordGuessImg, stars: LEVEL_STARS.beginner, url: '/game', plays: 2100, addedAt: 9 },
   { key: 'q2', titleKey: 'home.level2.title', descKey: 'home.level2.desc', emoji: '🗣️', stars: LEVEL_STARS.intermediate, url: '/dictation?mode=intermediate', plays: 1450, addedAt: 8 },
   { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', stars: LEVEL_STARS.advanced, url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
 ]
@@ -75,6 +78,7 @@ function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang): HubItem[] {
     stars: q.stars,
     url: q.url,
     emoji: q.emoji,
+    imageSrc: q.imageSrc,
     plays: q.plays,
     addedAt: q.addedAt,
   }))
@@ -198,6 +202,7 @@ export default function GameHubPage() {
                     stars={it.stars}
                     videoId={it.videoId}
                     emoji={it.emoji}
+                    imageSrc={it.imageSrc}
                     playable={Boolean(it.url)}
                     onPlay={() => handlePlay(it.url)}
                   />

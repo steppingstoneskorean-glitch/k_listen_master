@@ -7,5 +7,5 @@ export type LevelKey = 'beginner' | 'intermediate' | 'advanced'
 export const LEVEL_STARS: Record<LevelKey, number> = {
   beginner: 1,
   intermediate: 2,
-  advanced: 4,
+  advanced: 3,
 }

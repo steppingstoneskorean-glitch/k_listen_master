@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { LangProvider } from '@/lib/i18n'
 import { AuthProvider } from '@/lib/auth'
+import { GamificationProvider } from '@/lib/gamification'
 import { PwaInstallProvider } from '@/lib/pwaInstall'
 import Layout from '@/components/layout/Layout'
 import StartPage from '@/pages/StartPage'
@@ -18,29 +19,31 @@ export default function App() {
   return (
     <LangProvider>
       <AuthProvider>
-        <PwaInstallProvider>
-          <Routes>
-            {/* Full-screen pages (no header/footer) */}
-            <Route path="/login" element={<StartPage />} />
-            <Route path="/game" element={<GamePage />} />
-            <Route path="/dictation" element={<DictationPage />} />
+        <GamificationProvider>
+          <PwaInstallProvider>
+            <Routes>
+              {/* Full-screen pages (no header/footer) */}
+              <Route path="/login" element={<StartPage />} />
+              <Route path="/game" element={<GamePage />} />
+              <Route path="/dictation" element={<DictationPage />} />
 
-            {/* Layout-wrapped pages */}
-            <Route element={<Layout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/home" element={<Navigate to="/" replace />} />
-              <Route path="/errors" element={<ErrorHistoryPage />} />
-              <Route path="/materials" element={<MaterialsPage />} />
-              <Route path="/games" element={<GameHubPage />} />
-              <Route path="/kpop-quiz" element={<KpopQuiz />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Route>
+              {/* Layout-wrapped pages */}
+              <Route element={<Layout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/home" element={<Navigate to="/" replace />} />
+                <Route path="/errors" element={<ErrorHistoryPage />} />
+                <Route path="/materials" element={<MaterialsPage />} />
+                <Route path="/games" element={<GameHubPage />} />
+                <Route path="/kpop-quiz" element={<KpopQuiz />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
 
-            {/* Legacy redirects */}
-            <Route path="/index" element={<Navigate to="/" replace />} />
-          </Routes>
-        </PwaInstallProvider>
+              {/* Legacy redirects */}
+              <Route path="/index" element={<Navigate to="/" replace />} />
+            </Routes>
+          </PwaInstallProvider>
+        </GamificationProvider>
       </AuthProvider>
     </LangProvider>
   )

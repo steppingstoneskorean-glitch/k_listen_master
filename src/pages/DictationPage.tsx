@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
+import { useGamification } from '@/lib/gamification'
 import {
   INTERMEDIATE_SENTENCES,
   ADVANCED_SENTENCES,
@@ -687,6 +688,7 @@ export default function DictationPage() {
   const [params] = useSearchParams()
   const mode = params.get('mode') === 'advanced' ? 'advanced' : 'intermediate'
   const { user, isGuest } = useAuth()
+  const { markVideoCompleted } = useGamification()
   const playerName = user?.displayName || user?.email?.split('@')[0] || 'Guest'
 
   const [screen,       setScreen]       = useState<'level-select' | 'game' | 'result'>('level-select')
@@ -726,6 +728,7 @@ export default function DictationPage() {
       })
       const lb = await getDictationLeaderboard(collectionName)
       setLeaderboard(lb)
+      markVideoCompleted()
     }
 
     setScreen('result')

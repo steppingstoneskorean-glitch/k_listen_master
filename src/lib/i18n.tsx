@@ -116,7 +116,7 @@ const TRANSLATIONS = {
     ja: '聞き取りに苦労している初級者でも、発音の壁に阻まれた上級者でも — Step Koreanで練習を始め、耳を開いて発音を磨きましょう。',
   },
   'home.level1.label': { en: 'BEGINNER', ko: '초급', es: 'PRINCIPIANTE', ja: '初級' },
-  'home.level1.title': { en: 'Ear-Opening Room', ko: '듣기 게임', es: 'Sala Auditiva', ja: '耳開きルーム' },
+  'home.level1.title': { en: 'Guess the Word', ko: '단어 맞히기', es: 'Adivina la palabra', ja: '単語当て' },
   'home.level1.desc': {
     en: '불 vs 뿔, 살 vs 쌀 — catch subtle phonetic differences through card-tap drills.',
     ko: '불 vs 뿔, 살 vs 쌀 — 카드 탭 훈련으로 미묘한 발음 차이를 잡아보세요.',
@@ -448,6 +448,10 @@ const TRANSLATIONS = {
     es: '(Conversación, Gramática, Pronunciación, TOPIK)',
     ja: '(スピーキング、文法、発音、TOPIK)',
   },
+
+  // ── Gamification (header streak / daily progress badges) ──
+  'gamification.streakFmt': { en: '{n} Day Streak', ko: '{n}일 연속', es: 'Racha de {n} días', ja: '{n}日連続' },
+  'gamification.completedFmt': { en: '{n} Completed', ko: '{n}개 완료', es: '{n} completados', ja: '{n}件完了' },
 
   // ── Common ──
   'common.ok': { en: 'OK', ko: '확인', es: 'Aceptar', ja: 'OK' },

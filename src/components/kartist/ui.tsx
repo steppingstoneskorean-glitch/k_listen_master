@@ -107,6 +107,7 @@ export function VideoCard({
   stars,
   videoId,
   emoji,
+  imageSrc,
   playable,
   onPlay,
 }: {
@@ -116,6 +117,7 @@ export function VideoCard({
   stars: number
   videoId?: string
   emoji?: string
+  imageSrc?: string
   playable: boolean
   onPlay?: () => void
 }) {
@@ -138,6 +140,13 @@ export function VideoCard({
         {videoId ? (
           <img
             src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+            alt={title}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : imageSrc ? (
+          <img
+            src={imageSrc}
             alt={title}
             loading="lazy"
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
