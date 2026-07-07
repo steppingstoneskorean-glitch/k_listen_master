@@ -15,6 +15,8 @@ import { LIVE_VIDEOS, pickText, STAR_LEVELS, type StarFilter } from '@/data/kArt
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { VideoCard, FilterDropdown, Stars } from '@/components/kartist/ui'
 import wordGuessImg from '../../assets/images/단어 맞히기.png'
+import intermediateGameImg from '../../assets/images/Intermediate game.png'
+import advancedGameImg from '../../assets/images/Advanced game.png'
 
 // ── 통합 아이템 모델 ────────────────────────────────────────────────────────
 interface HubItem {
@@ -53,8 +55,8 @@ const STEP_QUIZZES: {
   addedAt: number
 }[] = [
   { key: 'q1', titleKey: 'home.level1.title', descKey: 'home.level1.desc', emoji: '🎯', imageSrc: wordGuessImg, stars: LEVEL_STARS.beginner, url: '/game', plays: 2100, addedAt: 9 },
-  { key: 'q2', titleKey: 'home.level2.title', descKey: 'home.level2.desc', emoji: '🗣️', stars: LEVEL_STARS.intermediate, url: '/dictation?mode=intermediate', plays: 1450, addedAt: 8 },
-  { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', stars: LEVEL_STARS.advanced, url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
+  { key: 'q2', titleKey: 'home.level2.title', descKey: 'home.level2.desc', emoji: '🗣️', imageSrc: intermediateGameImg, stars: LEVEL_STARS.intermediate, url: '/dictation?mode=intermediate', plays: 1450, addedAt: 8 },
+  { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', imageSrc: advancedGameImg, stars: LEVEL_STARS.advanced, url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
 ]
 
 function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang): HubItem[] {
