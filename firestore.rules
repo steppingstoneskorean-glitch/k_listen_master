@@ -1,9 +1,16 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // K-Artist Live 퀴즈: 누구나 읽기(published 노출), 쓰기는 관리자만
+    match /kartistQuizzes/{videoId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.token.email == 'steppingstoneskorean@gmail.com';
+    }
     match /{leaderboardCollection}/{document} {
       allow read: if true;
-      allow create: if request.auth != null;
+      // kartistQuizzes 는 위의 관리자 전용 규칙만 적용 (일반 유저 create 차단)
+      allow create: if request.auth != null && leaderboardCollection != 'kartistQuizzes';
       allow update, delete: if false;
     }
     match /users/{userId} {

@@ -23,6 +23,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
 import { ARTISTS, LIVE_VIDEOS } from '@/data/kArtistLive';
+import { loadPublishedQuizzes } from '@/lib/quizStore';
 
 // 운영자 아티스트 태깅 옵션 ('__all__' 제외 — 필터 시스템과 동일 소스)
 const ARTIST_OPTIONS = ARTISTS.filter((a) => a !== '__all__');
@@ -286,7 +287,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const isAdmin = Boolean(currentUser && currentUser.email === ADMIN_EMAIL);
 
   // ── 멀티 퀴즈 진행 state ───────────────────────────────────────────────────
-  // routeVideoId에 맞는 퀴즈만 필터링
+  // routeVideoId에 맞는 퀴즈만 필터링 (하드코딩 fallback)
   const filteredQuizList = routeVideoId ? quizList.filter(q => q.videoId === routeVideoId) : quizList;
   // 현재 영상의 정보 (난이도 등) 가져오기
   const currentVideo = LIVE_VIDEOS.find(v => v.videoId === routeVideoId);
@@ -295,6 +296,22 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const [results, setResults] = useState([]); // index별 'correct'|'partial'|'wrong'
   const [phase, setPhase] = useState('quiz'); // 'quiz' | 'done'
   const quiz = list[index];
+
+  // Firestore 에 배포(published)된 퀴즈가 있으면 하드코딩 목록보다 우선 사용
+  useEffect(() => {
+    if (!routeVideoId) return;
+    let cancelled = false;
+    loadPublishedQuizzes(routeVideoId)
+      .then((published) => {
+        if (cancelled || !published || published.length === 0) return;
+        setList(published);
+        setIndex(0);
+        setResults([]);
+        setPhase('quiz');
+      })
+      .catch(() => { /* 오프라인/규칙 오류 시 하드코딩 fallback 유지 */ });
+    return () => { cancelled = true; };
+  }, [routeVideoId]);
 
   // ── 플레이어 관련 refs/state ───────────────────────────────────────────────
   const playerHostRef = useRef(null);
@@ -329,6 +346,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   }, [isLooping]);
 
   useEffect(() => {
+    if (!quiz) return; // 배포 퀴즈 로딩 전(하드코딩 없음) 크래시 방지
     let cancelled = false;
 
     loadYouTubeApi().then((YT) => {
@@ -365,11 +383,11 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     };
     // videoId 가 바뀌면(다른 영상의 퀴즈) 플레이어 재생성
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quiz.videoId]);
+  }, [quiz?.videoId]);
 
   // 구간 감시: endTime 도달 시 startTime 으로 되감기 (초정밀 반복)
   useEffect(() => {
-    if (!playerReady) return;
+    if (!playerReady || !quiz) return;
     if (loopTimerRef.current) clearInterval(loopTimerRef.current);
 
     loopTimerRef.current = setInterval(() => {
@@ -388,7 +406,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     return () => {
       if (loopTimerRef.current) clearInterval(loopTimerRef.current);
     };
-  }, [playerReady, quiz.startTime, quiz.endTime]);
+  }, [playerReady, quiz?.startTime, quiz?.endTime]);
 
   // 배속 유지: 플레이어 준비/재생성 시에도 현재 배속 적용
   useEffect(() => {
@@ -399,10 +417,10 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   const replaySegment = useCallback(() => {
     const p = playerRef.current;
-    if (!p) return;
+    if (!p || !quiz) return;
     p.seekTo(quiz.startTime, true);
     p.playVideo();
-  }, [quiz.startTime]);
+  }, [quiz?.startTime]);
 
   // ─────────────────────────────────────────────────────────────────────────
   // 2) 미세 속도 조절
@@ -448,6 +466,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // 3) Cloze 채점: 정답(O) / 세모(🔺 띄어쓰기만 오류) / 오답(X)
   // ─────────────────────────────────────────────────────────────────────────
   const checkAnswer = useCallback(() => {
+    if (!quiz) return;
     const raw = answer.trim();
     const target = quiz.blankWord.trim();
     // 모든 공백 제거 후 비교 → 글자는 같은데 띄어쓰기만 다른 경우 감지
@@ -473,7 +492,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     });
     // 제출 후 '발음 포인트 복습' 창 오픈 (다음 문장으로 넘어가는 관문)
     setShowReview(true);
-  }, [answer, quiz.blankWord, recordStudy, index]);
+  }, [answer, quiz?.blankWord, recordStudy, index]);
 
   const resetAttempt = useCallback(() => {
     setAnswer('');
@@ -484,7 +503,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // 퀴즈가 바뀌면(다음 문장/운영자 미리보기) 시도 상태 초기화
   useEffect(() => {
     resetAttempt();
-  }, [quiz.id, resetAttempt]);
+  }, [quiz?.id, resetAttempt]);
 
   // ─────────────────────────────────────────────────────────────────────────
   // 4) 문장 전환 / 최종 완료 흐름 제어
@@ -511,7 +530,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
         p.playVideo();
       }
     }
-  }, [isLast, list, index, quiz.videoId]);
+  }, [isLast, list, index, quiz?.videoId]);
 
   const restartAll = useCallback(() => {
     setIndex(0);
@@ -539,15 +558,34 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   // ─────────────────────────────────────────────────────────────────────────
   // 7) 성적 기반 바이럴 공유
+  //    · Wordle 방식: 정답을 스포일하지 않는 문항별 이모지 그리드 (⭕🔺❌)
+  //    · Duolingo 방식: 스트릭(🔥)을 카드에 노출해 공유 동기 강화
   // ─────────────────────────────────────────────────────────────────────────
   const total = list.length;
   const correctCount = results.filter((r) => r === 'correct').length;
   const percent = total ? Math.round((correctCount / total) * 100) : 0;
-  const shareText = t('kpop.shareText')
-    .replace('{total}', String(total))
-    .replace('{correct}', String(correctCount))
-    .replace('{percent}', String(percent))
-    .replace('{url}', SITE_URL);
+  const artistName = (currentVideo && currentVideo.artist) || 'K-pop';
+  // 5문항씩 줄바꿈 — 트윗/카톡에서 그리드 모양 유지
+  const emojiGrid = Array.from({ length: Math.ceil(results.length / 5) }, (_, r) =>
+    results.slice(r * 5, r * 5 + 5).map((v) => STATUS_ICON[v] || '⬜').join(''),
+  ).join('\n');
+  const shareText =
+    t('kpop.shareText')
+      .replace('{artist}', artistName)
+      .replace('{total}', String(total))
+      .replace('{correct}', String(correctCount))
+      .replace('{percent}', String(percent))
+      .replace('{url}', SITE_URL) + (emojiGrid ? `\n\n${emojiGrid}` : '');
+
+  // 아직 퀴즈가 없음: 배포 퀴즈 로딩 중이거나 미배포 영상 (하드코딩 fallback 도 없음)
+  if (!quiz) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-24 text-center text-slate-500">
+        <p className="text-4xl">🎬</p>
+        <p className="mt-3 text-sm font-semibold">{t('kartist.comingSoonSub')}</p>
+      </div>
+    );
+  }
 
   // fullSentence 를 blankWord 기준으로 분해 (prefix / suffix)
   const blankIdx = quiz.fullSentence.indexOf(quiz.blankWord);
@@ -762,6 +800,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           percent={percent}
           isLoggedIn={isLoggedIn}
           shareText={shareText}
+          artist={artistName}
+          streak={stats.streak}
           liftBtn={liftBtn}
           onRestart={restartAll}
         />
@@ -906,6 +946,101 @@ function ReviewModal({ status, quiz, answer, isLast, liftBtn, onReplay, onNext, 
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 결과 포토카드 이미지 생성 (1080×1350 세로 카드 — K-pop 포토카드 문화 반영)
+//   · Wordle: 스포일러 없는 이모지 그리드 / Duolingo: 스트릭·성적 스탯
+// ─────────────────────────────────────────────────────────────────────────────
+function roundRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function createResultCardBlob({ artist, percent, correctCount, total, results, streak }) {
+  const W = 1080;
+  const H = 1350;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // 배경: 브랜드 그라디언트 (indigo → fuchsia) + 글로우
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#4f46e5');
+  bg.addColorStop(1, '#c026d3');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+  const glow = ctx.createRadialGradient(W * 0.82, H * 0.12, 0, W * 0.82, H * 0.12, 520);
+  glow.addColorStop(0, 'rgba(255,255,255,0.28)');
+  glow.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+
+  // 흰색 라운드 포토카드
+  const pad = 70;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.35)';
+  ctx.shadowBlur = 60;
+  ctx.shadowOffsetY = 20;
+  ctx.fillStyle = '#ffffff';
+  roundRectPath(ctx, pad, pad, W - pad * 2, H - pad * 2, 48);
+  ctx.fill();
+  ctx.restore();
+
+  const cx = W / 2;
+  ctx.textAlign = 'center';
+
+  // 브랜드
+  ctx.fillStyle = '#6366f1';
+  ctx.font = '800 40px system-ui, sans-serif';
+  ctx.fillText('🎤 K-LISTEN MASTER', cx, 195);
+
+  // 아티스트 뱃지 (폭은 글자 길이에 맞춰 자동)
+  ctx.font = '800 38px system-ui, sans-serif';
+  const badgeText = String(artist).toUpperCase();
+  const badgeW = ctx.measureText(badgeText).width + 90;
+  ctx.fillStyle = '#eef2ff';
+  roundRectPath(ctx, cx - badgeW / 2, 245, badgeW, 72, 36);
+  ctx.fill();
+  ctx.fillStyle = '#4f46e5';
+  ctx.fillText(badgeText, cx, 294);
+
+  // 성공률 대형 숫자
+  ctx.fillStyle = '#0f172a';
+  ctx.font = '900 250px system-ui, sans-serif';
+  ctx.fillText(`${percent}%`, cx, 610);
+  ctx.fillStyle = '#64748b';
+  ctx.font = '600 44px system-ui, sans-serif';
+  ctx.fillText(`${correctCount} / ${total} Korean sentences`, cx, 690);
+
+  // 이모지 그리드 (5문항씩 한 줄)
+  const icons = results.map((v) => STATUS_ICON[v] || '⬜');
+  ctx.font = '62px system-ui, sans-serif';
+  let y = 800;
+  for (let r = 0; r < Math.ceil(icons.length / 5); r += 1) {
+    ctx.fillText(icons.slice(r * 5, r * 5 + 5).join(' '), cx, y);
+    y += 88;
+  }
+
+  // 스트릭 (Duolingo 스타일 — 1일 초과일 때만)
+  if (streak > 1) {
+    ctx.fillStyle = '#ea580c';
+    ctx.font = '700 46px system-ui, sans-serif';
+    ctx.fillText(`🔥 ${streak}-day streak`, cx, y + 30);
+  }
+
+  // 하단 URL
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '600 38px system-ui, sans-serif';
+  ctx.fillText('step-korean.com', cx, H - pad - 70);
+
+  return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 최종 완료 창: 성적 요약 + 성적 기반 공유 + (로그인 전용) 전체 복습 리스트
 // ─────────────────────────────────────────────────────────────────────────────
 function FinalResult({
@@ -916,11 +1051,15 @@ function FinalResult({
   percent,
   isLoggedIn,
   shareText,
+  artist,
+  streak,
   liftBtn,
   onRestart,
 }) {
   const { t } = useLang();
   const [copied, setCopied] = useState(false);
+  const [cardBusy, setCardBusy] = useState(false);
+  const [cardSaved, setCardSaved] = useState(false);
 
   const copyShare = async () => {
     try {
@@ -934,6 +1073,30 @@ function FinalResult({
   const shareToX = () => {
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  // 포토카드 공유: 모바일은 OS 공유 시트(navigator.share), 데스크톱은 PNG 다운로드
+  const shareCard = async () => {
+    setCardBusy(true);
+    try {
+      const blob = await createResultCardBlob({ artist, percent, correctCount, total, results, streak });
+      const file = new File([blob], 'k-listen-result.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text: shareText });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'k-listen-result.png';
+        a.click();
+        URL.revokeObjectURL(url);
+        setCardSaved(true);
+        setTimeout(() => setCardSaved(false), 1800);
+      }
+    } catch {
+      /* 사용자가 공유 시트를 닫은 경우 등 — 무시 */
+    }
+    setCardBusy(false);
   };
 
   return (
@@ -963,8 +1126,15 @@ function FinalResult({
       {/* 성적 기반 바이럴 공유 */}
       <section className="rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 p-5 text-white shadow-lg">
         <p className="text-sm font-semibold opacity-90">{t('kpop.shareTitle')}</p>
-        <p className="mt-1 text-base font-bold leading-snug">“{shareText}”</p>
+        <p className="mt-1 whitespace-pre-line text-base font-bold leading-snug">“{shareText}”</p>
         <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            onClick={shareCard}
+            disabled={cardBusy}
+            className={`${liftBtn} rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 shadow hover:bg-amber-300 disabled:opacity-60`}
+          >
+            {cardSaved ? t('kpop.cardSaved') : cardBusy ? '…' : t('kpop.saveCard')}
+          </button>
           <button
             onClick={copyShare}
             className={`${liftBtn} rounded-xl bg-white/95 px-4 py-2 text-sm font-bold text-indigo-700 shadow hover:bg-white`}
