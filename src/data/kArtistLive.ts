@@ -81,9 +81,15 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     title: { en: 'ATEEZ Unfiltered: Pre-Debut Hardships & Tour Secrets', ko: 'ATEEZ 필터 없는 토크: 데뷔 전 고충 & 투어 비밀', es: 'ATEEZ Revela: Secretos de su Pre-Debut y Gira Mundial', ja: 'ATEEZ激白、デビュー前の過酷な下積みと世界ツアーの裏話'},
     artist: 'Ateez',
     stars: 3,
-    url: '',
+    url: 'https://www.youtube.com/watch?v=rBDBC82UmKo&t=70s',
     plays: 0,
     addedAt: 3,
+     desc: {
+      en: "A delightful chat between K-pop legend Kim Jae-joong and ATEEZ (San, Wooyoung, Yeosang)",
+      ko: '가요계 대선배 김재중과 에이티즈(산, 우영, 여상)의 유쾌한 토크',
+      es: 'Una divertida charla entre la gran leyenda del K-pop, Kim Jae-joong, y ATEEZ (San, Wooyoung, Yeosang)',
+      ja: 'K-POP界の大先輩キム・ジェジュンとATEEZ（サン、ウヨン、ヨサン）の和気あいあいとしたトーク',
+    },
   },
   {
     id: 4,
