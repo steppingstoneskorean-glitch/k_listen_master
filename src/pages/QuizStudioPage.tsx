@@ -121,6 +121,7 @@ export default function QuizStudioPage() {
         blankWord: '',
         explanation: '',
         hasHardcodedSubs: true,
+        initialSpeed: 0.75,
       },
     ])
 
@@ -344,12 +345,12 @@ export default function QuizStudioPage() {
                       자동 재생 속도
                       <select
                         className={`mt-1 ${field}`}
-                        value={q.initialSpeed ?? 1.0}
+                        value={q.initialSpeed ?? 0.75}
                         onChange={(e) => update(i, { initialSpeed: Number(e.target.value) })}
                       >
                         {[0.5, 0.75, 1.0].map((rate) => (
                           <option key={rate} value={rate}>
-                            {rate.toFixed(2)}배{rate === 1 ? ' (기본)' : ''}
+                            {rate.toFixed(2)}배{rate === 0.75 ? ' (기본)' : ''}
                           </option>
                         ))}
                       </select>

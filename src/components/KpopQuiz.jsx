@@ -212,7 +212,7 @@ const quizList = [
 },
 {
   "id": "Jae friends_Ateez_01",
-  "videoId": "rBDBC82UmKo&t=70s",
+  "videoId": "rBDBC82UmKo",
   "startTime": 13.5,
   "endTime": 19,
   "fullSentence": " 외워야 돼,그냥 오늘 확실히 외워야 돼.",
@@ -328,7 +328,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const loopTimerRef = useRef(null);
   const [playerReady, setPlayerReady] = useState(false);
   const [isLooping, setIsLooping] = useState(true);
-  const [speed, setSpeed] = useState(1.0);
+  const [speed, setSpeed] = useState(0.75);
 
   // ── Cloze / 채점 state ─────────────────────────────────────────────────────
   const [answer, setAnswer] = useState('');
@@ -417,10 +417,11 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     };
   }, [playerReady, quiz?.startTime, quiz?.endTime]);
 
-  // 문항별 자동 배속: 새 문항으로 넘어가면 저장된 initialSpeed 로 재설정(미지정 시 1.0)
+  // 문항별 자동 배속: 새 문항으로 넘어가면 저장된 initialSpeed 로 재설정
+  // (미지정 시 K-Artist Live 기본값 0.75 — 원어민 속도가 빨라 학습자 배려)
   useEffect(() => {
     if (!quiz) return;
-    setSpeed(quiz.initialSpeed || 1.0);
+    setSpeed(quiz.initialSpeed || 0.75);
   }, [quiz?.id]);
 
   // 배속 유지: 플레이어 준비/재생성 시에도 현재 배속 적용
