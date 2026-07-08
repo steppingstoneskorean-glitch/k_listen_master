@@ -215,9 +215,9 @@ const quizList = [
   "videoId": "rBDBC82UmKo&t=70s",
   "startTime": 13.5,
   "endTime": 19,
-  "fullSentence": "ㅇㅇㅇ",
-  "blankWord": "ㅇ",
-  "explanation": ".",
+  "fullSentence": " 외워야 돼,그냥 오늘 확실히 외워야 돼.",
+  "blankWord": "외워야 돼",
+  "explanation": "Verb + -아/어야 돼(요) = have to... / need to... / must...",
   "hasHardcodedSubs": true
 },
 ];
@@ -416,6 +416,12 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       if (loopTimerRef.current) clearInterval(loopTimerRef.current);
     };
   }, [playerReady, quiz?.startTime, quiz?.endTime]);
+
+  // 문항별 자동 배속: 새 문항으로 넘어가면 저장된 initialSpeed 로 재설정(미지정 시 1.0)
+  useEffect(() => {
+    if (!quiz) return;
+    setSpeed(quiz.initialSpeed || 1.0);
+  }, [quiz?.id]);
 
   // 배속 유지: 플레이어 준비/재생성 시에도 현재 배속 적용
   useEffect(() => {
@@ -814,6 +820,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           streak={stats.streak}
           liftBtn={liftBtn}
           onRestart={restartAll}
+          videoId={routeVideoId || quiz?.videoId}
         />
       )}
 
@@ -969,7 +976,30 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function createResultCardBlob({ artist, percent, correctCount, total, results, streak }) {
+// 카드 상단 배너용: 위쪽 모서리만 둥근 사각형 경로 (아래쪽은 카드 본문과 이어지도록 직각)
+function topRoundRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.closePath();
+}
+
+// 크로스오리진 이미지 로드 (유튜브 썸네일은 CORS 허용 — canvas 오염 없이 사용 가능)
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('썸네일 로드 실패'));
+    img.src = src;
+  });
+}
+
+async function createResultCardBlob({ artist, percent, correctCount, total, results, streak, videoId }) {
   const W = 1080;
   const H = 1080;
   const canvas = document.createElement('canvas');
@@ -1000,46 +1030,84 @@ function createResultCardBlob({ artist, percent, correctCount, total, results, s
   ctx.fill();
   ctx.restore();
 
+  // 영상 썸네일 배너 (카드 최상단, 로드 실패 시 조용히 건너뜀)
+  let thumbImg = null;
+  if (videoId) {
+    try {
+      const img = await loadImage(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`);
+      // 존재하지 않는 videoId는 120x90 회색 기본 이미지로 응답(200 OK)하므로 걸러낸다
+      if (img.naturalWidth !== 120 || img.naturalHeight !== 90) thumbImg = img;
+    } catch {
+      thumbImg = null;
+    }
+  }
+
   const cx = W / 2;
   ctx.textAlign = 'center';
 
+  let contentTop = 175; // 썸네일이 없으면 기존 레이아웃 그대로 사용
+  const compact = Boolean(thumbImg); // 썸네일이 들어가면 아래 텍스트 블록을 축소해 한 장에 맞춘다
+
+  if (thumbImg) {
+    const thumbW = W - pad * 2;
+    const thumbH = 300;
+    ctx.save();
+    topRoundRectPath(ctx, pad, pad, thumbW, thumbH, 48);
+    ctx.clip();
+    // object-fit: cover — 중앙 기준으로 배너를 꽉 채운다
+    const scale = Math.max(thumbW / thumbImg.width, thumbH / thumbImg.height);
+    const dw = thumbImg.width * scale;
+    const dh = thumbImg.height * scale;
+    ctx.drawImage(thumbImg, pad + (thumbW - dw) / 2, pad + (thumbH - dh) / 2, dw, dh);
+    ctx.restore();
+    contentTop = pad + thumbH + 34;
+  }
+
   // 브랜드
   ctx.fillStyle = '#6366f1';
-  ctx.font = '800 40px system-ui, sans-serif';
-  ctx.fillText('🎤 K-LISTEN MASTER', cx, 175);
+  ctx.font = `800 ${compact ? 30 : 40}px system-ui, sans-serif`;
+  const brandY = compact ? contentTop + 30 : contentTop;
+  ctx.fillText('🎤 K-LISTEN MASTER', cx, brandY);
 
   // 아티스트 뱃지 (폭은 글자 길이에 맞춰 자동)
-  ctx.font = '800 38px system-ui, sans-serif';
+  ctx.font = `800 ${compact ? 28 : 38}px system-ui, sans-serif`;
   const badgeText = String(artist).toUpperCase();
-  const badgeW = ctx.measureText(badgeText).width + 90;
+  const badgeW = ctx.measureText(badgeText).width + (compact ? 70 : 90);
+  const badgeTop = brandY + (compact ? 18 : 45);
+  const badgeH = compact ? 52 : 72;
   ctx.fillStyle = '#eef2ff';
-  roundRectPath(ctx, cx - badgeW / 2, 220, badgeW, 72, 36);
+  roundRectPath(ctx, cx - badgeW / 2, badgeTop, badgeW, badgeH, badgeH / 2);
   ctx.fill();
   ctx.fillStyle = '#4f46e5';
-  ctx.fillText(badgeText, cx, 269);
+  const badgeBaseline = badgeTop + (compact ? 36 : 49);
+  ctx.fillText(badgeText, cx, badgeBaseline);
+  const badgeBottom = badgeTop + badgeH;
 
   // 성공률 대형 숫자
   ctx.fillStyle = '#0f172a';
-  ctx.font = '900 210px system-ui, sans-serif';
-  ctx.fillText(`${percent}%`, cx, 540);
+  ctx.font = `900 ${compact ? 140 : 210}px system-ui, sans-serif`;
+  const percentY = badgeBottom + (compact ? 128 : 271);
+  ctx.fillText(`${percent}%`, cx, percentY);
   ctx.fillStyle = '#64748b';
-  ctx.font = '600 44px system-ui, sans-serif';
-  ctx.fillText(`${correctCount} / ${total} Korean sentences`, cx, 610);
+  ctx.font = `600 ${compact ? 32 : 44}px system-ui, sans-serif`;
+  const subtitleY = percentY + (compact ? 45 : 70);
+  ctx.fillText(`${correctCount} / ${total} Korean sentences`, cx, subtitleY);
 
   // 이모지 그리드 (5문항씩 한 줄)
   const icons = results.map((v) => STATUS_ICON[v] || '⬜');
-  ctx.font = '62px system-ui, sans-serif';
-  let y = 710;
+  ctx.font = `${compact ? 46 : 62}px system-ui, sans-serif`;
+  const rowGap = compact ? 62 : 88;
+  let y = subtitleY + (compact ? 70 : 100);
   for (let r = 0; r < Math.ceil(icons.length / 5); r += 1) {
     ctx.fillText(icons.slice(r * 5, r * 5 + 5).join(' '), cx, y);
-    y += 88;
+    y += rowGap;
   }
 
   // 스트릭 (Duolingo 스타일 — 1일 초과일 때만)
   if (streak > 1) {
     ctx.fillStyle = '#ea580c';
-    ctx.font = '700 46px system-ui, sans-serif';
-    ctx.fillText(`🔥 ${streak}-day streak`, cx, y + 30);
+    ctx.font = `700 ${compact ? 34 : 46}px system-ui, sans-serif`;
+    ctx.fillText(`🔥 ${streak}-day streak`, cx, y + (compact ? 22 : 30));
   }
 
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
@@ -1060,6 +1128,7 @@ function FinalResult({
   streak,
   liftBtn,
   onRestart,
+  videoId,
 }) {
   const { t } = useLang();
   const [copied, setCopied] = useState(false);
@@ -1084,7 +1153,7 @@ function FinalResult({
   const shareCard = async () => {
     setCardBusy(true);
     try {
-      const blob = await createResultCardBlob({ artist, percent, correctCount, total, results, streak });
+      const blob = await createResultCardBlob({ artist, percent, correctCount, total, results, streak, videoId });
       const file = new File([blob], 'k-listen-result.png', { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], text: shareText });

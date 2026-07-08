@@ -19,6 +19,8 @@ export interface QuizItem {
   blankWord: string
   explanation: string
   hasHardcodedSubs: boolean
+  /** 영상 자동 재생 속도. 미지정 시 1.0(기본 배속) */
+  initialSpeed?: number
 }
 
 const COLLECTION = 'kartistQuizzes'

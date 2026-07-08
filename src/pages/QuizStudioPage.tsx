@@ -319,7 +319,7 @@ export default function QuizStudioPage() {
                     </div>
                   </div>
 
-                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
                     <label className="text-xs font-semibold text-slate-500">
                       시작 (초)
                       <input
@@ -339,6 +339,20 @@ export default function QuizStudioPage() {
                         value={q.endTime}
                         onChange={(e) => update(i, { endTime: Number(e.target.value) })}
                       />
+                    </label>
+                    <label className="text-xs font-semibold text-slate-500">
+                      자동 재생 속도
+                      <select
+                        className={`mt-1 ${field}`}
+                        value={q.initialSpeed ?? 1.0}
+                        onChange={(e) => update(i, { initialSpeed: Number(e.target.value) })}
+                      >
+                        {[0.5, 0.75, 1.0].map((rate) => (
+                          <option key={rate} value={rate}>
+                            {rate.toFixed(2)}배{rate === 1 ? ' (기본)' : ''}
+                          </option>
+                        ))}
+                      </select>
                     </label>
                     <label className="col-span-2 flex items-end gap-2 pb-2 text-xs font-semibold text-slate-500">
                       <input
