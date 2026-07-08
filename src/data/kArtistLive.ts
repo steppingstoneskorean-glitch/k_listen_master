@@ -78,7 +78,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
   },
   {
     id: 3,
-    title: { en: 'ATEEZ Unfiltered: Pre-Debut Hardships & Tour Secrets', ko: 'ATEEZ 필터 없는 토크: 데뷔 전 고충 & 투어 비밀', es: 'ATEEZ Revela: Secretos de su Pre-Debut y Gira Mundial', ja: 'ATEEZ激白、デビュー前の過酷な下積みと世界ツアーの裏話},
+    title: { en: 'ATEEZ Unfiltered: Pre-Debut Hardships & Tour Secrets', ko: 'ATEEZ 필터 없는 토크: 데뷔 전 고충 & 투어 비밀', es: 'ATEEZ Revela: Secretos de su Pre-Debut y Gira Mundial', ja: 'ATEEZ激白、デビュー前の過酷な下積みと世界ツアーの裏話'},
     artist: 'Ateez',
     stars: 3,
     url: '',
