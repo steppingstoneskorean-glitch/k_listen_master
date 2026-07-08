@@ -146,7 +146,7 @@ const quizList = [
   "startTime": 16.7,
   "endTime": 19,
   "fullSentence": "너무 재미있을 것 같습니다.",
-  "blankWord": "재미있을 ㄱ",
+  "blankWord": "재미있을",
   "explanation": "Verb + -(으)ㄹ 것 같다 = I think... / It seems like... / It looks like... / Probably... \n\n 내일은 날씨가 좋을 것 같아요.",
   "hasHardcodedSubs": true
 },
@@ -209,7 +209,17 @@ const quizList = [
   "blankWord": "부탁드리겠습니다.",
   "explanation": "앞으로도 = from now on, going forward, in the future, or still (in the future)\n\n잘 부탁드리겠습니다 = I look forward to your support. / Thank you in advance. / Please take good care of me.",
   "hasHardcodedSubs": true
-}
+},
+{
+  "id": "Jae friends_Ateez_01",
+  "videoId": "rBDBC82UmKo&t=70s",
+  "startTime": 13.5,
+  "endTime": 19,
+  "fullSentence": "ㅇㅇㅇ",
+  "blankWord": "ㅇ",
+  "explanation": ".",
+  "hasHardcodedSubs": true
+},
 ];
 
 const STORAGE_KEY = 'kpop_quiz_stats_v1';
