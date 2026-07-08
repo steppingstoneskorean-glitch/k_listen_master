@@ -818,6 +818,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           isLoggedIn={isLoggedIn}
           shareText={shareText}
           artist={artistName}
+          stars={(currentVideo && currentVideo.stars) || 0}
           streak={stats.streak}
           liftBtn={liftBtn}
           onRestart={restartAll}
@@ -1000,7 +1001,7 @@ function loadImage(src) {
   });
 }
 
-async function createResultCardBlob({ artist, percent, correctCount, total, results, streak, videoId }) {
+async function createResultCardBlob({ artist, stars, percent, correctCount, total, results, streak, videoId }) {
   const W = 1080;
   const H = 1080;
   const canvas = document.createElement('canvas');
@@ -1051,7 +1052,7 @@ async function createResultCardBlob({ artist, percent, correctCount, total, resu
 
   if (thumbImg) {
     const thumbW = W - pad * 2;
-    const thumbH = 300;
+    const thumbH = 380; // 썸네일 배너 높이 (기존 300 → 380 으로 소폭 확대)
     ctx.save();
     topRoundRectPath(ctx, pad, pad, thumbW, thumbH, 48);
     ctx.clip();
@@ -1071,8 +1072,12 @@ async function createResultCardBlob({ artist, percent, correctCount, total, resu
   ctx.fillText('🎤 K-LISTEN MASTER', cx, brandY);
 
   // 아티스트 뱃지 (폭은 글자 길이에 맞춰 자동)
+  // 난이도 별점을 아티스트명 옆에 표시 (⭐ 컬러 이모지라 뱃지 색과 무관하게 노란색으로 렌더링)
   ctx.font = `800 ${compact ? 28 : 38}px system-ui, sans-serif`;
-  const badgeText = String(artist).toUpperCase();
+  const starIcons = '⭐'.repeat(Math.max(0, Math.min(5, Number(stars) || 0)));
+  const badgeText = starIcons
+    ? `${String(artist).toUpperCase()}  ${starIcons}`
+    : String(artist).toUpperCase();
   const badgeW = ctx.measureText(badgeText).width + (compact ? 70 : 90);
   const badgeTop = brandY + (compact ? 18 : 45);
   const badgeH = compact ? 52 : 72;
@@ -1126,6 +1131,7 @@ function FinalResult({
   isLoggedIn,
   shareText,
   artist,
+  stars,
   streak,
   liftBtn,
   onRestart,
@@ -1154,7 +1160,7 @@ function FinalResult({
   const shareCard = async () => {
     setCardBusy(true);
     try {
-      const blob = await createResultCardBlob({ artist, percent, correctCount, total, results, streak, videoId });
+      const blob = await createResultCardBlob({ artist, stars, percent, correctCount, total, results, streak, videoId });
       const file = new File([blob], 'k-listen-result.png', { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], text: shareText });
