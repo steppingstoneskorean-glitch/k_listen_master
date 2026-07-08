@@ -223,7 +223,6 @@ const quizList = [
 ];
 
 const STORAGE_KEY = 'kpop_quiz_stats_v1';
-const SITE_URL = 'https://step-korean.com'; // 공유 링크 (배포 도메인에 맞게 교체)
 const MAX_RECORD_MS = 10_000; // 최대 녹음 10초
 
 // ── 유튜브 IFrame API 로더 (전역 콜백 안전 처리) ─────────────────────────────
@@ -579,13 +578,14 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const emojiGrid = Array.from({ length: Math.ceil(results.length / 5) }, (_, r) =>
     results.slice(r * 5, r * 5 + 5).map((v) => STATUS_ICON[v] || '⬜').join(''),
   ).join('\n');
+  const shareUrl = `${window.location.origin}/kpop-quiz/${routeVideoId || ''}`;
   const shareText =
     t('kpop.shareText')
       .replace('{artist}', artistName)
       .replace('{total}', String(total))
       .replace('{correct}', String(correctCount))
       .replace('{percent}', String(percent))
-      .replace('{url}', SITE_URL) + (emojiGrid ? `\n\n${emojiGrid}` : '');
+      .replace('{url}', shareUrl) + (emojiGrid ? `\n\n${emojiGrid}` : '');
 
   // 아직 퀴즈가 없음: 배포 퀴즈 로딩 중이거나 미배포 영상 (하드코딩 fallback 도 없음)
   if (!quiz) {
@@ -956,7 +956,7 @@ function ReviewModal({ status, quiz, answer, isLast, liftBtn, onReplay, onNext, 
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 결과 포토카드 이미지 생성 (1080×1350 세로 카드 — K-pop 포토카드 문화 반영)
+// 결과 포토카드 이미지 생성 (1080×1080 정사각 카드 — 인스타 피드/스토리 공용)
 //   · Wordle: 스포일러 없는 이모지 그리드 / Duolingo: 스트릭·성적 스탯
 // ─────────────────────────────────────────────────────────────────────────────
 function roundRectPath(ctx, x, y, w, h, r) {
@@ -971,7 +971,7 @@ function roundRectPath(ctx, x, y, w, h, r) {
 
 function createResultCardBlob({ artist, percent, correctCount, total, results, streak }) {
   const W = 1080;
-  const H = 1350;
+  const H = 1080;
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
@@ -1006,30 +1006,30 @@ function createResultCardBlob({ artist, percent, correctCount, total, results, s
   // 브랜드
   ctx.fillStyle = '#6366f1';
   ctx.font = '800 40px system-ui, sans-serif';
-  ctx.fillText('🎤 K-LISTEN MASTER', cx, 195);
+  ctx.fillText('🎤 K-LISTEN MASTER', cx, 175);
 
   // 아티스트 뱃지 (폭은 글자 길이에 맞춰 자동)
   ctx.font = '800 38px system-ui, sans-serif';
   const badgeText = String(artist).toUpperCase();
   const badgeW = ctx.measureText(badgeText).width + 90;
   ctx.fillStyle = '#eef2ff';
-  roundRectPath(ctx, cx - badgeW / 2, 245, badgeW, 72, 36);
+  roundRectPath(ctx, cx - badgeW / 2, 220, badgeW, 72, 36);
   ctx.fill();
   ctx.fillStyle = '#4f46e5';
-  ctx.fillText(badgeText, cx, 294);
+  ctx.fillText(badgeText, cx, 269);
 
   // 성공률 대형 숫자
   ctx.fillStyle = '#0f172a';
-  ctx.font = '900 250px system-ui, sans-serif';
-  ctx.fillText(`${percent}%`, cx, 610);
+  ctx.font = '900 210px system-ui, sans-serif';
+  ctx.fillText(`${percent}%`, cx, 540);
   ctx.fillStyle = '#64748b';
   ctx.font = '600 44px system-ui, sans-serif';
-  ctx.fillText(`${correctCount} / ${total} Korean sentences`, cx, 690);
+  ctx.fillText(`${correctCount} / ${total} Korean sentences`, cx, 610);
 
   // 이모지 그리드 (5문항씩 한 줄)
   const icons = results.map((v) => STATUS_ICON[v] || '⬜');
   ctx.font = '62px system-ui, sans-serif';
-  let y = 800;
+  let y = 710;
   for (let r = 0; r < Math.ceil(icons.length / 5); r += 1) {
     ctx.fillText(icons.slice(r * 5, r * 5 + 5).join(' '), cx, y);
     y += 88;
@@ -1041,11 +1041,6 @@ function createResultCardBlob({ artist, percent, correctCount, total, results, s
     ctx.font = '700 46px system-ui, sans-serif';
     ctx.fillText(`🔥 ${streak}-day streak`, cx, y + 30);
   }
-
-  // 하단 URL
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '600 38px system-ui, sans-serif';
-  ctx.fillText('step-korean.com', cx, H - pad - 70);
 
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
 }
