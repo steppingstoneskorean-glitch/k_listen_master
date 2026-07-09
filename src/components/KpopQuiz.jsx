@@ -213,13 +213,34 @@ const quizList = [
 {
   "id": "Jae friends_Ateez_01",
   "videoId": "rBDBC82UmKo",
-  "startTime": 13.5,
-  "endTime": 19,
-  "fullSentence": " 외워야 돼,그냥 오늘 확실히 외워야 돼.",
-  "blankWord": "외워야 돼",
-  "explanation": "Verb + -아/어야 돼(요) = have to... / need to... / must...",
+  "startTime": 303,
+  "endTime": 306,
+  "fullSentence": "신호 주시면 그때부터 할게요.",
+  "blankWord": "할게요",
+  "explanation": "Verb + -(으)ㄹ게요 = I'll...\nThis expression is used when the speaker makes a decision, promise, or offer, often in response to the listener or the situation.\n기다릴게요.  I'll wait.\n다음에 다시 올게요.  I'll come back next time.\n\nVerb/Adjective + -(으)면 = if... / when...\nVerb/Adjective + -(으)시면 = if you... / if (someone) does... (honorific, more polite)\nBoth expressions are used to talk about a condition. -(으)시면 is the honorific form of -(으)면 and is commonly used when speaking politely to or about someone deserving respect.\n시간이 있으면 연락하세요.  Contact me when you have time.",
   "hasHardcodedSubs": true
 },
+{
+  "id": "Jae friends_Ateez_02",
+  "videoId": "rBDBC82UmKo",
+  "startTime": 452,
+  "endTime": 453.5,
+  "fullSentence": "와 진짜 라이브 미쳤다",
+  "blankWord": "미쳤",
+  "explanation": "'미쳤다' literally means \"to be crazy,\" but in everyday Korean it is often used to express strong surprise, excitement, or amazement.\n와, 미쳤다! /진짜 미쳤네!  Wow, that's crazy!, That's insane!",
+  "hasHardcodedSubs": true
+},
+{
+  "id": "Jae friends_Ateez_01",
+  "videoId": "rBDBC82UmKo",
+  "startTime": 456,
+  "endTime": 458,
+  "fullSentence": "잘 먹겠습니다!",
+  "blankWord": "먹겠습니다",
+  "explanation": "잘 먹겠습니다 = Thanks for the meal. / I'll enjoy the meal.\nThis expression is said before eating to show gratitude to the person who prepared or paid for the meal. There is no exact English equivalent.\n\n잘 먹었습니다.  Thanks for the meal. (said after eating)",
+  "hasHardcodedSubs": true
+},
+
 ];
 
 const STORAGE_KEY = 'kpop_quiz_stats_v1';
