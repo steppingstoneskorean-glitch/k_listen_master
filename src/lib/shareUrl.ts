@@ -1,7 +1,7 @@
 // src/lib/shareUrl.ts
 // 결과 페이지 공유 링크 빌더 — 점수/난이도/이름 등을 쿼리 파라미터로 실어 보낸다.
 //   · 리시버가 클릭하면 같은 게임/문제로 바로 진입 가능 (예: /dictation?mode=intermediate)
-//   · 같은 쿼리 파라미터를 middleware.ts(OG 미리보기 봇 감지) + api/og-card.tsx(동적 이미지)가 그대로 읽는다.
+//   · 소셜 링크 미리보기 이미지는 클라이언트 결과 카드(resultCardImage.ts, html-to-image)로 생성한다.
 
 export interface ShareMeta {
   /** 예: '/dictation?mode=intermediate', '/kpop-quiz/wu6bA3zK_us' — 이미 쿼리가 있어도 안전하게 병합됨 */
