@@ -113,8 +113,19 @@ export default async function handler(req, res) {
     const quizCount = Math.min(Math.max(Number(count) || 20, 1), 20)
 
     // 3) NVIDIA 호출 — 비스트리밍, 응답 텍스트에서 JSON 블록만 추출
-    const apiKey = process.env.NVIDIA_API_KEY
+    // 앞뒤 공백/줄바꿈 제거 + ASCII 범위 검증: Vercel 환경 변수 값에 실수로
+    // 한글 설명 텍스트나 개행이 섞여 들어가면 fetch() 가 "Cannot convert argument
+    // to a ByteString..." 같은 알아보기 힘든 에러를 던지므로, 여기서 먼저 걸러
+    // 원인을 바로 알 수 있는 메시지로 바꿔준다.
+    const apiKey = (process.env.NVIDIA_API_KEY || '').trim()
     if (!apiKey) throw Object.assign(new Error('NVIDIA_API_KEY env var is not set'), { code: 'missing_key' })
+    // eslint-disable-next-line no-control-regex
+    if (!/^[\x00-\xFF]*$/.test(apiKey)) {
+      throw Object.assign(
+        new Error('NVIDIA_API_KEY contains non-ASCII characters — check the Vercel env var for stray text/newlines'),
+        { code: 'invalid_key_charset' },
+      )
+    }
 
     const r = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
       method: 'POST',
@@ -181,6 +192,8 @@ export default async function handler(req, res) {
     const msg =
       err && err.code === 'missing_key'
         ? 'NVIDIA_API_KEY 가 설정되지 않았습니다 (.env.local / Vercel 환경 변수 확인)'
+        : err && err.code === 'invalid_key_charset'
+        ? 'NVIDIA_API_KEY 값에 한글/특수문자가 섞여 있습니다. Vercel 환경 변수에서 키 값만 남기고 다시 저장한 뒤 Redeploy 해주세요.'
         : err && err.status === 401
         ? 'NVIDIA_API_KEY 가 잘못되었습니다'
         : '퀴즈 생성 중 오류가 발생했습니다: ' + (err.message || String(err))
