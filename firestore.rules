@@ -7,14 +7,31 @@ service cloud.firestore {
       allow write: if request.auth != null
         && request.auth.token.email == 'steppingstoneskorean@gmail.com';
     }
+    // 리더보드: 실제 사용하는 컬렉션만 화이트리스트 허용 (임의 컬렉션 생성 차단)
+    // + 점수/이름 필드 상한 검증 (위조 데이터 삽입 차단)
     match /{leaderboardCollection}/{document} {
-      allow read: if true;
-      // kartistQuizzes 는 위의 관리자 전용 규칙만 적용 (일반 유저 create 차단)
-      allow create: if request.auth != null && leaderboardCollection != 'kartistQuizzes';
+      allow read: if leaderboardCollection in
+        ['gameLeaderboard', 'intLeaderboard', 'intL1', 'intL2', 'advL1', 'advL2'];
+      allow create: if request.auth != null
+        && leaderboardCollection in
+          ['gameLeaderboard', 'intLeaderboard', 'intL1', 'intL2', 'advL1', 'advL2']
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 30
+        && request.resource.data.score is number
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 100000;
       allow update, delete: if false;
     }
+    // 유저 프로필: 본인만 읽기/쓰기. tier 는 요금제 필드라 클라이언트가 절대
+    // 설정/변경할 수 없다 — 지금은 부여 경로 자체가 없고, 나중에 신뢰된
+    // 백엔드(서버리스 함수 등)에서만 문서를 직접 써서 부여할 것이다.
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+        && !('tier' in request.resource.data);
+      allow update: if request.auth != null && request.auth.uid == userId
+        && (!('tier' in request.resource.data) || request.resource.data.tier == resource.data.tier);
+      allow delete: if false;
     }
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;

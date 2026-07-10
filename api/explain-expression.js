@@ -22,6 +22,51 @@ const NVIDIA_MODEL = 'nvidia/llama-3.3-nemotron-super-49b-v1.5'
 const MAX_EXPRESSION_LEN = 60
 const MAX_SENTENCE_LEN = 300
 
+// ── 남용 방지 ────────────────────────────────────────────────────────────────
+// 로그인 여부와 무관하게(비로그인 학습자도 사용하는 기능) 접근을 허용하되,
+// (1) 우리 사이트가 아닌 곳에서의 브라우저發 요청과 (2) 동일 IP 의 단시간 대량 호출을
+// 막아 NVIDIA 무료 크레딧이 스크립트 남용으로 소진되는 것을 방지한다.
+const ALLOWED_ORIGINS = new Set([
+  'https://step-korean.com',
+  'https://www.step-korean.com',
+  'https://k-listen-master.vercel.app',
+])
+
+function isAllowedOrigin(req) {
+  const origin = req.headers.origin
+  if (!origin) return true // 동일 출처 요청은 브라우저가 Origin 을 안 보낼 수 있음 — 통과
+  return ALLOWED_ORIGINS.has(origin)
+}
+
+// 매우 단순한 인메모리 rate limit — 같은(warm) 서버리스 인스턴스 안에서만 유효하므로
+// 완벽한 방어는 아니지만, 단일 스크립트의 연속 호출을 막는 1차 저지선 역할은 한다.
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000 // 10분
+const RATE_LIMIT_MAX = 20 // IP 당 10분에 20회
+const rateLimitMap = new Map() // ip -> { count, windowStart }
+
+function getClientIp(req) {
+  const fwd = req.headers['x-forwarded-for']
+  if (typeof fwd === 'string' && fwd.length) return fwd.split(',')[0].trim()
+  return (req.socket && req.socket.remoteAddress) || 'unknown'
+}
+
+function isRateLimited(ip) {
+  const now = Date.now()
+  // 맵이 과도하게 커지는 것을 막기 위해 가끔 오래된 항목을 정리한다
+  if (rateLimitMap.size > 5000) {
+    for (const [key, v] of rateLimitMap) {
+      if (now - v.windowStart > RATE_LIMIT_WINDOW_MS) rateLimitMap.delete(key)
+    }
+  }
+  const entry = rateLimitMap.get(ip)
+  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now })
+    return false
+  }
+  entry.count += 1
+  return entry.count > RATE_LIMIT_MAX
+}
+
 // ── 친근한 원어민 친구 페르소나 시스템 프롬프트 ────────────────────────────────
 // "detailed thinking off": Nemotron 계열 모델의 reasoning 모드를 끄는 관례적 지시문.
 // 학습자에게 노출되는 응답이므로 사고 과정 없이 바로 친근한 설명만 내놓게 한다.
@@ -88,6 +133,12 @@ async function callNvidia(expression, sentence) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+  if (!isAllowedOrigin(req)) {
+    return res.status(403).json({ error: 'Forbidden origin' })
+  }
+  if (isRateLimited(getClientIp(req))) {
+    return res.status(429).json({ error: '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.' })
   }
 
   try {
