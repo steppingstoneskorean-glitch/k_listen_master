@@ -38,3 +38,5 @@ dist/
 .firebase/
 firebase-debug.log
 .env
+# Flutter/Dart tooling (contains Chrome profile data - NEVER commit)
+.dart_tool/
