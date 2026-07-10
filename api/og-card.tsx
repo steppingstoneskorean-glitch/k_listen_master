@@ -14,6 +14,23 @@ import { ImageResponse } from '@vercel/og'
 
 export const config = { runtime: 'edge' }
 
+// thumb 파라미터는 사용자가 만든 공유 링크의 쿼리스트링에서 그대로 들어오므로,
+// 임의 URL을 우리 도메인 이름으로 렌더링(브랜드 도용) 하거나 이 엔드포인트를 통해
+// 다른 서버로 요청을 우회 전달(SSRF)하는 데 악용되지 않도록 유튜브 썸네일 호스트만 허용한다.
+const ALLOWED_THUMB_HOSTS = new Set(['i.ytimg.com'])
+
+function sanitizeThumbUrl(raw: string | null): string | null {
+  if (!raw) return null
+  try {
+    const url = new URL(raw)
+    if (url.protocol !== 'https:') return null
+    if (!ALLOWED_THUMB_HOSTS.has(url.hostname)) return null
+    return url.toString()
+  } catch {
+    return null
+  }
+}
+
 export default async function handler(req: Request) {
   const { searchParams } = new URL(req.url)
   const score = (searchParams.get('score') || '0').slice(0, 12)
@@ -21,7 +38,7 @@ export default async function handler(req: Request) {
   const label = (searchParams.get('label') || 'K-Listen Master').slice(0, 40)
   const correct = searchParams.get('correct')
   const total = searchParams.get('total')
-  const thumb = searchParams.get('thumb')
+  const thumb = sanitizeThumbUrl(searchParams.get('thumb'))
 
   const starIcons = '⭐'.repeat(stars)
 
