@@ -8,47 +8,27 @@
 //   Returns: { quizzes: QuizItem[] }
 //
 //   필요한 Vercel 환경 변수:
-//     ANTHROPIC_API_KEY  — Claude API 키 (console.anthropic.com)
+//     NVIDIA_API_KEY     — https://build.nvidia.com 에서 발급 (OpenAI SDK 호환 NIM 엔드포인트)
 //     FIREBASE_API_KEY   — Firebase Web API 키 (VITE_FIREBASE_API_KEY 와 동일 값)
 //     ADMIN_EMAIL        — (선택) 관리자 이메일. 기본값 아래 상수
 // ─────────────────────────────────────────────────────────────────────────────
 
-import Anthropic from '@anthropic-ai/sdk'
-
 export const config = { maxDuration: 300 }
+
+const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1'
+const NVIDIA_MODEL = 'nvidia/llama-3.3-nemotron-super-49b-v1.5'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'steppingstoneskorean@gmail.com'
 
-// ── 퀴즈 데이터 스키마 (structured outputs 로 JSON 형식 보장) ────────────────
-const QUIZ_SCHEMA = {
-  type: 'object',
-  properties: {
-    quizzes: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', description: 'snake_case unique id, e.g. "video_01"' },
-          startTime: { type: 'number', description: 'segment start in seconds (can be fractional)' },
-          endTime: { type: 'number', description: 'segment end in seconds' },
-          fullSentence: { type: 'string', description: 'the exact Korean sentence as spoken' },
-          blankWord: { type: 'string', description: 'the cloze target — must be an exact substring of fullSentence' },
-          explanation: {
-            type: 'string',
-            description: 'teaching note for foreign learners, mostly in English; empty string if the sentence needs no explanation',
-          },
-        },
-        required: ['id', 'startTime', 'endTime', 'fullSentence', 'blankWord', 'explanation'],
-        additionalProperties: false,
-      },
-    },
-  },
-  required: ['quizzes'],
-  additionalProperties: false,
-}
-
 // ── 20년차 베테랑 한국어 교사 페르소나 시스템 프롬프트 ───────────────────────
-const SYSTEM_PROMPT = `You are a Korean language teacher with 20 years of experience teaching Korean to foreign learners (English, Spanish, and Japanese speakers). You design listening-dictation (cloze) quizzes from real K-content videos: the learner listens to a short segment on loop and types the missing part of the sentence.
+// "detailed thinking off": Nemotron 계열 모델의 reasoning 모드를 끄는 관례적 지시문 —
+// 이 엔드포인트는 Claude 의 output_config.json_schema 같은 구조화 출력이 없으므로,
+// 응답을 순수 JSON 하나로만 받기 위해 사고 과정을 끈다 (explain-expression.js 와 동일 관례).
+const SYSTEM_PROMPT = `detailed thinking off
+
+You are an expert Korean language curriculum designer with 20 years of experience teaching Korean to foreign learners (English, Spanish, and Japanese speakers). You design listening-dictation (cloze) quizzes from real K-content videos: the learner listens to a short segment on loop and types the missing part of the sentence.
+
+Extract exactly the requested number of sentences from the transcript that have clear audio for dictation and contain essential grammar, expressions, or natural phonetic linking rules. Replace key target words with blanks. Provide detailed English explanations for the grammar/nuance and a helpful phonetic or contextual hint for each blank.
 
 You will receive a YouTube transcript with timestamps. Your job is to select the pedagogically BEST segments and turn each into one quiz item.
 
@@ -74,12 +54,22 @@ You will receive a YouTube transcript with timestamps. Your job is to select the
 - Add a vocabulary note with * for any non-obvious word or cultural item (e.g. "*깍두기 = ...").
 - Use \\n for line breaks inside the explanation. If an item genuinely needs no explanation (pure listening practice), use an empty string.
 
+## How to write the hint
+- A short (roughly 5–15 words) phonetic or contextual nudge that helps the learner recall the blank WITHOUT giving away the exact answer — never quote the blankWord itself.
+- Prefer whichever is more useful for this specific blank: a phonetic cue ("starts with a soft h-sound, almost silent"), a grammatical cue ("verb stem + the '-자' pattern"), or a contextual/meaning cue ("what you'd say inviting a friend to eat").
+- Every item must have a non-empty hint.
+
 ## Timing rules
 - startTime: about 0.3–0.5 seconds BEFORE the line's transcript timestamp.
 - endTime: the next caption's timestamp, or startTime + 3~5 seconds — long enough to hear the full sentence, short enough to loop comfortably. Never longer than 8 seconds.
 
 ## Quality bar
-Every item must survive this check: "Would a learner who masters this blank actually sound more natural in Korea tomorrow?" If not, pick a different segment. Never invent sentences that are not in the transcript.`
+Every item must survive this check: "Would a learner who masters this blank actually sound more natural in Korea tomorrow?" If not, pick a different segment. Never invent sentences that are not in the transcript.
+
+## Output format
+Respond with ONLY a single JSON object, no markdown code fences, no commentary, of the exact shape:
+{"quizzes": [{"id": string, "startTime": number, "endTime": number, "fullSentence": string, "blankWord": string, "explanation": string, "hint": string}, ...]}
+"blankWord" MUST be an exact substring of "fullSentence" (same spelling, same spacing). "endTime" MUST be greater than "startTime".`
 
 // ── Firebase ID 토큰 검증 (identitytoolkit lookup — 관리자 이메일 확인) ──────
 async function verifyAdmin(idToken) {
@@ -113,45 +103,54 @@ export default async function handler(req, res) {
     if (!email) return res.status(403).json({ error: '관리자 계정이 아닙니다' })
 
     // 2) 입력 검증
-    const { videoId, transcript, count = 8 } = req.body || {}
+    const { videoId, transcript, count = 20 } = req.body || {}
     if (!videoId || typeof videoId !== 'string') {
       return res.status(400).json({ error: 'videoId 가 필요합니다' })
     }
     if (!transcript || typeof transcript !== 'string' || transcript.trim().length < 50) {
       return res.status(400).json({ error: '자막(transcript)이 너무 짧습니다. 유튜브 스크립트를 붙여넣어 주세요.' })
     }
-    const quizCount = Math.min(Math.max(Number(count) || 8, 1), 15)
+    const quizCount = Math.min(Math.max(Number(count) || 20, 1), 20)
 
-    // 3) Claude 호출 — 스트리밍으로 타임아웃 방지, structured output 으로 JSON 보장
-    const client = new Anthropic()
-    const stream = client.messages.stream({
-      model: 'claude-opus-4-8',
-      max_tokens: 32000,
-      thinking: { type: 'adaptive' },
-      system: SYSTEM_PROMPT,
-      output_config: { format: { type: 'json_schema', schema: QUIZ_SCHEMA } },
-      messages: [
-        {
-          role: 'user',
-          content:
-            `videoId: ${videoId}\n` +
-            `Create exactly ${quizCount} quiz items from this transcript. ` +
-            `Use ids like "${videoId.slice(0, 6).toLowerCase()}_01", "..._02" in order of startTime.\n\n` +
-            `=== TRANSCRIPT (timestamp + text lines) ===\n${transcript.slice(0, 60000)}`,
-        },
-      ],
+    // 3) NVIDIA 호출 — 비스트리밍, 응답 텍스트에서 JSON 블록만 추출
+    const apiKey = process.env.NVIDIA_API_KEY
+    if (!apiKey) throw Object.assign(new Error('NVIDIA_API_KEY env var is not set'), { code: 'missing_key' })
+
+    const r = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: NVIDIA_MODEL,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          {
+            role: 'user',
+            content:
+              `videoId: ${videoId}\n` +
+              `Create exactly ${quizCount} quiz items from this transcript. ` +
+              `Use ids like "${videoId.slice(0, 6).toLowerCase()}_01", "..._02" in order of startTime.\n\n` +
+              `=== TRANSCRIPT (timestamp + text lines) ===\n${transcript.slice(0, 60000)}`,
+          },
+        ],
+        temperature: 0.4,
+        top_p: 0.9,
+        max_tokens: 16000,
+        stream: false,
+      }),
     })
-    const message = await stream.finalMessage()
-
-    if (message.stop_reason === 'refusal') {
-      return res.status(422).json({ error: 'AI가 이 요청을 처리할 수 없습니다. 자막 내용을 확인해 주세요.' })
+    if (!r.ok) {
+      const bodyText = await r.text().catch(() => '')
+      const err = new Error(`NVIDIA API HTTP ${r.status}: ${bodyText.slice(0, 300)}`)
+      err.status = r.status
+      throw err
     }
-
-    const textBlock = message.content.find((b) => b.type === 'text')
-    if (!textBlock) return res.status(502).json({ error: 'AI 응답이 비어 있습니다. 다시 시도해 주세요.' })
+    const data = await r.json()
+    const raw = (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || ''
+    const jsonMatch = raw.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) return res.status(502).json({ error: 'AI 응답에서 JSON을 찾지 못했습니다. 다시 시도해 주세요.' })
 
     // 4) 서버측 검증: blankWord 가 fullSentence 의 부분 문자열인지, 시간이 유효한지
-    const parsed = JSON.parse(textBlock.text)
+    const parsed = JSON.parse(jsonMatch[0])
     const quizzes = (parsed.quizzes || [])
       .filter(
         (q) =>
@@ -168,6 +167,7 @@ export default async function handler(req, res) {
         fullSentence: q.fullSentence.trim(),
         blankWord: q.blankWord.trim(),
         explanation: q.explanation || '',
+        hint: q.hint || '',
         hasHardcodedSubs: true, // 대부분의 K-콘텐츠에 자막이 박혀 있음 — 스튜디오에서 수정 가능
       }))
 
@@ -175,12 +175,15 @@ export default async function handler(req, res) {
       return res.status(422).json({ error: '유효한 퀴즈를 생성하지 못했습니다. 자막에 타임스탬프가 포함되어 있는지 확인해 주세요.' })
     }
 
-    return res.status(200).json({ quizzes, model: message.model })
+    return res.status(200).json({ quizzes, model: NVIDIA_MODEL })
   } catch (err) {
     console.error('[generate-quiz]', err)
-    const msg = err && err.status === 401
-      ? 'ANTHROPIC_API_KEY 가 잘못되었거나 설정되지 않았습니다 (Vercel 환경 변수 확인)'
-      : '퀴즈 생성 중 오류가 발생했습니다: ' + (err.message || String(err))
+    const msg =
+      err && err.code === 'missing_key'
+        ? 'NVIDIA_API_KEY 가 설정되지 않았습니다 (.env.local / Vercel 환경 변수 확인)'
+        : err && err.status === 401
+        ? 'NVIDIA_API_KEY 가 잘못되었습니다'
+        : '퀴즈 생성 중 오류가 발생했습니다: ' + (err.message || String(err))
     return res.status(500).json({ error: msg })
   }
 }

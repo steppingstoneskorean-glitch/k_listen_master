@@ -25,6 +25,7 @@ import { useLang } from '@/lib/i18n';
 import { ARTISTS, LIVE_VIDEOS } from '@/data/kArtistLive';
 import { loadPublishedQuizzes } from '@/lib/quizStore';
 import { ClickableKorean, ExpressionModal, useExpressionExplainer } from '@/components/ExpressionExplainer';
+import ChallengeShare from '@/components/ChallengeShare';
 
 // 운영자 아티스트 태깅 옵션 ('__all__' 제외 — 필터 시스템과 동일 소스)
 const ARTIST_OPTIONS = ARTISTS.filter((a) => a !== '__all__');
@@ -56,10 +57,16 @@ const quizList = [
   "endTime": 295,
   "fullSentence": "나도 말은 그렇게 했는데.. 혼자 자면 좋지",
   "blankWord": "혼자 자면",
-  "explanation": { "en": "", "ja": "", "es": "", "zh": "", "vi": "" },
+  "explanation": {
+    "en": "",
+    "ja": "",
+    "es": "",
+    "zh": "",
+    "vi": ""
+  },
   "hasHardcodedSubs": true
 },
-  {
+{
   "id": "bts_03",
   "videoId": "wu6bA3zK_us",
   "startTime": 784,
@@ -370,7 +377,13 @@ const quizList = [
   "endTime": 563,
   "fullSentence": "그래서 저희가 '멋'이라는 노래가 있는데",
   "blankWord": "저희가",
-  "explanation": "Adjective + -(으)ㄴ데 / Verb + -는데 = ..., but... / ..., and... / ...\nThis expression gives background information, shows contrast, softens a statement, or leaves the sentence open for the listener to respond. The exact meaning depends on the context.\n비 오는데 우산 있어요?  It's raining. Do you have an umbrella?",
+  "explanation": {
+    "en": "Adjective + -(으)ㄴ데 / Verb + -는데 = ..., but... / ..., and... / ...\nThis expression gives background information, shows contrast, softens a statement, or leaves the sentence open for the listener to respond. The exact meaning depends on the context.\n비 오는데 우산 있어요?  It's raining. Do you have an umbrella?",
+    "ja": "Adjective + -(으)ㄴ데 / Verb + -는데 = 〜だけど… / 〜だけど（で）… / …\nこの表現は背景情報を伝えたり、対比を示したり、発言を和らげたり、聞き手が反応できるように文を開いたままにしたりします。正確な意味は文脈によって異なります。\n비 오는데 우산 있어요?  雨が降っているけど、傘ある？",
+    "es": "Adjective + -(으)ㄴ데 / Verb + -는데 = ..., pero... / ..., y... / ...\nEsta expresión aporta información de contexto, muestra contraste, suaviza una afirmación, o deja la oración abierta para que el oyente responda. El significado exacto depende del contexto.\n비 오는데 우산 있어요?  Está lloviendo. ¿Tienes paraguas?",
+    "zh": "Adjective + -(으)ㄴ데 / Verb + -는데 = ……，但是…… / ……，然后…… / ……\n这个表达用于提供背景信息、表示对比、缓和语气，或者让句子保持开放以邀请对方回应。具体含义取决于语境。\n비 오는데 우산 있어요?  在下雨呢，你有伞吗？",
+    "vi": "Adjective + -(으)ㄴ데 / Verb + -는데 = ..., nhưng... / ..., và... / ...\nBiểu hiện này cung cấp thông tin nền, thể hiện sự tương phản, làm dịu câu nói, hoặc để câu nói mở ngỏ cho người nghe phản hồi. Ý nghĩa chính xác tùy thuộc vào ngữ cảnh.\n비 오는데 우산 있어요?  Trời đang mưa đấy. Bạn có ô không?"
+  },
   "hasHardcodedSubs": true
 },
 {
@@ -380,7 +393,13 @@ const quizList = [
   "endTime": 797.5,
   "fullSentence": "운동을 진짜 열심히 했거든",
   "blankWord": "진짜",
-  "explanation": "Verb/Adjective + -거든(요) = because... / you see... / it's because...\nThis expression is used to give a reason or explain something the listener may not know. \n어제 늦게 잤거든.  I went to bed late last night, you see.\n사실 나는 아침을 잘 안 먹거든.  Actually, I don't usually eat breakfast, you know.",
+  "explanation": {
+    "en": "Verb/Adjective + -거든(요) = because... / you see... / it's because...\nThis expression is used to give a reason or explain something the listener may not know. \n어제 늦게 잤거든.  I went to bed late last night, you see.\n사실 나는 아침을 잘 안 먹거든.  Actually, I don't usually eat breakfast, you know.",
+    "ja": "Verb/Adjective + -거든(요) = 〜だから… / 実は… / 〜なんだよ…\nこの表現は理由を伝えたり、聞き手がまだ知らないことを説明したりするときに使われます。 \n어제 늦게 잤거든.  昨日、遅く寝たんだよね。\n사실 나는 아침을 잘 안 먹거든.  実は私、朝ごはんをあまり食べないんだよね。",
+    "es": "Verb/Adjective + -거든(요) = porque... / verás... / es que...\nEsta expresión se usa para dar una razón o explicar algo que el oyente quizá no sepa. \n어제 늦게 잤거든.  Anoche me dormí tarde, ¿sabes?\n사실 나는 아침을 잘 안 먹거든.  De hecho, no suelo desayunar, ¿sabes?",
+    "zh": "Verb/Adjective + -거든(요) = 因为…… / 你知道吗…… / 其实是……\n这个表达用于说明原因，或解释一件听者可能还不知道的事。 \n어제 늦게 잤거든.  我昨天很晚才睡呢。\n사실 나는 아침을 잘 안 먹거든.  其实我平时不怎么吃早饭呢。",
+    "vi": "Verb/Adjective + -거든(요) = vì... / bạn biết đấy... / là vì...\nBiểu hiện này dùng để đưa ra lý do hoặc giải thích điều mà người nghe có thể chưa biết. \n어제 늦게 잤거든.  Hôm qua tôi ngủ muộn đấy.\n사실 나는 아침을 잘 안 먹거든.  Thật ra tôi không hay ăn sáng đâu."
+  },
   "hasHardcodedSubs": true
 },
 {
@@ -390,7 +409,13 @@ const quizList = [
   "endTime": 842,
   "fullSentence": "형 지금 다 먹은 거야?",
   "blankWord": "먹은",
-  "explanation": "In natural Korean speech, 지금 is often pronounced more like 짐 because the final -금 is reduced. Native speakers frequently shorten common words in fast conversation, so ​지금 may sound like 짐 even though it is still written as 지금.",
+  "explanation": {
+    "en": "In natural Korean speech, 지금 is often pronounced more like 짐 because the final -금 is reduced. Native speakers frequently shorten common words in fast conversation, so ​지금 may sound like 짐 even though it is still written as 지금.",
+    "ja": "自然な韓国語の発音では、지금は語尾の-금が弱くなるため、짐のように聞こえることがよくあります。ネイティブスピーカーは早い会話の中で日常的な単語をよく短く発音するので、書くときは지금のままでも、実際には짐のように聞こえることがあります。",
+    "es": "En el habla coreana natural, 지금 a menudo se pronuncia más como 짐 porque la sílaba final -금 se reduce. Los hablantes nativos suelen acortar palabras comunes al hablar rápido, así que 지금 puede sonar como 짐 aunque se siga escribiendo 지금.",
+    "zh": "在自然的韩语口语中，지금常常听起来更像짐，因为词尾的-금发音被弱化了。母语者在快速交谈时经常把常用词说得更短，所以지금虽然书写不变，但听起来可能像짐。",
+    "vi": "Trong lời nói tiếng Hàn tự nhiên, 지금 thường được phát âm giống 짐 hơn vì âm cuối -금 bị rút gọn. Người bản xứ thường nói ngắn các từ thông dụng khi nói nhanh, nên 지금 có thể nghe giống 짐 dù vẫn được viết là 지금."
+  },
   "hasHardcodedSubs": true
 },
 {
@@ -400,7 +425,13 @@ const quizList = [
   "endTime": 888,
   "fullSentence": "형, 난 ___ 가. (아, ___ 가는 구나.) 형, 나는 요즘 ___ 가고 있어.",
   "blankWord": "자주",
-  "explanation": "가  go (verb stem)\n가는구나  Oh, you're going. / I see you're going.\n가고 있어  I'm going. / I'm on my way.",
+  "explanation": {
+    "en": "가  go (verb stem)\n가는구나  Oh, you're going. / I see you're going.\n가고 있어  I'm going. / I'm on my way.",
+    "ja": "가  行く（動詞の語幹）\n가는구나  ああ、行くんだね。／行くんだ、なるほど。\n가고 있어  行ってるよ。／向かってるところ。",
+    "es": "가  ir (raíz del verbo)\n가는구나  Ah, te vas. / Ya veo que te vas.\n가고 있어  Voy. / Voy en camino.",
+    "zh": "가  去（动词词干）\n가는구나  哦，你要去啊。／原来你要去啊。\n가고 있어  我在去的路上。／我正要去。",
+    "vi": "가  đi (gốc động từ)\n가는구나  À, bạn đang đi đấy à. / Ra là bạn đang đi.\n가고 있어  Tôi đang đi. / Tôi đang trên đường đi."
+  },
   "hasHardcodedSubs": true
 },
 {
@@ -410,7 +441,13 @@ const quizList = [
   "endTime": 1198,
   "fullSentence": "이번에 유닛이 생겼어",
   "blankWord": "이번에",
-  "explanation": "생기다 = to be created, to form, to appear, or to come into existence\n생겼다 = was created, appeared, formed, or came into existence",
+  "explanation": {
+    "en": "생기다 = to be created, to form, to appear, or to come into existence\n생겼다 = was created, appeared, formed, or came into existence",
+    "ja": "생기다 = 生まれる、できる、現れる、または存在するようになる\n생겼다 = 生まれた、できた、現れた、または存在するようになった",
+    "es": "생기다 = crearse, formarse, aparecer, o llegar a existir\n생겼다 = se creó, apareció, se formó, o llegó a existir",
+    "zh": "생기다 = 产生、形成、出现，或开始存在\n생겼다 = 产生了、出现了、形成了，或开始存在了",
+    "vi": "생기다 = được tạo ra, hình thành, xuất hiện, hoặc ra đời\n생겼다 = đã được tạo ra, đã xuất hiện, đã hình thành, hoặc đã ra đời"
+  },
   "hasHardcodedSubs": true
 },
 {
@@ -420,7 +457,13 @@ const quizList = [
   "endTime": 1458,
   "fullSentence": "19년 동안 화장실도 못 갔어요",
   "blankWord": "화장실",
-  "explanation": "Noun + 동안 = for... / during...\n한 시간 동안 공부했어요.  I studied for an hour.",
+  "explanation": {
+    "en": "Noun + 동안 = for... / during...\n한 시간 동안 공부했어요.  I studied for an hour.",
+    "ja": "Noun + 동안 = 〜の間… / 〜の間ずっと…\n한 시간 동안 공부했어요.  1時間勉強しました。",
+    "es": "Noun + 동안 = durante... / por... (un periodo de tiempo)\n한 시간 동안 공부했어요.  Estudié durante una hora.",
+    "zh": "Noun + 동안 = ……期间 / ……的时候（表示时长）\n한 시간 동안 공부했어요.  我学习了一个小时。",
+    "vi": "Noun + 동안 = trong... / trong suốt... (khoảng thời gian)\n한 시간 동안 공부했어요.  Tôi đã học trong một tiếng đồng hồ."
+  },
   "hasHardcodedSubs": true
 },
 {
@@ -430,7 +473,13 @@ const quizList = [
   "endTime": 1519,
   "fullSentence": "야, 당연하지~",
   "blankWord": "당연",
-  "explanation": "당연하다 = to be natural, to be obvious, to be expected, or of course\n당연하지 = Of course. / Obviously. / Definitely.",
+  "explanation": {
+    "en": "당연하다 = to be natural, to be obvious, to be expected, or of course\n당연하지 = Of course. / Obviously. / Definitely.",
+    "ja": "당연하다 = 当然だ、当たり前だ、予想通りだ、もちろんだ\n당연하지 = もちろん。／当たり前でしょ。／当然だよ。",
+    "es": "당연하다 = ser natural, ser obvio, ser de esperar, o por supuesto\n당연하지 = Por supuesto. / Obviamente. / Claro que sí.",
+    "zh": "당연하다 = 理所当然、显而易见、意料之中，或当然\n당연하지 = 当然啦。／那还用说。／肯定的。",
+    "vi": "당연하다 = là điều đương nhiên, hiển nhiên, tất nhiên, hoặc dĩ nhiên\n당연하지 = Đương nhiên rồi. / Rõ ràng rồi. / Chắc chắn rồi."
+  },
   "hasHardcodedSubs": true
 },
 {
@@ -440,10 +489,16 @@ const quizList = [
   "endTime": 1855,
   "fullSentence": "5주년 축하해~",
   "blankWord": "축하",
-  "explanation": "축하해(요) = Congratulations!\n생일 축하해!  Happy birthday!\n졸업 축하해!  Congratulations on your graduation!\n합격 축하해!  Congratulations on passing!",
+  "explanation": {
+    "en": "축하해(요) = Congratulations!\n생일 축하해!  Happy birthday!\n졸업 축하해!  Congratulations on your graduation!\n합격 축하해!  Congratulations on passing!",
+    "ja": "축하해(요) = おめでとう！\n생일 축하해!  誕生日おめでとう！\n졸업 축하해!  卒業おめでとう！\n합격 축하해!  合格おめでとう！",
+    "es": "축하해(요) = ¡Felicidades!\n생일 축하해!  ¡Feliz cumpleaños!\n졸업 축하해!  ¡Felicidades por tu graduación!\n합격 축하해!  ¡Felicidades por aprobar!",
+    "zh": "축하해(요) = 恭喜！\n생일 축하해!  生日快乐！\n졸업 축하해!  恭喜毕业！\n합격 축하해!  恭喜考上/考过！",
+    "vi": "축하해(요) = Chúc mừng!\n생일 축하해!  Chúc mừng sinh nhật!\n졸업 축하해!  Chúc mừng tốt nghiệp!\n합격 축하해!  Chúc mừng bạn đã đỗ!"
+  },
   "hasHardcodedSubs": true
 }
-]
+];
 
 // explanation 다국어 객체에서 현재 UI 언어에 맞는 텍스트를 고른다.
 //   · 한국어 학습자 대상 콘텐츠라 'ko' UI 및 미번역 언어는 영어로 폴백한다.
@@ -571,6 +626,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const [answer, setAnswer] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'correct' | 'partial' | 'wrong'
   const [showReview, setShowReview] = useState(false); // 발음 포인트 복습 창
+  const [hintShown, setHintShown] = useState(false); // 힌트 공개 여부 (모든 유저에게 제공)
 
   // ── 학습 기록 state ────────────────────────────────────────────────────────
   const [stats, setStats] = useState(() => {
@@ -751,6 +807,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     setAnswer('');
     setStatus('idle');
     setShowReview(false);
+    setHintShown(false);
   }, []);
 
   // 퀴즈가 바뀌면(다음 문장/운영자 미리보기) 시도 상태 초기화
@@ -1023,6 +1080,14 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               >
                 {t('kpop.reset')}
               </button>
+              {quiz.hint && quiz.hint.trim() && (
+                <button
+                  onClick={() => setHintShown((v) => !v)}
+                  className={`${liftBtn} rounded-xl bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 shadow hover:bg-amber-100`}
+                >
+                  {hintShown ? t('kpop.hintHide') : t('kpop.hint')}
+                </button>
+              )}
               {status === 'correct' && (
                 <span className="kq-pop text-sm font-bold text-emerald-600">
                   {t('kpop.correctMsg')}
@@ -1039,6 +1104,12 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                 </span>
               )}
             </div>
+
+            {hintShown && quiz.hint && quiz.hint.trim() && (
+              <p className="kq-pop mt-3 rounded-xl bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800">
+                💡 {quiz.hint}
+              </p>
+            )}
           </section>
 
           {/* ── 섀도잉 녹음기 ─────────────────────────────────────────────── */}
@@ -1393,23 +1464,8 @@ function FinalResult({
   videoId,
 }) {
   const { t, lang } = useLang();
-  const [copied, setCopied] = useState(false);
   const [cardBusy, setCardBusy] = useState(false);
   const [cardSaved, setCardSaved] = useState(false);
-
-  const copyShare = async () => {
-    try {
-      await navigator.clipboard.writeText(shareText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  };
-  const shareToX = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
 
   // 포토카드 공유: 모바일은 OS 공유 시트(navigator.share), 데스크톱은 PNG 다운로드
   const shareCard = async () => {
@@ -1459,10 +1515,9 @@ function FinalResult({
         </div>
       </section>
 
-      {/* 성적 기반 바이럴 공유 */}
+      {/* 성적 기반 바이럴 공유 — 포토카드 저장 + 통합 도전장 공유 버튼 */}
       <section className="rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 p-5 text-white shadow-lg">
         <p className="text-sm font-semibold opacity-90">{t('kpop.shareTitle')}</p>
-        <p className="mt-1 whitespace-pre-line text-base font-bold leading-snug">“{shareText}”</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={shareCard}
@@ -1471,20 +1526,19 @@ function FinalResult({
           >
             {cardSaved ? t('kpop.cardSaved') : cardBusy ? '…' : t('kpop.saveCard')}
           </button>
-          <button
-            onClick={copyShare}
-            className={`${liftBtn} rounded-xl bg-white/95 px-4 py-2 text-sm font-bold text-indigo-700 shadow hover:bg-white`}
-          >
-            {copied ? t('kpop.copied') : t('kpop.copyLink')}
-          </button>
-          <button
-            onClick={shareToX}
-            className={`${liftBtn} rounded-xl bg-black px-4 py-2 text-sm font-bold text-white shadow hover:bg-slate-900`}
-          >
-            {t('kpop.shareX')}
-          </button>
         </div>
       </section>
+
+      <ChallengeShare
+        label={artist}
+        score={percent}
+        stars={stars}
+        gamePath={`/kpop-quiz/${videoId || ''}`}
+        correctCount={correctCount}
+        total={total}
+        thumbnailUrl={videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : undefined}
+        variant="light"
+      />
 
       {/* 전체 문장 복습 리스트 — 로그인 사용자 전용 */}
       {isLoggedIn ? (
@@ -1665,6 +1719,7 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     blankWord: currentQuiz.blankWord,
     // 운영자 빌더는 Firestore 배포 스키마(string)를 그대로 편집한다 — 다국어 객체면 en 텍스트로 평탄화해 시딩
     explanation: pickExplanation(currentQuiz.explanation, 'en'),
+    hint: currentQuiz.hint || '',
     hasHardcodedSubs: Boolean(currentQuiz.hasHardcodedSubs),
   });
   const [copied, setCopied] = useState(false);
@@ -1695,6 +1750,7 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     fullSentence: form.fullSentence,
     blankWord: form.blankWord,
     explanation: form.explanation,
+    hint: form.hint,
     hasHardcodedSubs: Boolean(form.hasHardcodedSubs),
   });
 
@@ -1789,6 +1845,10 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
                 value={form.explanation}
                 onChange={set('explanation')}
               />
+            </label>
+            <label className="text-xs font-semibold text-slate-500 sm:col-span-2">
+              힌트 (hint) — 정답을 직접 노출하지 않는 단서, 비워두면 힌트 버튼 숨김
+              <input className={`mt-1 ${field}`} value={form.hint} onChange={set('hint')} />
             </label>
             <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 sm:col-span-2">
               <input

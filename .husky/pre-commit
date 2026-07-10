@@ -1,0 +1,4 @@
+if git diff --cached --name-only | grep -q "^src/components/KpopQuiz.jsx$"; then
+  node scripts/translate-explanations.cjs
+  git add src/components/KpopQuiz.jsx scripts/.i18n-cache.json
+fi
