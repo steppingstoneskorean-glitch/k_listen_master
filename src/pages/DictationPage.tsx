@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import { useGamification } from '@/lib/gamification'
+import { useUserProfile } from '@/lib/userProfile'
 import {
   INTERMEDIATE_SENTENCES,
   ADVANCED_SENTENCES,
@@ -17,7 +18,11 @@ import {
 } from '@/lib/leaderboard'
 import GuestPromptModal from '@/components/GuestPromptModal'
 import InstallSuccessModal from '@/components/InstallSuccessModal'
+import NicknameModal from '@/components/NicknameModal'
+import Leaderboard from '@/components/Leaderboard'
 import ChallengeShare from '@/components/ChallengeShare'
+import ResultCard from '@/components/ResultCard'
+import { captureAndShare } from '@/lib/resultCardImage'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { usePwaInstall } from '@/lib/pwaInstall'
@@ -61,50 +66,6 @@ function ClozeDisplay({ text }: { text: string }) {
         )
       )}
     </p>
-  )
-}
-
-const RANK_BADGE: Record<number, string> = { 1: '👑', 2: '🥈', 3: '🥉' }
-
-function DictationLeaderboard({
-  entries,
-  playerName,
-  myScore,
-}: {
-  entries: RankedDictationEntry[]
-  playerName: string
-  myScore: number
-}) {
-  const { t } = useLang()
-  const top = entries.slice(0, 10)
-  return (
-    <div className="rounded-2xl bg-gray-900 border border-gray-800 overflow-hidden">
-      <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
-        <h3 className="font-bold text-sm">{t('game.leaderboard')}</h3>
-        <span className="flex items-center gap-1.5 text-xs text-green-400">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-          {t('game.live')}
-        </span>
-      </div>
-      <div className="divide-y divide-gray-800/50">
-        {top.length === 0 && (
-          <div className="px-5 py-6 text-center text-gray-600 text-sm">{t('game.noRecords')}</div>
-        )}
-        {top.map(entry => {
-          const isMe = entry.name === playerName && entry.score === myScore
-          return (
-            <div key={entry.id ?? `${entry.name}-${entry.score}`}
-              className={`flex items-center px-5 py-3.5 gap-3 ${isMe ? 'bg-indigo-500/10 border-l-2 border-indigo-500' : ''}`}>
-              <span className="text-lg w-5 text-center">{RANK_BADGE[entry.rank] ?? '⭐'}</span>
-              <span className="text-gray-500 text-xs w-10">{entry.rank}위</span>
-              <span className="flex-1 text-white font-semibold text-sm truncate">{entry.name}</span>
-              <span className="text-xs text-gray-600">{entry.correctCount}/10</span>
-              <span className="font-bold text-yellow-400 text-sm tabular-nums">{entry.score.toLocaleString()}</span>
-            </div>
-          )
-        })}
-      </div>
-    </div>
   )
 }
 
@@ -539,10 +500,26 @@ function ResultScreen({
   const [showInstallModal, setShowInstallModal] = useState(() => !isGuest && !isInstalled && !isInstallModalHidden())
   const myEntry = leaderboard.find(e => e.name === playerName && e.score === totalScore)
   const isAdv = mode === 'advanced'
+  const levelStars = isAdv ? LEVEL_STARS.advanced : LEVEL_STARS.intermediate
+
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [cardBusy, setCardBusy] = useState(false)
+  const [cardSaved, setCardSaved] = useState(false)
 
   const handleGuestModalClose = () => {
     setShowGuestModal(false)
     if (!isInstalled && !isInstallModalHidden()) setShowInstallModal(true)
+  }
+
+  const handleSaveImage = async () => {
+    if (!cardRef.current) return
+    setCardBusy(true)
+    const result = await captureAndShare(cardRef.current, 'k-listen-result.png')
+    if (result === 'downloaded') {
+      setCardSaved(true)
+      setTimeout(() => setCardSaved(false), 1800)
+    }
+    setCardBusy(false)
   }
 
   return (
@@ -598,9 +575,31 @@ function ResultScreen({
             </div>
           </div>
 
+          {/* 결과 이미지 카드 — 저장/공유 */}
+          <div className="flex flex-col items-center gap-3">
+            <div ref={cardRef}>
+              <ResultCard
+                title={isAdv ? t('home.level3.title') : t('home.level2.title')}
+                stars={levelStars}
+                score={totalScore}
+                correctCount={correctCount}
+                total={total}
+                tagline={t('resultCard.tagline')}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleSaveImage}
+              disabled={cardBusy}
+              className="rounded-2xl bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow hover:bg-amber-300 disabled:opacity-60 transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              {cardSaved ? t('resultCard.saved') : cardBusy ? '…' : t('resultCard.saveBtn')}
+            </button>
+          </div>
+
           {/* Leaderboard (logged-in only) */}
           {!isGuest && (
-            <DictationLeaderboard entries={leaderboard} playerName={playerName} myScore={totalScore} />
+            <Leaderboard entries={leaderboard} myName={playerName} myScore={totalScore} />
           )}
 
           {/* Guest login prompt */}
@@ -658,9 +657,12 @@ function ResultScreen({
 
           {/* 친구에게 도전장 보내기 */}
           <ChallengeShare
-            gameName={isAdv ? t('home.level3.title') : t('home.level2.title')}
+            label={isAdv ? t('home.level3.title') : t('home.level2.title')}
             score={totalScore}
+            stars={isAdv ? LEVEL_STARS.advanced : LEVEL_STARS.intermediate}
             gamePath={`/dictation?mode=${mode}`}
+            correctCount={correctCount}
+            total={total}
           />
 
           {/* Action buttons */}
@@ -689,7 +691,9 @@ export default function DictationPage() {
   const mode = params.get('mode') === 'advanced' ? 'advanced' : 'intermediate'
   const { user, isGuest } = useAuth()
   const { markVideoCompleted } = useGamification()
-  const playerName = user?.displayName || user?.email?.split('@')[0] || 'Guest'
+  const { nickname, saveNickname } = useUserProfile()
+  // 닉네임이 설정된 이후에는 항상 닉네임을 리더보드 표기명으로 사용 (게스트/미설정 시 폴백)
+  const playerName = nickname || user?.displayName || user?.email?.split('@')[0] || 'Guest'
 
   const [screen,       setScreen]       = useState<'level-select' | 'game' | 'result'>('level-select')
   const [gameLevel,    setGameLevel]    = useState<1 | 2>(1)
@@ -698,6 +702,12 @@ export default function DictationPage() {
   const [finalCorrect, setFinalCorrect] = useState(0)
   const [wrongEntries, setWrongEntries] = useState<WrongEntry[]>([])
   const [leaderboard,  setLeaderboard]  = useState<RankedDictationEntry[]>([])
+  const [showNicknameModal, setShowNicknameModal] = useState(false)
+  const [pendingSubmission, setPendingSubmission] = useState<{
+    collectionName: string
+    score: number
+    correct: number
+  } | null>(null)
 
   // Start (or restart) a game at the given level
   const startGame = (level: 1 | 2) => {
@@ -712,6 +722,19 @@ export default function DictationPage() {
     setScreen('game')
   }
 
+  // 리더보드에 실제로 제출 + 최신 순위 불러오기 (닉네임 확정 후 공통으로 사용)
+  const submitAndRefreshLeaderboard = async (collectionName: string, name: string, score: number, correct: number) => {
+    await submitDictationScore(collectionName, {
+      name,
+      score,
+      correctCount: correct,
+      timestamp: Date.now(),
+    })
+    const lb = await getDictationLeaderboard(collectionName)
+    setLeaderboard(lb)
+    markVideoCompleted()
+  }
+
   const handleGameComplete = async (score: number, correct: number, wrongs: WrongEntry[]) => {
     setFinalScore(score)
     setFinalCorrect(correct)
@@ -720,18 +743,25 @@ export default function DictationPage() {
     const collectionName = (mode === 'advanced' ? 'adv' : 'int') + 'L' + gameLevel
 
     if (!isGuest && user) {
-      await submitDictationScore(collectionName, {
-        name: playerName,
-        score,
-        correctCount: correct,
-        timestamp: Date.now(),
-      })
-      const lb = await getDictationLeaderboard(collectionName)
-      setLeaderboard(lb)
-      markVideoCompleted()
+      if (!nickname) {
+        // 최초 제출: 닉네임 모달을 먼저 띄우고, 확정되면 이어서 제출한다
+        setPendingSubmission({ collectionName, score, correct })
+        setShowNicknameModal(true)
+      } else {
+        await submitAndRefreshLeaderboard(collectionName, nickname, score, correct)
+      }
     }
 
     setScreen('result')
+  }
+
+  const handleNicknameSubmit = async (name: string) => {
+    await saveNickname(name)
+    setShowNicknameModal(false)
+    if (pendingSubmission) {
+      await submitAndRefreshLeaderboard(pendingSubmission.collectionName, name, pendingSubmission.score, pendingSubmission.correct)
+      setPendingSubmission(null)
+    }
   }
 
   if (screen === 'level-select') {
@@ -751,19 +781,22 @@ export default function DictationPage() {
 
   if (screen === 'result') {
     return (
-      <ResultScreen
-        mode={mode}
-        gameLevel={gameLevel}
-        totalScore={finalScore}
-        correctCount={finalCorrect}
-        total={QUESTIONS_PER_SESSION}
-        wrongEntries={wrongEntries}
-        leaderboard={leaderboard}
-        playerName={playerName}
-        isGuest={isGuest}
-        onRestart={() => setScreen('level-select')}
-        onUpgrade={gameLevel === 1 ? () => startGame(2) : undefined}
-      />
+      <>
+        {showNicknameModal && <NicknameModal onSubmit={handleNicknameSubmit} />}
+        <ResultScreen
+          mode={mode}
+          gameLevel={gameLevel}
+          totalScore={finalScore}
+          correctCount={finalCorrect}
+          total={QUESTIONS_PER_SESSION}
+          wrongEntries={wrongEntries}
+          leaderboard={leaderboard}
+          playerName={playerName}
+          isGuest={isGuest}
+          onRestart={() => setScreen('level-select')}
+          onUpgrade={gameLevel === 1 ? () => startGame(2) : undefined}
+        />
+      </>
     )
   }
 

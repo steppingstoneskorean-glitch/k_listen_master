@@ -10,7 +10,9 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang, type Lang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
+import { useVideoAccess } from '@/lib/accessControl'
 import AuthModal from '@/components/AuthModal'
+import UpgradeModal from '@/components/UpgradeModal'
 import { LIVE_VIDEOS, pickText, STAR_LEVELS, type StarFilter } from '@/data/kArtistLive'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { VideoCard, FilterDropdown, Stars } from '@/components/kartist/ui'
@@ -91,18 +93,32 @@ function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang): HubItem[] {
 export default function GameHubPage() {
   const { t, lang } = useLang()
   const { user, isGuest } = useAuth()
+  const { checkAccess, unlock } = useVideoAccess()
   const navigate = useNavigate()
 
   const [modalTarget, setModalTarget] = useState<string | null>(null)
+  const [showUpgrade, setShowUpgrade] = useState(false)
   const [artistFilter, setArtistFilter] = useState<HubArtist>('__all__')
   const [starFilter, setStarFilter] = useState<StarFilter>(0)
   const [sortKey, setSortKey] = useState<SortKey>('popular')
   const [desc, setDesc] = useState(true) // 기본: 내림차순(많이 도전한 순)
 
-  const handlePlay = (to: string) => {
+  const handlePlay = async (to: string, videoId?: string) => {
     if (!to) return
-    if (user || isGuest) navigate(to)
-    else setModalTarget(to)
+    if (!user && !isGuest) {
+      setModalTarget(to)
+      return
+    }
+    // K-Artist Live 영상(videoId 있음)만 등급별 일일 잠금 대상 — Step&Step 퀴즈는 게이팅 없음
+    if (videoId && user) {
+      const { allowed } = checkAccess(videoId)
+      if (!allowed) {
+        setShowUpgrade(true)
+        return
+      }
+      await unlock(videoId)
+    }
+    navigate(to)
   }
 
   const items = useMemo(() => buildItems(t, lang), [t, lang])
@@ -126,6 +142,7 @@ export default function GameHubPage() {
   return (
     <>
       {modalTarget && <AuthModal targetPath={modalTarget} onClose={() => setModalTarget(null)} />}
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
 
       <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-indigo-50">
         <style>{`
@@ -206,7 +223,7 @@ export default function GameHubPage() {
                     emoji={it.emoji}
                     imageSrc={it.imageSrc}
                     playable={Boolean(it.url)}
-                    onPlay={() => handlePlay(it.url)}
+                    onPlay={() => handlePlay(it.url, it.videoId)}
                   />
                 </div>
               ))}

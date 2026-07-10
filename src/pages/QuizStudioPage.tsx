@@ -47,7 +47,7 @@ export default function QuizStudioPage() {
   const videoId = useMemo(() => extractVideoId(videoUrl), [videoUrl])
 
   const [transcript, setTranscript] = useState('')
-  const [count, setCount] = useState(8)
+  const [count, setCount] = useState(20)
 
   const [items, setItems] = useState<QuizItem[]>([])
   const [publishedCount, setPublishedCount] = useState<number | null>(null)
@@ -120,6 +120,7 @@ export default function QuizStudioPage() {
         fullSentence: '',
         blankWord: '',
         explanation: '',
+        hint: '',
         hasHardcodedSubs: true,
         initialSpeed: 0.75,
       },
@@ -225,7 +226,7 @@ export default function QuizStudioPage() {
           <label className="text-xs font-semibold text-slate-500">
             생성할 퀴즈 수
             <select className={`mt-1 ${field}`} value={count} onChange={(e) => setCount(Number(e.target.value))}>
-              {[3, 5, 8, 10, 12, 15].map((n) => (
+              {[3, 5, 8, 10, 12, 15, 20].map((n) => (
                 <option key={n} value={n}>
                   {n}개
                 </option>
@@ -398,6 +399,16 @@ export default function QuizStudioPage() {
                       className={`mt-1 ${field} whitespace-pre-wrap`}
                       value={q.explanation}
                       onChange={(e) => update(i, { explanation: e.target.value })}
+                    />
+                  </label>
+
+                  <label className="mt-2 block text-xs font-semibold text-slate-500">
+                    힌트 (정답을 직접 노출하지 않는 발음/문맥 단서 · 비우면 힌트 버튼 숨김)
+                    <textarea
+                      rows={2}
+                      className={`mt-1 ${field}`}
+                      value={q.hint ?? ''}
+                      onChange={(e) => update(i, { hint: e.target.value })}
                     />
                   </label>
                 </li>

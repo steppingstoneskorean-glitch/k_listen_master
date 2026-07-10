@@ -2,10 +2,15 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { submitScore, getLeaderboard, RankedEntry } from '@/lib/leaderboard'
 import { useAuth } from '@/lib/auth'
 import { useLang } from '@/lib/i18n'
+import { useUserProfile } from '@/lib/userProfile'
 import { recordError, recordCorrect } from '@/lib/errorHistory'
 import GuestPromptModal from '@/components/GuestPromptModal'
 import InstallSuccessModal from '@/components/InstallSuccessModal'
+import NicknameModal from '@/components/NicknameModal'
+import Leaderboard from '@/components/Leaderboard'
 import ChallengeShare from '@/components/ChallengeShare'
+import ResultCard from '@/components/ResultCard'
+import { captureAndShare } from '@/lib/resultCardImage'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { usePwaInstall } from '@/lib/pwaInstall'
@@ -527,31 +532,6 @@ function GamePlayScreen({
 
 // ── Result Screen ───────────────────────────────────────────────────────────
 
-function TiedGroup({ entries }: { entries: RankedEntry[] }) {
-  const { t } = useLang()
-  const [expanded, setExpanded] = useState(false)
-  if (entries.length === 0) return null
-  const first = entries[0]
-  if (entries.length === 1) {
-    return <span className="text-white font-semibold truncate max-w-[120px]">{first.name}</span>
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 flex-wrap">
-      <span className="text-white font-semibold truncate max-w-[100px]">{first.name}</span>
-      <button onClick={() => setExpanded(e => !e)} className="text-xs text-gray-500 hover:text-gray-300 underline underline-offset-2">
-        {t('game.othersFmt').replace('{n}', String(entries.length - 1))}
-      </button>
-      {expanded && (
-        <span className="w-full text-xs text-gray-400 pl-2">
-          {entries.slice(1).map(e => e.name).join(', ')}
-        </span>
-      )}
-    </span>
-  )
-}
-
-const RANK_BADGE: Record<number, string> = { 1: '👑', 2: '🥈', 3: '🥉' }
-
 function ResultScreen({
   playerName,
   totalScore,
@@ -576,17 +556,27 @@ function ResultScreen({
   const [showGuestModal, setShowGuestModal] = useState(isGuest)
   const [showInstallModal, setShowInstallModal] = useState(() => !isGuest && !isInstalled && !isInstallModalHidden())
 
-  const rankGroups = leaderboard.reduce<Record<number, RankedEntry[]>>((acc, e) => {
-    ;(acc[e.rank] = acc[e.rank] || []).push(e)
-    return acc
-  }, {})
-  const uniqueRanks = Object.keys(rankGroups).map(Number).sort((a, b) => a - b).slice(0, 10)
   const myRank = myEntry?.rank
-  const isTied = myRank !== undefined && (rankGroups[myRank]?.length ?? 0) > 1
+  const isTied = myRank !== undefined && leaderboard.filter(e => e.rank === myRank).length > 1
+
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [cardBusy, setCardBusy] = useState(false)
+  const [cardSaved, setCardSaved] = useState(false)
 
   const handleGuestModalClose = () => {
     setShowGuestModal(false)
     if (!isInstalled && !isInstallModalHidden()) setShowInstallModal(true)
+  }
+
+  const handleSaveImage = async () => {
+    if (!cardRef.current) return
+    setCardBusy(true)
+    const result = await captureAndShare(cardRef.current, 'k-listen-result.png')
+    if (result === 'downloaded') {
+      setCardSaved(true)
+      setTimeout(() => setCardSaved(false), 1800)
+    }
+    setCardBusy(false)
   }
 
   return (
@@ -627,34 +617,28 @@ function ResultScreen({
             </div>
           </div>
 
-          {!isGuest && (
-            <div className="rounded-2xl bg-gray-900 border border-gray-800 overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
-                <h3 className="font-bold text-sm">{t('game.leaderboard')}</h3>
-                <span className="flex items-center gap-1.5 text-xs text-green-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-                  {t('game.live')}
-                </span>
-              </div>
-              <div className="divide-y divide-gray-800/50">
-                {uniqueRanks.map(rank => {
-                  const group = rankGroups[rank]
-                  const isMe = group.some(e => e.name === playerName && e.score === totalScore)
-                  const isTiedGroup = group.length > 1
-                  return (
-                    <div key={rank} className={`flex items-start px-5 py-3.5 gap-3 ${isMe ? 'bg-indigo-500/10 border-l-2 border-indigo-500' : ''}`}>
-                      <span className="text-lg w-5 text-center mt-0.5">{RANK_BADGE[rank] ?? '⭐'}</span>
-                      <span className="text-gray-500 text-xs w-16 mt-1">{isTiedGroup ? t('game.tiedRankFmt').replace('{n}', String(rank)) : t('game.rankFmt').replace('{n}', String(rank))}</span>
-                      <div className="flex-1 min-w-0"><TiedGroup entries={group} /></div>
-                      <span className="font-bold text-yellow-400 text-sm tabular-nums mt-1">{group[0].score.toLocaleString()}</span>
-                    </div>
-                  )
-                })}
-                {leaderboard.length === 0 && (
-                  <div className="px-5 py-6 text-center text-gray-600 text-sm">{t('game.noRecords')}</div>
-                )}
-              </div>
+          {/* 결과 이미지 카드 — 저장/공유 */}
+          <div className="flex flex-col items-center gap-3">
+            <div ref={cardRef}>
+              <ResultCard
+                title={t('home.level1.title')}
+                stars={LEVEL_STARS.beginner}
+                score={totalScore}
+                tagline={t('resultCard.tagline')}
+              />
             </div>
+            <button
+              type="button"
+              onClick={handleSaveImage}
+              disabled={cardBusy}
+              className="rounded-2xl bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow hover:bg-amber-300 disabled:opacity-60 transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              {cardSaved ? t('resultCard.saved') : cardBusy ? '…' : t('resultCard.saveBtn')}
+            </button>
+          </div>
+
+          {!isGuest && (
+            <Leaderboard entries={leaderboard} myName={playerName} myScore={totalScore} />
           )}
 
           {isGuest && (
@@ -667,7 +651,7 @@ function ResultScreen({
           )}
 
           {/* 친구에게 도전장 보내기 */}
-          <ChallengeShare gameName={t('home.level1.title')} score={totalScore} gamePath="/game" />
+          <ChallengeShare label={t('home.level1.title')} score={totalScore} stars={LEVEL_STARS.beginner} gamePath="/game" />
 
           <div className="flex gap-3">
             <button
@@ -695,7 +679,9 @@ type Screen = 'playing' | 'level-clear' | 'review' | 'result'
 
 export default function GamePage() {
   const { user, isGuest } = useAuth()
-  const playerName = user?.displayName || user?.email?.split('@')[0] || 'Guest'
+  const { nickname, saveNickname } = useUserProfile()
+  // 닉네임이 설정된 이후에는 항상 닉네임을 리더보드 표기명으로 사용 (게스트/미설정 시 폴백)
+  const playerName = nickname || user?.displayName || user?.email?.split('@')[0] || 'Guest'
 
   const [screen, setScreen] = useState<Screen>('playing')
   const [level, setLevel] = useState<1 | 2 | 3 | 4>(1)
@@ -705,6 +691,8 @@ export default function GamePage() {
   const [leaderboard, setLeaderboard] = useState<RankedEntry[]>([])
   const [myEntry, setMyEntry] = useState<RankedEntry | undefined>()
   const [levelWrongAnswers, setLevelWrongAnswers] = useState<WrongAnswerData[]>([])
+  const [showNicknameModal, setShowNicknameModal] = useState(false)
+  const [pendingResult, setPendingResult] = useState<{ result: 'win' | 'lose'; highestLevel: number } | null>(null)
 
   const handleCorrect = useCallback((pts: number) => {
     setTotalScore(prev => prev + pts)
@@ -726,22 +714,46 @@ export default function GamePage() {
     }
   }, [lives, screen]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 리더보드에 실제로 제출 + 최신 순위 불러오기 (닉네임 확정 후 공통으로 사용)
+  const submitAndRefreshLeaderboard = useCallback(
+    async (name: string, highestLevel: number, result: 'win' | 'lose') => {
+      const entry = { name, score: totalScore, highestLevel, result, timestamp: Date.now() }
+      await submitScore(entry)
+      const lb = await getLeaderboard()
+      setLeaderboard(lb)
+      const me = lb.find(e => e.name === name && e.score === totalScore)
+      setMyEntry(me)
+    },
+    [totalScore],
+  )
+
   const endGame = useCallback(
     async (result: 'win' | 'lose') => {
       setGameResult(result)
       const highestLevel = level
       if (!isGuest && user) {
-        const entry = { name: playerName, score: totalScore, highestLevel, result, timestamp: Date.now() }
-        await submitScore(entry)
-        const lb = await getLeaderboard()
-        setLeaderboard(lb)
-        const me = lb.find(e => e.name === playerName && e.score === totalScore)
-        setMyEntry(me)
+        if (!nickname) {
+          // 최초 제출: 닉네임 모달을 먼저 띄우고, 확정되면 이어서 제출한다
+          setPendingResult({ result, highestLevel })
+          setShowNicknameModal(true)
+          setScreen('result')
+          return
+        }
+        await submitAndRefreshLeaderboard(nickname, highestLevel, result)
       }
       setScreen('result')
     },
-    [level, playerName, totalScore, isGuest, user],
+    [level, isGuest, user, nickname, submitAndRefreshLeaderboard],
   )
+
+  const handleNicknameSubmit = async (name: string) => {
+    await saveNickname(name)
+    setShowNicknameModal(false)
+    if (pendingResult) {
+      await submitAndRefreshLeaderboard(name, pendingResult.highestLevel, pendingResult.result)
+      setPendingResult(null)
+    }
+  }
 
   const handlePairsExhausted = useCallback(() => {
     if (level === 4) {
@@ -765,6 +777,8 @@ export default function GamePage() {
     setLevelWrongAnswers([])
     setLeaderboard([])
     setMyEntry(undefined)
+    setShowNicknameModal(false)
+    setPendingResult(null)
     setScreen('playing')
   }, [])
 
@@ -800,16 +814,19 @@ export default function GamePage() {
         />
       )}
       {screen === 'result' && (
-        <ResultScreen
-          playerName={playerName}
-          totalScore={totalScore}
-          highestLevel={level}
-          result={gameResult}
-          leaderboard={leaderboard}
-          myEntry={myEntry}
-          isGuest={isGuest}
-          onRestart={restartGame}
-        />
+        <>
+          {showNicknameModal && <NicknameModal onSubmit={handleNicknameSubmit} />}
+          <ResultScreen
+            playerName={playerName}
+            totalScore={totalScore}
+            highestLevel={level}
+            result={gameResult}
+            leaderboard={leaderboard}
+            myEntry={myEntry}
+            isGuest={isGuest}
+            onRestart={restartGame}
+          />
+        </>
       )}
     </>
   )

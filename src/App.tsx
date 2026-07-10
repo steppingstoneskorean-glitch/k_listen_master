@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { LangProvider } from '@/lib/i18n'
 import { AuthProvider } from '@/lib/auth'
 import { GamificationProvider } from '@/lib/gamification'
+import { UserProfileProvider } from '@/lib/userProfile'
+import { VideoAccessProvider } from '@/lib/accessControl'
 import { PwaInstallProvider } from '@/lib/pwaInstall'
 import Layout from '@/components/layout/Layout'
 import StartPage from '@/pages/StartPage'
@@ -21,6 +23,8 @@ export default function App() {
     <LangProvider>
       <AuthProvider>
         <GamificationProvider>
+          <UserProfileProvider>
+          <VideoAccessProvider>
           <PwaInstallProvider>
             <Routes>
               {/* Full-screen pages (no header/footer) */}
@@ -45,6 +49,8 @@ export default function App() {
               <Route path="/index" element={<Navigate to="/" replace />} />
             </Routes>
           </PwaInstallProvider>
+          </VideoAccessProvider>
+          </UserProfileProvider>
         </GamificationProvider>
       </AuthProvider>
     </LangProvider>

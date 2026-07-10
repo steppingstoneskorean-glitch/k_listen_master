@@ -167,8 +167,11 @@ async function main() {
       continue;
     }
 
+    // "이미 다 채워져 있으니 그대로 믿는다"는 캐시 기록이 아예 없을 때만 허용한다.
+    // 캐시가 있는데 해시가 다르면 en 이 수정된 것이므로, 기존 번역이 다 차 있어도
+    // 최신 원문과 더 이상 일치하지 않는 stale 번역일 수 있어 반드시 재번역해야 한다.
     const alreadyFull = LANGS.every((l) => typeof exp[l] === 'string' && exp[l].trim());
-    if (alreadyFull) {
+    if (!cached && alreadyFull) {
       // 이미 사람이 번역해 둔 데이터(예: 최초 실행) — API 호출 없이 캐시만 기록
       cache[cacheKey] = { enHash, ja: exp.ja, es: exp.es, zh: exp.zh, vi: exp.vi };
       continue;

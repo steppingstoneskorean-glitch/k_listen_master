@@ -287,6 +287,40 @@ const TRANSLATIONS = {
     es: 'Sin registros aún',
     ja: 'まだ記録がありません',
   },
+  'game.yourRankFmt': {
+    en: 'Your Rank: #{n} | {score} pts',
+    ko: '내 순위: #{n} | {score}점',
+    es: 'Tu Rango: #{n} | {score} pts',
+    ja: 'あなたの順位: #{n} | {score}点',
+  },
+
+  // ── Nickname (leaderboard) ──
+  'nickname.title': {
+    en: 'Set Your Leaderboard Nickname',
+    ko: '리더보드 닉네임을 설정하세요',
+    es: 'Configura tu apodo del ranking',
+    ja: 'リーダーボードのニックネームを設定してください',
+  },
+  'nickname.body': {
+    en: 'This name will be shown on the leaderboard for all your future games.',
+    ko: '이 닉네임은 앞으로의 모든 게임에서 리더보드에 표시됩니다.',
+    es: 'Este nombre se mostrará en el ranking para todos tus próximos juegos.',
+    ja: 'このニックネームは今後すべてのゲームでリーダーボードに表示されます。',
+  },
+  'nickname.placeholder': { en: 'Enter a nickname', ko: '닉네임 입력', es: 'Ingresa un apodo', ja: 'ニックネームを入力' },
+  'nickname.confirm': { en: 'Save & Continue', ko: '저장하고 계속하기', es: 'Guardar y continuar', ja: '保存して続ける' },
+  'nickname.required': {
+    en: 'Please enter a nickname.',
+    ko: '닉네임을 입력해주세요.',
+    es: 'Por favor ingresa un apodo.',
+    ja: 'ニックネームを入力してください。',
+  },
+  'nickname.tooLong': {
+    en: 'Nickname must be 20 characters or less.',
+    ko: '닉네임은 20자 이하여야 합니다.',
+    es: 'El apodo debe tener 20 caracteres o menos.',
+    ja: 'ニックネームは20文字以内にしてください。',
+  },
 
   // ── Dictation game ──
   'dictation.listenAgain': { en: 'Listen Again', ko: '다시 듣기', es: 'Escuchar de nuevo', ja: 'もう一度聞く' },
@@ -543,6 +577,20 @@ const TRANSLATIONS = {
     es: 'No hay juegos con este filtro. ¡Prueba otro!',
     ja: 'この条件に合うゲームはまだありません。他のフィルターを試してください！',
   },
+  'upgrade.title': {
+    en: "You've used today's free pass",
+    ko: '오늘의 무료 이용권을 사용했어요',
+    es: 'Ya usaste tu pase gratis de hoy',
+    ja: '本日の無料パスを使用済みです',
+  },
+  'upgrade.body': {
+    en: "You've used your 1 free pass for today! Upgrade to Premium to unlock all videos immediately.",
+    ko: '오늘의 무료 이용권 1회를 모두 사용했어요! 프리미엄으로 업그레이드하면 모든 영상을 바로 이용할 수 있어요.',
+    es: '¡Ya usaste tu 1 pase gratis de hoy! Mejora a Premium para desbloquear todos los videos al instante.',
+    ja: '本日の無料パス（1回）を使い切りました！プレミアムにアップグレードすると、すべての動画をすぐに利用できます。',
+  },
+  'upgrade.cta': { en: 'Upgrade to Premium', ko: '프리미엄으로 업그레이드', es: 'Mejorar a Premium', ja: 'プレミアムにアップグレード' },
+  'upgrade.close': { en: 'Maybe later', ko: '다음에 할게요', es: 'Más tarde', ja: 'あとで' },
 
   // ── Challenge Share (결과 페이지 도전장 공유) ──
   'challenge.title': {
@@ -552,13 +600,30 @@ const TRANSLATIONS = {
     ja: '📣 友達に挑戦状を送る',
   },
   'challenge.message': {
-    en: "🎵 [Step Korean] Challenge received! I scored {score} points in the '{game}' game. Can you beat me? Try it now!",
-    ko: "🎵 [Step Korean] 도전장 도착! 내가 '{game}' 게임에서 총 {score}점을 받았어. 너도 나보다 잘할 수 있을까? 지금 도전해봐!",
-    es: "🎵 [Step Korean] ¡Reto recibido! Conseguí {score} puntos en el juego '{game}'. ¿Puedes superarme? ¡Inténtalo ahora!",
-    ja: "🎵 [Step Korean] 挑戦状が届いた！ '{game}' ゲームで合計{score}点を取ったよ。あなたは私に勝てるかな？今すぐ挑戦してみて！",
+    en: '🎵 Challenge Arrived! I just scored {score} pts on the {name} Quiz ({stars} Stars Level)! Can you beat my score? Try now 🎧',
+    ko: '🎵 도전장 도착! 내가 {name} 퀴즈에서 {score}점을 받았어 (난이도 별 {stars}개)! 나를 이길 수 있을까? 지금 도전해봐 🎧',
+    es: '🎵 ¡Reto recibido! Conseguí {score} pts en el quiz de {name} (Nivel {stars} estrellas). ¿Puedes superarme? ¡Inténtalo ahora! 🎧',
+    ja: '🎵 挑戦状が届いた！{name}クイズで{score}点を獲得したよ（難易度★{stars}）！私に勝てるかな？今すぐ挑戦してみて🎧',
+  },
+  'challenge.shareBtn': {
+    en: '🔗 Share Challenge Link',
+    ko: '🔗 도전장 링크 공유',
+    es: '🔗 Compartir enlace de reto',
+    ja: '🔗 挑戦状リンクを共有',
+  },
+  'challenge.toastMsg': {
+    en: 'Challenge link copied! Share it anywhere.',
+    ko: '도전장 링크가 복사되었습니다! 어디서든 공유해보세요.',
+    es: '¡Enlace de reto copiado! Compártelo donde quieras.',
+    ja: '挑戦状のリンクをコピーしました！どこでもシェアしてみましょう。',
   },
   'challenge.copy': { en: '📋 Copy link', ko: '📋 링크 복사', es: '📋 Copiar enlace', ja: '📋 リンクをコピー' },
   'challenge.copied': { en: '✔ Copied!', ko: '✔ 복사됨!', es: '✔ ¡Copiado!', ja: '✔ コピー済み！' },
+
+  // ── Result Image Card ──
+  'resultCard.saveBtn': { en: '📸 Save Image for IG Story', ko: '📸 인스타 스토리용 이미지 저장', es: '📸 Guardar imagen para IG Story', ja: '📸 IGストーリー用に画像を保存' },
+  'resultCard.saved': { en: '✔ Saved!', ko: '✔ 저장됨!', es: '✔ ¡Guardado!', ja: '✔ 保存済み！' },
+  'resultCard.tagline': { en: 'Can you beat my score?', ko: '나를 이겨볼 수 있을까?', es: '¿Puedes superar mi puntuación?', ja: '私のスコアを超えられる？' },
   'challenge.shareX': { en: 'Share on 𝕏', ko: '𝕏 로 공유', es: 'Compartir en 𝕏', ja: '𝕏 でシェア' },
   'kartist.tryQuiz': { en: 'Try the listening quiz', ko: '듣기 퀴즈 도전', es: 'Prueba el quiz de escucha', ja: 'リスニングクイズに挑戦' },
   'kartist.play': { en: 'Play →', ko: 'Play →', es: 'Jugar →', ja: 'プレイ →' },
@@ -596,6 +661,8 @@ const TRANSLATIONS = {
   'kpop.answerPlaceholder': { en: 'Type answer', ko: '정답 입력', es: 'Escribe la respuesta', ja: '答えを入力' },
   'kpop.check': { en: '✅ Check', ko: '✅ 확인', es: '✅ Comprobar', ja: '✅ 確認' },
   'kpop.reset': { en: '↺ Reset', ko: '↺ 다시', es: '↺ Reiniciar', ja: '↺ やり直す' },
+  'kpop.hint': { en: '💡 Hint', ko: '💡 힌트', es: '💡 Pista', ja: '💡 ヒント' },
+  'kpop.hintHide': { en: '💡 Hide hint', ko: '💡 힌트 숨기기', es: '💡 Ocultar pista', ja: '💡 ヒントを隠す' },
   'kpop.correctMsg': { en: 'Correct! +10 pts 🎉', ko: '정답! +10점 🎉', es: '¡Correcto! +10 pts 🎉', ja: '正解！+10点 🎉' },
   'kpop.partialMsg': {
     en: '🔺 The letters are right — check your spacing! +5 pts',

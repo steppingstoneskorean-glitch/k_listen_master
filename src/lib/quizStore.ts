@@ -18,6 +18,8 @@ export interface QuizItem {
   fullSentence: string
   blankWord: string
   explanation: string
+  /** 정답을 직접 노출하지 않는 발음/문맥 힌트. 비어 있으면 힌트 버튼이 숨겨진다 */
+  hint: string
   hasHardcodedSubs: boolean
   /** 영상 자동 재생 속도. 미지정 시 1.0(기본 배속) */
   initialSpeed?: number
