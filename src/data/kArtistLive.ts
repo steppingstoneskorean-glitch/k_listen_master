@@ -94,10 +94,10 @@ export const LIVE_VIDEOS: LiveVideo[] = [
   },
   {
     id: 4,
-    title: { en: 'SKZ Group Vlog', ko: 'SKZ 단체 브이로그', es: 'SKZ Vlog grupal', ja: 'SKZ グループVlog' },
+    title: { en: "Busan's Prince I.N and his 7 chaotic hyungs", ko: '부산의 왕자 아이엔과 통제 불능 7명의 형들', es: 'El príncipe de Busan, I.N, y sus 7 caóticos hyungs', ja: '釜山の王子・アイエンと制御不能な7人の兄（ヒョン）たち' },
     artist: 'SKZ',
-    stars: 4,
-    url: '',
+    stars: 3,
+    url: 'wQvbvIJttDc',
     plays: 0,
     addedAt: 4,
   },
