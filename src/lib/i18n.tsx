@@ -658,7 +658,7 @@ const TRANSLATIONS = {
     es: 'Completa el espacio con lo que escuchas',
     ja: '聞こえたとおりに空欄を埋めてください',
   },
-  'kpop.answerPlaceholder': { en: 'Type answer', ko: '정답 입력', es: 'Escribe la respuesta', ja: '答えを入力' },
+  'kpop.answerPlaceholder': { en: 'Type answer', ko: '정답', es: 'Escribe la respuesta', ja: '答えを入力' },
   'kpop.check': { en: '✅ Check', ko: '✅ 확인', es: '✅ Comprobar', ja: '✅ 確認' },
   'kpop.reset': { en: '↺ Reset', ko: '↺ 다시', es: '↺ Reiniciar', ja: '↺ やり直す' },
   'kpop.hint': { en: '💡 Hint', ko: '💡 힌트', es: '💡 Pista', ja: '💡 ヒント' },

@@ -1065,7 +1065,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
                 placeholder={t('kpop.answerPlaceholder')}
-                className={`notranslate min-w-[7rem] rounded-lg border-2 px-3 py-1 text-center font-bold outline-none transition-colors ${
+                style={{ width: `${Math.max(quiz.blankWord.length, 1) * 1.15 + 2.2}em` }}
+                className={`notranslate rounded-lg border-2 px-3 py-1 text-center font-bold outline-none transition-colors placeholder:text-xs placeholder:font-normal placeholder:tracking-tight placeholder:text-slate-400 ${
                   status === 'correct'
                     ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
                     : status === 'partial'
