@@ -24,7 +24,6 @@ import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
 import { ARTISTS, LIVE_VIDEOS } from '@/data/kArtistLive';
 import { loadPublishedQuizzes } from '@/lib/quizStore';
-import { ClickableKorean, ExpressionModal, useExpressionExplainer } from '@/components/ExpressionExplainer';
 import ChallengeShare from '@/components/ChallengeShare';
 
 // 운영자 아티스트 태깅 옵션 ('__all__' 제외 — 필터 시스템과 동일 소스)
@@ -601,9 +600,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // 현재 영상의 정보 (난이도 등) 가져오기
   const currentVideo = LIVE_VIDEOS.find(v => v.videoId === routeVideoId);
 
-  // 표현 클릭 즉석 해설 (원어민 빠른 발화/연음/축약/슬랭 뉘앙스) — 문장 어디서든 재사용
-  const explainer = useExpressionExplainer({ videoId: routeVideoId, artist: currentVideo?.artist });
-
   const [list, setList] = useState(filteredQuizList);
   const [index, setIndex] = useState(0);
   const [results, setResults] = useState([]); // index별 'correct'|'partial'|'wrong'
@@ -1045,17 +1041,15 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                 : 'border-slate-200'
             } ${status === 'wrong' ? 'kq-shake' : ''}`}
           >
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
               {t('kpop.clozePrompt')}
             </p>
-            <p className="mb-3 text-[11px] text-slate-400">{t('kpop.tapHint')}</p>
-            {/* 딕테이션 원문 + 입력창: 크롬 자동 번역 차단 (translate="no" + notranslate)
-                prefix/suffix 어절은 클릭 가능 — 모르는 표현 탭하면 즉석 해설 모달 오픈 */}
+            {/* 딕테이션 원문 + 입력창: 크롬 자동 번역 차단 (translate="no" + notranslate) */}
             <div
               translate="no"
               className="notranslate flex flex-wrap items-center gap-1 text-lg leading-relaxed"
             >
-              <ClickableKorean text={prefix} onWordClick={(w) => explainer.explain(w, quiz.fullSentence)} />
+              <span>{prefix}</span>
               <input
                 translate="no"
                 value={answer}
@@ -1076,7 +1070,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                     : 'border-slate-300 focus:border-indigo-400'
                 }`}
               />
-              <ClickableKorean text={suffix} onWordClick={(w) => explainer.explain(w, quiz.fullSentence)} />
+              <span>{suffix}</span>
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -1162,7 +1156,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           answer={answer}
           isLast={isLast}
           liftBtn={liftBtn}
-          explainer={explainer}
           onReplay={() => {
             setShowReview(false);
             replaySegment();
@@ -1171,16 +1164,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           onClose={() => setShowReview(false)}
         />
       )}
-
-      {/* ── 표현 클릭 즉석 해설 모달: 위 어느 문장에서 탭하든 여기서 공통 표시 ── */}
-      <ExpressionModal
-        open={explainer.open}
-        expression={explainer.expression}
-        loading={explainer.loading}
-        explanation={explainer.explanation}
-        error={explainer.error}
-        onClose={explainer.close}
-      />
     </div>
   );
 }
@@ -1188,7 +1171,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 // ─────────────────────────────────────────────────────────────────────────────
 // 발음 포인트 복습 창: 채점 결과 + 해설 + '다음 문장 듣기' 흐름 제어
 // ─────────────────────────────────────────────────────────────────────────────
-function ReviewModal({ status, quiz, answer, isLast, liftBtn, explainer, onReplay, onNext, onClose }) {
+function ReviewModal({ status, quiz, answer, isLast, liftBtn, onReplay, onNext, onClose }) {
   const { t, lang } = useLang();
   const isCorrect = status === 'correct';
   const isPartial = status === 'partial';
@@ -1220,20 +1203,17 @@ function ReviewModal({ status, quiz, answer, isLast, liftBtn, explainer, onRepla
           </h3>
         </div>
 
-        {/* 전체 문장 (빈칸 단어 하이라이트) — 한국어 원문 보호, 어절 클릭 시 즉석 해설 */}
+        {/* 전체 문장 (빈칸 단어 하이라이트) — 한국어 원문 보호 */}
         <p
           translate="no"
           className="notranslate mt-3 rounded-xl bg-indigo-50 p-3 text-sm leading-relaxed text-indigo-900"
         >
           {quiz.fullSentence.split(quiz.blankWord).map((part, i, arr) => (
             <span key={i}>
-              <ClickableKorean text={part} onWordClick={(w) => explainer.explain(w, quiz.fullSentence)} />
+              {part}
               {i < arr.length - 1 && (
                 <mark className="rounded bg-indigo-200 px-1 font-bold text-indigo-900">
-                  <ClickableKorean
-                    text={quiz.blankWord}
-                    onWordClick={(w) => explainer.explain(w, quiz.fullSentence)}
-                  />
+                  {quiz.blankWord}
                 </mark>
               )}
             </span>

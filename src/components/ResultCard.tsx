@@ -19,7 +19,7 @@ export default function ResultCard({ thumbnailUrl, title, stars, score, correctC
     <div className="mx-auto aspect-square w-full max-w-[380px] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-indigo-600 to-fuchsia-600 p-4 shadow-2xl">
       <div className="flex h-full w-full flex-col overflow-hidden rounded-[2rem] bg-white">
         {/* 썸네일 배너 (없으면 그라데이션 + 로고) */}
-        <div className="relative h-[38%] w-full shrink-0 overflow-hidden bg-gradient-to-br from-indigo-500 to-fuchsia-500">
+        <div className="relative h-[44%] w-full shrink-0 overflow-hidden bg-gradient-to-br from-indigo-500 to-fuchsia-500">
           {thumbnailUrl ? (
             <img src={thumbnailUrl} alt="" crossOrigin="anonymous" className="h-full w-full object-cover" />
           ) : (

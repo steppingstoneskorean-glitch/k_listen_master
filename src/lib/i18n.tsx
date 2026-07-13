@@ -742,17 +742,6 @@ const TRANSLATIONS = {
     es: '🎧 ¡Escucha con atención!',
     ja: '🎧 耳を澄まして聞いてみましょう！',
   },
-  'kpop.tapHint': {
-    en: '💬 Tap any word to hear how natives really say it',
-    ko: '💬 원어민이 실제로 어떻게 말하는지 궁금한 단어를 탭해보세요',
-    es: '💬 Toca cualquier palabra para saber cómo la dicen los nativos',
-    ja: '💬 気になる単語をタップすると、ネイティブの実際の言い方がわかります',
-  },
-
-  // ── Expression Explainer (표현 클릭 즉석 해설) ──
-  'expl.tag': { en: 'Native Speaker Tip', ko: '원어민 표현 해설', es: 'Consejo de nativo', ja: 'ネイティブ表現解説' },
-  'expl.loading': { en: 'Asking a native speaker…', ko: '원어민에게 물어보는 중…', es: 'Preguntando a un nativo…', ja: 'ネイティブに聞いています…' },
-  'expl.close': { en: 'Close', ko: '닫기', es: 'Cerrar', ja: '閉じる' },
 } as const
 
 interface LangCtx {

@@ -23,7 +23,7 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'steppingstoneskorean@gmail.com'
 // ── 20년차 베테랑 한국어 교사 페르소나 시스템 프롬프트 ───────────────────────
 // "detailed thinking off": Nemotron 계열 모델의 reasoning 모드를 끄는 관례적 지시문 —
 // 이 엔드포인트는 Claude 의 output_config.json_schema 같은 구조화 출력이 없으므로,
-// 응답을 순수 JSON 하나로만 받기 위해 사고 과정을 끈다 (explain-expression.js 와 동일 관례).
+// 응답을 순수 JSON 하나로만 받기 위해 사고 과정을 끈다.
 const SYSTEM_PROMPT = `detailed thinking off
 
 You are an expert Korean language curriculum designer with 20 years of experience teaching Korean to foreign learners (English, Spanish, and Japanese speakers). You design listening-dictation (cloze) quizzes from real K-content videos: the learner listens to a short segment on loop and types the missing part of the sentence.
