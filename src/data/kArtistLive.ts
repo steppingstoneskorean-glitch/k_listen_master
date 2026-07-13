@@ -97,9 +97,16 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     title: { en: "Busan's Prince I.N and his 7 chaotic hyungs", ko: '부산의 왕자 아이엔과 통제 불능 7명의 형들', es: 'El príncipe de Busan, I.N, y sus 7 caóticos hyungs', ja: '釜山の王子・アイエンと制御不能な7人の兄（ヒョン）たち' },
     artist: 'SKZ',
     stars: 3,
-    url: 'wQvbvIJttDc',
+    url: '/kpop-quiz/wQvbvIJttDc',
+    videoId: 'wQvbvIJttDc',
     plays: 0,
     addedAt: 4,
+    desc: {
+      en: 'Learn everyday Korean with Stray Kids as I.N shows his hyungs around Busan.',
+      ko: '아이엔이 형들에게 부산을 안내하는 스트레이 키즈와 함께 배우는 일상 한국어',
+      es: 'Aprende coreano cotidiano con Stray Kids mientras I.N enseña Busan a sus hyungs.',
+      ja: 'アイエンが兄たちに釜山を案内するStray Kidsと一緒に学ぶ日常韓国語',
+    },
   },
   {
     id: 5,

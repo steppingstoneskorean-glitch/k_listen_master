@@ -497,6 +497,18 @@ const quizList = [
     "vi": "축하해(요) = Chúc mừng!\n생일 축하해!  Chúc mừng sinh nhật!\n졸업 축하해!  Chúc mừng tốt nghiệp!\n합격 축하해!  Chúc mừng bạn đã đỗ!"
   },
   "hasHardcodedSubs": true
+},
+{
+  "id": "Awqvbvi_01",
+  "videoId": "wQvbvIJttDc",
+  "startTime": 46,
+  "endTime": 48.5,
+  "fullSentence": "부산에 온 걸 환영해",
+  "blankWord": "온",
+  "explanation": {
+    "en": "것을=걸   (것이=게, 것은=건)\n '-걸' is the shortened form of '-것을' and is very common in everyday conversation.\nVerb + -(으)ㄴ 것 = the thing that... / what... / the fact that... (past or completed action)\nVerb + -는 것 = the act of... / ...ing / the thing that... (present, ongoing, or general action)\nThese expressions turn a verb into a noun.\n네가 온 걸 봤어.  I saw that you came.\n잃어버린 걸 찾았어요.  I found what I had lost."
+  },
+  "hasHardcodedSubs": true
 }
 ];
 
