@@ -140,7 +140,7 @@ export default function QuizStudioPage() {
       items
         .map((q, i) => {
           if (!q.fullSentence.trim()) return `#${i + 1}: 전체 문장이 비어 있음`
-          if (!q.blankWord.trim()) return `#${i + 1}: 빈칸 단어가 비어 있음`
+          if (!q.blankWord || !q.blankWord.trim()) return `#${i + 1}: 빈칸 단어가 비어 있음`
           if (!q.fullSentence.includes(q.blankWord))
             return `#${i + 1}: 빈칸 "${q.blankWord}" 이(가) 전체 문장에 없음 (띄어쓰기 확인)`
           if (q.endTime <= q.startTime) return `#${i + 1}: 종료 시간이 시작 시간보다 빠름`
@@ -397,7 +397,7 @@ export default function QuizStudioPage() {
                     <textarea
                       rows={4}
                       className={`mt-1 ${field} whitespace-pre-wrap`}
-                      value={q.explanation}
+                      value={typeof q.explanation === 'string' ? q.explanation : JSON.stringify(q.explanation ?? '')}
                       onChange={(e) => update(i, { explanation: e.target.value })}
                     />
                   </label>

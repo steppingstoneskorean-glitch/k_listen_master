@@ -1,9 +1,56 @@
 // src/components/kartist/ui.tsx
 // K-Artist Live 홈 캐러셀 + Game Hub 공용 UI 조각
-//   · Stars(별점) / Chevron(화살표) / FilterDropdown(필터) / VideoCard(영상 카드)
+//   · Stars(별점) / Chevron(화살표) / FilterDropdown(필터) / ModeBadges(B·I·A 배지)
+//   · VideoCard(영상 카드 — 모드 배지 + 마스터리 왕관)
 
 import { useEffect, useRef, useState } from 'react'
 import { useLang } from '@/lib/i18n'
+import { MODE_ORDER, type GameMode, type ModeInfo } from '@/data/kArtistLive'
+
+/* 모드별 소프트 컬러 (B: Soft Green · I: Soft Blue · A: Soft Purple) */
+const MODE_BADGE_STYLE: Record<GameMode, string> = {
+  B: 'border-emerald-200 bg-emerald-100 text-emerald-700',
+  I: 'border-blue-200 bg-blue-100 text-blue-700',
+  A: 'border-purple-200 bg-purple-100 text-purple-700',
+}
+
+/** 단일 모드 칩 — 필터 드롭다운 등에서 사용 */
+export function ModeChip({ mode }: { mode: GameMode }) {
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center rounded-md border px-1.5 py-0.5 text-[10px] font-black leading-none ${MODE_BADGE_STYLE[mode]}`}
+      translate="no"
+    >
+      {mode}
+    </span>
+  )
+}
+
+/**
+ * [B ⭐⭐] [I ⭐⭐⭐] [A ⭐] — 고정 3칸 가로 배지 행.
+ * availableModes 에 없는 모드는 회색 저투명 상태로 렌더링.
+ */
+export function ModeBadges({ modes, className = '' }: { modes: ModeInfo[]; className?: string }) {
+  return (
+    <span className={`flex items-center gap-1 ${className}`} translate="no">
+      {MODE_ORDER.map(m => {
+        const info = modes.find(x => x.mode === m)
+        return (
+          <span
+            key={m}
+            aria-label={info ? `${m} ${info.stars} stars` : `${m} unavailable`}
+            className={`inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-md border px-1.5 py-0.5 text-[10px] font-black leading-none ${
+              info ? MODE_BADGE_STYLE[m] : 'border-slate-200 bg-slate-100 text-slate-400 opacity-50'
+            }`}
+          >
+            {m}
+            {info && <span className="text-[8px] tracking-tighter">{'⭐'.repeat(info.stars)}</span>}
+          </span>
+        )
+      })}
+    </span>
+  )
+}
 
 export function Chevron({ open, className = 'h-3.5 w-3.5' }: { open?: boolean; className?: string }) {
   return (
@@ -104,7 +151,8 @@ export function VideoCard({
   title,
   desc,
   artist,
-  stars,
+  modes,
+  mastered = false,
   videoId,
   emoji,
   imageSrc,
@@ -114,7 +162,10 @@ export function VideoCard({
   title: string
   desc?: string
   artist: string
-  stars: number
+  /** B/I/A 모드 + 모드별 1~3성 (없는 모드는 회색 배지) */
+  modes: ModeInfo[]
+  /** 이 영상의 모든 제공 모드를 클리어 → 썸네일 위 빛나는 왕관 */
+  mastered?: boolean
   videoId?: string
   emoji?: string
   imageSrc?: string
@@ -122,7 +173,6 @@ export function VideoCard({
   onPlay?: () => void
 }) {
   const { t } = useLang()
-  const starsAria = t('kartist.starsAria').replace('{n}', String(stars))
 
   return (
     <button
@@ -161,10 +211,20 @@ export function VideoCard({
             )}
           </div>
         )}
-        {/* 난이도 별점 배지 (우측 상단) */}
-        <span className="absolute right-2 top-2 flex items-center rounded-full bg-slate-900/70 px-2 py-1 backdrop-blur-sm">
-          <Stars count={stars} ariaLabel={starsAria} className="h-3.5 w-3.5" />
+        {/* 모드 배지 [B][I][A] (우측 상단) — 별점 아이콘 대체 */}
+        <span className="absolute right-2 top-2 rounded-lg bg-slate-900/60 p-1 backdrop-blur-sm">
+          <ModeBadges modes={modes} />
         </span>
+        {/* 마스터리 왕관 — 모든 제공 모드 클리어 시 (빛나는 효과) */}
+        {mastered && (
+          <span
+            aria-label={t('kartist.masteryAria')}
+            className="absolute left-2 top-2 animate-pulse text-2xl"
+            style={{ filter: 'drop-shadow(0 0 6px rgba(250, 204, 21, 0.95))' }}
+          >
+            👑
+          </span>
+        )}
       </div>
 
       {/* 본문 */}

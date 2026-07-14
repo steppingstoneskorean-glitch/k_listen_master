@@ -13,9 +13,9 @@ import { useAuth } from '@/lib/auth'
 import { useVideoAccess } from '@/lib/accessControl'
 import AuthModal from '@/components/AuthModal'
 import UpgradeModal from '@/components/UpgradeModal'
-import { LIVE_VIDEOS, pickText, STAR_LEVELS, type StarFilter } from '@/data/kArtistLive'
-import { LEVEL_STARS } from '@/data/gameLevels'
-import { VideoCard, FilterDropdown, Stars } from '@/components/kartist/ui'
+import { LIVE_VIDEOS, pickText, MODE_FILTERS, type ModeFilter, type ModeInfo } from '@/data/kArtistLive'
+import { isMastered } from '@/lib/mastery'
+import { VideoCard, FilterDropdown, ModeChip } from '@/components/kartist/ui'
 import wordGuessImg from '../../assets/images/단어 맞히기.png'
 import intermediateGameImg from '../../assets/images/Intermediate game.png'
 import advancedGameImg from '../../assets/images/Advanced game.png'
@@ -26,7 +26,7 @@ interface HubItem {
   title: string // 현재 언어로 해석된 문자열
   desc?: string
   artist: string // 'BTS'... 또는 STEP_ARTIST
-  stars: number // 1~3
+  modes: ModeInfo[] // B/I/A + 모드별 1~3성 (9-tier)
   url: string // 빈 문자열이면 Coming Soon
   videoId?: string
   emoji?: string // 퀴즈 카드용 (썸네일 대체)
@@ -38,7 +38,7 @@ interface HubItem {
 const STEP_ARTIST = 'Step & Step'
 
 // 아티스트 필터 옵션 (K-Artist + Step & Step)
-const HUB_ARTISTS = ['__all__', 'BTS', 'Blackpink', 'EXO', 'SKZ', 'Ateez', STEP_ARTIST] as const
+const HUB_ARTISTS = ['__all__', 'BTS', 'Blackpink', 'EXO', 'SKZ', 'Ateez', 'K-Drama', STEP_ARTIST] as const
 type HubArtist = (typeof HUB_ARTISTS)[number]
 
 const SORT_KEYS = ['popular', 'newest'] as const
@@ -51,14 +51,14 @@ const STEP_QUIZZES: {
   descKey: 'home.level1.desc' | 'home.level2.desc' | 'home.level3.desc'
   emoji: string
   imageSrc?: string
-  stars: number
+  modes: ModeInfo[]
   url: string
   plays: number
   addedAt: number
 }[] = [
-  { key: 'q1', titleKey: 'home.level1.title', descKey: 'home.level1.desc', emoji: '🎯', imageSrc: wordGuessImg, stars: LEVEL_STARS.beginner, url: '/game', plays: 2100, addedAt: 9 },
-  { key: 'q2', titleKey: 'home.level2.title', descKey: 'home.level2.desc', emoji: '🗣️', imageSrc: intermediateGameImg, stars: LEVEL_STARS.intermediate, url: '/dictation?mode=intermediate', plays: 1450, addedAt: 8 },
-  { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', imageSrc: advancedGameImg, stars: LEVEL_STARS.advanced, url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
+  { key: 'q1', titleKey: 'home.level1.title', descKey: 'home.level1.desc', emoji: '🎯', imageSrc: wordGuessImg, modes: [{ mode: 'B', stars: 1 }], url: '/game', plays: 2100, addedAt: 9 },
+  { key: 'q2', titleKey: 'home.level2.title', descKey: 'home.level2.desc', emoji: '🗣️', imageSrc: intermediateGameImg, modes: [{ mode: 'I', stars: 2 }], url: '/dictation?mode=intermediate', plays: 1450, addedAt: 8 },
+  { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', imageSrc: advancedGameImg, modes: [{ mode: 'A', stars: 3 }], url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
 ]
 
 function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang): HubItem[] {
@@ -67,7 +67,7 @@ function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang): HubItem[] {
     title: pickText(v.title, lang),
     desc: v.desc ? pickText(v.desc, lang) : undefined,
     artist: v.artist,
-    stars: v.stars,
+    modes: v.availableModes,
     url: v.url,
     videoId: v.videoId,
     plays: v.plays,
@@ -79,7 +79,7 @@ function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang): HubItem[] {
     title: t(q.titleKey),
     desc: t(q.descKey),
     artist: STEP_ARTIST,
-    stars: q.stars,
+    modes: q.modes,
     url: q.url,
     emoji: q.emoji,
     imageSrc: q.imageSrc,
@@ -99,7 +99,7 @@ export default function GameHubPage() {
   const [modalTarget, setModalTarget] = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [artistFilter, setArtistFilter] = useState<HubArtist>('__all__')
-  const [starFilter, setStarFilter] = useState<StarFilter>(0)
+  const [modeFilter, setModeFilter] = useState<ModeFilter>('__all__')
   const [sortKey, setSortKey] = useState<SortKey>('popular')
   const [desc, setDesc] = useState(true) // 기본: 내림차순(많이 도전한 순)
 
@@ -127,7 +127,7 @@ export default function GameHubPage() {
     const filtered = items.filter(
       it =>
         (artistFilter === '__all__' || it.artist === artistFilter) &&
-        (starFilter === 0 || it.stars === starFilter),
+        (modeFilter === '__all__' || it.modes.some(m => m.mode === modeFilter)),
     )
     const sorted = [...filtered].sort((a, b) => {
       const va = sortKey === 'popular' ? a.plays : a.addedAt
@@ -135,9 +135,10 @@ export default function GameHubPage() {
       return desc ? vb - va : va - vb
     })
     return sorted
-  }, [items, artistFilter, starFilter, sortKey, desc])
+  }, [items, artistFilter, modeFilter, sortKey, desc])
 
-  const starsAria = (n: number) => t('kartist.starsAria').replace('{n}', String(n))
+  const modeName = (m: ModeFilter) =>
+    m === 'B' ? t('mode.beginner') : m === 'I' ? t('mode.intermediate') : t('mode.advanced')
 
   return (
     <>
@@ -178,13 +179,20 @@ export default function GameHubPage() {
               onSelect={setArtistFilter}
             />
             <FilterDropdown
-              label={t('kartist.filterLevel')}
-              value={starFilter}
-              options={STAR_LEVELS}
+              label={t('hub.filterMode')}
+              value={modeFilter}
+              options={MODE_FILTERS}
               renderOption={v =>
-                v === 0 ? <span>{t('kartist.all')}</span> : <Stars count={v} ariaLabel={starsAria(v)} className="h-3.5 w-3.5" />
+                v === '__all__' ? (
+                  <span>{t('kartist.all')}</span>
+                ) : (
+                  <span className="flex items-center gap-1.5">
+                    <ModeChip mode={v} />
+                    {modeName(v)}
+                  </span>
+                )
               }
-              onSelect={setStarFilter}
+              onSelect={setModeFilter}
             />
             <FilterDropdown
               label={t('hub.sortLabel')}
@@ -218,7 +226,8 @@ export default function GameHubPage() {
                     title={it.title}
                     desc={it.desc}
                     artist={it.artist}
-                    stars={it.stars}
+                    modes={it.modes}
+                    mastered={isMastered(it.videoId)}
                     videoId={it.videoId}
                     emoji={it.emoji}
                     imageSrc={it.imageSrc}

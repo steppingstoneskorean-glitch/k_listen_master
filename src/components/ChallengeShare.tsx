@@ -3,7 +3,7 @@
 // clipboard.writeText + 토스트로 폴백한다. (예전의 복사창+X공유 2버튼 구성을 대체)
 //   · variant='dark'(게임 결과 화면) / 'light'(밝은 배경)
 
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useLang } from '@/lib/i18n'
 import { buildShareUrl } from '@/lib/shareUrl'
 
@@ -16,6 +16,7 @@ export default function ChallengeShare({
   total,
   thumbnailUrl,
   variant = 'dark',
+  extraButton,
 }: {
   /** 아티스트명(K-Artist Live) 또는 레벨 타이틀(Dictation/Game) */
   label: string
@@ -26,6 +27,8 @@ export default function ChallengeShare({
   total?: number
   thumbnailUrl?: string
   variant?: 'dark' | 'light'
+  /** 공유 버튼 옆에 함께 노출할 부가 액션(예: 결과 포토카드 저장) */
+  extraButton?: ReactNode
 }) {
   const { t } = useLang()
   const [toast, setToast] = useState(false)
@@ -76,17 +79,20 @@ export default function ChallengeShare({
       <p className={`text-sm font-bold ${dark ? 'text-white' : 'text-slate-900'}`}>{t('challenge.title')}</p>
       <p className={`mt-1 text-xs leading-relaxed ${dark ? 'text-gray-400' : 'text-slate-500'}`}>“{message}”</p>
 
-      <button
-        type="button"
-        onClick={share}
-        className={`mt-3 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-transform duration-200 hover:-translate-y-0.5 ${
-          dark
-            ? 'bg-indigo-500 text-white hover:bg-indigo-400'
-            : 'bg-indigo-600 text-white hover:bg-indigo-700'
-        }`}
-      >
-        {t('challenge.shareBtn')}
-      </button>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={share}
+          className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-transform duration-200 hover:-translate-y-0.5 ${
+            dark
+              ? 'bg-indigo-500 text-white hover:bg-indigo-400'
+              : 'bg-indigo-600 text-white hover:bg-indigo-700'
+          }`}
+        >
+          {t('challenge.shareBtn')}
+        </button>
+        {extraButton}
+      </div>
 
       {toast && (
         <div className="fixed inset-x-0 bottom-6 z-[90] flex justify-center px-4 pointer-events-none">

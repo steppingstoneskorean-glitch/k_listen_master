@@ -10,6 +10,7 @@ import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { LIVE_VIDEOS, pickText } from '@/data/kArtistLive'
+import { isMastered } from '@/lib/mastery'
 import { VideoCard, Chevron } from '@/components/kartist/ui'
 
 export default function KArtistLive({
@@ -103,7 +104,8 @@ export default function KArtistLive({
                   title={pickText(video.title, lang)}
                   desc={video.desc ? pickText(video.desc, lang) : undefined}
                   artist={video.artist}
-                  stars={video.stars}
+                  modes={video.availableModes}
+                  mastered={isMastered(video.videoId)}
                   videoId={video.videoId}
                   playable={Boolean(video.url)}
                   onPlay={() => onPlay?.(video.url)}

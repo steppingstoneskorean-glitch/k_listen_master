@@ -4,6 +4,8 @@
 //   · title/desc 는 다국어 객체(Localized) — pickText 로 해석
 //   · answer(딕테이션 정답)는 학습 원문이므로 한국어 문자열로만 고정
 //   · plays(누적 도전 수) / addedAt(등록 순서) 는 Game Hub 정렬용 메타데이터
+//   · availableModes: 영상별 B/I/A 모드 + 모드별 세부 난이도(1~3성) — 9-tier 시스템
+//     (기존의 전역 stars 프로퍼티를 대체)
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { Lang } from '@/lib/i18n'
@@ -15,13 +17,26 @@ export function pickText(localized: Localized, lang: Lang): string {
   return localized[lang] ?? localized.en
 }
 
+/** 게임 모드: B(Beginner 블록 배열) / I(Intermediate 의미 고르기) / A(Advanced 딕테이션) */
+export type GameMode = 'B' | 'I' | 'A'
+
+/** 모드별 세부 난이도 (1~3성) — 3모드 × 3성 = 9-tier */
+export interface ModeInfo {
+  mode: GameMode
+  stars: 1 | 2 | 3
+}
+
+/** 배지 고정 표시 순서 */
+export const MODE_ORDER: GameMode[] = ['B', 'I', 'A']
+
 export interface LiveVideo {
   id: number
   /** 제목/설명: 다국어 객체로 관리 (브라우저 자동 번역과 무관하게 언어 전환) */
   title: Localized
   desc?: Localized
   artist: string
-  stars: number // 1~5 (난이도)
+  /** 이 영상이 제공하는 모드와 모드별 난이도. 비어 있으면 Coming Soon 취급 */
+  availableModes: ModeInfo[]
   url: string // 학습 페이지 경로. 빈 문자열이면 Coming Soon
   videoId?: string // 유튜브 썸네일용
   /** 누적 도전 수 (인기순 정렬) */
@@ -36,7 +51,7 @@ export interface LiveVideo {
   answer?: string
 }
 
-// 카테고리 분류를 위한 artist / stars 필수 포함
+// 카테고리 분류를 위한 artist / availableModes 필수 포함
 export const LIVE_VIDEOS: LiveVideo[] = [
   {
     id: 1,
@@ -53,7 +68,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
       ja: 'メンバーたちの癒やしの旅を楽しみながら韓国語を学ぼう。',
     },
     artist: 'BTS',
-    stars: 4,
+    availableModes: [{ mode: 'A', stars: 2 }],
     url: '/kpop-quiz/wu6bA3zK_us',
     videoId: 'wu6bA3zK_us',
     plays: 1,
@@ -64,7 +79,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 2,
     title: { en: 'RunSeokJin Interview', ko: '런석진 인터뷰', es: 'Entrevista de RunSeokJin', ja: 'RunSeokJin インタビュー' },
     artist: 'BTS',
-    stars: 3,
+    availableModes: [{ mode: 'A', stars: 1 }],
     url: '/kpop-quiz/ADw_zMarJdk',
     videoId: 'ADw_zMarJdk',
     plays: 0,
@@ -80,7 +95,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 3,
     title: { en: 'ATEEZ Unfiltered: Pre-Debut Hardships & Tour Secrets', ko: 'ATEEZ 필터 없는 토크: 데뷔 전 고충 & 투어 비밀', es: 'ATEEZ Revela: Secretos de su Pre-Debut y Gira Mundial', ja: 'ATEEZ激白、デビュー前の過酷な下積みと世界ツアーの裏話'},
     artist: 'Ateez',
-    stars: 3,
+    availableModes: [{ mode: 'A', stars: 2 }],
     url: '/kpop-quiz/rBDBC82UmKo',
     videoId: 'rBDBC82UmKo',
     plays: 0,
@@ -96,7 +111,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 4,
     title: { en: "Busan's Prince I.N and his 7 chaotic hyungs", ko: '부산의 왕자 아이엔과 통제 불능 7명의 형들', es: 'El príncipe de Busan, I.N, y sus 7 caóticos hyungs', ja: '釜山の王子・アイエンと制御不能な7人の兄（ヒョン）たち' },
     artist: 'SKZ',
-    stars: 3,
+    availableModes: [{ mode: 'A', stars: 2 }],
     url: '/kpop-quiz/wQvbvIJttDc',
     videoId: 'wQvbvIJttDc',
     plays: 0,
@@ -112,16 +127,23 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 5,
     title: { en: 'Manager Kim Episodes 1–2 Summary', ko: '김부장 1~2화 정리', es: 'Resumen de los episodios 1 y 2 de Manager Kim', ja: '『部長K』第1～2話まとめ' },
     artist: 'K-Drama',
-    stars: 4,
-    url: '7xNNgVxsvB8',
+    // 9-tier 예시: 모드별로 서로 다른 세부 난이도
+    availableModes: [
+      { mode: 'B', stars: 2 },
+      { mode: 'I', stars: 3 },
+      { mode: 'A', stars: 1 },
+    ],
+    url: '/kpop-quiz/7xNNgVxsvB8',
+    videoId: '7xNNgVxsvB8',
     plays: 0,
     addedAt: 5,
   },
 ]
 
 /** '__all__' = 전체 필터 값 */
-export const ARTISTS = ['__all__', 'BTS', 'Blackpink', 'EXO', 'SKZ', 'Ateez'] as const
+export const ARTISTS = ['__all__', 'BTS', 'Blackpink', 'EXO', 'SKZ', 'Ateez', 'K-Drama'] as const
 export type ArtistFilter = (typeof ARTISTS)[number]
 
-export const STAR_LEVELS = [0, 1, 2, 3, 4, 5] as const // 0 = 전체, 별점 최대 5
-export type StarFilter = (typeof STAR_LEVELS)[number]
+/** Game Hub 모드 필터: '__all__' = 전체 */
+export const MODE_FILTERS = ['__all__', 'B', 'I', 'A'] as const
+export type ModeFilter = (typeof MODE_FILTERS)[number]

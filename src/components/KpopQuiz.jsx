@@ -18,12 +18,27 @@
 //   9) 운영자용 퀴즈 데이터 생성기 (아코디언 + JSON Export)
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
-import { ARTISTS, LIVE_VIDEOS } from '@/data/kArtistLive';
+import { ARTISTS, LIVE_VIDEOS, MODE_ORDER } from '@/data/kArtistLive';
 import { loadPublishedQuizzes } from '@/lib/quizStore';
+import { recordModeClear, getVideoProgress } from '@/lib/mastery';
+import { ModeChip } from '@/components/kartist/ui';
+
+// 레거시(mode 없음) 문항은 'A'(딕테이션)로 간주
+const modeOf = (q) => (q && q.mode) || 'A';
+
+// B 모드용 셔플 (Fisher–Yates)
+function shuffleArr(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 import ChallengeShare from '@/components/ChallengeShare';
 
 // 운영자 아티스트 태깅 옵션 ('__all__' 제외 — 필터 시스템과 동일 소스)
@@ -600,11 +615,34 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // 현재 영상의 정보 (난이도 등) 가져오기
   const currentVideo = LIVE_VIDEOS.find(v => v.videoId === routeVideoId);
 
-  const [list, setList] = useState(filteredQuizList);
+  // 전체 문항(전 모드) — 모드별로 그룹핑해 세션을 구성한다
+  const [allItems, setAllItems] = useState(filteredQuizList);
+  const [activeMode, setActiveMode] = useState(null); // 'B' | 'I' | 'A' | null(선택 화면)
   const [index, setIndex] = useState(0);
   const [results, setResults] = useState([]); // index별 'correct'|'partial'|'wrong'
   const [phase, setPhase] = useState('quiz'); // 'quiz' | 'done'
+  const [mastery, setMastery] = useState(false); // 이번 세션에서 마스터리 달성 여부
+
+  // 모드별 문항 맵 + 실제 문항이 존재하는 모드 목록
+  const modeMap = useMemo(() => {
+    const map = { B: [], I: [], A: [] };
+    for (const q of allItems) map[modeOf(q)].push(q);
+    return map;
+  }, [allItems]);
+  const availableGameModes = MODE_ORDER.filter((m) => modeMap[m].length > 0);
+
+  const list = activeMode ? modeMap[activeMode] : [];
   const quiz = list[index];
+
+  // 모드가 1개뿐이면 선택 화면 없이 자동 진입 / 선택된 모드가 사라지면 선택 화면으로 복귀
+  useEffect(() => {
+    if (!activeMode && availableGameModes.length === 1) {
+      setActiveMode(availableGameModes[0]);
+    } else if (activeMode && modeMap[activeMode].length === 0) {
+      setActiveMode(null);
+      setIndex(0);
+    }
+  }, [activeMode, availableGameModes, modeMap]);
 
   // Firestore 에 배포(published)된 퀴즈가 있으면 하드코딩 목록보다 우선 사용
   useEffect(() => {
@@ -613,7 +651,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     loadPublishedQuizzes(routeVideoId)
       .then((published) => {
         if (cancelled || !published || published.length === 0) return;
-        setList(published);
+        setAllItems(published);
+        setActiveMode(null); // 새 데이터 기준으로 모드 재선택(1개면 자동 진입)
         setIndex(0);
         setResults([]);
         setPhase('quiz');
@@ -621,6 +660,21 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       .catch(() => { /* 오프라인/규칙 오류 시 하드코딩 fallback 유지 */ });
     return () => { cancelled = true; };
   }, [routeVideoId]);
+
+  // 모드 선택 → 해당 모드 첫 문항으로 세션 시작
+  const selectMode = useCallback((m) => {
+    setActiveMode(m);
+    setIndex(0);
+    setResults([]);
+    setPhase('quiz');
+    setMastery(false);
+    const first = modeMap[m] && modeMap[m][0];
+    const p = playerRef.current;
+    if (first && p && p.seekTo) {
+      p.seekTo(first.startTime, true);
+      p.playVideo && p.playVideo();
+    }
+  }, [modeMap]);
 
   // ── 플레이어 관련 refs/state ───────────────────────────────────────────────
   const playerHostRef = useRef(null);
@@ -635,6 +689,16 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const [status, setStatus] = useState('idle'); // 'idle' | 'correct' | 'partial' | 'wrong'
   const [showReview, setShowReview] = useState(false); // 발음 포인트 복습 창
   const [hintShown, setHintShown] = useState(false); // 힌트 공개 여부 (모든 유저에게 제공)
+  // B 모드: 셔플된 블록 중 선택한 인덱스 순서 / I 모드: 선택한 보기 인덱스
+  const [picked, setPicked] = useState([]);
+  const [chosenIdx, setChosenIdx] = useState(null);
+
+  // B 모드: 문항이 바뀔 때마다 블록을 새로 셔플 (원본 순서 = 정답 순서)
+  const shuffledBlocks = useMemo(() => {
+    if (!quiz || modeOf(quiz) !== 'B' || !Array.isArray(quiz.blocks)) return null;
+    return shuffleArr(quiz.blocks.map((text, i) => ({ text, key: `${i}-${text}` })));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quiz && quiz.id]);
 
   // ── 학습 기록 state ────────────────────────────────────────────────────────
   const [stats, setStats] = useState(() => {
@@ -655,17 +719,21 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     isLoopingRef.current = isLooping;
   }, [isLooping]);
 
+  // 모드 선택 화면에서도 영상 미리보기가 뜨도록 quiz 가 없으면 라우트 videoId 로 폴백
+  const playerVideoId = (quiz && quiz.videoId) || routeVideoId;
+  const playerStartTime = quiz ? quiz.startTime : (allItems[0] && allItems[0].startTime) || 0;
+
   useEffect(() => {
-    if (!quiz) return; // 배포 퀴즈 로딩 전(하드코딩 없음) 크래시 방지
+    if (!playerVideoId) return; // 배포 퀴즈 로딩 전(하드코딩 없음) 크래시 방지
     let cancelled = false;
 
     loadYouTubeApi().then((YT) => {
       if (cancelled || !playerHostRef.current) return;
 
       playerRef.current = new YT.Player(playerHostRef.current, {
-        videoId: quiz.videoId,
+        videoId: playerVideoId,
         playerVars: {
-          start: quiz.startTime,
+          start: playerStartTime,
           // end 는 지정하지 않는다: 문장이 바뀌면 구간도 바뀌므로
           // 구간 종료는 아래 interval 이 초정밀로 처리
           rel: 0,
@@ -693,7 +761,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     };
     // videoId 가 바뀌면(다른 영상의 퀴즈) 플레이어 재생성
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quiz?.videoId]);
+  }, [playerVideoId]);
 
   // 구간 감시: endTime 도달 시 startTime 으로 되감기 (초정밀 반복)
   useEffect(() => {
@@ -784,20 +852,33 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // ─────────────────────────────────────────────────────────────────────────
   const checkAnswer = useCallback(() => {
     if (!quiz) return;
-    const raw = answer.trim();
-    const target = quiz.blankWord.trim();
-    // 모든 공백 제거 후 비교 → 글자는 같은데 띄어쓰기만 다른 경우 감지
-    const stripSpaces = (s) => s.replace(/\s+/g, '');
-
+    const m = modeOf(quiz);
     let verdict;
-    if (raw === target) {
-      verdict = 'correct';
-      recordStudy(10);
-    } else if (stripSpaces(raw) === stripSpaces(target)) {
-      verdict = 'partial'; // 🔺 중간 점수
-      recordStudy(5);
+
+    if (m === 'B') {
+      // 블록 배열: 선택 순서가 원본(정답) 순서와 일치하면 정답
+      const built = picked.map((i) => (shuffledBlocks ? shuffledBlocks[i].text : '')).join(' ');
+      verdict = built === (quiz.blocks || []).join(' ') ? 'correct' : 'wrong';
+      if (verdict === 'correct') recordStudy(10);
+    } else if (m === 'I') {
+      // 의미 고르기: 선택 보기 == correctIndex
+      verdict = chosenIdx === quiz.correctIndex ? 'correct' : 'wrong';
+      if (verdict === 'correct') recordStudy(10);
     } else {
-      verdict = 'wrong';
+      const raw = answer.trim();
+      const target = (quiz.blankWord || '').trim();
+      // 모든 공백 제거 후 비교 → 글자는 같은데 띄어쓰기만 다른 경우 감지
+      const stripSpaces = (s) => s.replace(/\s+/g, '');
+
+      if (raw === target) {
+        verdict = 'correct';
+        recordStudy(10);
+      } else if (stripSpaces(raw) === stripSpaces(target)) {
+        verdict = 'partial'; // 🔺 중간 점수
+        recordStudy(5);
+      } else {
+        verdict = 'wrong';
+      }
     }
 
     setStatus(verdict);
@@ -809,13 +890,15 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     });
     // 제출 후 '발음 포인트 복습' 창 오픈 (다음 문장으로 넘어가는 관문)
     setShowReview(true);
-  }, [answer, quiz?.blankWord, recordStudy, index]);
+  }, [answer, quiz, picked, chosenIdx, shuffledBlocks, recordStudy, index]);
 
   const resetAttempt = useCallback(() => {
     setAnswer('');
     setStatus('idle');
     setShowReview(false);
     setHintShown(false);
+    setPicked([]);
+    setChosenIdx(null);
   }, []);
 
   // 퀴즈가 바뀌면(다음 문장/운영자 미리보기) 시도 상태 초기화
@@ -854,17 +937,29 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     setIndex(0);
     setResults([]);
     setPhase('quiz');
+    setMastery(false);
     resetAttempt();
     const p = playerRef.current;
-    if (p && p.seekTo) {
+    if (p && p.seekTo && list[0]) {
       p.seekTo(list[0].startTime, true);
       p.playVideo();
     }
   }, [list, resetAttempt]);
 
-  // 운영자 미리보기: 입력한 퀴즈 1개짜리 세트로 교체
+  // 다른 모드 도전: 모드 선택 화면으로 복귀
+  const changeMode = useCallback(() => {
+    setActiveMode(null);
+    setIndex(0);
+    setResults([]);
+    setPhase('quiz');
+    setMastery(false);
+    resetAttempt();
+  }, [resetAttempt]);
+
+  // 운영자 미리보기: 입력한 퀴즈 1개짜리 세트로 교체 (A 모드)
   const previewQuiz = useCallback((data) => {
-    setList([data]);
+    setAllItems([{ ...data, mode: 'A' }]);
+    setActiveMode('A');
     setIndex(0);
     setResults([]);
     setPhase('quiz');
@@ -873,6 +968,22 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       p.seekTo(data.startTime, true);
     }
   }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // 마스터리: 세션 완료(60% 이상 정답) 시 해당 모드 클리어 기록.
+  // 영상이 제공하는 모든 모드를 클리어하면 masteryAchieved → 👑
+  // ─────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (phase !== 'done' || !routeVideoId || !activeMode || list.length === 0) return;
+    const correct = results.filter((r) => r === 'correct').length;
+    if (correct / list.length < 0.6) return; // 클리어 기준: 정답률 60% 이상
+    const declared = (currentVideo && currentVideo.availableModes
+      ? currentVideo.availableModes.map((m) => m.mode)
+      : availableGameModes);
+    const progress = recordModeClear(routeVideoId, activeMode, declared);
+    setMastery(progress.masteryAchieved);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   // ─────────────────────────────────────────────────────────────────────────
   // 7) 성적 기반 바이럴 공유
@@ -896,8 +1007,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       .replace('{percent}', String(percent))
       .replace('{url}', shareUrl) + (emojiGrid ? `\n\n${emojiGrid}` : '');
 
-  // 아직 퀴즈가 없음: 배포 퀴즈 로딩 중이거나 미배포 영상 (하드코딩 fallback 도 없음)
-  if (!quiz) {
+  // 아직 퀴즈가 전혀 없음: 배포 퀴즈 로딩 중이거나 미배포 영상 (하드코딩 fallback 도 없음)
+  if (availableGameModes.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center text-slate-500">
         <p className="text-4xl">🎬</p>
@@ -906,11 +1017,47 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     );
   }
 
-  // fullSentence 를 blankWord 기준으로 분해 (prefix / suffix)
-  const blankIdx = quiz.fullSentence.indexOf(quiz.blankWord);
-  const prefix = blankIdx >= 0 ? quiz.fullSentence.slice(0, blankIdx) : quiz.fullSentence;
+  const currentMode = quiz ? modeOf(quiz) : null;
+
+  // A 모드: fullSentence 를 blankWord 기준으로 분해 (prefix / suffix)
+  const blankIdx =
+    quiz && quiz.blankWord ? quiz.fullSentence.indexOf(quiz.blankWord) : -1;
+  const prefix = quiz
+    ? blankIdx >= 0
+      ? quiz.fullSentence.slice(0, blankIdx)
+      : quiz.fullSentence
+    : '';
   const suffix =
-    blankIdx >= 0 ? quiz.fullSentence.slice(blankIdx + quiz.blankWord.length) : '';
+    quiz && blankIdx >= 0
+      ? quiz.fullSentence.slice(blankIdx + quiz.blankWord.length)
+      : '';
+
+  // B 모드: 현재 조립 중인 문장 / I·B 공용 리뷰 표시 텍스트
+  const builtSentence = picked
+    .map((i) => (shuffledBlocks ? shuffledBlocks[i].text : ''))
+    .join(' ');
+  const answerText =
+    currentMode === 'B'
+      ? builtSentence
+      : currentMode === 'I'
+      ? (quiz && Array.isArray(quiz.options) && chosenIdx != null ? quiz.options[chosenIdx] : '')
+      : answer;
+  const correctText = quiz
+    ? currentMode === 'B'
+      ? (quiz.blocks || []).join(' ')
+      : currentMode === 'I'
+      ? (Array.isArray(quiz.options) ? quiz.options[quiz.correctIndex] : '')
+      : quiz.blankWord || ''
+    : '';
+
+  // 모드 선택 카드에 표시할 정보 (문항 수 · 별점 · 클리어 여부)
+  const videoProgress = routeVideoId ? getVideoProgress(routeVideoId) : { clearedModes: [], masteryAchieved: false };
+  const declaredStars = (m) => {
+    const info = currentVideo && currentVideo.availableModes
+      ? currentVideo.availableModes.find((x) => x.mode === m)
+      : null;
+    return info ? info.stars : 0;
+  };
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 text-slate-800">
@@ -941,12 +1088,14 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           <p className="text-balance break-keep text-sm text-slate-500">{t('kpop.subtitle')}</p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
-          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-indigo-100 px-3 py-1.5 text-sm font-bold text-indigo-700 shadow-sm">
-            📄{' '}
-            {t('kpop.progress')
-              .replace('{i}', String(Math.min(index + 1, total)))
-              .replace('{n}', String(total))}
-          </span>
+          {activeMode && total > 0 && (
+            <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-indigo-100 px-3 py-1.5 text-sm font-bold text-indigo-700 shadow-sm">
+              <ModeChip mode={activeMode} /> 📄{' '}
+              {t('kpop.progress')
+                .replace('{i}', String(Math.min(index + 1, total)))
+                .replace('{n}', String(total))}
+            </span>
+          )}
           <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-orange-100 px-3 py-1.5 text-sm font-bold text-orange-700 shadow-sm">
             🔥 {t('kpop.streak').replace('{n}', String(stats.streak))}
           </span>
@@ -973,7 +1122,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               - 비율(%) 기반 높이라 모바일에서도 하단 영역을 동일하게 가림
               - pointer-events-none: 유튜브 기본 컨트롤 바 클릭을 방해하지 않음
               - 움직임은 은은히 비치되 텍스트는 판독 불가 (bg-black/40 + backdrop-blur-md) */}
-          {quiz.hasHardcodedSubs && playerReady && (
+          {quiz && quiz.hasHardcodedSubs && playerReady && (
             <div
               aria-hidden
               className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-[22%] items-center justify-center bg-black/40 backdrop-blur-md"
@@ -987,7 +1136,53 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
         </div>
       </section>
 
-      {phase === 'quiz' && (
+      {/* ── 모드 선택 화면 (B/I/A 중 2개 이상 제공 시) ─────────────────────── */}
+      {!activeMode && (
+        <section className="mt-6 rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-center text-lg font-extrabold text-slate-900">
+            {t('mode.selectTitle')}
+          </h2>
+          <p className="mt-1 text-center text-xs font-semibold text-slate-500">
+            {t('mode.selectSub')}
+          </p>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {MODE_ORDER.map((m) => {
+              const has = modeMap[m].length > 0;
+              const stars = declaredStars(m);
+              const cleared = videoProgress.clearedModes.includes(m);
+              const name =
+                m === 'B' ? t('mode.beginner') : m === 'I' ? t('mode.intermediate') : t('mode.advanced');
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  disabled={!has}
+                  onClick={() => has && selectMode(m)}
+                  className={`${liftBtn} flex flex-col items-center gap-1.5 rounded-2xl border-2 p-4 text-center ${
+                    has
+                      ? 'cursor-pointer border-slate-200 bg-white shadow-sm hover:border-indigo-300 hover:shadow-md'
+                      : 'cursor-not-allowed border-slate-100 bg-slate-50 opacity-50'
+                  }`}
+                >
+                  <ModeChip mode={m} />
+                  <span className="text-sm font-extrabold text-slate-900">{name}</span>
+                  {stars > 0 && <span className="text-xs">{'⭐'.repeat(stars)}</span>}
+                  <span className="text-[11px] font-semibold text-slate-400">
+                    {has
+                      ? t('mode.questionsFmt').replace('{n}', String(modeMap[m].length))
+                      : t('kartist.comingSoon')}
+                  </span>
+                  {cleared && (
+                    <span className="text-[11px] font-bold text-emerald-600">{t('mode.cleared')}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {activeMode && phase === 'quiz' && quiz && (
         <>
           {/* ── 컨트롤 바: 반복 / 다시듣기 / 속도 ─────────────────────────── */}
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -1029,7 +1224,160 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             </div>
           </div>
 
-          {/* ── Cloze 빈칸 뚫기 ───────────────────────────────────────────── */}
+          {/* ── B 모드: 절 단위 블록 배열 ─────────────────────────────────── */}
+          {currentMode === 'B' && (
+            <section
+              className={`mt-6 rounded-2xl border-2 bg-white p-5 shadow-sm transition-colors ${
+                status === 'correct'
+                  ? 'border-emerald-400'
+                  : status === 'wrong'
+                  ? 'border-red-400'
+                  : 'border-slate-200'
+              } ${status === 'wrong' ? 'kq-shake' : ''}`}
+            >
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                {t('mode.bInstruction')}
+              </p>
+
+              {/* 조립 중인 문장 (탭한 순서, 칩 탭 시 되돌리기) */}
+              <div
+                translate="no"
+                className="notranslate flex min-h-[3rem] flex-wrap items-center gap-2 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 p-3"
+              >
+                {picked.length === 0 && (
+                  <span className="text-xs text-slate-400">{t('mode.bYourAnswer')}</span>
+                )}
+                {picked.map((sIdx, ord) => (
+                  <button
+                    key={`${sIdx}-${ord}`}
+                    type="button"
+                    disabled={status !== 'idle'}
+                    onClick={() => setPicked((prev) => prev.filter((_, k) => k !== ord))}
+                    className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-70"
+                  >
+                    {shuffledBlocks ? shuffledBlocks[sIdx].text : ''}
+                  </button>
+                ))}
+              </div>
+
+              {/* 셔플된 블록 후보 */}
+              <div translate="no" className="notranslate mt-4 flex flex-wrap gap-2">
+                {(shuffledBlocks || []).map((blk, i) => {
+                  const used = picked.includes(i);
+                  return (
+                    <button
+                      key={blk.key}
+                      type="button"
+                      disabled={used || status !== 'idle'}
+                      onClick={() => setPicked((prev) => [...prev, i])}
+                      className={`${liftBtn} rounded-xl border-2 px-4 py-2 text-base font-bold ${
+                        used
+                          ? 'border-slate-100 bg-slate-100 text-slate-300'
+                          : 'border-slate-300 bg-white text-slate-800 hover:border-indigo-400'
+                      }`}
+                    >
+                      {blk.text}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={checkAnswer}
+                  disabled={
+                    status !== 'idle' ||
+                    !shuffledBlocks ||
+                    picked.length !== shuffledBlocks.length
+                  }
+                  className={`${liftBtn} rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40`}
+                >
+                  {t('kpop.check')}
+                </button>
+                <button
+                  onClick={resetAttempt}
+                  className={`${liftBtn} rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600 shadow hover:bg-slate-200`}
+                >
+                  {t('kpop.reset')}
+                </button>
+                {status === 'correct' && (
+                  <span className="kq-pop text-sm font-bold text-emerald-600">{t('kpop.correctMsg')}</span>
+                )}
+                {status === 'wrong' && (
+                  <span className="kq-pop text-sm font-bold text-red-500">{t('kpop.wrongMsg')}</span>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* ── I 모드: 의미 고르기 (4지선다) ─────────────────────────────── */}
+          {currentMode === 'I' && (
+            <section
+              className={`mt-6 rounded-2xl border-2 bg-white p-5 shadow-sm transition-colors ${
+                status === 'correct'
+                  ? 'border-emerald-400'
+                  : status === 'wrong'
+                  ? 'border-red-400'
+                  : 'border-slate-200'
+              } ${status === 'wrong' ? 'kq-shake' : ''}`}
+            >
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                {t('mode.iInstruction')}
+              </p>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {(quiz.options || []).map((opt, i) => {
+                  const isChosen = chosenIdx === i;
+                  const revealed = status !== 'idle';
+                  const isAnswer = i === quiz.correctIndex;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      disabled={revealed}
+                      onClick={() => setChosenIdx(i)}
+                      className={`${liftBtn} rounded-xl border-2 px-4 py-3 text-left text-sm font-semibold ${
+                        revealed && isAnswer
+                          ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
+                          : revealed && isChosen && !isAnswer
+                          ? 'border-red-400 bg-red-50 text-red-600'
+                          : isChosen
+                          ? 'border-indigo-400 bg-indigo-50 text-indigo-700'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-indigo-300'
+                      }`}
+                    >
+                      <span className="mr-2 font-black">{String.fromCharCode(65 + i)}.</span>
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <button
+                  onClick={checkAnswer}
+                  disabled={status !== 'idle' || chosenIdx == null}
+                  className={`${liftBtn} rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40`}
+                >
+                  {t('kpop.check')}
+                </button>
+                <button
+                  onClick={resetAttempt}
+                  className={`${liftBtn} rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600 shadow hover:bg-slate-200`}
+                >
+                  {t('kpop.reset')}
+                </button>
+                {status === 'correct' && (
+                  <span className="kq-pop text-sm font-bold text-emerald-600">{t('kpop.correctMsg')}</span>
+                )}
+                {status === 'wrong' && (
+                  <span className="kq-pop text-sm font-bold text-red-500">{t('kpop.wrongMsg')}</span>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* ── A 모드: Cloze 빈칸 뚫기 ───────────────────────────────────── */}
+          {currentMode === 'A' && (
           <section
             className={`mt-6 rounded-2xl border-2 bg-white p-5 shadow-sm transition-colors ${
               status === 'correct'
@@ -1059,7 +1407,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                 }}
                 onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
                 placeholder={t('kpop.answerPlaceholder')}
-                style={{ width: `${Math.max(quiz.blankWord.length, 1) * 1.15 + 2.2}em` }}
+                style={{ width: `${Math.max((quiz.blankWord || '').length, 1) * 1.15 + 2.2}em` }}
                 className={`notranslate rounded-lg border-2 px-3 py-1 text-center font-bold outline-none transition-colors placeholder:text-xs placeholder:font-normal placeholder:tracking-tight placeholder:text-slate-400 ${
                   status === 'correct'
                     ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
@@ -1118,6 +1466,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               </p>
             )}
           </section>
+          )}
 
           {/* ── 섀도잉 녹음기 ─────────────────────────────────────────────── */}
           <ShadowingRecorder liftBtn={liftBtn} />
@@ -1135,8 +1484,10 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           isLoggedIn={isLoggedIn}
           shareText={shareText}
           artist={artistName}
-          stars={(currentVideo && currentVideo.stars) || 0}
+          stars={activeMode ? declaredStars(activeMode) : 0}
           streak={stats.streak}
+          mastery={mastery}
+          onChangeMode={availableGameModes.length > 1 ? changeMode : null}
           liftBtn={liftBtn}
           onRestart={restartAll}
           videoId={routeVideoId || quiz?.videoId}
@@ -1144,16 +1495,17 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       )}
 
       {/* ── 운영자용 데이터 생성기: 관리자 이메일 일치 시에만 DOM 에 존재 ── */}
-      {isAdmin && (
+      {isAdmin && quiz && (
         <AdminQuizBuilder liftBtn={liftBtn} onPreview={previewQuiz} currentQuiz={quiz} />
       )}
 
       {/* ── 발음 포인트 복습 창 (문장 전환 관문) ──────────────────────────── */}
-      {showReview && phase === 'quiz' && (
+      {showReview && phase === 'quiz' && quiz && (
         <ReviewModal
           status={status}
           quiz={quiz}
-          answer={answer}
+          answer={answerText}
+          correctText={correctText}
           isLast={isLast}
           liftBtn={liftBtn}
           onReplay={() => {
@@ -1171,10 +1523,12 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 // ─────────────────────────────────────────────────────────────────────────────
 // 발음 포인트 복습 창: 채점 결과 + 해설 + '다음 문장 듣기' 흐름 제어
 // ─────────────────────────────────────────────────────────────────────────────
-function ReviewModal({ status, quiz, answer, isLast, liftBtn, onReplay, onNext, onClose }) {
+function ReviewModal({ status, quiz, answer, correctText, isLast, liftBtn, onReplay, onNext, onClose }) {
   const { t, lang } = useLang();
   const isCorrect = status === 'correct';
   const isPartial = status === 'partial';
+  // B/I 모드는 blankWord 가 없으므로 문장 하이라이트 없이 전체 문장만 표시
+  const highlightWord = quiz.blankWord && quiz.fullSentence.includes(quiz.blankWord) ? quiz.blankWord : null;
   // explanation 은 다국어 객체 — 현재 UI 언어에 맞는 텍스트를 고른다 (pickExplanation)
   const explanationText = pickExplanation(quiz.explanation, lang);
   // explanation 이 비어 있으면 해설 영역 자체를 렌더링하지 않음 (조건부 숨김)
@@ -1208,16 +1562,20 @@ function ReviewModal({ status, quiz, answer, isLast, liftBtn, onReplay, onNext, 
           translate="no"
           className="notranslate mt-3 rounded-xl bg-indigo-50 p-3 text-sm leading-relaxed text-indigo-900"
         >
-          {quiz.fullSentence.split(quiz.blankWord).map((part, i, arr) => (
-            <span key={i}>
-              {part}
-              {i < arr.length - 1 && (
-                <mark className="rounded bg-indigo-200 px-1 font-bold text-indigo-900">
-                  {quiz.blankWord}
-                </mark>
-              )}
-            </span>
-          ))}
+          {highlightWord ? (
+            quiz.fullSentence.split(highlightWord).map((part, i, arr) => (
+              <span key={i}>
+                {part}
+                {i < arr.length - 1 && (
+                  <mark className="rounded bg-indigo-200 px-1 font-bold text-indigo-900">
+                    {highlightWord}
+                  </mark>
+                )}
+              </span>
+            ))
+          ) : (
+            <span>{quiz.fullSentence}</span>
+          )}
         </p>
 
         <dl className="mt-3 space-y-2 rounded-xl bg-slate-50 p-4 text-sm">
@@ -1233,13 +1591,13 @@ function ReviewModal({ status, quiz, answer, isLast, liftBtn, onReplay, onNext, 
                   : 'font-bold text-red-500'
               }`}
             >
-              {answer.trim() || t('kpop.emptyAnswer')}
+              {(answer || '').trim() || t('kpop.emptyAnswer')}
             </dd>
           </div>
           <div className="flex justify-between gap-3">
             <dt className="font-semibold text-slate-400">{t('kpop.answerLabel')}</dt>
             <dd translate="no" className="notranslate font-bold text-slate-900">
-              {quiz.blankWord}
+              {correctText || quiz.blankWord}
             </dd>
           </div>
         </dl>
@@ -1452,6 +1810,8 @@ function FinalResult({
   artist,
   stars,
   streak,
+  mastery,
+  onChangeMode,
   liftBtn,
   onRestart,
   videoId,
@@ -1498,30 +1858,34 @@ function FinalResult({
             .replace('{correct}', String(correctCount))
             .replace('{percent}', String(percent))}
         </p>
-        <div className="mt-4 flex justify-center gap-2">
+        {/* 마스터리 달성: 모든 제공 모드 클리어 → 왕관 축하 배너 */}
+        {mastery && (
+          <p
+            className="kq-pop mx-auto mt-3 max-w-md rounded-xl border border-yellow-300 bg-yellow-50 px-4 py-2 text-sm font-bold text-yellow-700"
+            style={{ textShadow: '0 0 8px rgba(250, 204, 21, 0.35)' }}
+          >
+            {t('mode.masteryUnlocked')}
+          </p>
+        )}
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
           <button
             onClick={onRestart}
             className={`${liftBtn} rounded-xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-slate-800`}
           >
             {t('kpop.restart')}
           </button>
+          {onChangeMode && (
+            <button
+              onClick={onChangeMode}
+              className={`${liftBtn} rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700`}
+            >
+              {t('mode.changeMode')}
+            </button>
+          )}
         </div>
       </section>
 
-      {/* 성적 기반 바이럴 공유 — 포토카드 저장 + 통합 도전장 공유 버튼 */}
-      <section className="rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 p-5 text-white shadow-lg">
-        <p className="text-sm font-semibold opacity-90">{t('kpop.shareTitle')}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button
-            onClick={shareCard}
-            disabled={cardBusy}
-            className={`${liftBtn} rounded-xl bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 shadow hover:bg-amber-300 disabled:opacity-60`}
-          >
-            {cardSaved ? t('kpop.cardSaved') : cardBusy ? '…' : t('kpop.saveCard')}
-          </button>
-        </div>
-      </section>
-
+      {/* 성적 기반 바이럴 공유 — 도전장 공유 + 결과 포토카드 저장을 한 카드로 통합 */}
       <ChallengeShare
         label={artist}
         score={percent}
@@ -1531,6 +1895,15 @@ function FinalResult({
         total={total}
         thumbnailUrl={videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : undefined}
         variant="light"
+        extraButton={
+          <button
+            onClick={shareCard}
+            disabled={cardBusy}
+            className={`${liftBtn} rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-900 shadow hover:bg-amber-300 disabled:opacity-60`}
+          >
+            {cardSaved ? t('kpop.cardSaved') : cardBusy ? '…' : t('kpop.saveCard')}
+          </button>
+        }
       />
 
       {/* 전체 문장 복습 리스트 — 로그인 사용자 전용 */}
@@ -1708,8 +2081,8 @@ function AdminQuizBuilder({ liftBtn, onPreview, currentQuiz }) {
     videoUrl: `https://youtu.be/${currentQuiz.videoId}?t=${currentQuiz.startTime}`,
     startTime: currentQuiz.startTime,
     endTime: currentQuiz.endTime,
-    fullSentence: currentQuiz.fullSentence,
-    blankWord: currentQuiz.blankWord,
+    fullSentence: currentQuiz.fullSentence || '',
+    blankWord: currentQuiz.blankWord || '',
     // 운영자 빌더는 Firestore 배포 스키마(string)를 그대로 편집한다 — 다국어 객체면 en 텍스트로 평탄화해 시딩
     explanation: pickExplanation(currentQuiz.explanation, 'en'),
     hint: currentQuiz.hint || '',

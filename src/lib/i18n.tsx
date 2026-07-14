@@ -577,6 +577,41 @@ const TRANSLATIONS = {
     es: 'No hay juegos con este filtro. ¡Prueba otro!',
     ja: 'この条件に合うゲームはまだありません。他のフィルターを試してください！',
   },
+  'hub.filterMode': { en: 'By Mode', ko: '모드별', es: 'Por modo', ja: 'モード別' },
+
+  // ── B/I/A 멀티 모드 ──
+  'mode.beginner': { en: 'Beginner', ko: '초급', es: 'Principiante', ja: '初級' },
+  'mode.intermediate': { en: 'Intermediate', ko: '중급', es: 'Intermedio', ja: '中級' },
+  'mode.advanced': { en: 'Advanced', ko: '고급', es: 'Avanzado', ja: '上級' },
+  'mode.selectTitle': { en: 'Choose your mode', ko: '모드를 선택하세요', es: 'Elige tu modo', ja: 'モードを選んでください' },
+  'mode.selectSub': {
+    en: 'Clear every mode of this video to earn the Mastery Crown 👑',
+    ko: '이 영상의 모든 모드를 클리어하면 마스터리 왕관 👑 을 획득해요',
+    es: 'Supera todos los modos de este video para ganar la Corona de Maestría 👑',
+    ja: 'この動画のすべてのモードをクリアするとマスタリークラウン👑を獲得！',
+  },
+  'mode.questionsFmt': { en: '{n} questions', ko: '{n}문항', es: '{n} preguntas', ja: '{n}問' },
+  'mode.cleared': { en: '✓ Cleared', ko: '✓ 클리어', es: '✓ Superado', ja: '✓ クリア' },
+  'mode.bInstruction': {
+    en: 'Listen, then tap the blocks in the order you heard them',
+    ko: '듣고, 들린 순서대로 블록을 탭해 문장을 완성하세요',
+    es: 'Escucha y toca los bloques en el orden que los oíste',
+    ja: '聞いて、聞こえた順にブロックをタップして文を完成させましょう',
+  },
+  'mode.bYourAnswer': { en: 'Your sentence', ko: '내가 만든 문장', es: 'Tu oración', ja: '作った文' },
+  'mode.iInstruction': {
+    en: 'Listen, then choose the correct meaning',
+    ko: '듣고, 알맞은 의미를 고르세요',
+    es: 'Escucha y elige el significado correcto',
+    ja: '聞いて、正しい意味を選びましょう',
+  },
+  'mode.changeMode': { en: '🔀 Other modes', ko: '🔀 다른 모드 도전', es: '🔀 Otros modos', ja: '🔀 他のモードに挑戦' },
+  'mode.masteryUnlocked': {
+    en: '👑 Mastery achieved! You cleared every mode of this video!',
+    ko: '👑 마스터리 달성! 이 영상의 모든 모드를 클리어했어요!',
+    es: '👑 ¡Maestría lograda! ¡Superaste todos los modos de este video!',
+    ja: '👑 マスタリー達成！この動画のすべてのモードをクリアしました！',
+  },
   'upgrade.title': {
     en: "You've used today's free pass",
     ko: '오늘의 무료 이용권을 사용했어요',
@@ -636,6 +671,7 @@ const TRANSLATIONS = {
     ja: 'この条件に合う動画はまだありません。他のフィルターを試してください！',
   },
   'kartist.starsAria': { en: 'Difficulty: {n} star(s)', ko: '난이도 별 {n}개', es: 'Dificultad: {n} estrella(s)', ja: '難易度 星{n}つ' },
+  'kartist.masteryAria': { en: 'Mastery achieved', ko: '마스터리 달성', es: 'Maestría lograda', ja: 'マスタリー達成' },
 
   // ── K-pop Listening Quiz ──
   'kpop.title': { en: '🎧 K-pop Korean Listening Quiz', ko: '🎧 K-pop 한국어 듣기 퀴즈', es: '🎧 Quiz de escucha de coreano K-pop', ja: '🎧 K-pop韓国語リスニングクイズ' },
@@ -716,7 +752,6 @@ const TRANSLATIONS = {
     ja: '全{total}問中{correct}問正解 · 成功率{percent}%',
   },
   'kpop.restart': { en: '↺ Restart from the beginning', ko: '↺ 처음부터 다시 도전', es: '↺ Reintentar desde el inicio', ja: '↺ 最初からもう一度' },
-  'kpop.shareTitle': { en: '📣 Challenge your friends', ko: '📣 친구에게 도전장 보내기', es: '📣 Reta a tus amigos', ja: '📣 友達に挑戦状を送る' },
   'kpop.shareText': {
     en: 'I caught {correct}/{total} Korean sentences from a {artist} video 🎧 ({percent}%) Can you beat me? {url}',
     ko: '{artist} 영상에서 한국어 문장 {total}개 중 {correct}개를 받아쓰기 성공! (성공률 {percent}%) 나를 이겨보세요: {url}',
