@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { LIVE_VIDEOS, pickText } from '@/data/kArtistLive'
 import { isMastered } from '@/lib/mastery'
+import { useVideoModes } from '@/lib/useVideoModes'
 import { VideoCard, Chevron } from '@/components/kartist/ui'
 
 export default function KArtistLive({
@@ -22,6 +23,8 @@ export default function KArtistLive({
 }) {
   const { lang, t } = useLang()
   const navigate = useNavigate()
+  // 배포본 기준 실제 모드 (운영자가 배포하면 배지가 자동 갱신)
+  const videoModes = useVideoModes()
   const trackRef = useRef<HTMLDivElement>(null)
 
   // 한 번에 카드 한 장(+gap) 만큼 스크롤 — scroll-snap 이 위치를 정렬
@@ -47,22 +50,14 @@ export default function KArtistLive({
       `}</style>
 
       <div className="mx-auto max-w-4xl">
-        {/* ── 타이틀 + View All ── */}
-        <div className="flex items-end justify-between gap-4">
-          <div className="min-w-0 text-center sm:text-left">
-            <h2 className="text-xl font-black tracking-tight text-slate-900 sm:text-3xl" translate="no">
-              🎤 K-Artist <span className="text-indigo-600">Live</span>
-            </h2>
-            <p className="mt-2 text-balance break-keep text-sm font-semibold text-slate-500">{t('kartist.subtitle')}</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate('/games')}
-            className="hidden shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-600 hover:shadow-md sm:flex cursor-pointer"
-          >
-            {t('kartist.viewAll')}
-            <Chevron open className="h-3.5 w-3.5 -rotate-90" />
-          </button>
+        {/* ── 타이틀 (Catch the Sound 와 동일하게 중앙 정렬) ── */}
+        <div className="text-center">
+          <h2 className="text-xl font-black tracking-tight text-slate-900 sm:text-3xl" translate="no">
+            🎧 Listen to <span className="text-indigo-600">K-Stars</span>
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-balance break-keep text-sm font-semibold text-slate-500">{t('kartist.subtitle')}</p>
+          {/* B/I/A 배지 · 별점 의미 안내 */}
+          <p className="mx-auto mt-1.5 max-w-xl text-balance break-keep text-xs text-slate-400">{t('kartist.legend')}</p>
         </div>
 
         {/* ── 캐러셀 ── */}
@@ -94,7 +89,7 @@ export default function KArtistLive({
             ref={trackRef}
             className="ka-track flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2"
           >
-            {LIVE_VIDEOS.map(video => (
+            {[...LIVE_VIDEOS].sort((a, b) => b.addedAt - a.addedAt).map(video => (
               <div
                 key={video.id}
                 data-card
@@ -104,7 +99,7 @@ export default function KArtistLive({
                   title={pickText(video.title, lang)}
                   desc={video.desc ? pickText(video.desc, lang) : undefined}
                   artist={video.artist}
-                  modes={video.availableModes}
+                  modes={videoModes(video.videoId, video.availableModes)}
                   mastered={isMastered(video.videoId)}
                   videoId={video.videoId}
                   playable={Boolean(video.url)}
@@ -115,8 +110,8 @@ export default function KArtistLive({
           </div>
         </div>
 
-        {/* ── 모바일용 View All (캐러셀 하단 중앙) ── */}
-        <div className="mt-6 flex justify-center sm:hidden">
+        {/* ── View All (캐러셀 하단 중앙 — 전 해상도 공통) ── */}
+        <div className="mt-6 flex justify-center">
           <button
             type="button"
             onClick={() => navigate('/games')}

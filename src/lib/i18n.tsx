@@ -550,6 +550,12 @@ const TRANSLATIONS = {
     es: 'Mejora tu comprensión auditiva con conversaciones reales de tus artistas favoritos',
     ja: '好きなアーティストのリアルな会話でリスニング力を鍛えよう',
   },
+  'kartist.legend': {
+    en: '🅑 Beginner (word order) · 🅘 Intermediate (meaning) · 🅐 Advanced (dictation) — ⭐ shows difficulty (1–3)',
+    ko: '🅑 초급(어순 맞히기) · 🅘 중급(의미 이해) · 🅐 고급(받아쓰기) — ⭐ 는 난이도(1~3)를 뜻해요',
+    es: '🅑 Principiante (orden) · 🅘 Intermedio (significado) · 🅐 Avanzado (dictado) — ⭐ indica la dificultad (1–3)',
+    ja: '🅑 初級（語順）· 🅘 中級（意味）· 🅐 上級（書き取り）— ⭐ は難易度（1〜3）です',
+  },
   'kartist.filterArtist': { en: 'By Artist', ko: 'Artist별', es: 'Por artista', ja: 'アーティスト別' },
   'kartist.filterLevel': { en: 'By Level', ko: '레벨별', es: 'Por nivel', ja: 'レベル別' },
   'kartist.all': { en: 'All', ko: '전체', es: 'Todos', ja: 'すべて' },

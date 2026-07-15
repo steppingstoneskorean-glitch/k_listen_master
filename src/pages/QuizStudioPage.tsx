@@ -20,10 +20,12 @@ import { useAuth } from '@/lib/auth'
 import {
   loadDraft,
   loadPublishedQuizzes,
+  loadModeStars,
   saveModeItems,
   unpublishModeItems,
   itemMode,
   type QuizItem,
+  type ModeStars,
 } from '@/lib/quizStore'
 import type { GameMode } from '@/data/kArtistLive'
 import ClauseChunker, { splitWords } from '@/components/admin/ClauseChunker'
@@ -124,6 +126,7 @@ export default function QuizStudioPage() {
 
   const [items, setItems] = useState<QuizItem[]>([]) // 전 모드 문항
   const [activeMode, setActiveMode] = useState<GameMode>('A')
+  const [modeStars, setModeStars] = useState<ModeStars>({}) // 모드별 난이도(별점) — 카드 배지에 반영
   const [publishedCount, setPublishedCount] = useState<number | null>(null)
 
   const [busy, setBusy] = useState<'' | 'generate' | 'save' | 'publish' | 'unpublish'>('')
@@ -139,12 +142,13 @@ export default function QuizStudioPage() {
   useEffect(() => {
     if (!videoId || !isAdmin) return
     let cancelled = false
-    Promise.all([loadDraft(videoId), loadPublishedQuizzes(videoId)])
-      .then(([draft, published]) => {
+    Promise.all([loadDraft(videoId), loadPublishedQuizzes(videoId), loadModeStars(videoId)])
+      .then(([draft, published, stars]) => {
         if (cancelled) return
         // 초안이 있으면 초안, 없으면 배포본을 편집 시작점으로 사용 (다른 모드 유실 방지)
         const seed = draft && draft.length ? draft : published || []
         setItems(seed)
+        setModeStars(stars)
         setPublishedCount(published ? published.length : 0)
       })
       .catch(() => {})
@@ -228,7 +232,7 @@ export default function QuizStudioPage() {
           setPublishedCount(0)
           say('ok', '배포가 취소되었습니다.')
         } else {
-          await saveModeItems(videoId, presentModes, items, mode === 'publish')
+          await saveModeItems(videoId, presentModes, items, mode === 'publish', modeStars)
           if (mode === 'publish') {
             setPublishedCount(items.length)
             say('ok', `🎉 배포 완료! /kpop-quiz/${videoId} 에서 ${presentModes.join('/')} 모드가 보입니다.`)
@@ -242,7 +246,7 @@ export default function QuizStudioPage() {
         setBusy('')
       }
     },
-    [videoId, items, problems],
+    [videoId, items, problems, modeStars],
   )
 
   if (!isAdmin) {
@@ -386,16 +390,35 @@ export default function QuizStudioPage() {
 
           {/* ── STEP 3: 모드별 문항 편집 ── */}
           <section className="mt-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-sm font-bold uppercase tracking-wide text-indigo-500">
                 Step 3 · {MODES.find((m) => m.key === activeMode)?.label} 문항 ({shown.length})
               </h2>
-              <button
-                onClick={addItem}
-                className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-200"
-              >
-                + 문항 추가
-              </button>
+              <div className="flex items-center gap-2">
+                {/* 이 모드의 난이도(별점) — 썸네일 카드 배지에 그대로 표시됨 */}
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
+                  난이도
+                  <select
+                    className="rounded-lg border border-slate-300 px-2 py-1 text-sm"
+                    value={modeStars[activeMode] ?? 1}
+                    onChange={(e) =>
+                      setModeStars((prev) => ({ ...prev, [activeMode]: Number(e.target.value) }))
+                    }
+                  >
+                    {[1, 2, 3].map((n) => (
+                      <option key={n} value={n}>
+                        {'⭐'.repeat(n)} ({n})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  onClick={addItem}
+                  className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-200"
+                >
+                  + 문항 추가
+                </button>
+              </div>
             </div>
 
             {shown.length === 0 && (

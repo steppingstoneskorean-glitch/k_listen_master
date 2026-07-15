@@ -14,9 +14,18 @@
 //   · 저장/배포는 모드 단위 병합(saveModeItems) — 다른 모드의 기존 문항을 보존한다
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, setDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import type { GameMode } from '@/data/kArtistLive'
+
+/** 영상별 모드 난이도(별점) — 카드 배지에 그대로 반영된다 */
+export type ModeStars = Partial<Record<GameMode, number>>
+
+/** 카드 배지 계산에 필요한 영상별 배포 요약 */
+export interface VideoQuizMeta {
+  published: QuizItem[]
+  modeStars: ModeStars
+}
 
 export interface QuizItem {
   id: string
@@ -73,6 +82,32 @@ export async function loadDraft(videoId: string): Promise<QuizItem[] | null> {
   return Array.isArray(draft) ? (draft as QuizItem[]) : null
 }
 
+/** 운영자용: 저장된 모드별 별점 */
+export async function loadModeStars(videoId: string): Promise<ModeStars> {
+  if (!db) return {}
+  const snap = await getDoc(quizDoc(videoId))
+  if (!snap.exists()) return {}
+  const ms = snap.data().modeStars
+  return ms && typeof ms === 'object' ? (ms as ModeStars) : {}
+}
+
+/**
+ * 카드 배지용: 전체 영상의 배포본 + 모드별 별점을 한 번에 로드.
+ * 운영자가 스튜디오에서 모드를 추가/배포하면 카드 배지가 자동 갱신되도록 하는 소스.
+ */
+export async function loadAllVideoQuizMeta(): Promise<Record<string, VideoQuizMeta>> {
+  if (!db) return {}
+  const snaps = await getDocs(collection(db, COLLECTION))
+  const out: Record<string, VideoQuizMeta> = {}
+  snaps.forEach(s => {
+    const d = s.data()
+    const published = Array.isArray(d.published) ? (d.published as QuizItem[]) : []
+    const modeStars = d.modeStars && typeof d.modeStars === 'object' ? (d.modeStars as ModeStars) : {}
+    out[s.id] = { published, modeStars }
+  })
+  return out
+}
+
 /** 지정한 모드들의 기존 문항만 제거 (다른 모드 문항 보존) */
 function stripModes(arr: unknown, modes: GameMode[]): QuizItem[] {
   if (!Array.isArray(arr)) return []
@@ -90,6 +125,7 @@ export async function saveModeItems(
   modes: GameMode[],
   items: QuizItem[],
   publish: boolean,
+  modeStars?: ModeStars,
 ): Promise<void> {
   const ref = quizDoc(videoId)
   const snap = await getDoc(ref)
@@ -97,6 +133,11 @@ export async function saveModeItems(
 
   const draft = [...stripModes(data.draft, modes), ...items]
   const payload: Record<string, unknown> = { videoId, draft, updatedAt: serverTimestamp() }
+  if (modeStars) {
+    // 기존 별점은 유지하고 이번에 편집한 모드만 덮어쓴다
+    const prev = data.modeStars && typeof data.modeStars === 'object' ? (data.modeStars as ModeStars) : {}
+    payload.modeStars = { ...prev, ...modeStars }
+  }
   if (publish) {
     payload.published = [...stripModes(data.published, modes), ...items]
     payload.publishedAt = serverTimestamp()

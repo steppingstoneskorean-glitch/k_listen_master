@@ -220,10 +220,10 @@ export default function HomePage() {
               <KArtistLive onPlay={handlePlay} className="" />
             </div>
 
-            {/* Real Sound Master — 레벨 카드 섹션 타이틀 (K-Artist Live 와 통일감) */}
+            {/* Catch the Sound — 레벨 카드 섹션 타이틀 (Listen to K-Stars 와 통일감) */}
             <div className="animate-hero-fade-up mt-16 text-center" style={{ animationDelay: '260ms' }}>
               <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl" translate="no">
-                🎯 Real Sound <span className="text-emerald-500">Master</span>
+                🎯 Catch the <span className="text-emerald-500">Sound</span>
               </h2>
               <p className="mx-auto mt-2 max-w-md text-balance break-keep text-sm font-semibold text-slate-500">{t('realsound.subtitle')}</p>
             </div>

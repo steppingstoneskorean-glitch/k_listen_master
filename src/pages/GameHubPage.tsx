@@ -15,6 +15,7 @@ import AuthModal from '@/components/AuthModal'
 import UpgradeModal from '@/components/UpgradeModal'
 import { LIVE_VIDEOS, pickText, MODE_FILTERS, type ModeFilter, type ModeInfo } from '@/data/kArtistLive'
 import { isMastered } from '@/lib/mastery'
+import { useVideoModes } from '@/lib/useVideoModes'
 import { VideoCard, FilterDropdown, ModeChip } from '@/components/kartist/ui'
 import wordGuessImg from '../../assets/images/단어 맞히기.png'
 import intermediateGameImg from '../../assets/images/Intermediate game.png'
@@ -95,6 +96,8 @@ export default function GameHubPage() {
   const { user, isGuest } = useAuth()
   const { checkAccess, unlock } = useVideoAccess()
   const navigate = useNavigate()
+  // 배포본 기준 실제 모드 (운영자가 배포하면 배지가 자동 갱신)
+  const videoModes = useVideoModes()
 
   const [modalTarget, setModalTarget] = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
@@ -127,7 +130,8 @@ export default function GameHubPage() {
     const filtered = items.filter(
       it =>
         (artistFilter === '__all__' || it.artist === artistFilter) &&
-        (modeFilter === '__all__' || it.modes.some(m => m.mode === modeFilter)),
+        (modeFilter === '__all__' ||
+          videoModes(it.videoId, it.modes).some(m => m.mode === modeFilter)),
     )
     const sorted = [...filtered].sort((a, b) => {
       const va = sortKey === 'popular' ? a.plays : a.addedAt
@@ -135,7 +139,7 @@ export default function GameHubPage() {
       return desc ? vb - va : va - vb
     })
     return sorted
-  }, [items, artistFilter, modeFilter, sortKey, desc])
+  }, [items, artistFilter, modeFilter, sortKey, desc, videoModes])
 
   const modeName = (m: ModeFilter) =>
     m === 'B' ? t('mode.beginner') : m === 'I' ? t('mode.intermediate') : t('mode.advanced')
@@ -226,7 +230,7 @@ export default function GameHubPage() {
                     title={it.title}
                     desc={it.desc}
                     artist={it.artist}
-                    modes={it.modes}
+                    modes={videoModes(it.videoId, it.modes)}
                     mastered={isMastered(it.videoId)}
                     videoId={it.videoId}
                     emoji={it.emoji}
