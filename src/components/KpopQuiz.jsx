@@ -197,19 +197,14 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   }, [routeVideoId]);
 
   // 모드 선택 → 해당 모드 첫 문항으로 세션 시작
+  // (실제 재생은 activeMode 확정 후 아래 자동재생 effect 가 처리한다)
   const selectMode = useCallback((m) => {
     setActiveMode(m);
     setIndex(0);
     setResults([]);
     setPhase('quiz');
     setMastery(false);
-    const first = modeMap[m] && modeMap[m][0];
-    const p = playerRef.current;
-    if (first && p && p.seekTo) {
-      p.seekTo(first.startTime, true);
-      p.playVideo && p.playVideo();
-    }
-  }, [modeMap]);
+  }, []);
 
   // ── 플레이어 관련 refs/state ───────────────────────────────────────────────
   const playerHostRef = useRef(null);
@@ -282,9 +277,9 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           onReady: (e) => {
             if (cancelled) return;
             setPlayerReady(true);
-            // 첫 문항 구간에서 즉시 자동 재생 — 구간 반복(interval)은 isLooping 기본 ON
+            // 구간만 맞춰두고 재생은 하지 않는다.
+            // (모드 선택 전 자동재생 방지 — 실제 재생은 activeMode 확정 후 아래 effect 가 담당)
             e.target.seekTo(playerStartTime, true);
-            if (e.target.playVideo) e.target.playVideo();
           },
         },
       });
@@ -302,6 +297,20 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     // videoId 가 바뀌거나(다른 영상) 문항이 처음 도착하면 플레이어 (재)생성
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerVideoId, hasAnyItems]);
+
+  // 모드가 선택되고(activeMode 확정) 플레이어가 준비되면 첫 구간부터 자동 재생.
+  //   · 모드 선택 화면(activeMode=null)에서는 재생하지 않는다 → 선택 전 자동재생 방지
+  //   · 문항 이동(index 변경)은 여기서 다루지 않는다 (goNext 가 별도 처리)
+  useEffect(() => {
+    if (!activeMode || !playerReady) return;
+    const p = playerRef.current;
+    if (p && p.seekTo) {
+      p.seekTo(playerStartTime, true);
+      if (p.playVideo) p.playVideo();
+    }
+    // playerStartTime 은 의도적으로 deps 에서 제외 (문항 이동 시 재재생 방지)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeMode, playerReady]);
 
   // 구간 감시: endTime 도달 시 startTime 으로 되감기 (초정밀 반복)
   useEffect(() => {

@@ -189,34 +189,15 @@ export default function HomePage() {
       )}
 
       <div className="bg-gradient-to-b from-white via-slate-50 to-indigo-50 text-slate-900">
-        {/* ══ 1. Hero + Game Selection ══ */}
-        <section className="relative overflow-hidden px-6 pt-14 pb-20">
+        {/* ══ 1. Video Quizzes + Game Selection ══ */}
+        <section className="relative overflow-hidden px-6 pt-10 pb-20">
           {/* soft ambient glows */}
           <div aria-hidden className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-emerald-200/30 blur-3xl" />
           <div aria-hidden className="pointer-events-none absolute top-40 -right-20 h-64 w-64 rounded-full bg-indigo-200/40 blur-3xl" />
 
           <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
-            {/* Headline */}
-            <h1 className="animate-hero-fade-up text-4xl font-black leading-[1.08] tracking-tight sm:text-6xl">
-              <span className="text-slate-900">{t('landing.heroTitle1')}</span>
-              <br />
-              <span className="text-emerald-500">{t('landing.heroTitle2')}</span>
-            </h1>
-
-            <p className="animate-hero-fade-up mt-5 text-base font-semibold text-slate-600 sm:text-lg" style={{ animationDelay: '90ms' }}>
-              {t('landing.heroSub')}
-            </p>
-
-            {/* Trust line — subtle, sits under the subtitle */}
-            <p className="animate-hero-fade-up mt-3 flex items-center gap-1.5 text-[11px] font-medium tracking-wide text-slate-400" style={{ animationDelay: '150ms' }}>
-              <svg viewBox="0 0 24 24" fill="none" className="h-3 w-3 text-slate-400">
-                <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.4 7.2 16.9l.9-5.4L4.2 7.7l5.4-.8L12 2Z" fill="currentColor" />
-              </svg>
-              {t('landing.badge')}
-            </p>
-
-            {/* K-Artist Live — 초·중·고급 레벨 카드보다 상단 배치 */}
-            <div className="animate-hero-fade-up mt-12 w-full" style={{ animationDelay: '220ms' }}>
+            {/* Listen to K-Stars — 홈 진입 시 바로 영상 퀴즈 노출 */}
+            <div className="animate-hero-fade-up w-full">
               <KArtistLive onPlay={handlePlay} className="" />
             </div>
 

@@ -368,30 +368,6 @@ const TRANSLATIONS = {
   'materials.comingSoon': { en: 'Coming soon.', ko: '준비 중입니다.', es: 'Próximamente.', ja: '準備中です。' },
 
   // ── Landing (CRO redesign) ──
-  'landing.badge': {
-    en: 'Developed by Professional Korean Language Teacher',
-    ko: '현직 전문 한국어 강사가 직접 개발했습니다',
-    es: 'Desarrollado por un profesorado de coreano',
-    ja: 'プロの韓国語教師が開発しました',
-  },
-  'landing.heroTitle1': {
-    en: 'Speak Korean with',
-    ko: '한국어, 이제',
-    es: 'Habla coreano con',
-    ja: '韓国語を',
-  },
-  'landing.heroTitle2': {
-    en: 'Real Confidence',
-    ko: '진짜 자신감 있게',
-    es: 'Confianza Real',
-    ja: '本物の自信で',
-  },
-  'landing.heroSub': {
-    en: '"When your ears open, your pronunciation becomes as confident as a native\'s."',
-    ko: '"잘 들려야, 내 발음도 현지인처럼 당당해집니다."',
-    es: '"Cuando escuchas bien, tu pronunciación se vuelve tan segura como la de un nativo."',
-    ja: '「よく聞き取れてこそ、発音もネイティブのように堂々とできます。」',
-  },
   'landing.loginBenefit': {
     en: 'Play instantly for free. Log in with Google/Apple to save your mistakes and unlock advanced levels!',
     ko: '무료로 바로 플레이하세요. Google/Apple 로그인 시 오답 저장 & 고급 레벨 잠금 해제!',
