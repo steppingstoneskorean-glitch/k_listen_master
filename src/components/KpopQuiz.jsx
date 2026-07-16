@@ -204,6 +204,13 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     setResults([]);
     setPhase('quiz');
     setMastery(false);
+    // 시도 상태를 같은 배치에서 초기화 (이전 세션의 picked 인덱스 잔존 방지)
+    setAnswer('');
+    setStatus('idle');
+    setShowReview(false);
+    setHintShown(false);
+    setPicked([]);
+    setChosenIdx(null);
   }, []);
 
   // ── 플레이어 관련 refs/state ───────────────────────────────────────────────
@@ -406,7 +413,9 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
     if (m === 'B') {
       // 블록 배열: 선택 순서가 원본(정답) 순서와 일치하면 정답
-      const built = picked.map((i) => (shuffledBlocks ? shuffledBlocks[i].text : '')).join(' ');
+      const built = picked
+        .map((i) => (shuffledBlocks && shuffledBlocks[i] ? shuffledBlocks[i].text : ''))
+        .join(' ');
       verdict = built === (quiz.blocks || []).join(' ') ? 'correct' : 'wrong';
       if (verdict === 'correct') recordStudy(10);
     } else if (m === 'I') {
@@ -471,6 +480,10 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     }
 
     const next = list[index + 1];
+    // ⚠️ 시도 상태(picked/chosenIdx 등)를 index 와 "같은 배치"에서 초기화해야 한다.
+    // effect([quiz.id]) 만으로 초기화하면 한 렌더 동안 이전 문항의 picked 인덱스가
+    // 새 문항의 (더 짧은) shuffledBlocks 를 벗어나 undefined.text 크래시가 난다.
+    resetAttempt();
     setIndex(index + 1);
     if (p) {
       if (next.videoId !== quiz.videoId) {
@@ -480,7 +493,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
         p.playVideo();
       }
     }
-  }, [isLast, list, index, quiz?.videoId]);
+  }, [isLast, list, index, quiz?.videoId, resetAttempt]);
 
   const restartAll = useCallback(() => {
     setIndex(0);
@@ -585,7 +598,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   // B 모드: 현재 조립 중인 문장 / I·B 공용 리뷰 표시 텍스트
   const builtSentence = picked
-    .map((i) => (shuffledBlocks ? shuffledBlocks[i].text : ''))
+    .map((i) => (shuffledBlocks && shuffledBlocks[i] ? shuffledBlocks[i].text : ''))
     .join(' ');
   const answerText =
     currentMode === 'B'
@@ -811,7 +824,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                     onClick={() => setPicked((prev) => prev.filter((_, k) => k !== ord))}
                     className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-70"
                   >
-                    {shuffledBlocks ? shuffledBlocks[sIdx].text : ''}
+                    {shuffledBlocks && shuffledBlocks[sIdx] ? shuffledBlocks[sIdx].text : ''}
                   </button>
                 ))}
               </div>
