@@ -1,11 +1,18 @@
 // api/generate-quiz.js
 // ─────────────────────────────────────────────────────────────────────────────
-// K-Listen Master — AI 퀴즈 초안 생성 API (Vercel Serverless Function)
+// K-Listen Master — AI 퀴즈 자동 생성 파이프라인 (Vercel Serverless Function)
+//   raw STT 자막 → NVIDIA LLM → B/I/A 3레벨 구조화 퀴즈 데이터
 //
 //   POST /api/generate-quiz
 //   Headers: Authorization: Bearer <Firebase ID Token>  (관리자 계정만 허용)
-//   Body:    { videoId: string, transcript: string, count?: number }
-//   Returns: { quizzes: QuizItem[] }
+//   Body:    {
+//     videoId: string,
+//     transcript: string,                    // 타임스탬프 포함 한국어 STT 자막
+//     counts?: { B?: number, I?: number, A?: number },  // 레벨별 생성 개수 (0 = 건너뜀)
+//     count?: number,                        // (레거시) A 개수만 지정하던 이전 클라이언트 호환
+//   }
+//   Returns: { quizzes: QuizItem[], generated: {B,I,A}, model }
+//            — QuizItem 은 앱의 B/I/A 멀티 모드 스키마(mode/blocks/options/blankWord)로 매핑됨
 //
 //   필요한 Vercel 환경 변수:
 //     NVIDIA_API_KEY     — https://build.nvidia.com 에서 발급 (OpenAI SDK 호환 NIM 엔드포인트)
@@ -20,56 +27,74 @@ const NVIDIA_MODEL = 'nvidia/llama-3.3-nemotron-super-49b-v1.5'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'steppingstoneskorean@gmail.com'
 
-// ── 20년차 베테랑 한국어 교사 페르소나 시스템 프롬프트 ───────────────────────
+// ── NVIDIA Master System Prompt ──────────────────────────────────────────────
 // "detailed thinking off": Nemotron 계열 모델의 reasoning 모드를 끄는 관례적 지시문 —
-// 이 엔드포인트는 Claude 의 output_config.json_schema 같은 구조화 출력이 없으므로,
 // 응답을 순수 JSON 하나로만 받기 위해 사고 과정을 끈다.
 const SYSTEM_PROMPT = `detailed thinking off
 
-You are an expert Korean language curriculum designer with 20 years of experience teaching Korean to foreign learners (English, Spanish, and Japanese speakers). You design listening-dictation (cloze) quizzes from real K-content videos: the learner listens to a short segment on loop and types the missing part of the sentence.
+[Role]
+You are a strict and expert Korean Language Curriculum Director for global K-pop fans. Your job is to analyze raw, messy STT transcripts from live broadcasts, filter out unusable filler noises (e.g., "어.. 막.. 그니까.."), and generate perfect quiz data in strict JSON format.
 
-Extract exactly the requested number of sentences from the transcript that have clear audio for dictation and contain essential grammar, expressions, or natural phonetic linking rules. Replace key target words with blanks. Provide detailed English explanations for the grammar/nuance and a helpful phonetic or contextual hint for each blank.
+[Level Criteria & Output Rules]
+1. Beginner Level (B) - Word Order:
+- Select a very short, simple sentence (2 to 5 words, everyday conversation).
+- Split it into 3 to 4 "Meaningful Chunks".
+- Output the original sentence and its chunks.
 
-You will receive a YouTube transcript with timestamps. Your job is to select the pedagogically BEST segments and turn each into one quiz item.
+2. Intermediate Level (I) - Situational Comprehension:
+- Select a continuous dialogue block lasting about 20-30 seconds (roughly 4 to 8 lines).
+- Generate a "Situational Comprehension" question in Korean (e.g., "이 대화의 상황으로 가장 알맞은 것은?").
+- Create 1 correct option summarizing the core situation.
+- Create 3 highly plausible distractors by subtly twisting facts, mixing up past/present tenses, or misinterpreting keywords (e.g., saying they are dieting *now* instead of in the *past*).
 
-## How to select segments (your teaching instincts)
-- Choose lines that contain exactly ONE clear teachable point: a high-frequency grammar pattern (-자, -(으)ㄹ게요, -았/었으면 좋겠다, -는 것 같다...), a natural colloquial contraction, a pronunciation phenomenon (ㅎ weakening, 연음, particle omission), or a very common everyday expression.
-- Prefer sentences that are short (roughly 3–12 words), clearly audible, and spoken as a complete thought. Avoid overlapping speech, shouting, songs, and fragments that make no sense out of context.
-- Spread selections across the whole video rather than clustering at the beginning.
-- Vary the difficulty across the set: some easy items (common single expressions) and some harder items (longer chunks, faster speech).
+3. Advanced Level (A) - Dictation:
+- Select a longer sentence (5+ words) with natural liaisons (연음) or not easy structures.
+- Identify the "Meaningful Chunk" to hear and replace it with a blank. Do not blank out just a single word; blank out the whole clause.
+- Output the full sentence and the correct answer chunk for the blank.
 
-## How to choose the blank (blankWord)
-- The blank must be the teachable chunk itself — 1 to 4 words, and it MUST be an exact substring of fullSentence (same spelling, same spacing).
-- Blank the pattern, not random words: for "피자 같이 먹자" blank "같이 먹자" (the -자 pattern), not "피자".
-- Never blank proper nouns or filler.
+[App Integration Rules — REQUIRED for every item]
+- The transcript lines include timestamps. Every quiz item MUST include "startTime" and "endTime" in seconds, derived from those timestamps:
+  · Beginner/Advanced: startTime ≈ 0.3–0.5s before the line's timestamp; endTime = next caption timestamp or startTime + 3–5s (never longer than 8s).
+  · Intermediate: startTime/endTime must cover the WHOLE dialogue block (about 20–35 seconds).
+- Beginner "chunks" MUST be listed in the ORIGINAL sentence order (the app jumbles them at runtime). Joining the chunks with single spaces must reproduce the target sentence exactly (same spelling; spacing may only differ at chunk boundaries).
+- Advanced "blankChunk" MUST be an exact substring of "fullSentence" (same spelling, same spacing) and must be a meaningful clause of 2+ words where possible.
+- Advanced items also need:
+  · "hint": a short phonetic or contextual nudge (5–15 words, in English) that helps recall WITHOUT quoting the answer.
+  · "explanation": a teaching-quality note written mainly in ENGLISH (Korean examples stay Korean). Start with a pattern formula line (e.g. "Verb + -(으)ㄹ게요 = I'll..."), then 1–3 sentences of nuance, then 1–3 short Korean examples. Use \\n for line breaks.
+- Beginner/Intermediate items may include a short optional "explanation" (English) — or an empty string.
+- Fix obvious STT errors using context; transcribe in natural Korean orthography. Never invent sentences that are not in the transcript. Spread selections across the whole video.
+- Generate exactly the requested number of items per level (see the user message). If the transcript genuinely cannot support the requested count for a level, generate as many valid items as possible for that level.
 
-## How to write fullSentence
-- Transcribe exactly what is spoken, in natural Korean orthography with correct spacing and punctuation. Fix obvious auto-caption errors using context.
-- Keep it to ONE sentence (or one short utterance exchange if inseparable).
-
-## How to write the explanation (this is where your 20 years show)
-- Write mainly in ENGLISH (the learners are non-Korean). Korean example sentences stay in Korean.
-- Format: start with the pattern formula line like "Verb + -(으)ㄹ게요 = I'll...", then 1–3 sentences explaining nuance/usage/register (banmal vs jondaetmal, when natives actually use it), then 2–3 short Korean example sentences.
-- For pronunciation points, explain what actually happens in fast natural speech.
-- Add a vocabulary note with * for any non-obvious word or cultural item (e.g. "*깍두기 = ...").
-- Use \\n for line breaks inside the explanation. If an item genuinely needs no explanation (pure listening practice), use an empty string.
-
-## How to write the hint
-- A short (roughly 5–15 words) phonetic or contextual nudge that helps the learner recall the blank WITHOUT giving away the exact answer — never quote the blankWord itself.
-- Prefer whichever is more useful for this specific blank: a phonetic cue ("starts with a soft h-sound, almost silent"), a grammatical cue ("verb stem + the '-자' pattern"), or a contextual/meaning cue ("what you'd say inviting a friend to eat").
-- Every item must have a non-empty hint.
-
-## Timing rules
-- startTime: about 0.3–0.5 seconds BEFORE the line's transcript timestamp.
-- endTime: the next caption's timestamp, or startTime + 3~5 seconds — long enough to hear the full sentence, short enough to loop comfortably. Never longer than 8 seconds.
-
-## Quality bar
-Every item must survive this check: "Would a learner who masters this blank actually sound more natural in Korea tomorrow?" If not, pick a different segment. Never invent sentences that are not in the transcript.
-
-## Output format
-Respond with ONLY a single JSON object, no markdown code fences, no commentary, of the exact shape:
-{"quizzes": [{"id": string, "startTime": number, "endTime": number, "fullSentence": string, "blankWord": string, "explanation": string, "hint": string}, ...]}
-"blankWord" MUST be an exact substring of "fullSentence" (same spelling, same spacing). "endTime" MUST be greater than "startTime".`
+[Strict JSON Output Format]
+Respond with ONLY one JSON object — no markdown fences, no commentary — of this exact shape:
+{
+  "beginner": [
+    { "id": string, "startTime": number, "endTime": number,
+      "targetSentence": "오늘 진짜 피곤하네요",
+      "chunks": ["오늘", "진짜", "피곤하네요"],
+      "explanation": string }
+  ],
+  "intermediate": [
+    { "id": string, "startTime": number, "endTime": number,
+      "dialogueBlock": "자켓만 입어 봐. 너무 근데 옛날 또 옷들이... 등이 커진 거지.",
+      "question": "다음 대화의 상황으로 가장 알맞은 것은?",
+      "options": [
+        {"text": "예전에 다이어트하며 입었던 옷이 이제는 작아서 맞지 않는다.", "isCorrect": true},
+        {"text": "두 사람은 현재 새로운 작품을 위해 열심히 다이어트 중이다.", "isCorrect": false},
+        {"text": "남자가 여자에게 자신의 옛날 코트를 선물하려고 한다.", "isCorrect": false},
+        {"text": "캐나다 여행을 가기 위해 겨울 코트를 새로 사고 있다.", "isCorrect": false}
+      ],
+      "explanation": string }
+  ],
+  "advanced": [
+    { "id": string, "startTime": number, "endTime": number,
+      "fullSentence": "이제 운동을 진짜 시작해야 될 것 같아요",
+      "blankChunk": "시작해야 될 것 같아요",
+      "hint": string,
+      "explanation": string }
+  ]
+}
+Every "options" array MUST contain exactly 4 entries with exactly one "isCorrect": true.`
 
 // ── Firebase ID 토큰 검증 (identitytoolkit lookup — 관리자 이메일 확인) ──────
 async function verifyAdmin(idToken) {
@@ -90,6 +115,103 @@ async function verifyAdmin(idToken) {
   return user.email
 }
 
+// ── B 모드: 청크를 원문 순서로 정렬/검증 ─────────────────────────────────────
+// 모델이 순서를 섞어 보내도 targetSentence 를 앞에서부터 걸어가며 재정렬한다.
+// 문장 전체를 정확히 덮지 못하면 null (해당 문항 폐기).
+function orderChunks(sentence, chunks) {
+  if (!Array.isArray(chunks) || chunks.length < 2) return null
+  const remaining = chunks.map((c) => String(c).trim()).filter(Boolean)
+  if (remaining.length < 2) return null
+  const ordered = []
+  let rest = sentence.trim()
+  while (rest.length > 0) {
+    const idx = remaining.findIndex((c) => rest.startsWith(c))
+    if (idx === -1) return null
+    ordered.push(remaining[idx])
+    rest = rest.slice(remaining[idx].length).trimStart()
+    remaining.splice(idx, 1)
+  }
+  return remaining.length === 0 ? ordered : null
+}
+
+const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : NaN)
+const validTime = (q) => num(q.endTime) > num(q.startTime) && num(q.startTime) >= 0
+
+// ── 레벨별 응답 → 앱 QuizItem(B/I/A 멀티 모드 스키마) 매핑 ───────────────────
+function mapToQuizItems(parsed, videoId) {
+  const vid = videoId.slice(0, 6).toLowerCase()
+  const items = []
+  const generated = { B: 0, I: 0, A: 0 }
+
+  // B — 어순 맞히기: blocks = 원문 순서의 절 블록 (게임에서 셔플)
+  for (const q of Array.isArray(parsed.beginner) ? parsed.beginner : []) {
+    if (!q || typeof q.targetSentence !== 'string' || !validTime(q)) continue
+    const sentence = q.targetSentence.trim()
+    const blocks = orderChunks(sentence, q.chunks)
+    if (!sentence || !blocks) continue
+    generated.B += 1
+    items.push({
+      id: `${vid}_b${String(generated.B).padStart(2, '0')}`,
+      videoId,
+      mode: 'B',
+      startTime: Math.max(0, num(q.startTime)),
+      endTime: num(q.endTime),
+      fullSentence: blocks.join(' '),
+      blocks,
+      explanation: typeof q.explanation === 'string' ? q.explanation : '',
+      hasHardcodedSubs: true, // 대부분의 K-콘텐츠에 자막이 박혀 있음 — 스튜디오에서 수정 가능
+    })
+  }
+
+  // I — 상황 이해: options 4개 + 정답 1개 → options[]/correctIndex
+  for (const q of Array.isArray(parsed.intermediate) ? parsed.intermediate : []) {
+    if (!q || typeof q.dialogueBlock !== 'string' || !validTime(q)) continue
+    const opts = Array.isArray(q.options) ? q.options : []
+    if (opts.length !== 4) continue
+    const texts = opts.map((o) => (o && typeof o.text === 'string' ? o.text.trim() : ''))
+    if (texts.some((t) => !t)) continue
+    const correctIdx = opts.findIndex((o) => o && o.isCorrect === true)
+    if (correctIdx === -1 || opts.filter((o) => o && o.isCorrect === true).length !== 1) continue
+    generated.I += 1
+    items.push({
+      id: `${vid}_i${String(generated.I).padStart(2, '0')}`,
+      videoId,
+      mode: 'I',
+      startTime: Math.max(0, num(q.startTime)),
+      endTime: num(q.endTime),
+      fullSentence: q.dialogueBlock.trim(),
+      question: typeof q.question === 'string' && q.question.trim() ? q.question.trim() : '다음 대화의 상황으로 가장 알맞은 것은?',
+      options: texts,
+      correctIndex: correctIdx,
+      explanation: typeof q.explanation === 'string' ? q.explanation : '',
+      hasHardcodedSubs: true,
+    })
+  }
+
+  // A — 딕테이션: blankChunk 가 fullSentence 의 부분 문자열이어야 함
+  for (const q of Array.isArray(parsed.advanced) ? parsed.advanced : []) {
+    if (!q || typeof q.fullSentence !== 'string' || typeof q.blankChunk !== 'string' || !validTime(q)) continue
+    const fullSentence = q.fullSentence.trim()
+    const blankWord = q.blankChunk.trim()
+    if (!fullSentence || !blankWord || !fullSentence.includes(blankWord)) continue
+    generated.A += 1
+    items.push({
+      id: `${vid}_a${String(generated.A).padStart(2, '0')}`,
+      videoId,
+      mode: 'A',
+      startTime: Math.max(0, num(q.startTime)),
+      endTime: num(q.endTime),
+      fullSentence,
+      blankWord,
+      hint: typeof q.hint === 'string' ? q.hint : '',
+      explanation: typeof q.explanation === 'string' ? q.explanation : '',
+      hasHardcodedSubs: true,
+    })
+  }
+
+  return { items, generated }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -102,15 +224,22 @@ export default async function handler(req, res) {
     const email = await verifyAdmin(idToken)
     if (!email) return res.status(403).json({ error: '관리자 계정이 아닙니다' })
 
-    // 2) 입력 검증
-    const { videoId, transcript, count = 20 } = req.body || {}
+    // 2) 입력 검증 — 레벨별 개수 (레거시 count 는 A 개수로 해석)
+    const { videoId, transcript, counts, count } = req.body || {}
     if (!videoId || typeof videoId !== 'string') {
       return res.status(400).json({ error: 'videoId 가 필요합니다' })
     }
     if (!transcript || typeof transcript !== 'string' || transcript.trim().length < 50) {
       return res.status(400).json({ error: '자막(transcript)이 너무 짧습니다. 유튜브 스크립트를 붙여넣어 주세요.' })
     }
-    const quizCount = Math.min(Math.max(Number(count) || 20, 1), 20)
+    const clamp = (v, max) => Math.min(Math.max(Number(v) || 0, 0), max)
+    const want = {
+      B: clamp(counts && counts.B, 10),
+      I: clamp(counts && counts.I, 6),
+      A: clamp(counts ? counts.A : count || 0, 20),
+    }
+    if (want.B + want.I + want.A === 0) want.A = 10 // 아무 것도 지정 안 하면 기본 A 10개
+    const requestedLevels = ['B', 'I', 'A'].filter((k) => want[k] > 0)
 
     // 3) NVIDIA 호출 — 비스트리밍, 응답 텍스트에서 JSON 블록만 추출
     // 앞뒤 공백/줄바꿈 제거 + ASCII 범위 검증: Vercel 환경 변수 값에 실수로
@@ -127,6 +256,13 @@ export default async function handler(req, res) {
       )
     }
 
+    const userMessage =
+      `videoId: ${videoId}\n` +
+      `Generate quiz items per level: Beginner(B)=${want.B}, Intermediate(I)=${want.I}, Advanced(A)=${want.A}. ` +
+      `Levels requested: ${requestedLevels.join(', ')}. For levels with 0, return an empty array.\n` +
+      `Use ids like "${videoId.slice(0, 6).toLowerCase()}_b01" / "_i01" / "_a01", ordered by startTime within each level.\n\n` +
+      `=== TRANSCRIPT (timestamp + text lines) ===\n${transcript.slice(0, 60000)}`
+
     const r = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
@@ -134,14 +270,7 @@ export default async function handler(req, res) {
         model: NVIDIA_MODEL,
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
-          {
-            role: 'user',
-            content:
-              `videoId: ${videoId}\n` +
-              `Create exactly ${quizCount} quiz items from this transcript. ` +
-              `Use ids like "${videoId.slice(0, 6).toLowerCase()}_01", "..._02" in order of startTime.\n\n` +
-              `=== TRANSCRIPT (timestamp + text lines) ===\n${transcript.slice(0, 60000)}`,
-          },
+          { role: 'user', content: userMessage },
         ],
         temperature: 0.4,
         top_p: 0.9,
@@ -160,33 +289,20 @@ export default async function handler(req, res) {
     const jsonMatch = raw.match(/\{[\s\S]*\}/)
     if (!jsonMatch) return res.status(502).json({ error: 'AI 응답에서 JSON을 찾지 못했습니다. 다시 시도해 주세요.' })
 
-    // 4) 서버측 검증: blankWord 가 fullSentence 의 부분 문자열인지, 시간이 유효한지
-    const parsed = JSON.parse(jsonMatch[0])
-    const quizzes = (parsed.quizzes || [])
-      .filter(
-        (q) =>
-          q.fullSentence &&
-          q.blankWord &&
-          q.fullSentence.includes(q.blankWord) &&
-          Number(q.endTime) > Number(q.startTime),
-      )
-      .map((q, i) => ({
-        id: q.id || `${videoId.slice(0, 6).toLowerCase()}_${String(i + 1).padStart(2, '0')}`,
-        videoId,
-        startTime: Math.max(0, Number(q.startTime)),
-        endTime: Number(q.endTime),
-        fullSentence: q.fullSentence.trim(),
-        blankWord: q.blankWord.trim(),
-        explanation: q.explanation || '',
-        hint: q.hint || '',
-        hasHardcodedSubs: true, // 대부분의 K-콘텐츠에 자막이 박혀 있음 — 스튜디오에서 수정 가능
-      }))
+    // 4) 안전 파싱 + 서버측 검증 → 앱 B/I/A 스키마로 매핑
+    let parsed
+    try {
+      parsed = JSON.parse(jsonMatch[0])
+    } catch {
+      return res.status(502).json({ error: 'AI 응답 JSON 파싱에 실패했습니다. 다시 시도해 주세요.' })
+    }
+    const { items: quizzes, generated } = mapToQuizItems(parsed, videoId)
 
     if (quizzes.length === 0) {
       return res.status(422).json({ error: '유효한 퀴즈를 생성하지 못했습니다. 자막에 타임스탬프가 포함되어 있는지 확인해 주세요.' })
     }
 
-    return res.status(200).json({ quizzes, model: NVIDIA_MODEL })
+    return res.status(200).json({ quizzes, generated, model: NVIDIA_MODEL })
   } catch (err) {
     console.error('[generate-quiz]', err)
     const msg =

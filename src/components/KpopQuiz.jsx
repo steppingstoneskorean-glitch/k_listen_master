@@ -659,10 +659,12 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
         </div>
       </header>
 
-      {/* ── 유튜브 플레이어 (done 단계에서는 숨김만 — 파괴하지 않음) ──────── */}
+      {/* ── 유튜브 플레이어 ─────────────────────────────────────────────────
+          · 모드(레벨) 선택 전과 done 단계에서는 CSS 로 숨김만 한다 (파괴하지 않음)
+          → 레벨 선택 화면에서는 영상이 보이지 않고, 선택 직후 즉시 나타나 재생된다 */}
       <section
         className={`overflow-hidden rounded-2xl bg-black shadow-lg ${
-          phase === 'done' ? 'hidden' : ''
+          phase === 'done' || !activeMode ? 'hidden' : ''
         }`}
       >
         <div className="relative aspect-video w-full">
@@ -875,9 +877,15 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                   : 'border-slate-200'
               } ${status === 'wrong' ? 'kq-shake' : ''}`}
             >
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
                 {t('mode.iInstruction')}
               </p>
+              {/* AI 생성 상황 이해 질문 (한국어 원문 보호) */}
+              {quiz.question && (
+                <p translate="no" className="notranslate mb-3 text-base font-extrabold text-slate-900">
+                  Q. {quiz.question}
+                </p>
+              )}
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {(quiz.options || []).map((opt, i) => {
                   const isChosen = chosenIdx === i;

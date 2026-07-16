@@ -122,11 +122,13 @@ export default function QuizStudioPage() {
   const videoId = useMemo(() => extractVideoId(videoUrl), [videoUrl])
 
   const [transcript, setTranscript] = useState('')
-  const [count, setCount] = useState(20)
+  // 레벨별 AI 생성 개수 (0 = 해당 레벨 건너뜀)
+  const [genCounts, setGenCounts] = useState<Record<GameMode, number>>({ B: 3, I: 2, A: 10 })
 
   const [items, setItems] = useState<QuizItem[]>([]) // 전 모드 문항
   const [activeMode, setActiveMode] = useState<GameMode>('A')
   const [modeStars, setModeStars] = useState<ModeStars>({}) // 모드별 난이도(별점) — 카드 배지에 반영
+  const [defaultSpeed, setDefaultSpeed] = useState(0.75) // 영상 기본 재생 속도 — 전체 문항 일괄 적용
   const [publishedCount, setPublishedCount] = useState<number | null>(null)
 
   const [busy, setBusy] = useState<'' | 'generate' | 'save' | 'publish' | 'unpublish'>('')
@@ -150,6 +152,16 @@ export default function QuizStudioPage() {
         setItems(seed)
         setModeStars(stars)
         setPublishedCount(published ? published.length : 0)
+        // 속도 select 를 기존 문항의 대표 속도(최빈값)와 동기화
+        if (seed.length) {
+          const freq: Record<string, number> = {}
+          for (const q of seed) {
+            const s = String(q.initialSpeed ?? 0.75)
+            freq[s] = (freq[s] || 0) + 1
+          }
+          const top = Object.entries(freq).sort((a, b) => b[1] - a[1])[0]
+          if (top) setDefaultSpeed(Number(top[0]))
+        }
       })
       .catch(() => {})
     return () => {
@@ -157,7 +169,7 @@ export default function QuizStudioPage() {
     }
   }, [videoId, isAdmin])
 
-  // ── AI 초안 생성 (A 모드 · 딕테이션 전용) ────────────────────────────────────
+  // ── AI 초안 생성 (B/I/A 3레벨 파이프라인) ────────────────────────────────────
   const generate = useCallback(async () => {
     if (!user || !videoId) return
     setBusy('generate')
@@ -167,21 +179,28 @@ export default function QuizStudioPage() {
       const r = await fetch('/api/generate-quiz', {
         method: 'POST',
         headers: { 'content-type': 'application/json', authorization: `Bearer ${idToken}` },
-        body: JSON.stringify({ videoId, transcript, count }),
+        body: JSON.stringify({ videoId, transcript, counts: genCounts }),
       })
       const data = await r.json()
       if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`)
-      const aItems: QuizItem[] = (data.quizzes as QuizItem[]).map((q) => ({ ...q, mode: 'A' as const }))
-      // 기존 B/I 문항은 보존하고 A 문항만 교체
-      setItems((prev) => [...prev.filter((q) => itemMode(q) !== 'A'), ...aItems])
-      setActiveMode('A')
-      say('ok', `A(빈칸) 초안 ${aItems.length}개 생성 완료. 검수 후 저장/배포하세요.`)
+      // 서버가 이미 mode 태그를 붙여 반환 — 생성된 모드만 교체, 나머지 모드는 보존
+      // 재생 속도는 영상 설정의 기본 속도를 적용
+      const newItems: QuizItem[] = (data.quizzes as QuizItem[]).map((q) => ({
+        ...q,
+        mode: itemMode(q),
+        initialSpeed: q.initialSpeed ?? defaultSpeed,
+      }))
+      const generatedModes = [...new Set(newItems.map(itemMode))]
+      setItems((prev) => [...prev.filter((q) => !generatedModes.includes(itemMode(q))), ...newItems])
+      setActiveMode(generatedModes[0] ?? 'A')
+      const g = data.generated || {}
+      say('ok', `AI 초안 생성 완료 — B ${g.B ?? 0}개 · I ${g.I ?? 0}개 · A ${g.A ?? 0}개. 검수 후 저장/배포하세요.`)
     } catch (e) {
       say('err', e instanceof Error ? e.message : String(e))
     } finally {
       setBusy('')
     }
-  }, [user, videoId, transcript, count])
+  }, [user, videoId, transcript, genCounts, defaultSpeed])
 
   // ── 문항 편집 헬퍼 (flat index 기준) ─────────────────────────────────────────
   const update = (i: number, patch: Partial<QuizItem>) =>
@@ -190,7 +209,7 @@ export default function QuizStudioPage() {
   const addItem = () =>
     setItems((prev) => {
       const seq = prev.filter((q) => itemMode(q) === activeMode).length + 1
-      return [...prev, emptyItem(videoId, activeMode, seq)]
+      return [...prev, { ...emptyItem(videoId, activeMode, seq), initialSpeed: defaultSpeed }]
     })
 
   const previewSegment = (q: QuizItem) => {
@@ -305,6 +324,60 @@ export default function QuizStudioPage() {
 
       {videoId && (
         <>
+          {/* ── 영상 설정: 기본 재생 속도 + 레벨별 난이도(별) ── */}
+          <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-indigo-500">영상 설정 · 속도 & 난이도</h2>
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* 기본 재생 속도 — 이 영상의 전체 문항에 일괄 적용 (문항별 개별 수정 가능) */}
+              <label className="text-xs font-semibold text-slate-500">
+                기본 재생 속도 (전체 문항에 즉시 적용 · 새 문항/AI 생성에도 사용)
+                <select
+                  className={`mt-1 ${field}`}
+                  value={defaultSpeed}
+                  onChange={(e) => {
+                    const v = Number(e.target.value)
+                    setDefaultSpeed(v)
+                    setItems((prev) => prev.map((q) => ({ ...q, initialSpeed: v })))
+                  }}
+                >
+                  {[0.5, 0.75, 1.0].map((rate) => (
+                    <option key={rate} value={rate}>
+                      {rate.toFixed(2)}배{rate === 0.75 ? ' (기본)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {/* 레벨별 별 개수 — 카드 썸네일 배지에 그대로 표시됨 */}
+              <div className="text-xs font-semibold text-slate-500">
+                레벨별 난이도 별 개수 (썸네일 배지에 표시)
+                <div className="mt-1 grid grid-cols-3 gap-2">
+                  {MODES.map((m) => (
+                    <label key={m.key} className="flex items-center gap-1.5">
+                      <span
+                        className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-black ${m.chipActive}`}
+                      >
+                        {m.key}
+                      </span>
+                      <select
+                        className={field}
+                        value={modeStars[m.key] ?? 1}
+                        onChange={(e) =>
+                          setModeStars((prev) => ({ ...prev, [m.key]: Number(e.target.value) }))
+                        }
+                      >
+                        {[1, 2, 3].map((n) => (
+                          <option key={n} value={n}>
+                            {'⭐'.repeat(n)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* ── STEP 2: 모드 선택 탭 ── */}
           <section className="mt-6">
             <h2 className="text-sm font-bold uppercase tracking-wide text-indigo-500">Step 2 · 모드 선택</h2>
@@ -337,41 +410,58 @@ export default function QuizStudioPage() {
             </div>
           </section>
 
-          {/* ── A 모드: AI 자막 생성 ── */}
-          {activeMode === 'A' && (
-            <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-sm font-bold text-slate-700">✨ AI 초안 생성 (빈칸 · 자막 필요)</h3>
-              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-4">
-                <label className="text-xs font-semibold text-slate-500 sm:col-span-3">
-                  자막 (유튜브 → 더보기 → &ldquo;스크립트 표시&rdquo; → 전체 복사 · 타임스탬프 포함)
-                  <textarea
-                    rows={5}
-                    className={`mt-1 ${field} font-mono text-xs`}
-                    value={transcript}
-                    onChange={(e) => setTranscript(e.target.value)}
-                    placeholder={'0:05\n안녕하세요 여러분\n0:08\n오늘은 같이 요리를 해볼 거예요\n...'}
-                  />
-                </label>
-                <label className="text-xs font-semibold text-slate-500">
-                  생성 개수
-                  <select className={`mt-1 ${field}`} value={count} onChange={(e) => setCount(Number(e.target.value))}>
-                    {[3, 5, 8, 10, 12, 15, 20].map((n) => (
-                      <option key={n} value={n}>
-                        {n}개
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={generate}
-                    disabled={!videoId || transcript.trim().length < 50 || busy !== ''}
-                    className="mt-2 w-full rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    {busy === 'generate' ? '⏳ 생성 중…' : '✨ AI 생성'}
-                  </button>
-                </label>
+          {/* ── AI 자동 생성 파이프라인 (B/I/A 3레벨 동시 생성) ── */}
+          <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-700">✨ AI 초안 생성 — STT 자막 → B/I/A 3레벨 자동 출제</h3>
+            <p className="mt-1 text-[11px] text-slate-400">
+              생성된 레벨의 기존 문항은 교체되고, 개수를 0으로 둔 레벨은 건드리지 않습니다.
+            </p>
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-4">
+              <label className="text-xs font-semibold text-slate-500 sm:col-span-3">
+                자막 (유튜브 → 더보기 → &ldquo;스크립트 표시&rdquo; → 전체 복사 · 타임스탬프 포함)
+                <textarea
+                  rows={6}
+                  className={`mt-1 ${field} font-mono text-xs`}
+                  value={transcript}
+                  onChange={(e) => setTranscript(e.target.value)}
+                  placeholder={'0:05\n안녕하세요 여러분\n0:08\n오늘은 같이 요리를 해볼 거예요\n...'}
+                />
+              </label>
+              <div className="text-xs font-semibold text-slate-500">
+                레벨별 생성 개수
+                {([
+                  ['B', '어순', [0, 1, 2, 3, 4, 5, 8, 10]],
+                  ['I', '상황 이해', [0, 1, 2, 3, 4, 6]],
+                  ['A', '빈칸', [0, 3, 5, 8, 10, 12, 15, 20]],
+                ] as [GameMode, string, number[]][]).map(([m, label, opts]) => (
+                  <label key={m} className="mt-1.5 flex items-center gap-2">
+                    <span className="w-16 shrink-0">{m} · {label}</span>
+                    <select
+                      className={field}
+                      value={genCounts[m]}
+                      onChange={(e) => setGenCounts((prev) => ({ ...prev, [m]: Number(e.target.value) }))}
+                    >
+                      {opts.map((n) => (
+                        <option key={n} value={n}>{n}개</option>
+                      ))}
+                    </select>
+                  </label>
+                ))}
+                <button
+                  onClick={generate}
+                  disabled={
+                    !videoId ||
+                    transcript.trim().length < 50 ||
+                    busy !== '' ||
+                    genCounts.B + genCounts.I + genCounts.A === 0
+                  }
+                  className="mt-2 w-full rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {busy === 'generate' ? '⏳ AI가 3레벨 퀴즈를 만드는 중… (최대 2~3분)' : '✨ AI 생성'}
+                </button>
               </div>
-            </section>
-          )}
+            </div>
+          </section>
 
           {/* ── 구간 미리듣기 ── */}
           {previewSrc && (
@@ -394,31 +484,13 @@ export default function QuizStudioPage() {
               <h2 className="text-sm font-bold uppercase tracking-wide text-indigo-500">
                 Step 3 · {MODES.find((m) => m.key === activeMode)?.label} 문항 ({shown.length})
               </h2>
-              <div className="flex items-center gap-2">
-                {/* 이 모드의 난이도(별점) — 썸네일 카드 배지에 그대로 표시됨 */}
-                <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
-                  난이도
-                  <select
-                    className="rounded-lg border border-slate-300 px-2 py-1 text-sm"
-                    value={modeStars[activeMode] ?? 1}
-                    onChange={(e) =>
-                      setModeStars((prev) => ({ ...prev, [activeMode]: Number(e.target.value) }))
-                    }
-                  >
-                    {[1, 2, 3].map((n) => (
-                      <option key={n} value={n}>
-                        {'⭐'.repeat(n)} ({n})
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button
-                  onClick={addItem}
-                  className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-200"
-                >
-                  + 문항 추가
-                </button>
-              </div>
+              {/* 난이도(별) 설정은 상단 "영상 설정" 카드로 이동 */}
+              <button
+                onClick={addItem}
+                className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-200"
+              >
+                + 문항 추가
+              </button>
             </div>
 
             {shown.length === 0 && (
@@ -560,15 +632,26 @@ export default function QuizStudioPage() {
                   {activeMode === 'I' && (
                     <>
                       <label className="mt-2 block text-xs font-semibold text-slate-500">
-                        듣기 대상 문장 (한국어 원문)
-                        <input
+                        듣기 대상 대화 블록 (한국어 원문 · 20~30초 분량)
+                        <textarea
                           translate="no"
+                          rows={2}
                           className={`mt-1 notranslate ${field}`}
                           value={q.fullSentence}
                           onChange={(e) => update(i, { fullSentence: e.target.value })}
                         />
                       </label>
-                      <p className="mt-2 text-xs font-semibold text-slate-500">의미 보기 4개 (라디오로 정답 선택)</p>
+                      <label className="mt-2 block text-xs font-semibold text-slate-500">
+                        상황 이해 질문 (비우면 기본 안내문 사용)
+                        <input
+                          translate="no"
+                          className={`mt-1 notranslate ${field}`}
+                          value={q.question ?? ''}
+                          onChange={(e) => update(i, { question: e.target.value })}
+                          placeholder="다음 대화의 상황으로 가장 알맞은 것은?"
+                        />
+                      </label>
+                      <p className="mt-2 text-xs font-semibold text-slate-500">보기 4개 (라디오로 정답 선택)</p>
                       {[0, 1, 2, 3].map((oi) => {
                         const opts = q.options ?? ['', '', '', '']
                         return (

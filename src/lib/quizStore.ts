@@ -50,6 +50,8 @@ export interface QuizItem {
   options?: string[]
   /** I 전용: options 중 정답 인덱스 (0~3) */
   correctIndex?: number
+  /** I 전용: 상황 이해 질문 (예: "다음 대화의 상황으로 가장 알맞은 것은?") — 없으면 기본 안내문 사용 */
+  question?: string
 }
 
 /** 레거시(mode 없음) 문항을 'A' 로 정규화 */
