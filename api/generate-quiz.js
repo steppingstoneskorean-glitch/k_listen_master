@@ -24,6 +24,7 @@ export const config = { maxDuration: 300 }
 
 const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1'
 const NVIDIA_MODEL = 'nvidia/llama-3.3-nemotron-super-49b-v1.5'
+const TRANSLATE_LANGS = ['ja', 'es', 'zh', 'vi']
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'steppingstoneskorean@gmail.com'
 
@@ -212,6 +213,77 @@ function mapToQuizItems(parsed, videoId) {
   return { items, generated }
 }
 
+// ── 사고 과정(reasoning) 흔적 제거 ────────────────────────────────────────────
+// "detailed thinking off" 지시에도 Nemotron 계열은 가끔 <think>...</think> 블록을
+// 남긴다. 그 안에 의사코드용 중괄호가 섞여 있으면 아래의 순진한 JSON 추출 정규식이
+// 엉뚱한 시작 지점을 잡아 파싱에 실패하므로, 매칭 전에 먼저 잘라낸다.
+function stripThinking(raw) {
+  const closeIdx = raw.lastIndexOf('</think>')
+  return closeIdx === -1 ? raw : raw.slice(closeIdx + '</think>'.length)
+}
+
+// ── explanation 부분 자동 번역 (partial auto-translation) ───────────────────
+// scripts/translate-explanations.cjs 와 동일한 규칙을 퀴즈 생성 파이프라인에 바로 연결한다.
+// 기존에는 이 로직이 git pre-commit 훅으로 KpopQuiz.jsx(하드코딩 데이터)에만 연결되어
+// 있어, 스튜디오 → Firestore 로 배포되는 문항의 explanation 은 절대 번역되지 않았다.
+// 번역 실패는 fail-open — 생성 자체를 막지 않고 en 단일 문자열로 남긴다.
+const TRANSLATE_SYSTEM_PROMPT = `detailed thinking off
+
+You are a professional translator for a Korean-listening app aimed at foreign K-pop fans.
+You will receive a JSON array of English "explanation" strings (grammar/pronunciation notes for Korean listening quiz items) that may contain Korean words or sentences mixed in.
+
+Rules:
+1. NEVER translate, romanize, or alter ANY Korean (Hangul) text. Copy every Korean substring byte-for-byte, unchanged, in the exact same position.
+2. Translate ONLY the English prose and English glosses into ${TRANSLATE_LANGS.join(', ')}.
+3. Keep the literal words "Verb" / "Adjective" untranslated when they appear right before a "+" grammar formula.
+4. Preserve the original line breaks (as \\n) and paragraph structure exactly.
+5. Respond with ONLY a single JSON array — no markdown fences, no commentary — the SAME length and order as the input. Each element is an object with exactly these keys: ${TRANSLATE_LANGS.join(', ')}.`
+
+async function translateExplanations(explanations, apiKey) {
+  const jobs = explanations
+    .map((text, i) => ({ text, i }))
+    .filter((x) => typeof x.text === 'string' && x.text.trim())
+  if (jobs.length === 0) return {}
+
+  try {
+    const r = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: NVIDIA_MODEL,
+        messages: [
+          { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
+          { role: 'user', content: JSON.stringify(jobs.map((x) => x.text)) },
+        ],
+        temperature: 0.3,
+        top_p: 0.9,
+        max_tokens: 8000,
+        stream: false,
+      }),
+    })
+    if (!r.ok) {
+      console.error('[generate-quiz] translateExplanations HTTP', r.status)
+      return {}
+    }
+    const data = await r.json()
+    const raw = stripThinking(
+      (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '',
+    )
+    const jsonMatch = raw.match(/\[[\s\S]*\]/)
+    if (!jsonMatch) return {}
+    const arr = JSON.parse(jsonMatch[0])
+    const out = {}
+    jobs.forEach((job, k) => {
+      const t = arr[k]
+      if (t && typeof t === 'object') out[job.i] = t
+    })
+    return out
+  } catch (err) {
+    console.error('[generate-quiz] translateExplanations failed', err)
+    return {} // fail-open — 번역 실패해도 퀴즈 생성은 계속 진행
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -274,10 +346,19 @@ export default async function handler(req, res) {
         ],
         temperature: 0.4,
         top_p: 0.9,
-        max_tokens: 16000,
+        // B10+I6+A20 처럼 레벨 합계가 크면 explanation 이 길어 16000 으로는 자주
+        // 잘렸다(finish_reason: "length") — JSON 이 중간에 끊겨 파싱 실패의 원인이었다.
+        // 이 모델의 실제 출력 한도(65536)에 맞춰 여유를 둔다.
+        max_tokens: 32000,
         stream: false,
       }),
     })
+    if (r.status === 429) {
+      const bodyText = await r.text().catch(() => '')
+      const err = new Error(`NVIDIA API rate limit (429): ${bodyText.slice(0, 200)}`)
+      err.status = 429
+      throw err
+    }
     if (!r.ok) {
       const bodyText = await r.text().catch(() => '')
       const err = new Error(`NVIDIA API HTTP ${r.status}: ${bodyText.slice(0, 300)}`)
@@ -285,7 +366,17 @@ export default async function handler(req, res) {
       throw err
     }
     const data = await r.json()
-    const raw = (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || ''
+    const choice = data && data.choices && data.choices[0]
+    const raw = stripThinking((choice && choice.message && choice.message.content) || '')
+
+    if (choice && choice.finish_reason === 'length') {
+      return res.status(502).json({
+        error:
+          'AI 응답이 max_tokens 한도에서 잘렸습니다 (요청한 문항 수가 너무 많습니다). ' +
+          '레벨별 생성 개수를 줄여서 다시 시도해 주세요.',
+      })
+    }
+
     const jsonMatch = raw.match(/\{[\s\S]*\}/)
     if (!jsonMatch) return res.status(502).json({ error: 'AI 응답에서 JSON을 찾지 못했습니다. 다시 시도해 주세요.' })
 
@@ -302,6 +393,19 @@ export default async function handler(req, res) {
       return res.status(422).json({ error: '유효한 퀴즈를 생성하지 못했습니다. 자막에 타임스탬프가 포함되어 있는지 확인해 주세요.' })
     }
 
+    // 5) explanation 부분 자동 번역 — Studio → Firestore 배포 문항에도 다국어를 채운다.
+    //    (기존에는 KpopQuiz.jsx 하드코딩 데이터에만 pre-commit 훅으로 연결되어 있었음)
+    const translations = await translateExplanations(
+      quizzes.map((q) => q.explanation),
+      apiKey,
+    )
+    quizzes.forEach((q, i) => {
+      const en = q.explanation || ''
+      if (en.trim() && translations[i]) {
+        q.explanation = { en, ...translations[i] }
+      }
+    })
+
     return res.status(200).json({ quizzes, generated, model: NVIDIA_MODEL })
   } catch (err) {
     console.error('[generate-quiz]', err)
@@ -310,6 +414,8 @@ export default async function handler(req, res) {
         ? 'NVIDIA_API_KEY 가 설정되지 않았습니다 (.env.local / Vercel 환경 변수 확인)'
         : err && err.code === 'invalid_key_charset'
         ? 'NVIDIA_API_KEY 값에 한글/특수문자가 섞여 있습니다. Vercel 환경 변수에서 키 값만 남기고 다시 저장한 뒤 Redeploy 해주세요.'
+        : err && err.status === 429
+        ? 'NVIDIA API 사용량 한도(rate limit)에 도달했습니다. 잠시 후 다시 시도해 주세요.'
         : err && err.status === 401
         ? 'NVIDIA_API_KEY 가 잘못되었습니다'
         : '퀴즈 생성 중 오류가 발생했습니다: ' + (err.message || String(err))

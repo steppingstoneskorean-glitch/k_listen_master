@@ -13,7 +13,7 @@ import { useAuth } from '@/lib/auth'
 import { useVideoAccess } from '@/lib/accessControl'
 import AuthModal from '@/components/AuthModal'
 import UpgradeModal from '@/components/UpgradeModal'
-import { LIVE_VIDEOS, pickText, MODE_FILTERS, type ModeFilter, type ModeInfo } from '@/data/kArtistLive'
+import { pickText, MODE_FILTERS, type LiveVideo, type ModeFilter, type ModeInfo } from '@/data/kArtistLive'
 import { isMastered } from '@/lib/mastery'
 import { useVideoModes } from '@/lib/useVideoModes'
 import { VideoCard, FilterDropdown, ModeChip } from '@/components/kartist/ui'
@@ -62,8 +62,8 @@ const STEP_QUIZZES: {
   { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', imageSrc: advancedGameImg, modes: [{ mode: 'A', stars: 3 }], url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
 ]
 
-function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang): HubItem[] {
-  const artistItems: HubItem[] = LIVE_VIDEOS.map(v => ({
+function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang, liveVideos: LiveVideo[]): HubItem[] {
+  const artistItems: HubItem[] = liveVideos.map(v => ({
     key: `live-${v.id}`,
     title: pickText(v.title, lang),
     desc: v.desc ? pickText(v.desc, lang) : undefined,
@@ -96,8 +96,8 @@ export default function GameHubPage() {
   const { user, isGuest } = useAuth()
   const { checkAccess, unlock } = useVideoAccess()
   const navigate = useNavigate()
-  // 배포본 기준 실제 모드 (운영자가 배포하면 배지가 자동 갱신)
-  const videoModes = useVideoModes()
+  // 배포본 기준 실제 모드/카드 목록 (운영자가 배포하면 배지·카드가 자동 갱신)
+  const { videoModes, liveVideos } = useVideoModes()
 
   const [modalTarget, setModalTarget] = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
@@ -124,7 +124,7 @@ export default function GameHubPage() {
     navigate(to)
   }
 
-  const items = useMemo(() => buildItems(t, lang), [t, lang])
+  const items = useMemo(() => buildItems(t, lang, liveVideos), [t, lang, liveVideos])
 
   const visible = useMemo(() => {
     const filtered = items.filter(

@@ -9,7 +9,7 @@
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
-import { LIVE_VIDEOS, pickText } from '@/data/kArtistLive'
+import { pickText } from '@/data/kArtistLive'
 import { isMastered } from '@/lib/mastery'
 import { useVideoModes } from '@/lib/useVideoModes'
 import { VideoCard, Chevron } from '@/components/kartist/ui'
@@ -23,8 +23,8 @@ export default function KArtistLive({
 }) {
   const { lang, t } = useLang()
   const navigate = useNavigate()
-  // 배포본 기준 실제 모드 (운영자가 배포하면 배지가 자동 갱신)
-  const videoModes = useVideoModes()
+  // 배포본 기준 실제 모드/카드 목록 (운영자가 배포하면 배지·카드가 자동 갱신)
+  const { videoModes, liveVideos } = useVideoModes()
   const trackRef = useRef<HTMLDivElement>(null)
 
   // 한 번에 카드 한 장(+gap) 만큼 스크롤 — scroll-snap 이 위치를 정렬
@@ -89,7 +89,7 @@ export default function KArtistLive({
             ref={trackRef}
             className="ka-track flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-2"
           >
-            {[...LIVE_VIDEOS].sort((a, b) => b.addedAt - a.addedAt).map(video => (
+            {[...liveVideos].sort((a, b) => b.addedAt - a.addedAt).map(video => (
               <div
                 key={video.id}
                 data-card
