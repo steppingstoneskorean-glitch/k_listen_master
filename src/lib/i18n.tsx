@@ -78,6 +78,14 @@ const TRANSLATIONS = {
     es: 'No se guardarán los récords del juego y no podrás revisar los errores más tarde.',
     ja: 'ゲーム記録は保存されず、後で誤答を確認することはできません。',
   },
+  // ── Support (Ko-fi) ──
+  'support.cta': {
+    en: 'Enjoying the quiz? Help me make more quizzes with a coffee! ☕',
+    ko: '퀴즈가 즐거우셨나요? 커피 한 잔으로 더 많은 퀴즈를 만들 수 있어요! ☕',
+    es: '¿Te gusta el quiz? ¡Ayúdame a crear más quizzes con un café! ☕',
+    ja: 'コーヒーでクイズ制作を応援！☕',
+  },
+
   'auth.marketingConsent': {
     en: '(Optional) I agree to receive emails about new lessons and learning materials.',
     ko: '(선택) 신규 수업·학습 자료 소식 등 광고성 이메일 수신에 동의합니다.',
