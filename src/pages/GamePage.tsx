@@ -10,7 +10,6 @@ import NicknameModal from '@/components/NicknameModal'
 import Leaderboard from '@/components/Leaderboard'
 import ChallengeShare from '@/components/ChallengeShare'
 import ResultCard from '@/components/ResultCard'
-import { captureAndShare } from '@/lib/resultCardImage'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { usePwaInstall } from '@/lib/pwaInstall'
@@ -560,23 +559,10 @@ function ResultScreen({
   const isTied = myRank !== undefined && leaderboard.filter(e => e.rank === myRank).length > 1
 
   const cardRef = useRef<HTMLDivElement>(null)
-  const [cardBusy, setCardBusy] = useState(false)
-  const [cardSaved, setCardSaved] = useState(false)
 
   const handleGuestModalClose = () => {
     setShowGuestModal(false)
     if (!isInstalled && !isInstallModalHidden()) setShowInstallModal(true)
-  }
-
-  const handleSaveImage = async () => {
-    if (!cardRef.current) return
-    setCardBusy(true)
-    const result = await captureAndShare(cardRef.current, 'k-listen-result.png')
-    if (result === 'downloaded') {
-      setCardSaved(true)
-      setTimeout(() => setCardSaved(false), 1800)
-    }
-    setCardBusy(false)
   }
 
   return (
@@ -617,7 +603,7 @@ function ResultScreen({
             </div>
           </div>
 
-          {/* 결과 이미지 카드 — 저장/공유 */}
+          {/* 결과 이미지 카드 — 자동 생성, 아래 도전장 공유 시 함께 첨부 */}
           <div className="flex flex-col items-center gap-3">
             <div ref={cardRef}>
               <ResultCard
@@ -627,14 +613,6 @@ function ResultScreen({
                 tagline={t('resultCard.tagline')}
               />
             </div>
-            <button
-              type="button"
-              onClick={handleSaveImage}
-              disabled={cardBusy}
-              className="rounded-2xl bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow hover:bg-amber-300 disabled:opacity-60 transition-transform duration-200 hover:-translate-y-0.5"
-            >
-              {cardSaved ? t('resultCard.saved') : cardBusy ? '…' : t('resultCard.saveBtn')}
-            </button>
           </div>
 
           {!isGuest && (
@@ -650,8 +628,14 @@ function ResultScreen({
             </button>
           )}
 
-          {/* 친구에게 도전장 보내기 */}
-          <ChallengeShare label={t('home.level1.title')} score={totalScore} stars={LEVEL_STARS.beginner} gamePath="/game" />
+          {/* 친구에게 도전장 보내기 — 결과카드 이미지 자동 첨부 */}
+          <ChallengeShare
+            label={t('home.level1.title')}
+            score={totalScore}
+            stars={LEVEL_STARS.beginner}
+            gamePath="/game"
+            cardRef={cardRef}
+          />
 
           <div className="flex gap-3">
             <button

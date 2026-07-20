@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
+import { recordMarketingConsent } from '@/lib/marketingConsent'
 
 interface Props {
   targetPath: string
@@ -14,13 +15,14 @@ export default function AuthModal({ targetPath, onClose }: Props) {
   const navigate = useNavigate()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [marketingOptIn, setMarketingOptIn] = useState(false) // 기본 해제 — 사전 체크된 박스는 유효한 동의가 아님
 
   const handleSocial = async (provider: 'google' | 'apple') => {
     setError('')
     setSubmitting(true)
     try {
-      if (provider === 'google') await signInWithGoogle()
-      else await signInWithApple()
+      const { uid } = provider === 'google' ? await signInWithGoogle() : await signInWithApple()
+      if (marketingOptIn) void recordMarketingConsent(uid)
       onClose()
       navigate(targetPath)
     } catch (err: unknown) {
@@ -54,6 +56,19 @@ export default function AuthModal({ targetPath, onClose }: Props) {
             <h2 className="text-xl font-black text-white">{t('start.login')}</h2>
             <p className="text-gray-500 text-sm mt-1">{t('start.tagline')}</p>
           </div>
+
+          {/* Marketing email opt-in (선택) */}
+          <label className="flex items-start gap-2 px-1 py-1 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={marketingOptIn}
+              onChange={e => setMarketingOptIn(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-600 bg-gray-800 accent-indigo-500"
+            />
+            <span className="text-[11px] leading-snug text-gray-500">
+              {t('auth.marketingConsent')}
+            </span>
+          </label>
 
           {/* Google */}
           <button

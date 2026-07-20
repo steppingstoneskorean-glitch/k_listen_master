@@ -78,6 +78,12 @@ const TRANSLATIONS = {
     es: 'No se guardarán los récords del juego y no podrás revisar los errores más tarde.',
     ja: 'ゲーム記録は保存されず、後で誤答を確認することはできません。',
   },
+  'auth.marketingConsent': {
+    en: '(Optional) I agree to receive emails about new lessons and learning materials.',
+    ko: '(선택) 신규 수업·학습 자료 소식 등 광고성 이메일 수신에 동의합니다.',
+    es: '(Opcional) Acepto recibir correos sobre nuevas lecciones y materiales de aprendizaje.',
+    ja: '（任意）新しいレッスンや学習資料に関するメールの受信に同意します。',
+  },
 
   // ── Navigation ──
   'nav.game': { en: 'Games', ko: '게임', es: 'Juegos', ja: 'ゲーム' },
@@ -638,8 +644,6 @@ const TRANSLATIONS = {
   'challenge.copied': { en: '✔ Copied!', ko: '✔ 복사됨!', es: '✔ ¡Copiado!', ja: '✔ コピー済み！' },
 
   // ── Result Image Card ──
-  'resultCard.saveBtn': { en: '📸 Save Image for IG Story', ko: '📸 인스타 스토리용 이미지 저장', es: '📸 Guardar imagen para IG Story', ja: '📸 IGストーリー用に画像を保存' },
-  'resultCard.saved': { en: '✔ Saved!', ko: '✔ 저장됨!', es: '✔ ¡Guardado!', ja: '✔ 保存済み！' },
   'resultCard.tagline': { en: 'Can you beat my score?', ko: '나를 이겨볼 수 있을까?', es: '¿Puedes superar mi puntuación?', ja: '私のスコアを超えられる？' },
   'challenge.shareX': { en: 'Share on 𝕏', ko: '𝕏 로 공유', es: 'Compartir en 𝕏', ja: '𝕏 でシェア' },
   'kartist.tryQuiz': { en: 'Try the listening quiz', ko: '듣기 퀴즈 도전', es: 'Prueba el quiz de escucha', ja: 'リスニングクイズに挑戦' },
@@ -740,8 +744,6 @@ const TRANSLATIONS = {
     es: '¡Capté {correct}/{total} frases en coreano de un video de {artist} 🎧 ({percent}%)! ¿Puedes superarme? {url}',
     ja: '{artist}の動画で韓国語{total}文中{correct}文を聞き取れた🎧（{percent}%）私に勝てる？ {url}',
   },
-  'kpop.saveCard': { en: '📸 Share result card', ko: '📸 결과 카드 공유', es: '📸 Compartir tarjeta', ja: '📸 結果カードをシェア' },
-  'kpop.cardSaved': { en: '✔ Card saved!', ko: '✔ 카드 저장됨!', es: '✔ ¡Tarjeta guardada!', ja: '✔ カード保存済み！' },
   'kpop.copyLink': { en: '📋 Copy link', ko: '📋 링크 복사', es: '📋 Copiar enlace', ja: '📋 リンクをコピー' },
   'kpop.copied': { en: '✔ Copied!', ko: '✔ 복사됨!', es: '✔ ¡Copiado!', ja: '✔ コピー済み！' },
   'kpop.shareX': { en: 'Share on 𝕏', ko: '𝕏 로 공유', es: 'Compartir en 𝕏', ja: '𝕏 でシェア' },

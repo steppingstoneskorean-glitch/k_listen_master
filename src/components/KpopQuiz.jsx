@@ -1392,32 +1392,6 @@ function FinalResult({
   videoId,
 }) {
   const { t, lang } = useLang();
-  const [cardBusy, setCardBusy] = useState(false);
-  const [cardSaved, setCardSaved] = useState(false);
-
-  // 포토카드 공유: 모바일은 OS 공유 시트(navigator.share), 데스크톱은 PNG 다운로드
-  const shareCard = async () => {
-    setCardBusy(true);
-    try {
-      const blob = await createResultCardBlob({ artist, stars, percent, correctCount, total, results, streak, videoId });
-      const file = new File([blob], 'k-listen-result.png', { type: 'image/png' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], text: shareText });
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'k-listen-result.png';
-        a.click();
-        URL.revokeObjectURL(url);
-        setCardSaved(true);
-        setTimeout(() => setCardSaved(false), 1800);
-      }
-    } catch {
-      /* 사용자가 공유 시트를 닫은 경우 등 — 무시 */
-    }
-    setCardBusy(false);
-  };
 
   return (
     <div className="kq-pop mt-6 space-y-6">
@@ -1460,7 +1434,7 @@ function FinalResult({
         </div>
       </section>
 
-      {/* 성적 기반 바이럴 공유 — 도전장 공유 + 결과 포토카드 저장을 한 카드로 통합 */}
+      {/* 성적 기반 바이럴 공유 — 결과 포토카드를 자동 생성해 도전장 문구와 함께 한 번에 공유 */}
       <ChallengeShare
         label={artist}
         score={percent}
@@ -1470,14 +1444,9 @@ function FinalResult({
         total={total}
         thumbnailUrl={videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : undefined}
         variant="light"
-        extraButton={
-          <button
-            onClick={shareCard}
-            disabled={cardBusy}
-            className={`${liftBtn} rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-900 shadow hover:bg-amber-300 disabled:opacity-60`}
-          >
-            {cardSaved ? t('kpop.cardSaved') : cardBusy ? '…' : t('kpop.saveCard')}
-          </button>
+        shareMessage={shareText}
+        captureImage={() =>
+          createResultCardBlob({ artist, stars, percent, correctCount, total, results, streak, videoId }).catch(() => null)
         }
       />
 

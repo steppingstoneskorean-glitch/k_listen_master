@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
+import { recordMarketingConsent } from '@/lib/marketingConsent'
 import logoImg from '../../assets/images/logo.jpg'
 
 export default function StartPage() {
@@ -11,6 +12,7 @@ export default function StartPage() {
 
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [marketingOptIn, setMarketingOptIn] = useState(false) // 기본 해제 — 사전 체크된 박스는 유효한 동의가 아님
 
   if (!loading && user) {
     navigate('/', { replace: true })
@@ -26,11 +28,8 @@ export default function StartPage() {
     setError('')
     setSubmitting(true)
     try {
-      if (provider === 'google') {
-        await signInWithGoogle()
-      } else {
-        await signInWithApple()
-      }
+      const { uid } = provider === 'google' ? await signInWithGoogle() : await signInWithApple()
+      if (marketingOptIn) void recordMarketingConsent(uid)
       navigate('/')
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code
@@ -75,6 +74,18 @@ export default function StartPage() {
         </div>
 
         <div className="w-full flex flex-col gap-3">
+          {/* Marketing email opt-in (선택) */}
+          <label className="flex items-start gap-2 px-1 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={marketingOptIn}
+              onChange={e => setMarketingOptIn(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-600 bg-gray-800 accent-indigo-500"
+            />
+            <span className="text-[11px] leading-snug text-gray-500">
+              {t('auth.marketingConsent')}
+            </span>
+          </label>
           <GoogleBtn
             label={t('auth.continueWithGoogle')}
             onClick={() => handleSocialSignIn('google')}

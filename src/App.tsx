@@ -13,6 +13,8 @@ import DictationPage from '@/pages/DictationPage'
 import ErrorHistoryPage from '@/pages/ErrorHistoryPage'
 import MaterialsPage from '@/pages/MaterialsPage'
 import PrivacyPolicy from '@/pages/PrivacyPolicy'
+import AboutPage from '@/pages/AboutPage'
+import TermsPage from '@/pages/TermsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import KpopQuiz from '@/components/KpopQuiz'
 import GameHubPage from '@/pages/GameHubPage'
@@ -44,6 +46,8 @@ export default function App() {
                 <Route path="/quiz-studio" element={<QuizStudioPage />} />
                 <Route path="/quiz-builder" element={<QuizBuilderPage />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/terms" element={<TermsPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
 

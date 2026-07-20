@@ -14,8 +14,8 @@ interface AuthCtx {
   loading: boolean
   isGuest: boolean
   setIsGuest: (v: boolean) => void
-  signInWithGoogle: () => Promise<{ email: string | null }>
-  signInWithApple: () => Promise<{ email: string | null }>
+  signInWithGoogle: () => Promise<{ email: string | null; uid: string }>
+  signInWithApple: () => Promise<{ email: string | null; uid: string }>
   logout: () => Promise<void>
 }
 
@@ -34,21 +34,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const signInWithGoogle = async (): Promise<{ email: string | null }> => {
+  const signInWithGoogle = async (): Promise<{ email: string | null; uid: string }> => {
     if (!auth) throw new Error('auth_unavailable')
     const provider = new GoogleAuthProvider()
     provider.setCustomParameters({ prompt: 'select_account' })
     const cred = await signInWithPopup(auth, provider)
-    return { email: cred.user.email }
+    return { email: cred.user.email, uid: cred.user.uid }
   }
 
-  const signInWithApple = async (): Promise<{ email: string | null }> => {
+  const signInWithApple = async (): Promise<{ email: string | null; uid: string }> => {
     if (!auth) throw new Error('auth_unavailable')
     const provider = new OAuthProvider('apple.com')
     provider.addScope('email')
     provider.addScope('name')
     const cred = await signInWithPopup(auth, provider)
-    return { email: cred.user.email }
+    return { email: cred.user.email, uid: cred.user.uid }
   }
 
   const logout = async () => {

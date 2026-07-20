@@ -9,6 +9,12 @@ export default function Footer() {
           <span className="text-sm font-black text-white">Korean</span>
         </div>
         <div className="flex items-center gap-4">
+          <Link to="/about" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
+            About
+          </Link>
+          <Link to="/terms" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
+            이용약관
+          </Link>
           <Link to="/privacy" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
             개인정보처리방침
           </Link>
