@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // scripts/translate-explanations.cjs
 // ─────────────────────────────────────────────────────────────────────────────
-// KpopQuiz.jsx 의 quizList explanation 을 { en, ja, es, zh, vi } 다국어 객체로 자동 채운다.
-// pre-commit 훅(.husky/pre-commit)에서 KpopQuiz.jsx 가 staged 되어 있을 때 호출된다.
+// src/data/hardcodedQuizzes.ts 의 HARDCODED_QUIZZES explanation 을
+// { en, ja, es, zh, vi } 다국어 객체로 자동 채운다.
+// pre-commit 훅(.husky/pre-commit)에서 hardcodedQuizzes.ts 가 staged 되어 있을 때 호출된다.
 //
 //   · 한국어(Hangul) 텍스트는 절대 번역/로마자화하지 않는다 — 시스템 프롬프트로 강제.
 //   · en 텍스트가 바뀌지 않은 항목은 캐시(scripts/.i18n-cache.json)로 재번역을 건너뛴다.
@@ -16,7 +17,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ROOT = path.resolve(__dirname, '..');
-const TARGET_FILE = path.join(ROOT, 'src/components/KpopQuiz.jsx');
+const TARGET_FILE = path.join(ROOT, 'src/data/hardcodedQuizzes.ts');
 const CACHE_FILE = path.join(__dirname, '.i18n-cache.json');
 const LANGS = ['ja', 'es', 'zh', 'vi'];
 
@@ -52,17 +53,18 @@ function saveCache(cache) {
   fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2) + '\n');
 }
 
-// ── quizList 배열 리터럴을 소스에서 찾아 실제 JS 배열로 파싱 ──────────────────────
+// ── HARDCODED_QUIZZES 배열 리터럴을 소스에서 찾아 실제 JS 배열로 파싱 ─────────────
 function extractQuizList(src) {
-  const startMarker = 'const quizList = [';
+  const startMarker = 'export const HARDCODED_QUIZZES: QuizItem[] = [';
   const start = src.indexOf(startMarker);
-  if (start === -1) throw new Error('quizList 선언을 찾을 수 없습니다');
+  if (start === -1) throw new Error('HARDCODED_QUIZZES 선언을 찾을 수 없습니다');
   const arrayStart = start + startMarker.length - 1; // '[' 위치
-  const marker = '\n];';
+  // 종료: 컬럼 0 의 ']' — 항목 내부의 중첩 배열은 들여쓰기되므로 여기 걸리지 않는다
+  const marker = '\n]';
   const markerAt = src.indexOf(marker, arrayStart);
-  if (markerAt === -1) throw new Error('quizList 종료 지점(\\n];)을 찾을 수 없습니다');
-  const rangeEnd = markerAt + 2; // ']' 바로 다음(세미콜론 직전) — literalText 는 ']' 까지 포함, ';' 는 제외
-  const literalText = src.slice(arrayStart, rangeEnd); // '[' ... ']' (세미콜론 미포함)
+  if (markerAt === -1) throw new Error('HARDCODED_QUIZZES 종료 지점(\\n])을 찾을 수 없습니다');
+  const rangeEnd = markerAt + 2; // ']' 까지 포함
+  const literalText = src.slice(arrayStart, rangeEnd); // '[' ... ']'
   // 데이터 리터럴만 담고 있음(함수 호출 없음) — Function 생성자로 안전하게 평가
   const arr = new Function(`return ${literalText};`)();
   return { arr, rangeStart: arrayStart, rangeEnd };
@@ -198,7 +200,7 @@ async function main() {
   const newLiteral = serializeQuizList(arr);
   const newSrc = src.slice(0, rangeStart) + newLiteral + src.slice(rangeEnd);
   fs.writeFileSync(TARGET_FILE, newSrc);
-  console.log('[i18n] KpopQuiz.jsx explanation 다국어 갱신 완료');
+  console.log('[i18n] hardcodedQuizzes.ts explanation 다국어 갱신 완료');
 }
 
 main().catch((err) => {

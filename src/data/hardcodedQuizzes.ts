@@ -480,7 +480,11 @@ export const HARDCODED_QUIZZES: QuizItem[] = [
   "fullSentence": "부산에 온 걸 환영해",
   "blankWord": "온",
   "explanation": {
-    "en": "것을=걸   (것이=게, 것은=건)\n '-걸' is the shortened form of '-것을' and is very common in everyday conversation.\nVerb + -(으)ㄴ 것 = the thing that... / what... / the fact that... (past or completed action)\nVerb + -는 것 = the act of... / ...ing / the thing that... (present, ongoing, or general action)\nThese expressions turn a verb into a noun.\n네가 온 걸 봤어.  I saw that you came.\n잃어버린 걸 찾았어요.  I found what I had lost."
+    "en": "것을=걸   (것이=게, 것은=건)\n '-걸' is the shortened form of '-것을' and is very common in everyday conversation.\nVerb + -(으)ㄴ 것 = the thing that... / what... / the fact that... (past or completed action)\nVerb + -는 것 = the act of... / ...ing / the thing that... (present, ongoing, or general action)\nThese expressions turn a verb into a noun.\n네가 온 걸 봤어.  I saw that you came.\n잃어버린 걸 찾았어요.  I found what I had lost.",
+    "ja": "것을=걸   (것이=게, 것은=건)\n'-걸'は'-것을'の短縮形で、日常会話で非常に一般的です。\nVerb + -(으)ㄴ 것 = そのこと／...こと／...という事実（過去または完了の動作）\nVerb + -는 것 = その行為／...中／...ということ（現在、進行、または一般的な動作）\nこれらの表現は動詞を名詞に変換します。\n네가 온 걸 봤어. あなたが来たのを見ました。\n잃어버린 걸 찾았어요. 私が失ったものを見つけました。",
+    "es": "것을=걸   (것이=게, 것은=건)\n'-걸' es la forma abreviada de '-것을' y es muy común en conversaciones cotidianas.\nVerb + -(으)ㄴ 것 = la cosa que... / qué... / el hecho de... (acción pasada o completada)\nVerb + -는 것 = el acto de... / ...ando / la cosa que... (acción presente, continua o general)\nEstas expresiones convierten un verbo en sustantivo.\n네가 온 걸 봤어. Vi que viniste.\n잃어버린 걸 찾았어요. Encontré lo que había perdido.",
+    "zh": "것을=걸   (것이=게, 것은=건)\n'-걸'是'-것을'的缩写形式，在日常对话中非常常见。\nVerb + -(으)ㄴ 것 = 该事情／...的事情／...的事实（过去或已完成的动作）\nVerb + -는 것 = 该行为／...进行中／...的事情（现在、进行或一般性的动作）\n这些表达将动词转换为名词。\n네가 온 걸 봤어。 我看到你来了。\n잃어버린 걸 찾았어요。 我找到了我丢失的东西。",
+    "vi": "것을=걸   (것이=게, 것은=건)\n'-걸' là dạng rút gọn của '-것을' và rất phổ biến trong hội thoại hàng ngày.\nVerb + -(으)ㄴ 것 = cái gì... / sự... / việc... (hành động đã qua hoặc hoàn thành)\nVerb + -는 것 = hành động... / ...ing / cái gì... (hành động hiện tại, đang diễn ra hoặc chung)\nNhững biểu thức này biến động từ thành danh từ.\n네가 온 걸 봤어. Tôi đã thấy bạn đến.\n잃어버린 걸 찾았어요. Tôi đã tìm thấy thứ mình đã mất."
   },
   "hasHardcodedSubs": true
 }
