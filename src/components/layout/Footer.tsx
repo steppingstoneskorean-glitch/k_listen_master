@@ -9,6 +9,9 @@ export default function Footer() {
           <span className="text-sm font-black text-white">Korean</span>
         </div>
         <div className="flex items-center gap-4">
+          <Link to="/grammar" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
+            Grammar
+          </Link>
           <Link to="/about" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
             About
           </Link>

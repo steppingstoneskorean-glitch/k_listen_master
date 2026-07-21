@@ -87,6 +87,14 @@ export default function Header() {
               {t('nav.game')}
             </Link>
 
+            {/* 문법 해설 */}
+            <Link
+              to="/grammar"
+              className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200"
+            >
+              {t('nav.grammar')}
+            </Link>
+
             {/* 무료 자료 */}
             <button
               type="button"

@@ -21,6 +21,76 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://step-korean.com/grammar</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/lets-do-it-ja</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/ill-do-it-lgeyo</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/i-wish-eumyeon-joketda</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/it-seems-geot-gatda</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/if-when-myeon</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/after-doing-go-naseo</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/because-geodeun</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/background-neunde</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/turning-verbs-into-nouns</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/polite-promise-dorok</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/sound-changes-fast-speech</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/korean-word-order-sov</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://step-korean.com/grammar/meal-expressions-jal-meokgetseumnida</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://step-korean.com/materials</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

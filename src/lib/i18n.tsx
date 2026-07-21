@@ -95,6 +95,48 @@ const TRANSLATIONS = {
 
   // ── Navigation ──
   'nav.game': { en: 'Games', ko: '게임', es: 'Juegos', ja: 'ゲーム' },
+  'nav.grammar': { en: 'Grammar', ko: '문법 해설', es: 'Gramática', ja: '文法解説' },
+
+  // ── Grammar articles (/grammar) ──
+  'grammar.listTitle': {
+    en: 'Grammar & Expressions',
+    ko: '문법 & 표현',
+    es: 'Gramática y Expresiones',
+    ja: '文法と表現',
+  },
+  'grammar.listIntro': {
+    en: 'Every guide below grew out of a real K-pop live moment — the same clips used in our listening quizzes. Read the explanation, then jump into the quiz to hear the grammar in an idol\'s actual voice.',
+    ko: '아래 글은 모두 실제 K-pop 라이브의 한 장면에서 출발했습니다 — 듣기 퀴즈에 쓰인 바로 그 클립입니다. 해설을 읽고, 퀴즈로 넘어가 아이돌의 실제 목소리로 그 문법을 들어보세요.',
+    es: 'Cada guía nació de un momento real de un directo de K-pop: los mismos clips de nuestros quizzes de escucha. Lee la explicación y luego pasa al quiz para escuchar la gramática con la voz real del idol.',
+    ja: '以下のガイドはすべて、実際のK-popライブの一場面から生まれました — リスニングクイズで使われているまさにそのクリップです。解説を読んだら、クイズに進んでアイドルの実際の声でその文法を聞いてみましょう。',
+  },
+  'grammar.filterAll': { en: 'All', ko: '전체', es: 'Todos', ja: 'すべて' },
+  'grammar.filterBeginner': { en: 'Beginner', ko: '초급', es: 'Principiante', ja: '初級' },
+  'grammar.filterIntermediate': { en: 'Intermediate', ko: '중급', es: 'Intermedio', ja: '中級' },
+  'grammar.guidesCount': {
+    en: '{n} guides',
+    ko: '{n}개의 글',
+    es: '{n} guías',
+    ja: '{n}件',
+  },
+  'grammar.keepLearning': {
+    en: 'Keep learning',
+    ko: '이어서 학습하기',
+    es: 'Sigue aprendiendo',
+    ja: '続けて学ぶ',
+  },
+  'grammar.hearIt': {
+    en: '🎧 Hear it in a real video',
+    ko: '🎧 실제 영상으로 들어보기',
+    es: '🎧 Escúchalo en un video real',
+    ja: '🎧 実際の動画で聞いてみよう',
+  },
+  'grammar.tryQuiz': {
+    en: 'Try the {label} listening quiz with this exact line →',
+    ko: '이 문장이 나오는 {label} 듣기 퀴즈에 도전해 보세요 →',
+    es: 'Haz el quiz de escucha de {label} con esta misma frase →',
+    ja: 'このセリフが出てくる{label}のリスニングクイズに挑戦 →',
+  },
   'nav.freeMaterials': { en: 'Free Materials', ko: '무료 자료', es: 'Materiales Gratuitos', ja: '無料教材' },
   'nav.reviewErrors': { en: 'Review Errors', ko: '오답 확인', es: 'Revisar Errores', ja: '誤答確認' },
   'nav.lessonsGuide': { en: 'Lessons & Text book', ko: '수업 & 교재', es: 'Lecciones y Libro de texto', ja: '授業＆ 教材' },

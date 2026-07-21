@@ -9,9 +9,9 @@ import {
 } from '@/lib/errorHistory'
 
 const STATUS_STYLE: Record<MasteryStatus, { label: string; cls: string }> = {
-  needs_review: { label: 'errors.status.needsReview', cls: 'bg-red-500/15 text-red-400 border-red-500/30' },
-  improving:    { label: 'errors.status.improving',   cls: 'bg-green-500/15 text-green-400 border-green-500/30' },
-  watch:        { label: 'errors.status.watch',        cls: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30' },
+  needs_review: { label: 'errors.status.needsReview', cls: 'bg-red-50 text-red-600 border-red-200' },
+  improving:    { label: 'errors.status.improving',   cls: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
+  watch:        { label: 'errors.status.watch',        cls: 'bg-amber-50 text-amber-600 border-amber-200' },
 }
 
 function timeSince(ts: number): string {
@@ -30,12 +30,12 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
   const lastCorrectTs = record.correctTimestamps.length > 0 ? Math.max(...record.correctTimestamps) : null
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex flex-col gap-3">
+    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-4 flex flex-col gap-3">
       <div className="flex items-start justify-between gap-3">
         {/* Word */}
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-2xl font-black text-white">{record.word}</span>
-          <span className="text-gray-600 text-xs">Level {record.level}</span>
+          <span translate="no" className="notranslate text-2xl font-black text-slate-900">{record.word}</span>
+          <span className="text-slate-400 text-xs">Level {record.level}</span>
         </div>
         {/* Status badge */}
         <span className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold border ${style.cls}`}>
@@ -50,10 +50,10 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
             key={w}
             className={`px-2.5 py-1 rounded-lg text-sm font-medium ${
               w === record.word
-                ? 'bg-green-500/15 text-green-400 border border-green-500/30'
+                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
                 : w === record.lastUserAnswer
-                ? 'bg-red-500/15 text-red-400 border border-red-500/30'
-                : 'bg-gray-800 text-gray-400 border border-gray-700'
+                ? 'bg-red-50 text-red-600 border border-red-200'
+                : 'bg-slate-100 text-slate-500 border border-slate-200'
             }`}
           >
             {w}
@@ -63,14 +63,14 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
       </div>
 
       {/* Stats row */}
-      <div className="flex items-center gap-4 text-xs text-gray-600 flex-wrap">
+      <div className="flex items-center gap-4 text-xs text-slate-400 flex-wrap">
         <span>
-          <span className="text-red-400 font-bold">{record.missCount}</span>
+          <span className="text-red-500 font-bold">{record.missCount}</span>
           {' '}{t('errors.missed')}
         </span>
-        <span>{t('errors.lastMissed')}: <span className="text-gray-500">{timeSince(lastMissTs)}</span></span>
+        <span>{t('errors.lastMissed')}: <span className="text-slate-500">{timeSince(lastMissTs)}</span></span>
         {lastCorrectTs !== null && (
-          <span className="text-green-500">
+          <span className="text-emerald-600">
             ✓ {timeSince(lastCorrectTs)}
           </span>
         )}
@@ -109,12 +109,13 @@ export default function ErrorHistoryPage() {
     })
 
   return (
+    <div className="min-h-screen bg-slate-50">
     <div className="max-w-2xl mx-auto px-4 py-8 flex flex-col gap-6">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="text-2xl font-black">{t('errors.title')}</h1>
+        <h1 className="text-2xl font-black text-slate-900">{t('errors.title')}</h1>
         {records.length > 0 && (
-          <button onClick={handleClear} className="text-xs text-gray-600 hover:text-red-400 transition-colors">
+          <button onClick={handleClear} className="text-xs text-slate-400 hover:text-red-500 transition-colors">
             {t('errors.clear')}
           </button>
         )}
@@ -126,13 +127,13 @@ export default function ErrorHistoryPage() {
           {(['all', 'needs_review', 'improving', 'watch'] as const).map(f => {
             const count = f === 'all' ? records.length : records.filter(r => getMasteryStatus(r) === f).length
             if (f !== 'all' && count === 0) return null
-            const style = f === 'all' ? 'bg-gray-800 text-gray-300 border-gray-700' : STATUS_STYLE[f as MasteryStatus].cls
+            const style = f === 'all' ? 'bg-white text-slate-600 border-slate-300' : STATUS_STYLE[f as MasteryStatus].cls
             const label = f === 'all' ? `All (${count})` : `${t(STATUS_STYLE[f as MasteryStatus].label as Parameters<typeof t>[0])} (${count})`
             return (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${style} ${filter === f ? 'ring-2 ring-white/20' : 'opacity-70 hover:opacity-100'}`}
+                className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${style} ${filter === f ? 'ring-2 ring-slate-400' : 'opacity-70 hover:opacity-100'}`}
               >
                 {label}
               </button>
@@ -143,13 +144,13 @@ export default function ErrorHistoryPage() {
 
       {/* Sort controls */}
       {records.length > 0 && (
-        <div className="flex items-center gap-2 text-xs text-gray-500">
+        <div className="flex items-center gap-2 text-xs text-slate-500">
           <span>Sort:</span>
           {([['recent', 'Recent'], ['missCount', 'Miss count'], ['status', 'Status']] as const).map(([k, l]) => (
             <button
               key={k}
               onClick={() => setSort(k)}
-              className={`px-2 py-0.5 rounded transition-colors ${sort === k ? 'text-indigo-400 font-bold' : 'hover:text-gray-300'}`}
+              className={`px-2 py-0.5 rounded transition-colors ${sort === k ? 'text-indigo-600 font-bold' : 'hover:text-slate-700'}`}
             >
               {l}
             </button>
@@ -159,7 +160,7 @@ export default function ErrorHistoryPage() {
 
       {/* List */}
       {sorted.length === 0 ? (
-        <div className="text-center py-20 text-gray-600">
+        <div className="text-center py-20 text-slate-400">
           <div className="text-4xl mb-4">✅</div>
           <p>{t('errors.empty')}</p>
         </div>
@@ -168,6 +169,7 @@ export default function ErrorHistoryPage() {
           {sorted.map(r => <ErrorCard key={r.word} record={r} />)}
         </div>
       )}
+    </div>
     </div>
   )
 }

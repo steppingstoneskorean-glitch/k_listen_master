@@ -15,6 +15,8 @@ import MaterialsPage from '@/pages/MaterialsPage'
 import PrivacyPolicy from '@/pages/PrivacyPolicy'
 import AboutPage from '@/pages/AboutPage'
 import TermsPage from '@/pages/TermsPage'
+import GrammarListPage from '@/pages/GrammarListPage'
+import GrammarArticlePage from '@/pages/GrammarArticlePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import KpopQuiz from '@/components/KpopQuiz'
 import GameHubPage from '@/pages/GameHubPage'
@@ -48,6 +50,8 @@ export default function App() {
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/terms" element={<TermsPage />} />
+                <Route path="/grammar" element={<GrammarListPage />} />
+                <Route path="/grammar/:slug" element={<GrammarArticlePage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
 
