@@ -145,7 +145,7 @@ export const GRAMMAR_ARTICLES: GrammarArticle[] = [
         examples: [
           { ko: '비가 안 왔으면 좋겠어요.', en: 'I hope it doesn\'t rain.' },
           { ko: '날씨가 좋았으면 좋겠어요.', en: 'I hope the weather is nice.' },
-          { ko: '빨리 만났으면 좋겠다.', en: 'I wish we could meet soon.' },
+          { ko: '얼른 만났으면 좋겠어요.', en: 'I wish we could meet soon.' },
           { ko: '콘서트에 갔으면 좋겠어요.', en: 'I wish I could go to the concert.' },
         ],
       },

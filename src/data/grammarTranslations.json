@@ -46,12 +46,12 @@
   "ja": "アイドルがコメントに反応したり、メンバーと調整したりする際にこの表現を聞きます。例えば：자리 잡을게요（席を確保します）、신호 주시면 할게요（あなたの合図があれば始めます）。このパターンには常に聞き手が関わっています。これが単純な未来形と区別する鍵です。"
  },
  "-았/었으면 좋겠다: How to Say \"I Wish\" in Korean": {
-  "ko": "-았/었으면 좋겠다: 한국어로 \"바람이다\"라고 말하는 방법",
+  "ko": "-았/었으면 좋겠다: 한국어로 '~바라다, ~았으면 좋겠다'를 말하는 방법",
   "es": "-았/었으면 좋겠다: Cómo decir \"¡Deseo que...!\" en coreano",
   "ja": "－았/었으면 좋겠다：韓国語で「～したい」「～ほしい」を言う方法"
  },
  "I wish... / I hope... / It would be nice if...": {
-  "ko": "바람이다... / 기대한다... / 좋을 것이다...",
+  "ko": "~했으면 좋겠다 / ~하기를 바라다 / ~하면 좋을 텐데",
   "es": "¡Deseo que...! / Espero que... / ¡Sería genial si...!",
   "ja": "～したい／……希望する／……と良いのに"
  },
@@ -69,13 +69,13 @@
   "es": "Este patrón expresa un deseo o esperanza: 시험에 합격했으면 좋겠어요 = \"Espero aprobar el examen.\" Literalmente se lee \"si (ello) hubiera sucedido, sería bueno\" — El coreano utiliza el pretérito para marcar la situación como imaginada en lugar de real, similar a cómo el inglés dice \"Ojalá FUERA fin de semana.\""
  },
  "The good news: you do not need to analyze it every time. Treat -았/었으면 좋겠다 as a single chunk meaning \"I wish / I hope\", and it will serve you in almost any situation.": {
-  "ko": "좋은 소식: 매번 분석할 필요는 없습니다. -았/었으면 좋겠다를 \"바람이다 / 기대한다\"라는 의미의 하나의 단위로 여겨서 사용하면 대부분의 상황에서 유용합니다.",
+  "ko": "좋은 소식: 매번 분석할 필요는 없습니다. -았/었으면 좋겠다를 '~바라다, ~았으면 좋겠다'라는 의미의 하나의 단위로 여겨서 사용하면 대부분의 상황에서 유용합니다.",
   "es": "La buena noticia: no necesitas analizarlo cada vez. Trata -았/었으면 좋겠다 como un solo bloque que significa \"Deseo / Espero\", y te servirá en casi cualquier situación.",
   "ja": "良いニュース: これを毎回分析する必要はありません。-았/었으면 좋겠다を「～が良い」という意味の一文として扱いましょう。これはほぼどんな状況でも役立ちます。"
  },
  "Conjugate the verb or adjective into its past base (-았/었), add -으면 (if), then 좋겠다. In polite speech: 좋겠어요.": {
   "ko": "동사나 형용사를 그 과거 기반(-았/었)으로 변형시킨 후 -으면(만약)을 추가하고, 좋겠다를 붙입니다. 공손한 표현: 좋겠어요.",
-  "es": "Conjuga el verbo o adjetivo a su forma base del pasado (-았/었), agrega -으면 (si), luego 좋겠다. En el habla formal: 좋겠어요."
+  "es": "Conjuga el verbo o el adjetivo a su forma base del pasado (-았/었), agrega -으면 (si), y luego 좋겠다. En el habla formal: 좋겠어요."
  },
  "In fast speech, 것 contracts: 것 같아요 → 거 같아요. You will see both spellings in subtitles; 거 같아요 reflects the actual sound. Jin says 마음이 편안해지고 따뜻해지는 거 같아요 (\"I feel like my heart gets calm and warm\") — a classic present-tense 것 같다 wrapped in natural pronunciation.": {
   "ko": "빠른 말 속에서, 것은 줄어들어: 것 같아요 → 거 같아요. 자막에서는 두 가지 철자가 모두 나타납니다; 거 같아요는 실제 발음을 반영합니다. 진은 마음이 편안해지고 따뜻해지는 거 같아요 (\"내 마음이 평안해지고 따뜻해지는 것 같아\") — 자연스러운 발화 속에 담긴 고전적인 현재 시제의 것 같다.",
@@ -83,11 +83,13 @@
  },
  "Try this habit: whenever you state an opinion in Korean, ask yourself if a native would soften it with 것 같아요. More often than not, the answer is yes.": {
   "ko": "이 습관을 시도해 보세요: 한국어로 의견을 표현할 때마다, 원어민이 것 같아요로 부드럽게 표현할지 스스로 질문해 보세요. 대부분의 경우 답은 예입니다.",
-  "es": "Prueba este hábito: cada vez que expreses una opinión en coreano, pregúntate si un hablante nativo la suavizaría con 것 같아요. La mayoría de las veces, la respuesta es sí."
+  "es": "Prueba este hábito: cada vez que expreses una opinión en coreano, pregúntate si un hablante nativo la suavizaría con 것 같아요. La mayoría de las veces, la respuesta es sí.",
+  "ja": "この習慣を試してみましょう：韓国語で意見を述べる際、ネイティブが『ことらしいよ（것 같아요）』で婉曲的に言い換えられるか、自分で問い直してみましょう。多くの場合、答えは『はい』です。"
  },
  "-(으)면: Korean If-Clauses Made Simple": {
   "ko": "-(으)면: 한국어 조건절을 쉽게 배우기",
-  "es": "-(으)면: Cláusulas condicionales en coreano explicadas de forma sencilla"
+  "es": "-(으)면: Cláusulas condicionales en coreano explicadas de forma sencilla",
+  "ja": "-(으)면: 韓国語の「if」節を簡単に"
  },
  "if... / when...": {
   "ko": "만약... / ...할 때...",
@@ -95,15 +97,18 @@
  },
  "One ending covers both \"if\" and \"when\" in Korean. Learn how -(으)면 works, how to tell the two meanings apart, and hear Jin use it in a live broadcast.": {
   "ko": "하나의 어미가 한국어에서 \"만약\"과 \"...할 때\"를 모두 표현합니다. -(으)면이 어떻게 작동하는지, 두 의미를 구별하는 방법, 그리고 진이 생중계에서 이를 사용하는 것을 듣세요.",
-  "es": "Una desinencia cubre tanto \"si\" como \"cuando\" en coreano. Aprende cómo funciona -(으)면, cómo distinguir entre los dos significados y escucha a Jin usarla en una transmisión en vivo."
+  "es": "Una desinencia cubre tanto \"si\" como \"cuando\" en coreano. Aprende cómo funciona -(으)면, cómo distinguir entre los dos significados y escucha a Jin usarla en una transmisión en vivo.",
+  "ja": "一つの終助詞が「if」と「when」の両方を表します。-(으)면の使い方、両方の意味を区別する方法を学び、ジンがライブ放送で使う様子を聞いてみましょう。"
  },
  "What -(으)면 does": {
   "ko": "-(으)면이 하는 역할",
-  "es": "¿Qué hace -(으)면?"
+  "es": "¿Qué hace -(으)면?",
+  "ja": "-(으)면が何を意味する"
  },
  "-(으)면 attaches to the first clause of a sentence and marks it as a condition: 시간이 있으면 만나요 = \"If you have time, let's meet.\" Korean does not distinguish \"if\" from \"when\" here — 봄이 오면 can mean \"when spring comes\" (certain) or \"if spring comes\" (hypothetical). Context does the work English grammar does.": {
   "ko": "-(으)면은 문장의 첫 번째 절에 붙어 조건을 나타냅니다: 시간이 있으면 만나요 = \"시간이 있으면 만나자.\" 한국어는 여기서 \"만약\"과 \"...할 때\"를 구별하지 않습니다 — 봄이 오면은 \"봄이 올 때\" (확실한 의미) 또는 \"만약 봄이 오면\" (가상적인 의미)로 해석할 수 있습니다. 문맥이 영어 문법의 역할을 합니다.",
-  "es": "-(으)면 se adjunta a la primera cláusa de una oración y la marca como condición: 시간이 있으면 만나요 = \"Si tienes tiempo, veamos\". En coreano no se distingue entre \"si\" y \"cuando\" aquí — 봄이 오면 puede significar \"cuando viene la primavera\" (certeza) o \"si viene la primavera\" (hipotético). El contexto hace el trabajo que hace la gramática en inglés."
+  "es": "-(으)면 se adjunta a la primera cláusa de una oración y la marca como condición: 시간이 있으면 만나요 = \"Si tienes tiempo, veamos\". En coreano no se distingue entre \"si\" y \"cuando\" aquí — 봄이 오면 puede significar \"cuando viene la primavera\" (certeza) o \"si viene la primavera\" (hipotético). El contexto hace el trabajo que hace la gramática en inglés.",
+  "ja": "-(으)면は文の最初の節に付いて、条件を表します。例えば『시간이 있으면 만나요（時間があれば会いましょう）』のようにします。韓国語はここで「if」と「when」を区別しません——『봄이 오면（春が来る）』は「春が来る（確実）」または「もし春が来れば（仮定）」と意味が変わります。文脈が英語の文法の役割を果たします。"
  },
  "Stems ending in a vowel or ㄹ take -면; stems ending in other consonants take -으면.": {
   "ko": "모음 또는 ㄹ로 끝나는 어간에는 -면을, 다른 자음으로 끝나는 어간에는 -으면을 붙입니다.",
@@ -122,7 +127,8 @@
  },
  "Jin says 영화 다 보고 나서 인증 샷 같은 거 찍거든요 — \"After finishing a movie, I take a proof-shot photo, you see.\" Notice 다 (all/completely) before the verb, reinforcing the completion that -고 나서 already implies: \"after watching it all the way through.\"": {
   "ko": "진은 영화 다 보고 나서 인증 샷 같은 거 찍거든요 — \"영화 보기 끝나서 인증 사진 같은 걸 찍는 거예요.\" 다 (모든/완전히) 동사 앞에 나와 -고 나서가 이미 의미하는 완성을 강조합니다: \"그것을 끝까지 보고 난 후.\"",
-  "es": "Jin dice 영화 다 보고 나서 인증 샷 같은 거 찍거든요 —\"Después de terminar una película, tomo una foto de prueba, verás.\" Nota 다 (todo/completamente) antes del verbo, reforzando la finalización que -고 나서 ya implica: \"después de verla completamente.\""
+  "es": "Jin dice 영화 다 보고 나서 인증 샷 같은 거 찍거든요 —\"Después de terminar una película, tomo una foto de prueba, verás.\" Nota 다 (todo/completamente) antes del verbo, reforzando la finalización que -고 나서 ya implica: \"después de verla completamente.\"",
+  "ja": "Jin says 영화 다 보고 나서 인증 샷 같은 거 찍거든요 — 「映画を全部見た後に認証写真のようなものを撮るんだ」と言います。-고 나서がすでに意味する完了性を、全（だ）という語が強調しています：「一貫して見終わるまでに」."
  },
  "인증샷 (proof shot) is itself a fun word to know: the photo you take to prove you did something — finished a movie, visited a café, attended a concert.": {
   "ko": "인증샷 (증명 사진) 은 자신이 무언가를 했다는 것을 증명하기 위해 찍는 사진이라는 의미로, 재미있는 단어입니다: 영화 보기 끝내기, 카페 방문, 콘서트 참석 등.",
@@ -214,7 +220,8 @@
  },
  "것을=걸, 것이=게: How Korean Turns Verbs into Nouns": {
   "ko": "것을=걸, 것이=게: 한국어가 동사를 명사로 변화시키는 방식",
-  "es": "것을=걸, 것이=게: Cómo el coreano transforma verbos en sustantivos"
+  "es": "것을=걸, 것이=게: Cómo el coreano transforma verbos en sustantivos",
+  "ja": "것을=걸, 것이=게：한국어가動詞を名詞に変える仕組み"
  },
  "the thing that... / ...ing / the fact that...": {
   "ja": "～すること / …ing / …という事実",
@@ -223,7 +230,8 @@
  },
  "Master the 것 nominalizer and its contractions 걸·게·건, and suddenly half of spoken Korean gets easier to parse. Includes real examples from K-pop lives.": {
   "ko": "것 номина이저와 그 축약형 걸·게·건을 마스터하면, 화어 한국어의 절반은 더 쉽게 분석된다. K-pop 라이브 예제 포함.",
-  "es": "Domina el nominalizador 것 y sus contracciones 걸·게·건, y de repente la mitad del coreano hablado se vuelve más fácil de analizar. Incluye ejemplos reales de conciertos en vivo de K-pop."
+  "es": "Domina el nominalizador 것 y sus contracciones 걸·게·건, y de repente la mitad del coreano hablado se vuelve más fácil de analizar. Incluye ejemplos reales de conciertos en vivo de K-pop.",
+  "ja": "こと（-것）的名詞化形とその省略形（걸·게·건）をマスターすれば、半分のスポーク韓国語がより理解しやすくなります。K-popライブからの実例を含みます。"
  },
  "What 것 does": {
   "ko": "것이 무엇을 의미하는가",
@@ -231,8 +239,7 @@
  },
  "것 (thing) turns a verb clause into a noun so it can act as a subject or object. -는 것 covers present or general actions (\"the act of doing\"); -(으)ㄴ 것 covers past or completed actions (\"the thing that happened / what (someone) did\").": {
   "ja": "こと（物）は動詞句を名詞に変換し、主語や目的語として機能できるようにします。-는 것は現在または一般的な動作（「行う行為」）を、-(으)ㄴ 것は過去または完了した動作（「起きたこと / 誰かがしたこと」）を表します。",
-  "es": "こと (cosa) transforma una oración verbal en un sustantivo para que pueda actuar como sujeto u objeto. -는 것 cubre acciones presentes o generales (\"el acto de hacer\"); -(으)ㄴ 것 cubre acciones pasadas o completadas (\"la cosa que sucedió / lo que (alguien) hizo\").",
-  "ko": "것 (물건/내용)은 동사 절을 명사로 변환하여 주제나 목적어로 작용할 수 있도록 합니다. -는 것은 현재 또는 일반적인 행동 (\"행동하는 행위\")을, -(으)ㄴ 것은 과거 또는 완료된 행동 (\"발생한 일 / 누군가 한 행동\")을 나타냅니다."
+  "es": "こと (cosa) transforma una oración verbal en un sustantivo para que pueda actuar como sujeto u objeto. -는 것 cubre acciones presentes o generales (\"el acto de hacer\"); -(으)ㄴ 것 cubre acciones pasadas o completadas (\"la cosa que sucedió / lo que (alguien) hizo\")."
  },
  "The contractions in action": {
   "ko": "실제 대화에서의 축약 예시",
@@ -246,7 +253,8 @@
  },
  "부산에 온 걸 환영해 looks opaque until you see the skeleton: [부산에 온 것]을 환영해 — \"(I) welcome [the coming-to-Busan]\". Once you can spot 걸/게/건 and mentally expand them back to 것+particle, long spoken sentences stop sounding like word soup.": {
   "ko": "부산에 온 걸 환영해는 뼈대가 보이기 전까지 불투명해 보인다: [부산에 온 것]을 환영해 — \"(나는) 부산에 오는 것을 환영한다.\" 걸/게/건을 발견하고 그것들을 것+입화문으로 정신적으로 확장할 수 하면, 길게 말된 문장은 더 이상 단어 수프처럼 들리지 않는다.",
-  "es": "부산에 온 걸 환영해 parece opaco hasta que ves su estructura: [부산에 온 것]을 환영해 — \"(Yo) acojo [el venir a Busan]\". Una vez que puedas identificar 걸/게/건 y mentalmente expandirlos de vuelta a 것+partícula, las largas oraciones habladas dejan de sonar como sopa de palabras."
+  "es": "부산에 온 걸 환영해 parece opaco hasta que ves su estructura: [부산에 온 것]을 환영해 — \"(Yo) acojo [el venir a Busan]\". Una vez que puedas identificar 걸/게/건 y mentalmente expandirlos de vuelta a 것+partícula, las largas oraciones habladas dejan de sonar como sopa de palabras.",
+  "ja": "부산에 온 걸 환영해は、骨格を見ないと不透明に思える：[부산에 온 것]을 환영해 — 「（私が）[부산への到来]を歓迎する」。あなたが걸/게/건を見つけ、それを心の中でこと+粒子に戻すことができれば、長い発言中の文は単語のスープのように聞こらなくなる。"
  },
  "Related patterns worth knowing: -는 게 좋겠다 (\"it would be good to...\" — advice) and -(으)ㄴ 것 같다 (\"it seems that...\" — see our 것 같다 article). Both are built on this same nominalizer.": {
   "ko": "유사한 패턴: -는 게 좋겠다 (\"~을 하는 것이 좋을 것 같다\" — 조언)과 -(으)ㄴ 것 같다 (\"〜처럼 보인다\" — 것 같다 관련 기사 참조). 둘 다 동일한 명명화 기법에 기반한다.",
@@ -391,7 +399,7 @@
  "Before every meal Koreans say 잘 먹겠습니다; after it, 잘 먹었습니다. Neither translates directly into English. Learn what the pair really means, who you are thanking, and how to respond.": {
   "ja": "食事の前にはKoreans say 잘 먹겠습니다；食事の後には一致した 잘 먹었습니다 となります。どちらも英語に直接訳すことはできません。このペアの本当の意味、感謝の対象が誰であるか、そしてどう応えるかを学びましょう。",
   "es": "Antes de cada comida, los coreanos dicen 잘 먹겠습니다; después, 잘 먹었습니다. Ninguna se traduce directamente al inglés. Aprende qué significa realmente la pareja, a quién agradeces y cómo responder.",
-  "ko": "식사 전에 한국인은 잘 먹겠습니다라고 말하고, 식사 후에는 잘 먹었습니다라고 말합니다. 둘 다 영어로 직접 번역할 수 없습니다. 이 쌍의 실제 의미, 감사해야 할 대상, 그리고 어떻게 응답해야 하는지를 배우세요."
+  "ko": "음식 전에 한국인은 잘 먹겠습니다라고 말합니다; 이후에는 잘 먹었습니다라고 말합니다. 둘 다 영어로 직접 번역할 수 없습니다. 이 두 표현이 정말 의미하는 바가 무엇인지, 누구를 감사하고 있는지, 그리고 어떻게 응답해야 하는지 배우세요."
  },
  "The pair: before and after": {
   "ja": "ペア：前と後",
@@ -490,7 +498,8 @@
  },
  "것 같다: The Softener Koreans Use in Every Conversation": {
   "ko": "것 같다: 한국어 대화에서 항상 사용하는 부드러운 표현",
-  "es": "것 같다: El Suavizante que los Coreanos Usan en Cada Conversación"
+  "es": "것 같다: El Suavizante que los Coreanos Usan en Cada Conversación",
+  "ja": "ことらしい（것 같다）: 韓国人が会話で使う常套句"
  },
  "I think... / It seems... / It looks like...": {
   "ko": "나는 생각합니다... / 그렇게 보입니다... / 그렇게 보인다...",
@@ -499,11 +508,13 @@
  },
  "것 같다 is everywhere in spoken Korean — not because Koreans are unsure, but because it softens opinions. Learn the three tense forms and hear them in real K-pop lives.": {
   "ko": "것 같다은 한국어 회화에서 매우 자주 사용됩니다 — 한국인들이 불확실하기 때문이 아니라, 의견을 부드럽게 표현하기 때문입니다. 세 가지 시제 형태를 배우고 K-pop 라이브에서 실제로 듣세요.",
-  "es": "것 같다 está por todas partes en el coreano hablado — no porque los coreanos estén inseguros, sino porque suaviza opiniones. Aprende las tres formas de tiempo y escúchalas en conciertos en vivo reales de K-pop."
+  "es": "것 같다 está por todas partes en el coreano hablado — no porque los coreanos estén inseguros, sino porque suaviza opiniones. Aprende las tres formas de tiempo y escúchalas en conciertos en vivo reales de K-pop.",
+  "ja": "ことらしい（것 같다）は韓国語の会話中で至る所で聞こえる——それは韓国人が不確かなのではなく、意見を婉曲的に表すために使われるからです。三つの時制形態を学び、リアルなK-popのライブで聞いてみましょう。"
  },
  "것 같다 expresses a guess, opinion, or impression: 비 오는 것 같아요 = \"I think it's raining.\" But its real job in conversation is softening. Saying 맛있는 것 같아요 (\"it seems tasty\") instead of 맛있어요 (\"it's tasty\") makes an opinion sound less assertive and more polite — which is why you hear it constantly, even when the speaker is completely sure.": {
   "ko": "것 같다는 추측, 의견, 또는 인상을 표현합니다: 비 오는 것 같아요 = \"비가 내리는 것 같아요.\" 하지만 대화에서 그들의 실제 역할은 부드럽게 하는 것입니다. 맛있어요 („이 맛있어요“) 대신 맛있는 것 같아요 („이 맛있는 것 같아요“)라고 말함으로써 의견을 더 덜 단정적이고 더 예의 바르게 표현할 수 있습니다 — 따라서 연설자가 완전히 확신하고 있어도 항상 그 표현을 들을 수 있습니다.",
-  "es": "것 같다 expresa una suposición, opinión o impresión: 비 오는 것 같아요 = \"Pienso que está lloviendo.\" Pero su verdadero trabajo en conversación es suavizar. Decir 맛있는 것 같아요 (\"Parece delicioso\") en lugar de 맛있어요 (\"Está delicioso\") hace que la opinión suene menos afirmativa y más educada — por eso la oyes constantemente, incluso cuando el hablante está completamente seguro."
+  "es": "것 같다 expresa una suposición, opinión o impresión: 비 오는 것 같아요 = \"Pienso que está lloviendo.\" Pero su verdadero trabajo en conversación es suavizar. Decir 맛있는 것 같아요 (\"Parece delicioso\") en lugar de 맛있어요 (\"Está delicioso\") hace que la opinión suene menos afirmativa y más educada — por eso la oyes constantemente, incluso cuando el hablante está completamente seguro.",
+  "ja": "ことらしい（것 같다）を使えば、推測、意見、印象を表現できます。例えば 비 오는 것 같아요 は「雨が降っているように感じる」という意味です。しかし、会話における本当の役割は婉曲性を加えることです。『맛있어요（美味しい）』ではなく『맛있는 것 같아요（美味しいように感じる）』と言うことで、意見をより控えめで礼儀正しく聞こえるようにします——だからこそ、それは頻繁に聞かれます。確信している場合でもです。"
  },
  "Three forms, three times": {
   "ko": "세 가지 형태, 세 가지 시점",
@@ -521,11 +532,13 @@
  },
  "A useful contrast: -(으)면 states a condition, while -(으)니까 states a reason. 비가 오면 안 갈 거예요 (IF it rains, I won't go) vs 비가 오니까 안 갈 거예요 (BECAUSE it's raining, I won't go).": {
   "ko": "유용한 대비: -(으)면은 조건을 나타내며, -(으)니까는 이유를 나타냅니다. 비가 오면 안 갈 거예요 (비가 오면 안 갈 것이다) vs 비가 오니까 안 갈 거예요 (비가 오기 때문에 안 갈 것이다).",
-  "es": "Una comparación útil: -(으)면 expresa una condición, mientras -(으)니까 expresa una razón. 비가 오면 안 갈 거예요 (SI llueve, no iré) vs 비가 오니까 안 갈 거예요 (PORQUE está lloendo, no iré)."
+  "es": "Una comparación útil: -(으)면 expresa una condición, mientras -(으)니까 expresa una razón. 비가 오면 안 갈 거예요 (SI llueve, no iré) vs 비가 오니까 안 갈 거예요 (PORQUE está lloendo, no iré).",
+  "ja": "有用な対比：-(으)면は条件を述べ、-(으)니까は理由を示します。 비가 오면 안 갈 거예요（雨が降ったら行かない） vs 비가 오니까 안 갈 거예요（雨が降っているから行かない）."
  },
  "-고 나서: Saying \"After Doing...\" in Korean": {
   "ko": "-고 나서: ...를 하고 나서 말하는 한국어 표현",
-  "es": "-고 나서: Cómo decir 'Después de hacer...' en coreano"
+  "es": "-고 나서: Cómo decir 'Después de hacer...' en coreano",
+  "ja": "-고 나서：한국어で「～をしてから」"
  },
  "after doing...": {
   "ko": "를 하고 나서",
@@ -560,7 +573,8 @@
  },
  "-고 나서 links two actions and stresses that the first one finishes before the second begins: 밥을 먹고 나서 공부했어요 = \"I studied after eating.\" The 나서 part comes from 나다, adding a sense of completion — \"having finished eating, I studied.\"": {
   "es": "-고 나서 enlaza dos acciones y destaca que la primera termina antes de que comience la segunda: 밥을 먹고 나서 공부했어요 = \"Estudié después de comer.\" La parte 나서 proviene de 나다, añadiendo una sensación de finalización —\"haber terminado de comer, estudié.\"",
-  "ko": "-고 나서는 두 행동을 연결하며 첫 번째 행동이 끝난 후에 두 번째가 시작됨을 강조합니다: 밥을 먹고 나서 공부했어요 = \"식사 후에 공부했습니다.\" 나서 부분은 나다에서 온 것으로, 완료의 의미를 부여합니다 - \"식사를 끝낸 후에 공부했습니다.\""
+  "ko": "-고 나서는 두 행동을 연결하며 첫 번째 행동이 끝난 후에 두 번째가 시작됨을 강조합니다: 밥을 먹고 나서 공부했어요 = \"식사 후에 공부했습니다.\" 나서 부분은 나다에서 온 것으로, 완료의 의미를 부여합니다 - \"식사를 끝낸 후에 공부했습니다.\"",
+  "ja": "-고 나서は二つの動作を結びつけて、最初の動作が終了した後に二つ目の動作が始まることを強調します： 밥을 먹고 나서 공부했어요（食事をしてから勉強しました）。「なだ（나다）」由来の「なして（나서）」は完了の感覚を加えます。「食事を終えると勉強しました」."
  },
  "What -거든(요) does": {
   "es": "¿Qué hace -거든(요)?",
@@ -577,8 +591,7 @@
  },
  "Everyday tip: as a learner you rarely need to produce this form, but recognizing it instantly tells you the register — the speaker is being formal and audience-aware.": {
   "es": "Consejo diario: como aprendiz raramente necesitarás producir esta forma, pero reconocerla de inmediato te dice el registro — el hablante está siendo formal y consciente del público.",
-  "ja": "日常のヒント: 学習者はこの形を生産する必要はほとんどありませんが、即座に認識することでレジスター（言語レベル）を知ることができる — 話し手がフォーマルで聴衆意識的であることを示している。",
-  "ko": "일상 팁: 학습자로서 이 형식을 직접 사용할 필요는 없지만, 이를 즉시 인식하면 화자가 공식적이고 청자에게 민감한 언어를 사용하고 있음을 알 수 있습니다."
+  "ja": "日常のヒント: 学習者はこの形を生産する必要はほとんどありませんが、即座に認識することでレジスター（言語レベル）を知ることができる — 話し手がフォーマルで聴衆意識的であることを示している。"
  },
  "Why 지금 Sounds Like 짐: Korean Sound Changes in Fast Speech": {
   "es": "¿Por qué 지금 suena como 짐: Cambios de sonido en coreano en habla rápida",
@@ -592,10 +605,9 @@
  "Textbook audio and real K-pop lives sound like different languages. Three sound changes — nasal assimilation, syllable reduction, ㅎ weakening — explain most of the gap.": {
   "es": "El audio de los libros de texto y las presentaciones en vivo reales de K-pop suenan como idiomas diferentes. Tres cambios fonéticos — asimilación nasal, reducción de sílabas, debilidad de ㅎ — explican la mayoría de la brecha.",
   "ja": "教科書のオーディオと実際のK-popのライブは別の言語のように聞こえる。鼻音化、音節の減少、ㅎの弱化 — これらは大部分のギャップを説明する。",
-  "ko": "교과서 오디오와 실제 K-pop 라이브는 다른 언어처럼 들릴 수 있습니다. 세 가지 발음 변화 — 비음 유추, 모음 단축, ㅎ 약화 —가 대부분의 차이를 설명합니다."
+  "ko": "교과서 오디오와 실제 K-pop 라이브는 다른 언어처럼 들린다. 세 가지 발음 변화 — 비음화, 음절 축약, ㅎ 약화 — 대부분의 차이를 설명한다."
  },
  "In speech, 것 + particle contracts almost every time: 것을 → 걸, 것이 → 게, 것은 → 건. Written subtitles may show either form, but your ears will meet 걸/게/건 far more often than the full forms.": {
-  "ko": "실화화에서 것 + 조치사는 거의 항상 축약됩니다: 것을 → 걸, 것이 → 게, 것은 → 건. 자막은 양쪽 형태를 보여줄 수 있지만, 들리는 건 걸/게/건이 훨씬 더 자주 나옵니다.",
-  "es": "En la conversación, 것 + partícula se contrae casi siempre: 것을 → 걸, 것이 → 게, 것은 → 건. Los subtítulos escritos pueden mostrar cualquiera de las formas, pero tus oídos se encontrarán con 걸/게/건 mucho más frecuentemente que con las formas completas."
+  "ko": "실화화에서 것 + 조치사는 거의 항상 축약됩니다: 것을 → 걸, 것이 → 게, 것은 → 건. 자막은 양쪽 형태를 보여줄 수 있지만, 들리는 건 걸/게/건이 훨씬 더 자주 나옵니다."
  }
 }
