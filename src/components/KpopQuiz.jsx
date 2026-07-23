@@ -27,6 +27,7 @@ import { loadPublishedQuizzes, loadModeStars } from '@/lib/quizStore';
 import { mergeQuizzes } from '@/lib/quizResolve';
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes';
 import { recordModeClear, getVideoProgress } from '@/lib/mastery';
+import { recordError, recordCorrect } from '@/lib/errorHistory';
 import { ModeChip } from '@/components/kartist/ui';
 
 // 레거시(mode 없음) 문항은 'A'(딕테이션)로 간주
@@ -411,16 +412,25 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     if (!quiz) return;
     const m = modeOf(quiz);
     let verdict;
+    // 오답노트(Review Errors)에 넘길 정답/내답 — 모드별로 형태가 다르다
+    let correctText = '';
+    let userText = '';
+    let options = [];
 
     if (m === 'B') {
       // 블록 배열: 선택 순서가 원본(정답) 순서와 일치하면 정답
       const built = picked
         .map((i) => (shuffledBlocks && shuffledBlocks[i] ? shuffledBlocks[i].text : ''))
         .join(' ');
-      verdict = built === (quiz.blocks || []).join(' ') ? 'correct' : 'wrong';
+      correctText = (quiz.blocks || []).join(' ');
+      userText = built;
+      verdict = built === correctText ? 'correct' : 'wrong';
       if (verdict === 'correct') recordStudy(10);
     } else if (m === 'I') {
       // 의미 고르기: 선택 보기 == correctIndex
+      options = Array.isArray(quiz.options) ? quiz.options : [];
+      correctText = options[quiz.correctIndex] || '';
+      userText = chosenIdx != null ? options[chosenIdx] || '' : '';
       verdict = chosenIdx === quiz.correctIndex ? 'correct' : 'wrong';
       if (verdict === 'correct') recordStudy(10);
     } else {
@@ -428,6 +438,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       const target = (quiz.blankWord || '').trim();
       // 모든 공백 제거 후 비교 → 글자는 같은데 띄어쓰기만 다른 경우 감지
       const stripSpaces = (s) => s.replace(/\s+/g, '');
+      correctText = target;
+      userText = raw;
 
       if (raw === target) {
         verdict = 'correct';
@@ -440,6 +452,22 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       }
     }
 
+    // ── 오답노트 자동 업로드 ────────────────────────────────────────────────
+    // Catch the Sound 와 동일하게 localStorage 오답노트에 쌓아 Review Errors 에 노출한다.
+    // 🔺(partial, 띄어쓰기만 오류)는 부분 점수를 받은 문항이라 오답으로 올리지 않는다.
+    const errMeta = {
+      source: 'k-stars',
+      videoId: quiz.videoId || routeVideoId || '',
+      quizMode: m,
+      context: quiz.fullSentence || '',
+    };
+    if (verdict === 'wrong') {
+      recordError(correctText, userText, options, 1, errMeta);
+    } else if (verdict === 'correct') {
+      // 이전에 틀렸던 문항을 맞히면 '개선 중'으로 승격된다
+      recordCorrect(correctText, errMeta);
+    }
+
     setStatus(verdict);
     // 현재 문장의 결과 기록 (재시도 시 최신 판정으로 덮어씀)
     setResults((prev) => {
@@ -449,7 +477,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     });
     // 제출 후 '발음 포인트 복습' 창 오픈 (다음 문장으로 넘어가는 관문)
     setShowReview(true);
-  }, [answer, quiz, picked, chosenIdx, shuffledBlocks, recordStudy, index]);
+  }, [answer, quiz, picked, chosenIdx, shuffledBlocks, recordStudy, index, routeVideoId]);
 
   const resetAttempt = useCallback(() => {
     setAnswer('');

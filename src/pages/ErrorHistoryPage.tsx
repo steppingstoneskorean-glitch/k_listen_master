@@ -4,9 +4,29 @@ import {
   getErrors,
   clearErrors,
   getMasteryStatus,
+  getSource,
   type ErrorRecord,
   type MasteryStatus,
+  type ErrorSource,
 } from '@/lib/errorHistory'
+
+// 게임별 배지 — 게임명은 고유명사라 번역하지 않는다
+const SOURCE_STYLE: Record<ErrorSource, { label: string; cls: string }> = {
+  'catch-the-sound': { label: '🎧 Catch the Sound', cls: 'bg-indigo-50 text-indigo-600 border-indigo-200' },
+  'k-stars':         { label: '⭐ Listen to K-Stars', cls: 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-200' },
+}
+
+// K-Stars 문제 유형 라벨
+const MODE_LABEL: Record<string, string> = {
+  A: 'Dictation',
+  B: 'Word Order',
+  I: 'Meaning',
+}
+
+/** 레코드의 고유 키 — 영상이 다르면 같은 단어라도 별개의 오답이다 */
+function recordKey(r: ErrorRecord): string {
+  return `${getSource(r)}:${r.videoId ?? ''}:${r.quizMode ?? ''}:${r.word}`
+}
 
 const STATUS_STYLE: Record<MasteryStatus, { label: string; cls: string }> = {
   needs_review: { label: 'errors.status.needsReview', cls: 'bg-red-50 text-red-600 border-red-200' },
@@ -26,16 +46,36 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
   const { t } = useLang()
   const status = getMasteryStatus(record)
   const style = STATUS_STYLE[status]
+  const source = getSource(record)
+  const sourceStyle = SOURCE_STYLE[source]
+  const isKStars = source === 'k-stars'
   const lastMissTs = Math.max(...record.missTimestamps)
   const lastCorrectTs = record.correctTimestamps.length > 0 ? Math.max(...record.correctTimestamps) : null
 
+  // 어순(B) 모드의 정답은 문장 전체라 단어보다 길다 → 글자 크기를 낮춘다
+  const answerSizeCls = record.word.length > 14 ? 'text-lg leading-snug' : 'text-2xl'
+
   return (
     <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-4 flex flex-col gap-3">
+      {/* 게임 출처 + 문제 유형 */}
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${sourceStyle.cls}`}>
+          {sourceStyle.label}
+        </span>
+        {isKStars && record.quizMode && (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border bg-slate-50 text-slate-500 border-slate-200">
+            {MODE_LABEL[record.quizMode] ?? record.quizMode}
+          </span>
+        )}
+      </div>
+
       <div className="flex items-start justify-between gap-3">
         {/* Word */}
-        <div className="flex items-baseline gap-2 flex-wrap">
-          <span translate="no" className="notranslate text-2xl font-black text-slate-900">{record.word}</span>
-          <span className="text-slate-400 text-xs">Level {record.level}</span>
+        <div className="flex items-baseline gap-2 flex-wrap min-w-0">
+          <span translate="no" className={`notranslate font-black text-slate-900 break-words ${answerSizeCls}`}>
+            {record.word}
+          </span>
+          {!isKStars && <span className="text-slate-400 text-xs">Level {record.level}</span>}
         </div>
         {/* Status badge */}
         <span className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold border ${style.cls}`}>
@@ -43,7 +83,26 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
         </span>
       </div>
 
-      {/* Pair */}
+      {/* K-Stars: 원문 문장 + 내가 쓴 답 (최소쌍이 없으므로 맥락으로 대체) */}
+      {isKStars && (
+        <div className="flex flex-col gap-2">
+          {record.context && (
+            <p translate="no" className="notranslate text-sm text-slate-500 leading-relaxed bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">
+              {record.context}
+            </p>
+          )}
+          {record.lastUserAnswer && (
+            <p className="text-xs text-slate-400">
+              {t('kpop.myAnswer')}:{' '}
+              <span translate="no" className="notranslate text-red-500 font-semibold line-through">
+                {record.lastUserAnswer}
+              </span>
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Pair — Catch the Sound 최소쌍 (K-Stars 의미 고르기에서는 보기 목록) */}
       <div className="flex flex-wrap gap-1.5">
         {record.pair.map(w => (
           <span
@@ -61,6 +120,16 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
           </span>
         ))}
       </div>
+
+      {/* K-Stars: 해당 영상 퀴즈로 바로 이동 */}
+      {isKStars && record.videoId && (
+        <a
+          href={`/kpop-quiz/${record.videoId}`}
+          className="self-start text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+        >
+          ▶ Practice again
+        </a>
+      )}
 
       {/* Stats row */}
       <div className="flex items-center gap-4 text-xs text-slate-400 flex-wrap">
@@ -166,7 +235,7 @@ export default function ErrorHistoryPage() {
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {sorted.map(r => <ErrorCard key={r.word} record={r} />)}
+          {sorted.map(r => <ErrorCard key={recordKey(r)} record={r} />)}
         </div>
       )}
     </div>
