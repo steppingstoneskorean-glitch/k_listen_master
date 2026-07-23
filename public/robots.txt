@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /quiz-studio
 
-Sitemap: https://step-korean.com/sitemap.xml
+Sitemap: https://k-listen-master.vercel.app/sitemap.xml

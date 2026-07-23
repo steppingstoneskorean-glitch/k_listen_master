@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
         <p className="text-xs text-gray-600 mt-2 leading-relaxed">
           Step Korean(이하 &apos;회사&apos;)은 이용자의 개인정보를 소중히 다루며,
           「개인정보 보호법」 및 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령을 준수합니다.
-          본 서비스(step-korean.com)는 별도의 자체 회원가입 절차 없이 구글(Google) 및 애플(Apple) 소셜
+          본 서비스(k-listen-master.vercel.app)는 별도의 자체 회원가입 절차 없이 구글(Google) 및 애플(Apple) 소셜
           로그인을 통해 이용할 수 있으며, 로그인 없이 게스트로도 일부 기능을 이용할 수 있습니다.
         </p>
       </div>
