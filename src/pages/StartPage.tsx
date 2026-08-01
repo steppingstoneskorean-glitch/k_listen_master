@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import { recordMarketingConsent } from '@/lib/marketingConsent'
@@ -101,6 +101,13 @@ export default function StartPage() {
           <p className="text-[11px] leading-snug text-gray-500 text-center px-1 mt-1">
             {t('login.trust.summary')}
           </p>
+          {/* 로그인 전에도 방침을 확인할 수 있도록 작은 링크 제공 */}
+          <Link
+            to="/privacy"
+            className="text-[11px] text-gray-600 underline hover:text-gray-400 transition-colors text-center"
+          >
+            {t('cookie.privacy')}
+          </Link>
         </div>
       </div>
     </div>
