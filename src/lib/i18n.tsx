@@ -36,10 +36,10 @@ const TRANSLATIONS = {
 
   // ── Login trust / permission explanation ──
   'login.trust.summary': {
-    en: 'Sign-in is only used to save your learning progress.',
-    ko: '로그인은 학습 기록을 저장하기 위해서만 사용됩니다.',
-    es: 'El inicio de sesión solo sirve para guardar tu progreso.',
-    ja: 'ログインは学習記録の保存のみに使用されます。',
+    en: 'You sign in with Google or Apple so we can show your name and save your scores and learning streak.',
+    ko: '이름 표시와 점수·학습일 기록을 위해 구글·애플 계정으로 로그인합니다.',
+    es: 'Inicias sesión con Google o Apple para mostrar tu nombre y guardar tus puntuaciones y racha.',
+    ja: '名前の表示とスコア・学習記録の保存のために、Google・Apple アカウントでログインします。',
   },
 
   // ── Auth ──
