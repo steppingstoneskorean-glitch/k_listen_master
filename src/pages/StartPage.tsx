@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useLocation, Link } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import { recordMarketingConsent } from '@/lib/marketingConsent'
@@ -97,25 +97,10 @@ export default function StartPage() {
           />
           {error && <p className="text-red-400 text-xs px-1 text-center">{error}</p>}
 
-          {/* 권한 안내 — 소셜 로그인 시 요청되는 정보의 실제 의미·목적을 명확히 알려 불안을 줄인다 */}
+          {/* 권한 안내 — 로그인의 실제 목적을 간단히 알려 불안을 줄인다 */}
           <p className="text-[11px] leading-snug text-gray-500 text-center px-1 mt-1">
             {t('login.trust.summary')}
           </p>
-          <details className="group w-full rounded-xl border border-gray-800 bg-gray-900/40 px-3 py-2">
-            <summary className="flex cursor-pointer list-none items-center justify-between text-[11px] font-semibold text-gray-400 select-none">
-              {t('login.trust.detailsTitle')}
-              <span className="text-gray-600 transition-transform group-open:rotate-180">▾</span>
-            </summary>
-            <ul className="mt-2 flex flex-col gap-1.5 text-[11px] leading-snug text-gray-500">
-              <li className="flex gap-1.5"><span className="text-emerald-500 shrink-0">✓</span><span>{t('login.trust.access')}</span></li>
-              <li className="flex gap-1.5"><span className="text-emerald-500 shrink-0">✓</span><span>{t('login.trust.photo')}</span></li>
-              <li className="flex gap-1.5"><span className="text-gray-600 shrink-0">✕</span><span>{t('login.trust.noPost')}</span></li>
-              <li className="flex gap-1.5"><span className="text-gray-600 shrink-0">✕</span><span>{t('login.trust.noSell')}</span></li>
-            </ul>
-            <Link to="/privacy" className="mt-2 inline-block text-[11px] text-indigo-400 underline hover:text-indigo-300">
-              {t('cookie.privacy')}
-            </Link>
-          </details>
         </div>
       </div>
     </div>
