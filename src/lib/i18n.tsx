@@ -34,6 +34,44 @@ const TRANSLATIONS = {
   'cookie.settings': { en: 'Cookie Settings', ko: '쿠키 설정', es: 'Configuración de cookies', ja: 'クッキー設定' },
   'cookie.privacy': { en: 'Privacy Policy', ko: '개인정보처리방침', es: 'Política de privacidad', ja: 'プライバシーポリシー' },
 
+  // ── Login trust / permission explanation ──
+  'login.trust.summary': {
+    en: 'Sign-in is only used to save your learning progress. We never post anything to your Google or Apple account.',
+    ko: '로그인은 학습 기록을 저장하기 위해서만 사용됩니다. 구글·애플 계정에 어떤 것도 게시하지 않습니다.',
+    es: 'El inicio de sesión solo sirve para guardar tu progreso. Nunca publicamos nada en tu cuenta de Google o Apple.',
+    ja: 'ログインは学習記録の保存のみに使用されます。Google・Apple アカウントに何も投稿しません。',
+  },
+  'login.trust.detailsTitle': {
+    en: 'What we access — and why',
+    ko: '무엇을, 왜 요청하나요?',
+    es: 'Qué usamos — y por qué',
+    ja: '取得する情報とその理由',
+  },
+  'login.trust.access': {
+    en: 'Name & email — to create your account and save your scores and streak',
+    ko: '이름·이메일 — 계정 생성과 점수·연속 학습일 저장에만 사용합니다',
+    es: 'Nombre y correo — para crear tu cuenta y guardar tus puntuaciones y racha',
+    ja: '名前・メール — アカウント作成とスコア・連続記録の保存のみに使用します',
+  },
+  'login.trust.photo': {
+    en: 'Profile photo — shown as your avatar (optional)',
+    ko: '프로필 사진 — 아바타 표시용입니다 (선택)',
+    es: 'Foto de perfil — se muestra como tu avatar (opcional)',
+    ja: 'プロフィール写真 — アバター表示用です（任意）',
+  },
+  'login.trust.noPost': {
+    en: 'We never post on your behalf or read your contacts',
+    ko: '회원님 대신 글을 쓰거나 연락처에 접근하지 않습니다',
+    es: 'Nunca publicamos por ti ni accedemos a tus contactos',
+    ja: 'お客様に代わって投稿したり、連絡先にアクセスしたりしません',
+  },
+  'login.trust.noSell': {
+    en: 'We never sell your data — you can request deletion anytime',
+    ko: '데이터를 판매하지 않으며, 언제든 삭제를 요청할 수 있습니다',
+    es: 'Nunca vendemos tus datos — puedes solicitar su eliminación cuando quieras',
+    ja: 'データを販売しません。いつでも削除を請求できます',
+  },
+
   // ── Auth ──
   'auth.email': { en: 'Email', ko: '이메일', es: 'Correo', ja: 'メール' },
   'auth.password': { en: 'Password', ko: '비밀번호', es: 'Contraseña', ja: 'パスワード' },
