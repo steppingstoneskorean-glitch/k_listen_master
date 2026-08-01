@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import { recordMarketingConsent } from '@/lib/marketingConsent'
@@ -7,21 +7,20 @@ import logoImg from '../../assets/images/logo.jpg'
 
 export default function StartPage() {
   const { t } = useLang()
-  const { signInWithGoogle, signInWithApple, setIsGuest, user, loading } = useAuth()
+  const { signInWithGoogle, signInWithApple, user, loading } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // 로그인 후 원래 가려던 경로로 복귀 (없으면 홈)
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/'
 
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [marketingOptIn, setMarketingOptIn] = useState(false) // 기본 해제 — 사전 체크된 박스는 유효한 동의가 아님
 
   if (!loading && user) {
-    navigate('/', { replace: true })
+    navigate(from, { replace: true })
     return null
-  }
-
-  const handleGuest = () => {
-    setIsGuest(true)
-    navigate('/')
   }
 
   const handleSocialSignIn = async (provider: 'google' | 'apple') => {
@@ -30,7 +29,7 @@ export default function StartPage() {
     try {
       const { uid } = provider === 'google' ? await signInWithGoogle() : await signInWithApple()
       if (marketingOptIn) void recordMarketingConsent(uid)
-      navigate('/')
+      navigate(from, { replace: true })
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code
       if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return
@@ -96,13 +95,6 @@ export default function StartPage() {
             onClick={() => handleSocialSignIn('apple')}
             disabled={submitting}
           />
-          <button
-            onClick={handleGuest}
-            disabled={submitting}
-            className="w-full py-3.5 rounded-2xl border border-gray-700 bg-gray-900 text-gray-300 font-bold text-base hover:border-gray-500 hover:text-white disabled:opacity-40 transition-colors"
-          >
-            {t('start.guest')}
-          </button>
           {error && <p className="text-red-400 text-xs px-1 text-center">{error}</p>}
         </div>
       </div>

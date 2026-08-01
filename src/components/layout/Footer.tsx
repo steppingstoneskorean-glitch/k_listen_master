@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useLang } from '@/lib/i18n'
+import { openCookieSettings } from '@/lib/cookieConsent'
 
 export default function Footer() {
+  const { t } = useLang()
   return (
     <footer className="border-t border-gray-800 bg-gray-950 py-8">
       <div className="mx-auto max-w-6xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -21,6 +24,12 @@ export default function Footer() {
           <Link to="/privacy" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
             개인정보처리방침
           </Link>
+          <button
+            onClick={openCookieSettings}
+            className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors"
+          >
+            {t('cookie.settings')}
+          </button>
           <p className="text-xs text-gray-600">
             © {new Date().getFullYear()} Step Korean. All rights reserved.
           </p>

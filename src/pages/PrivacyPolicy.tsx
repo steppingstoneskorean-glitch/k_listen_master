@@ -1,4 +1,4 @@
-const EFFECTIVE_DATE = '2026-07-20'
+const EFFECTIVE_DATE = '2026-07-27'
 const ADMIN_EMAIL = 'steppingstoneskorean@gmail.com'
 
 export default function PrivacyPolicy() {
@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
           Step Korean(이하 &apos;회사&apos;)은 이용자의 개인정보를 소중히 다루며,
           「개인정보 보호법」 및 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령을 준수합니다.
           본 서비스(k-listen-master.vercel.app)는 별도의 자체 회원가입 절차 없이 구글(Google) 및 애플(Apple) 소셜
-          로그인을 통해 이용할 수 있으며, 로그인 없이 게스트로도 일부 기능을 이용할 수 있습니다.
+          로그인을 통해 이용할 수 있으며, 서비스 이용을 위해서는 로그인이 필요합니다.
         </p>
       </div>
 
@@ -113,8 +113,15 @@ export default function PrivacyPolicy() {
           <li>
             본 웹사이트는 서비스 이용 현황 분석을 위해 구글 애널리틱스(Google Analytics)를
             사용합니다. 구글 애널리틱스는 쿠키를 통해 방문 페이지, 이용 시간, 기기·브라우저 정보
-            등을 수집하며, 이 정보는 통계적 분석 목적으로만 사용되고 개인을 식별하는 데 사용되지
-            않습니다. 수집된 정보는 Google LLC(미국)의 서버에서 처리됩니다.
+            등을 수집하며, 이 정보는 통계적 분석 목적으로만 사용되고(IP 주소는 익명화 처리됩니다)
+            개인을 식별하는 데 사용되지 않습니다. 수집된 정보는 Google LLC(미국)의 서버에서
+            처리됩니다.
+          </li>
+          <li>
+            분석 쿠키는 최초 방문 시 표시되는 쿠키 동의 배너에서 이용자가 <strong>‘동의’를 선택한
+            경우에만</strong> 로드·작동합니다. 동의 전에는 어떠한 분석 스크립트도 실행되지 않으며,
+            이용자는 화면 하단 푸터의 ‘쿠키 설정(Cookie Settings)’을 통해 언제든지 동의를 철회하거나
+            변경할 수 있습니다.
           </li>
           <li>본 웹사이트는 구글 애드센스(Google AdSense) 등 제3자 광고 업체의 맞춤형 광고를 게재할 수 있습니다.</li>
           <li>구글 등 제3자 파트너는 쿠키를 사용하여 이용자의 본 사이트 및 타 사이트 방문 기록을 기반으로 맞춤형 광고를 제공합니다.</li>

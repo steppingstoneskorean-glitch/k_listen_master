@@ -22,6 +22,18 @@ const TRANSLATIONS = {
   'start.login': { en: 'Log In', ko: '로그인', es: 'Iniciar Sesión', ja: 'ログイン' },
   'start.guest': { en: 'Play as Guest', ko: '게스트로 시작', es: 'Jugar como Invitado', ja: 'ゲストとしてプレイ' },
 
+  // ── Cookie consent ──
+  'cookie.message': {
+    en: 'We use Google Analytics cookies to understand usage and improve the service. Analytics runs only if you accept.',
+    ko: '서비스 개선을 위한 이용 통계 분석(구글 애널리틱스)에 쿠키를 사용합니다. 동의하신 경우에만 분석이 작동합니다.',
+    es: 'Usamos cookies de Google Analytics para entender el uso y mejorar el servicio. El análisis solo se activa si aceptas.',
+    ja: 'サービス改善のための利用状況分析（Google アナリティクス）にクッキーを使用します。同意された場合のみ分析が有効になります。',
+  },
+  'cookie.accept': { en: 'Accept', ko: '동의', es: 'Aceptar', ja: '同意する' },
+  'cookie.decline': { en: 'Decline', ko: '거부', es: 'Rechazar', ja: '拒否する' },
+  'cookie.settings': { en: 'Cookie Settings', ko: '쿠키 설정', es: 'Configuración de cookies', ja: 'クッキー設定' },
+  'cookie.privacy': { en: 'Privacy Policy', ko: '개인정보처리방침', es: 'Política de privacidad', ja: 'プライバシーポリシー' },
+
   // ── Auth ──
   'auth.email': { en: 'Email', ko: '이메일', es: 'Correo', ja: 'メール' },
   'auth.password': { en: 'Password', ko: '비밀번호', es: 'Contraseña', ja: 'パスワード' },

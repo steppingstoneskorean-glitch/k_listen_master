@@ -6,6 +6,8 @@ import { UserProfileProvider } from '@/lib/userProfile'
 import { VideoAccessProvider } from '@/lib/accessControl'
 import { PwaInstallProvider } from '@/lib/pwaInstall'
 import Layout from '@/components/layout/Layout'
+import RequireAuth from '@/components/RequireAuth'
+import CookieConsent from '@/components/CookieConsent'
 import StartPage from '@/pages/StartPage'
 import HomePage from '@/pages/HomePage'
 import GamePage from '@/pages/GamePage'
@@ -32,32 +34,40 @@ export default function App() {
           <VideoAccessProvider>
           <PwaInstallProvider>
             <Routes>
-              {/* Full-screen pages (no header/footer) */}
+              {/* Public — 로그인 없이 접근 가능 */}
               <Route path="/login" element={<StartPage />} />
-              <Route path="/game" element={<GamePage />} />
-              <Route path="/dictation" element={<DictationPage />} />
-
-              {/* Layout-wrapped pages */}
               <Route element={<Layout />}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/home" element={<Navigate to="/" replace />} />
-                <Route path="/errors" element={<ErrorHistoryPage />} />
-                <Route path="/materials" element={<MaterialsPage />} />
-                <Route path="/games" element={<GameHubPage />} />
-                <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
-                <Route path="/quiz-studio" element={<QuizStudioPage />} />
-                <Route path="/quiz-builder" element={<QuizBuilderPage />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/terms" element={<TermsPage />} />
-                <Route path="/grammar" element={<GrammarListPage />} />
-                <Route path="/grammar/:slug" element={<GrammarArticlePage />} />
-                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+
+              {/* Protected — 로그인 필수 */}
+              <Route element={<RequireAuth />}>
+                {/* Full-screen pages (no header/footer) */}
+                <Route path="/game" element={<GamePage />} />
+                <Route path="/dictation" element={<DictationPage />} />
+
+                {/* Layout-wrapped pages */}
+                <Route element={<Layout />}>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/home" element={<Navigate to="/" replace />} />
+                  <Route path="/errors" element={<ErrorHistoryPage />} />
+                  <Route path="/materials" element={<MaterialsPage />} />
+                  <Route path="/games" element={<GameHubPage />} />
+                  <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
+                  <Route path="/quiz-studio" element={<QuizStudioPage />} />
+                  <Route path="/quiz-builder" element={<QuizBuilderPage />} />
+                  <Route path="/grammar" element={<GrammarListPage />} />
+                  <Route path="/grammar/:slug" element={<GrammarArticlePage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Route>
               </Route>
 
               {/* Legacy redirects */}
               <Route path="/index" element={<Navigate to="/" replace />} />
             </Routes>
+            <CookieConsent />
           </PwaInstallProvider>
           </VideoAccessProvider>
           </UserProfileProvider>

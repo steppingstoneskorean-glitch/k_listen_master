@@ -676,7 +676,8 @@ export default function DictationPage() {
   const { markVideoCompleted } = useGamification()
   const { nickname, saveNickname } = useUserProfile()
   // 닉네임이 설정된 이후에는 항상 닉네임을 리더보드 표기명으로 사용 (게스트/미설정 시 폴백)
-  const playerName = nickname || user?.displayName || user?.email?.split('@')[0] || 'Guest'
+  // 닉네임 미설정 시 실명·이메일 노출 방지를 위한 중립 폴백 (제출은 확정된 nickname 으로만)
+  const playerName = nickname || 'Player'
 
   const [screen,       setScreen]       = useState<'level-select' | 'game' | 'result'>('level-select')
   const [gameLevel,    setGameLevel]    = useState<1 | 2>(1)

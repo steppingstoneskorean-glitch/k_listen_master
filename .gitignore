@@ -40,3 +40,11 @@ firebase-debug.log
 .env
 # Flutter/Dart tooling (contains Chrome profile data - NEVER commit)
 .dart_tool/
+
+# Firebase Admin service account key — NEVER commit (grants full project access)
+serviceAccountKey.json
+**/serviceAccountKey.json
+*-serviceAccount*.json
+
+# Marketing consent export — contains personal data (emails), NEVER commit
+marketing-consent-*.csv

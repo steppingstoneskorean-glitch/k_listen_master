@@ -668,8 +668,9 @@ type Screen = 'playing' | 'level-clear' | 'review' | 'result'
 export default function GamePage() {
   const { user, isGuest } = useAuth()
   const { nickname, saveNickname } = useUserProfile()
-  // 닉네임이 설정된 이후에는 항상 닉네임을 리더보드 표기명으로 사용 (게스트/미설정 시 폴백)
-  const playerName = nickname || user?.displayName || user?.email?.split('@')[0] || 'Guest'
+  // 리더보드/결과 카드 표기명. 닉네임 미설정 시 실명·이메일이 노출되지 않도록 중립값으로 폴백
+  // (공개 리더보드 제출은 항상 확정된 nickname 으로만 이뤄진다 — endGame 참고)
+  const playerName = nickname || 'Player'
 
   const [screen, setScreen] = useState<Screen>('playing')
   const [level, setLevel] = useState<1 | 2 | 3 | 4>(1)
