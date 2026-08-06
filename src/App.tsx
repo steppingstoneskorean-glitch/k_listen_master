@@ -12,6 +12,7 @@ import StartPage from '@/pages/StartPage'
 import HomePage from '@/pages/HomePage'
 import GamePage from '@/pages/GamePage'
 import DictationPage from '@/pages/DictationPage'
+import ShadowingPage from '@/pages/ShadowingPage'
 import ErrorHistoryPage from '@/pages/ErrorHistoryPage'
 import MaterialsPage from '@/pages/MaterialsPage'
 import PrivacyPolicy from '@/pages/PrivacyPolicy'
@@ -47,6 +48,7 @@ export default function App() {
                 {/* Full-screen pages (no header/footer) */}
                 <Route path="/game" element={<GamePage />} />
                 <Route path="/dictation" element={<DictationPage />} />
+                <Route path="/shadowing" element={<ShadowingPage />} />
 
                 {/* Layout-wrapped pages */}
                 <Route element={<Layout />}>

@@ -5,10 +5,11 @@ import {
   query,
   orderBy,
 } from 'firebase/firestore'
-import { db as _db } from './firebase'
+import { db as _db, auth } from './firebase'
 
 export interface LeaderboardEntry {
   id?: string
+  uid?: string
   name: string
   score: number
   highestLevel: number
@@ -23,10 +24,14 @@ export interface RankedEntry extends LeaderboardEntry {
 export async function submitScore(
   entry: Omit<LeaderboardEntry, 'id'>,
 ): Promise<void> {
-  if (!_db) return
+  // 위조 방지: 제출을 인증된 uid 에 결속한다(규칙에서 uid == auth.uid 검증).
+  // 로그인 상태가 아니면 리더보드에 제출하지 않는다.
+  const uid = auth?.currentUser?.uid
+  if (!_db || !uid) return
   try {
     await addDoc(collection(_db, 'gameLeaderboard'), {
       ...entry,
+      uid,
       timestamp: Date.now(),
     })
   } catch (err) {
@@ -70,6 +75,7 @@ function assignRanks(entries: LeaderboardEntry[]): RankedEntry[] {
 
 export interface IntermediateEntry {
   id?: string
+  uid?: string
   name: string
   score: number
   correctCount: number
@@ -83,10 +89,12 @@ export interface RankedIntermediateEntry extends IntermediateEntry {
 export async function submitIntermediateScore(
   entry: Omit<IntermediateEntry, 'id'>,
 ): Promise<void> {
-  if (!_db) return
+  const uid = auth?.currentUser?.uid
+  if (!_db || !uid) return
   try {
     await addDoc(collection(_db, 'intLeaderboard'), {
       ...entry,
+      uid,
       timestamp: Date.now(),
     })
   } catch (err) {
@@ -124,6 +132,7 @@ export async function getIntermediateLeaderboard(): Promise<RankedIntermediateEn
 
 export interface DictationEntry {
   id?: string
+  uid?: string
   name: string
   score: number
   correctCount: number
@@ -138,10 +147,12 @@ export async function submitDictationScore(
   collectionName: string,
   entry: Omit<DictationEntry, 'id'>,
 ): Promise<void> {
-  if (!_db) return
+  const uid = auth?.currentUser?.uid
+  if (!_db || !uid) return
   try {
     await addDoc(collection(_db, collectionName), {
       ...entry,
+      uid,
       timestamp: Date.now(),
     })
   } catch (err) {

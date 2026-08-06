@@ -35,6 +35,96 @@ const TRANSLATIONS = {
   'cookie.privacy': { en: 'Privacy Policy', ko: '개인정보처리방침', es: 'Política de privacidad', ja: 'プライバシーポリシー' },
 
   // ── Login trust / permission explanation ──
+  // ── Shadowing mode ──
+  'shadowing.entryTitle': { en: 'Shadowing', ko: '섀도잉 (따라 말하기)', es: 'Shadowing', ja: 'シャドーイング' },
+  'shadowing.entryDesc': {
+    en: 'Listen, record yourself, and compare with the native audio by ear.',
+    ko: '듣고, 내 목소리를 녹음해서, 원어민 음원과 귀로 직접 비교해보세요.',
+    es: 'Escucha, grábate y compara con el audio nativo de oído.',
+    ja: '聞いて、自分の声を録音し、ネイティブ音声と耳で聞き比べましょう。',
+  },
+  'shadowing.subtitle': {
+    en: 'Listen, record yourself, and compare your voice with the native audio by ear.',
+    ko: '듣고, 내 목소리를 녹음해서, 원어민 음원과 귀로 직접 비교해보세요.',
+    es: 'Escucha, grábate y compara tu voz con el audio nativo de oído.',
+    ja: '聞いて、自分の声を録音し、ネイティブ音声と耳で聞き比べましょう。',
+  },
+  'shadowing.record': { en: 'Record my voice', ko: '내 목소리 녹음', es: 'Grabar mi voz', ja: '自分の声を録音' },
+  'shadowing.listenNative': { en: 'Hear native', ko: '원어민 발음 듣기', es: 'Escuchar nativo', ja: 'ネイティブ発音' },
+  'shadowing.recordPrompt': {
+    en: 'Listen a few times, then record yourself and compare.',
+    ko: '여러 번 듣고, 내 목소리를 녹음해 비교해보세요.',
+    es: 'Escucha varias veces, luego grábate y compara.',
+    ja: '何度か聞いて、自分の声を録音して比べてみましょう。',
+  },
+  'shadowing.micBlocked': {
+    en: 'Microphone access was blocked. Allow the mic in your browser settings to record, or just listen and self-check.',
+    ko: '마이크 접근이 차단됐어요. 브라우저 설정에서 마이크를 허용하면 녹음할 수 있어요. 그냥 듣고 스스로 평가해도 됩니다.',
+    es: 'Se bloqueó el acceso al micrófono. Permítelo en la configuración del navegador para grabar, o solo escucha y autoevalúate.',
+    ja: 'マイクへのアクセスがブロックされました。ブラウザ設定でマイクを許可すると録音できます。聞いて自己評価するだけでもOKです。',
+  },
+  'shadowing.needPractice': { en: 'Needs practice · save', ko: '더 연습 · 복습 저장', es: 'A practicar · guardar', ja: '要練習 · 保存' },
+  'shadowing.gotIt': { en: 'Got it · next', ko: '잘 됐어요 · 다음', es: '¡Listo! · siguiente', ja: 'できた · 次へ' },
+  'shadowing.practiced': { en: 'sentences practiced', ko: '문장 연습 완료', es: 'frases practicadas', ja: '文の練習完了' },
+  'shadowing.practiceThis': { en: 'Practice this sentence', ko: '이 문장 연습', es: 'Practicar esta frase', ja: 'この文を練習' },
+  'shadowing.reviewSaved': { en: 'saved to review', ko: '복습에 저장됨', es: 'guardadas para repaso', ja: '復習に保存' },
+  // ── Shadowing compare panel ──
+  'shadowing.native': { en: 'Native', ko: '원어민', es: 'Nativo', ja: 'ネイティブ' },
+  'shadowing.you': { en: 'You', ko: '나', es: 'Tú', ja: 'あなた' },
+  'shadowing.alternate': { en: 'Alternate', ko: '번갈아 재생', es: 'Alternar', ja: '交互再生' },
+  'shadowing.stopAlternate': { en: 'Stop', ko: '정지', es: 'Detener', ja: '停止' },
+  'shadowing.analyzing': { en: 'Analyzing…', ko: '분석 중…', es: 'Analizando…', ja: '分析中…' },
+  'shadowing.waveform': { en: 'Waveform (rhythm)', ko: '파형 (리듬)', es: 'Onda (ritmo)', ja: '波形（リズム）' },
+  'shadowing.pitch': { en: 'Intonation (pitch)', ko: '억양 (피치)', es: 'Entonación (tono)', ja: 'イントネーション（ピッチ）' },
+  'shadowing.length': { en: 'Length', ko: '길이', es: 'Duración', ja: '長さ' },
+  'shadowing.rhythmMatch': { en: 'Rhythm match', ko: '리듬 유사도', es: 'Coincidencia de ritmo', ja: 'リズム一致' },
+  'shadowing.intonationMatch': { en: 'Intonation match', ko: '억양 유사도', es: 'Coincidencia de entonación', ja: 'イントネーション一致' },
+  'shadowing.compareCaveat': {
+    en: 'Approximate rhythm & intonation comparison — not a pronunciation grade. Compare with your ears too.',
+    ko: '리듬·억양의 근사 비교예요 — 정확한 발음 평가는 아닙니다. 귀로도 함께 비교하세요.',
+    es: 'Comparación aproximada de ritmo y entonación, no una calificación de pronunciación. Compara también con el oído.',
+    ja: 'リズム・イントネーションのおおよその比較で、発音評価ではありません。耳でも聞き比べましょう。',
+  },
+  'shadowing.compareUnavailable': {
+    en: "Couldn't analyze the audio on this device — you can still compare by ear.",
+    ko: '이 기기에서는 오디오 분석을 못 했어요 — 귀로는 여전히 비교할 수 있습니다.',
+    es: 'No se pudo analizar el audio en este dispositivo; aún puedes comparar de oído.',
+    ja: 'この端末では音声を分析できませんでした — 耳では比較できます。',
+  },
+  'shadowing.startIntermediate': { en: 'Start · Intermediate', ko: '시작 · 중급', es: 'Empezar · Intermedio', ja: '開始 · 中級' },
+  'shadowing.startAdvanced': { en: 'Start · Advanced', ko: '시작 · 고급', es: 'Empezar · Avanzado', ja: '開始 · 上級' },
+  'shadowing.speak': { en: 'Tap & speak', ko: '눌러서 따라 말하기', es: 'Toca y habla', ja: 'タップして話す' },
+  'shadowing.stop': { en: 'Done recording', ko: '녹음 완료', es: 'Terminar grabación', ja: '録音完了' },
+  'shadowing.listening': { en: 'Recording…', ko: '녹음 중…', es: 'Grabando…', ja: '録音中…' },
+  'shadowing.replay': { en: 'Play', ko: '다시 듣기', es: 'Reproducir', ja: '再生' },
+  'shadowing.yourSpeech': { en: 'You said', ko: '내가 말한 것', es: 'Dijiste', ja: 'あなたの発話' },
+  'shadowing.myVoice': { en: 'Hear my voice', ko: '내 목소리 듣기', es: 'Escuchar mi voz', ja: '自分の声を聞く' },
+  'shadowing.savedToReview': { en: 'Saved to Review Errors', ko: '오답노트에 저장됨', es: 'Guardado en repaso', ja: '復習ノートに保存' },
+  'shadowing.scoreCaveat': {
+    en: 'This score reflects how well speech recognition understood you — not a precise pronunciation grade. Judge for yourself by comparing the native audio with your own recording.',
+    ko: '이 점수는 음성인식이 알아들은 정도예요 — 정확한 발음 평가가 아닙니다. 원어민 음원과 내 목소리를 직접 들어보며 스스로 판단하세요.',
+    es: 'Esta puntuación refleja cuánto te entendió el reconocimiento de voz, no una evaluación precisa de pronunciación. Compara el audio nativo con tu grabación y juzga por ti mismo.',
+    ja: 'このスコアは音声認識がどれだけ聞き取れたかの目安で、正確な発音評価ではありません。ネイティブ音声と自分の録音を聞き比べて判断してください。',
+  },
+  'shadowing.compareHint': {
+    en: '👂 Compare: native vs your voice',
+    ko: '👂 원어민 ↔ 내 목소리 비교하기',
+    es: '👂 Compara: nativo vs tu voz',
+    ja: '👂 ネイティブ ↔ 自分の声を聞き比べ',
+  },
+  'shadowing.next': { en: 'Next', ko: '다음', es: 'Siguiente', ja: '次へ' },
+  'shadowing.selfCheck': { en: 'Show the answer', ko: '문장 확인하기', es: 'Mostrar la respuesta', ja: '答えを見る' },
+  'shadowing.done': { en: 'Session complete!', ko: '연습 완료!', es: '¡Sesión completada!', ja: 'セッション完了！' },
+  'shadowing.avgScore': { en: 'Average pronunciation match', ko: '평균 발음 일치도', es: 'Coincidencia media de pronunciación', ja: '平均発音一致度' },
+  'shadowing.again': { en: 'Practice again', ko: '다시 연습', es: 'Practicar de nuevo', ja: 'もう一度練習' },
+  'shadowing.home': { en: 'Home', ko: '홈', es: 'Inicio', ja: 'ホーム' },
+  'shadowing.unsupported': {
+    en: "Speech scoring needs Chrome or Edge. You can still listen and self-check here.",
+    ko: '발음 채점은 크롬·엣지에서 동작해요. 여기서도 듣고 스스로 확인할 수 있습니다.',
+    es: 'La puntuación de voz requiere Chrome o Edge. Aún puedes escuchar y autoevaluarte aquí.',
+    ja: '発音採点は Chrome・Edge で動作します。ここでも聞いて自己確認できます。',
+  },
+
   'login.trust.summary': {
     en: 'You sign in with Google or Apple so we can show your name and save your scores and learning streak.',
     ko: '이름 표시와 점수·학습일 기록을 위해 구글·애플 계정으로 로그인합니다.',
@@ -445,10 +535,10 @@ const TRANSLATIONS = {
 
   // ── Landing (CRO redesign) ──
   'landing.loginBenefit': {
-    en: 'Play instantly for free. Log in with Google/Apple to save your mistakes and unlock advanced levels!',
-    ko: '무료로 바로 플레이하세요. Google/Apple 로그인 시 오답 저장 & 고급 레벨 잠금 해제!',
-    es: 'Juega gratis al instante. ¡Inicia sesión con Google/Apple para guardar tus errores y desbloquear niveles avanzados!',
-    ja: '無料ですぐプレイ。Google/Appleでログインすると、間違いの保存と上級レベルの解放ができます！',
+    en: 'During the beta, every feature is free — all levels open and your progress saved.',
+    ko: '베타 기간 동안 모든 기능을 무료로 이용할 수 있어요. 모든 레벨 개방 & 학습 기록 저장!',
+    es: 'Durante la beta, todas las funciones son gratis: todos los niveles abiertos y tu progreso guardado.',
+    ja: 'ベータ期間中はすべての機能が無料。全レベル開放＆学習記録も保存されます！',
   },
   'landing.step1.title': {
     en: 'Train Your Ears',
@@ -541,6 +631,31 @@ const TRANSLATIONS = {
 
   // ── Common ──
   'common.ok': { en: 'OK', ko: '확인', es: 'Aceptar', ja: 'OK' },
+  'common.cancel': { en: 'Cancel', ko: '취소', es: 'Cancelar', ja: 'キャンセル' },
+
+  // ── Account deletion (인앱 회원 탈퇴 — GDPR/Play/Apple) ──
+  'account.delete': { en: 'Delete account', ko: '계정 삭제', es: 'Eliminar cuenta', ja: 'アカウント削除' },
+  'account.deleteTitle': { en: 'Delete your account?', ko: '계정을 삭제할까요?', es: '¿Eliminar tu cuenta?', ja: 'アカウントを削除しますか？' },
+  'account.deleteBody': {
+    en: 'This permanently deletes your account and all associated data (streak, nickname, progress). This cannot be undone. Local review notes stored on this device are cleared separately from your browser.',
+    ko: '계정과 관련된 모든 데이터(스트릭·닉네임·학습 기록)가 영구 삭제됩니다. 되돌릴 수 없습니다. 이 기기에 저장된 오답노트는 브라우저 데이터에서 별도로 삭제됩니다.',
+    es: 'Esto elimina permanentemente tu cuenta y todos los datos asociados (racha, apodo, progreso). No se puede deshacer. Las notas de repaso locales de este dispositivo se borran por separado desde tu navegador.',
+    ja: 'アカウントと関連データ（連続記録・ニックネーム・学習履歴）が完全に削除されます。元に戻せません。この端末に保存された復習ノートはブラウザから別途削除されます。',
+  },
+  'account.deleteAck': {
+    en: 'I understand this is permanent.',
+    ko: '영구 삭제됨을 이해했습니다.',
+    es: 'Entiendo que es permanente.',
+    ja: '完全に削除されることを理解しました。',
+  },
+  'account.deleteConfirm': { en: 'Delete permanently', ko: '영구 삭제', es: 'Eliminar', ja: '完全に削除' },
+  'account.deleting': { en: 'Deleting…', ko: '삭제 중…', es: 'Eliminando…', ja: '削除中…' },
+  'account.deleteError': {
+    en: 'Could not delete your account. You may need to sign in again, then retry.',
+    ko: '계정을 삭제하지 못했습니다. 다시 로그인한 뒤 재시도해 주세요.',
+    es: 'No se pudo eliminar tu cuenta. Es posible que debas iniciar sesión de nuevo y reintentar.',
+    ja: 'アカウントを削除できませんでした。再度ログインしてからもう一度お試しください。',
+  },
 
   // ── PWA install ──
   'install.bannerMessage': {

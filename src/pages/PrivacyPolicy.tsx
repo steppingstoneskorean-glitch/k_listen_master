@@ -44,6 +44,10 @@ export default function PrivacyPolicy() {
               <li>오답 단어·문장 기록(오답 노트)은 회사 서버로 전송되지 않고, 이용자
                 브라우저의 로컬 저장소(localStorage)에만 보관됩니다. 브라우저 데이터를 삭제하면
                 함께 삭제됩니다.</li>
+              <li>섀도잉(따라 말하기) 기능에서 녹음한 <strong>이용자의 음성</strong>은 원어민 발음과의
+                비교(자가 학습) 목적으로만 사용되며, 이용자 기기 내에서만 임시로 재생됩니다. 회사
+                서버나 제3자로 <strong>전송·저장되지 않으며</strong>, 다음 문장으로 넘어가거나 페이지를
+                벗어나면 즉시 삭제됩니다. 이 기능은 이용자가 마이크 사용을 허용한 경우에만 동작합니다.</li>
             </ul>
           </div>
         </div>
@@ -147,9 +151,15 @@ export default function PrivacyPolicy() {
         <ul className="list-disc list-inside text-sm leading-relaxed text-gray-400 pl-2 flex flex-col gap-1">
           <li>수집된 개인정보는 원칙적으로 이용자가 서비스를 이용하는 동안 보관·이용됩니다.</li>
           <li>
-            이용자가 관리자 이메일(
+            이용자는 언제든지 화면 하단 푸터의 <strong>‘계정 삭제(Delete account)’</strong>를 통해
+            직접 회원 탈퇴할 수 있습니다. 계정 삭제 시 로그인 계정과 그에 연결된 모든 데이터
+            (닉네임·점수·학습 기록 등)가 <strong>지체 없이 영구 파기</strong>되며, 이 작업은 되돌릴 수
+            없습니다.
+          </li>
+          <li>
+            직접 삭제가 어려운 경우, 이용자가 관리자 이메일(
             <span className="text-gray-500">{ADMIN_EMAIL}</span>
-            )을 통해 개인정보 삭제를 요청하는 경우, 회사는 지체 없이 해당 정보를 파기합니다.
+            )을 통해 개인정보 삭제를 요청하면 회사는 지체 없이 해당 정보를 파기합니다.
           </li>
           <li>
             소셜 계정의 연동 해제는 해당 소셜 제공자와의 인증 연결만 끊을 뿐 회사 서버에 저장된

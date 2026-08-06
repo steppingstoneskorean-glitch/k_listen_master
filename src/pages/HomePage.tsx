@@ -244,6 +244,24 @@ export default function HomePage() {
               ))}
             </div>
 
+            {/* Shadowing (Beta) — 듣고 따라 말하기 발음 연습 진입 */}
+            <button
+              type="button"
+              onClick={() => handlePlay('/shadowing')}
+              className="animate-hero-fade-up group mt-6 flex w-full items-center gap-4 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-fuchsia-50 p-5 text-left shadow-md shadow-indigo-100/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.99]"
+              style={{ animationDelay: '620ms' }}
+            >
+              <span className="text-3xl transition-transform duration-300 group-hover:scale-110">🎤</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="break-keep text-lg font-black text-slate-900" translate="no">Shadowing</h3>
+                  <span className="rounded-full bg-indigo-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-indigo-600">Beta</span>
+                </div>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">{t('shadowing.entryDesc')}</p>
+              </div>
+              <span className="shrink-0 text-emerald-500 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 -translate-x-1.5">→</span>
+            </button>
+
             {/* Login benefit micro-text */}
             <p className="animate-hero-fade-up mt-8 flex items-center gap-1.5 text-xs font-medium text-slate-500" style={{ animationDelay: '640ms' }}>
               <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5 text-indigo-400">

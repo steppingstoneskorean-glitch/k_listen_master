@@ -1,9 +1,14 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
+import { useAuth } from '@/lib/auth'
 import { openCookieSettings } from '@/lib/cookieConsent'
+import AccountDeleteModal from '@/components/AccountDeleteModal'
 
 export default function Footer() {
   const { t } = useLang()
+  const { user } = useAuth()
+  const [showDelete, setShowDelete] = useState(false)
   return (
     <footer className="border-t border-gray-800 bg-gray-950 py-8">
       <div className="mx-auto max-w-6xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -30,11 +35,20 @@ export default function Footer() {
           >
             {t('cookie.settings')}
           </button>
+          {user && (
+            <button
+              onClick={() => setShowDelete(true)}
+              className="text-[11px] text-gray-700 hover:text-rose-400 transition-colors"
+            >
+              {t('account.delete')}
+            </button>
+          )}
           <p className="text-xs text-gray-600">
             © {new Date().getFullYear()} Step Korean. All rights reserved.
           </p>
         </div>
       </div>
+      {showDelete && <AccountDeleteModal onClose={() => setShowDelete(false)} />}
     </footer>
   )
 }

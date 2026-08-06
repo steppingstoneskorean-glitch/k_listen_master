@@ -3,7 +3,7 @@ const STORAGE_KEY = 'klisten_errors'
 export type MasteryStatus = 'needs_review' | 'improving' | 'watch'
 
 /** 오답이 발생한 게임. 기존(v1) 레코드에는 이 필드가 없으므로 없으면 'catch-the-sound' 로 본다. */
-export type ErrorSource = 'catch-the-sound' | 'k-stars'
+export type ErrorSource = 'catch-the-sound' | 'k-stars' | 'shadowing'
 
 /** Listen to K-Stars 의 문제 유형 — B: 블록 배열, I: 의미 고르기, A: 받아쓰기 */
 export type QuizMode = 'A' | 'B' | 'I'
@@ -40,6 +40,7 @@ export interface ErrorMeta {
  */
 function keyOf(word: string, meta?: ErrorMeta): string {
   if (meta?.source === 'k-stars') return `kstars:${word}`
+  if (meta?.source === 'shadowing') return `shadow:${word}`
   return word
 }
 
@@ -56,7 +57,12 @@ function load(): Record<string, ErrorRecord> {
 }
 
 function save(data: Record<string, ErrorRecord>) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch {
+    // localStorage 쓰기 실패(용량 초과 QuotaExceededError, 사파리 프라이빗 모드,
+    // 저장소 비활성화 등) — 오답노트는 부가 기능이므로 조용히 무시해 게임 흐름을 막지 않는다.
+  }
 }
 
 export function recordError(

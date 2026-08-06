@@ -66,7 +66,7 @@ const GAME_LEVELS: Record<number, { name: string; pairs: string[][] }> = {
   },
 }
 
-const LEVEL_PAIR_COUNTS: Record<number, number> = { 1: 15, 2: 10, 3: 10, 4: 10 }
+const LEVEL_PAIR_COUNTS: Record<number, number> = { 1: 10, 2: 10, 3: 10, 4: 10 }
 
 const MAX_LIVES = 3
 const BASE_POINTS = 500

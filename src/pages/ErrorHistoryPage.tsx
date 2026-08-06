@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import {
   getErrors,
@@ -14,6 +15,7 @@ import {
 const SOURCE_STYLE: Record<ErrorSource, { label: string; cls: string }> = {
   'catch-the-sound': { label: '🎧 Catch the Sound', cls: 'bg-indigo-50 text-indigo-600 border-indigo-200' },
   'k-stars':         { label: '⭐ Listen to K-Stars', cls: 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-200' },
+  'shadowing':       { label: '🎤 Shadowing', cls: 'bg-violet-50 text-violet-600 border-violet-200' },
 }
 
 // K-Stars 문제 유형 라벨
@@ -49,6 +51,7 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
   const source = getSource(record)
   const sourceStyle = SOURCE_STYLE[source]
   const isKStars = source === 'k-stars'
+  const isShadowing = source === 'shadowing'
   const lastMissTs = Math.max(...record.missTimestamps)
   const lastCorrectTs = record.correctTimestamps.length > 0 ? Math.max(...record.correctTimestamps) : null
 
@@ -75,7 +78,7 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
           <span translate="no" className={`notranslate font-black text-slate-900 break-words ${answerSizeCls}`}>
             {record.word}
           </span>
-          {!isKStars && <span className="text-slate-400 text-xs">Level {record.level}</span>}
+          {!isKStars && !isShadowing && <span className="text-slate-400 text-xs">Level {record.level}</span>}
         </div>
         {/* Status badge */}
         <span className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold border ${style.cls}`}>
@@ -100,6 +103,24 @@ function ErrorCard({ record }: { record: ErrorRecord }) {
             </p>
           )}
         </div>
+      )}
+
+      {/* Shadowing: 인식된 내 발화 (최소쌍 없음 — 발음이 빗나간 문장 리뷰) */}
+      {isShadowing && record.lastUserAnswer && (
+        <p className="text-xs text-slate-400">
+          {t('shadowing.yourSpeech')}:{' '}
+          <span translate="no" className="notranslate text-slate-500">{record.lastUserAnswer}</span>
+        </p>
+      )}
+
+      {/* Shadowing: 이 문장만 바로 연습 */}
+      {isShadowing && (
+        <Link
+          to={`/shadowing?s=${encodeURIComponent(record.word)}`}
+          className="self-start text-xs font-bold text-violet-600 hover:text-violet-700 transition-colors"
+        >
+          🎤 {t('shadowing.practiceThis')}
+        </Link>
       )}
 
       {/* Pair — Catch the Sound 최소쌍 (K-Stars 의미 고르기에서는 보기 목록) */}

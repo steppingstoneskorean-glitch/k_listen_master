@@ -173,6 +173,23 @@ export default function GameHubPage() {
             <p className="mx-auto mt-2 max-w-xl text-balance break-keep text-sm font-semibold text-slate-500">{t('hub.subtitle')}</p>
           </div>
 
+          {/* ── Shadowing (Beta) 진입 카드 ── */}
+          <button
+            type="button"
+            onClick={() => handlePlay('/shadowing')}
+            className="group mx-auto mt-8 flex w-full max-w-2xl items-center gap-4 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-fuchsia-50 p-5 text-left shadow-md shadow-indigo-100/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.99]"
+          >
+            <span className="text-3xl transition-transform duration-300 group-hover:scale-110">🎤</span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="break-keep text-lg font-black text-slate-900" translate="no">Shadowing</h3>
+                <span className="rounded-full bg-indigo-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-indigo-600">Beta</span>
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">{t('shadowing.entryDesc')}</p>
+            </div>
+            <span className="shrink-0 text-indigo-500 opacity-0 transition-all duration-300 -translate-x-1.5 group-hover:translate-x-0 group-hover:opacity-100">→</span>
+          </button>
+
           {/* ── 필터 + 정렬 바 ── */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <FilterDropdown
