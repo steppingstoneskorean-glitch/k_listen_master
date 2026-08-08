@@ -3,10 +3,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "REPLACE_WITH_YOUR_PACKAGE_NAME",
-      "sha256_cert_fingerprints": [
-        "REPLACE_WITH_SHA256_FINGERPRINT_FROM_PLAY_CONSOLE"
-      ]
+      "package_name": "com.stepkorean.klistenmaster",
+      "sha256_cert_fingerprints":
+        ["4E:72:9F:CB:99:42:F7:02:24:93:DE:A7:91:3B:29:4A:6D:0E:96:92:84:2A:A7:1C:35:2F:D8:53:5B:49:48:DA"]
     }
   }
 ]
