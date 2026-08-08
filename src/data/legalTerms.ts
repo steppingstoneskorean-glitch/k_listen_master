@@ -173,7 +173,7 @@ export const TERMS: Record<LegalLang, LegalDoc> = {
       {
         title: '第1条（目的およびサービスの内容）',
         blocks: [
-          { p: '本サービスは、K-pop のライブ映像と自社制作の音声を用いた韓国語リスニング学習ゲーム、ディクテーション、シャドーイング（追いかけ発話）、文法解説、復習、学習資料の閲覧機能を無料で提供します。シャドーイング機能は、利用者のマイクで音声を録音してネイティブの発音と比較しますが、録音は利用者の端末内でのみ処理され、当社サーバーへ送信・保存されることはありません。当社はサービスの品質向上のため、機能を追加・変更したり、一部機能を中止したりすることがあります。' },
+          { p: '本サービスは、K-POPライブ映像と自社制作の音声を用いた韓国語リスニング学習ゲーム、ディクテーション、シャドーイング（追いかけ発話）、文法解説、復習、学習資料の閲覧機能を無料で提供します。シャドーイング機能は、利用者のマイクで音声を録音してネイティブの発音と比較しますが、録音は利用者の端末内でのみ処理され、当社サーバーへ送信・保存されることはありません。当社はサービスの品質向上のため、機能を追加・変更したり、一部機能を中止したりすることがあります。' },
         ],
       },
       {
@@ -214,7 +214,7 @@ export const TERMS: Record<LegalLang, LegalDoc> = {
         blocks: [
           { ul: [
             'サービス内の自社制作コンテンツ（クイズ問題、解説、録音音声、UI 等）に関する権利は当社に帰属します。',
-            'K-pop 映像は YouTube 公式プレーヤーを通じた埋め込み方式で再生され、当該映像の権利は各権利者に帰属します。当社は映像を複製・保存・再配布しません。',
+            'K-POP映像は YouTube 公式プレーヤーを通じた埋め込み方式で再生され、当該映像の権利は各権利者に帰属します。当社は映像を複製・保存・再配布しません。',
             '権利者からの要請がある場合、当該映像を用いたクイズは速やかに取り下げます。',
           ] },
         ],
@@ -247,7 +247,7 @@ export const TERMS: Record<LegalLang, LegalDoc> = {
   },
 
   es: {
-    title: 'Términos de servicio (Terms of Service)',
+    title: 'Términos de servicio',
     convenience: 'Este texto en español es una traducción de cortesía. La versión vinculante de estos Términos es la versión en coreano; en caso de discrepancia, prevalecerá la versión en coreano.',
     intro: 'Estos Términos regulan las condiciones de uso de K-Listen Master y los servicios relacionados (el «Servicio») proporcionados por Step Korean (la «Empresa»).',
     sections: [

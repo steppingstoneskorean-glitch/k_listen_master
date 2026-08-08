@@ -327,7 +327,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
   },
 
   es: {
-    title: 'Política de privacidad (Privacy Policy)',
+    title: 'Política de privacidad',
     convenience: 'Este texto en español es una traducción de cortesía. La versión vinculante de esta Política es la versión en coreano; en caso de discrepancia, prevalecerá la versión en coreano.',
     intro: 'Step Korean (la «Empresa») valora tu información personal y cumple la legislación aplicable, incluida la Ley de Protección de Información Personal (PIPA) de Corea. Este Servicio (k-listen-master.vercel.app) puede usarse mediante inicio de sesión social de Google y Apple sin un proceso de registro aparte, y se requiere iniciar sesión para usar el Servicio.',
     sections: [
