@@ -46,5 +46,11 @@ serviceAccountKey.json
 **/serviceAccountKey.json
 *-serviceAccount*.json
 
+# Firestore 백필 원본 백업 (운영 데이터 스냅샷) — 커밋 불필요
+backups/
+
+# 해설 번역 검수 작업 파일 (운영 콘텐츠 초안) — 커밋 불필요
+i18n-review/
+
 # Marketing consent export — contains personal data (emails), NEVER commit
 marketing-consent-*.csv

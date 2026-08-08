@@ -11,6 +11,8 @@
     "prepare": "husky",
     "i18n:explanations": "node scripts/translate-explanations.cjs",
     "i18n:grammar": "node scripts/translate-grammar.cjs",
+    "i18n:expl-export": "node scripts/explanations-i18n.cjs export",
+    "i18n:expl-import": "node scripts/explanations-i18n.cjs import",
     "consent:export": "node scripts/export-marketing-consent.cjs"
   },
   "dependencies": {
