@@ -28,6 +28,7 @@ import { mergeQuizzes } from '@/lib/quizResolve';
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes';
 import { recordModeClear, getVideoProgress } from '@/lib/mastery';
 import { recordError, recordCorrect } from '@/lib/errorHistory';
+import { useGamification } from '@/lib/gamification';
 import { ModeChip } from '@/components/kartist/ui';
 
 // 레거시(mode 없음) 문항은 'A'(딕테이션)로 간주
@@ -158,6 +159,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   // 로그인 상태: 외부 주입(prop) 우선, 없으면 Firebase Auth 컨텍스트 참조
   const authCtx = useAuth();
+  const { markVideoCompleted } = useGamification();
   const currentUser = userProp !== undefined ? userProp : authCtx && authCtx.user;
   const isLoggedIn =
     isLoggedInProp !== undefined ? isLoggedInProp : Boolean(currentUser);
@@ -595,6 +597,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // ─────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (phase !== 'done' || !routeVideoId || !activeMode || list.length === 0) return;
+    void markVideoCompleted(); // 하루 학습량(Completed) 카운트 — 점수와 무관하게 세션 완료 시 1회
     const correct = results.filter((r) => r === 'correct').length;
     if (correct / list.length < 0.6) return; // 클리어 기준: 정답률 60% 이상
     // 마스터리 기준 = 이 영상에 실제로 존재하는 모드 전부 (배포본 ∪ 하드코딩)
