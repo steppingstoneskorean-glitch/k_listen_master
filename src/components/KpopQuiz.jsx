@@ -53,19 +53,30 @@ const ARTIST_OPTIONS = ARTISTS.filter((a) => a !== '__all__');
 // 문자열 형태(레거시/Firestore 배포본)와 공존해야 하므로 렌더링 쪽은 pickExplanation() 을 거친다.
 const quizList = HARDCODED_QUIZZES;
 
-// 문법 품사 라벨(Verb/Adjective/Noun/Adverb)은 번역 지침상 영어로 저장돼 있다(공식 앞에 붙음).
-// 표시 언어에 맞춰 그 라벨만 현지화한다 — 한국어/영어 예문 자체는 건드리지 않는다.
-// \b 단어 경계로 "Adverb" 안의 "verb" 등 오치환을 막고, 대소문자를 정확히 맞춘다.
-const POS_LABELS = {
-  ja: { Verb: '動詞', Adjective: '形容詞', Noun: '名詞', Adverb: '副詞' },
-  es: { Verb: 'Verbo', Adjective: 'Adjetivo', Noun: 'Sustantivo', Adverb: 'Adverbio' },
-  ko: { Verb: '동사', Adjective: '형용사', Noun: '명사', Adverb: '부사' },
-  zh: { Verb: '动词', Adjective: '形容词', Noun: '名词', Adverb: '副词' },
+// 문법 라벨/메타 표현(품사·격식 등)은 번역 지침상 영어로 저장돼 있다.
+// 표시 언어에 맞춰 이 라벨들만 현지화한다 — 한국어/영어 예문 자체는 건드리지 않는다.
+//   · \b 단어 경계 + 대소문자 무시로 "Adverb" 안의 verb 등 오치환을 막는다.
+//   · 원문이 대문자로 시작하면 번역 첫 글자도 대문자로 맞춘다(스페인어 문두 등).
+//   · 스페인어의 informal/formal/casual 은 스페인어 단어 그대로라 매핑에서 제외한다.
+const LABELS = {
+  ja: { verb: '動詞', adjective: '形容詞', noun: '名詞', adverb: '副詞', informal: 'くだけた表現', polite: '丁寧', formal: 'フォーマル', casual: 'カジュアル', honorific: '尊敬語', slang: 'スラング' },
+  es: { verb: 'verbo', adjective: 'adjetivo', noun: 'sustantivo', adverb: 'adverbio', polite: 'cortés', honorific: 'honorífico', slang: 'jerga' },
+  ko: { verb: '동사', adjective: '형용사', noun: '명사', adverb: '부사', informal: '반말', polite: '존댓말', formal: '격식체', casual: '반말', honorific: '높임말', slang: '속어' },
+  zh: { verb: '动词', adjective: '形容词', noun: '名词', adverb: '副词', informal: '非正式', polite: '礼貌', formal: '正式', casual: '随意', honorific: '敬语', slang: '俚语' },
 };
-function localizePos(text, lang) {
-  const map = POS_LABELS[lang];
+const LABEL_RE = {};
+function labelRegex(lang) {
+  if (!LABEL_RE[lang]) LABEL_RE[lang] = new RegExp('\\b(' + Object.keys(LABELS[lang]).join('|') + ')\\b', 'gi');
+  return LABEL_RE[lang];
+}
+function localizeLabels(text, lang) {
+  const map = LABELS[lang];
   if (!map || !text) return text;
-  return text.replace(/\b(Verb|Adjective|Noun|Adverb)\b/g, (m) => map[m] || m);
+  return text.replace(labelRegex(lang), (m) => {
+    const t = map[m.toLowerCase()];
+    if (!t) return m;
+    return /^[A-Z]/.test(m) ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+  });
 }
 
 // explanation 다국어 객체에서 현재 UI 언어에 맞는 텍스트를 고른다.
@@ -78,7 +89,7 @@ function pickExplanation(explanation, lang) {
   if (typeof explanation === 'string') return explanation; // 영어 원문 — 라벨도 영어 유지
   const hasLang = typeof explanation[lang] === 'string' && explanation[lang].trim();
   const text = hasLang ? explanation[lang] : (explanation.en || '');
-  return localizePos(text, hasLang ? lang : 'en');
+  return localizeLabels(text, hasLang ? lang : 'en');
 }
 
 const STORAGE_KEY = 'kpop_quiz_stats_v1';
