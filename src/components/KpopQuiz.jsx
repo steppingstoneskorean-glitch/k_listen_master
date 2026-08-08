@@ -1072,8 +1072,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           </section>
           )}
 
-          {/* ── 섀도잉 녹음기 ─────────────────────────────────────────────── */}
-          <ShadowingRecorder liftBtn={liftBtn} />
+          {/* ── 섀도잉 녹음기 (I 모드 제외 — 상황 이해 4지선다엔 따라말하기가 맞지 않음) ── */}
+          {currentMode !== 'I' && <ShadowingRecorder liftBtn={liftBtn} />}
         </>
       )}
 
