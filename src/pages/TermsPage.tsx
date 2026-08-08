@@ -1,4 +1,4 @@
-const EFFECTIVE_DATE = '2026-07-20'
+const EFFECTIVE_DATE = '2026-08-08'
 const ADMIN_EMAIL = 'steppingstoneskorean@gmail.com'
 
 export default function TermsPage() {
@@ -16,7 +16,9 @@ export default function TermsPage() {
         <h2 className="text-lg font-bold text-white">제1조 (목적 및 서비스의 내용)</h2>
         <p className="text-sm leading-relaxed text-gray-400">
           서비스는 K-pop 라이브 영상과 자체 제작 오디오를 활용한 한국어 듣기 학습 게임, 받아쓰기,
-          오답 복습, 학습 자료 열람 기능을 무료로 제공합니다. 회사는 서비스의 품질 향상을 위해
+          따라 말하기(섀도잉), 문법 해설, 오답 복습, 학습 자료 열람 기능을 무료로 제공합니다.
+          따라 말하기 기능은 이용자의 마이크로 음성을 녹음해 원어민 발음과 비교하며, 녹음은 이용자
+          기기에서만 처리되고 회사 서버로 전송·저장되지 않습니다. 회사는 서비스의 품질 향상을 위해
           기능을 추가·변경하거나 일부 기능을 중단할 수 있습니다.
         </p>
       </section>
@@ -34,10 +36,11 @@ export default function TermsPage() {
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-bold text-white">제3조 (이용 계약 및 계정)</h2>
         <ul className="list-disc list-inside text-sm leading-relaxed text-gray-400 pl-2 flex flex-col gap-1">
-          <li>서비스는 구글(Google) 또는 애플(Apple) 소셜 로그인을 통해 이용할 수 있으며, 일부
-            기능은 로그인 없이 게스트로 이용할 수 있습니다.</li>
+          <li>서비스 이용을 위해서는 구글(Google) 또는 애플(Apple) 소셜 로그인이 필요합니다.</li>
           <li>서비스는 만 14세 이상의 이용자를 대상으로 합니다.</li>
           <li>계정의 관리 책임은 이용자 본인에게 있으며, 계정을 타인에게 양도·대여할 수 없습니다.</li>
+          <li>이용자는 언제든지 서비스 화면 하단의 &apos;계정 삭제&apos;를 통해 직접 회원 탈퇴할 수 있으며,
+            탈퇴 시 계정과 그에 연결된 데이터가 파기됩니다(자세한 사항은 개인정보처리방침 제5조).</li>
         </ul>
       </section>
 
@@ -67,9 +70,10 @@ export default function TermsPage() {
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-bold text-white">제6조 (광고의 게재)</h2>
         <p className="text-sm leading-relaxed text-gray-400">
-          회사는 서비스 화면에 구글 애드센스(Google AdSense) 등 제3자 광고를 게재할 수 있습니다.
-          광고를 통한 제3자와의 거래는 이용자와 해당 광고주 간의 문제이며, 회사는 이에 대해 책임을
-          지지 않습니다. 쿠키 및 맞춤형 광고에 관한 사항은 개인정보처리방침을 따릅니다.
+          현재 서비스에는 광고가 게재되지 않으며, 회사는 향후 서비스 화면에 구글 애드센스(Google
+          AdSense) 등 제3자 광고를 게재할 수 있습니다. 광고 게재 시, 광고를 통한 제3자와의 거래는
+          이용자와 해당 광고주 간의 문제이며 회사는 이에 대해 책임을 지지 않습니다. 쿠키 및 맞춤형
+          광고에 관한 사항은 개인정보처리방침을 따릅니다.
         </p>
       </section>
 

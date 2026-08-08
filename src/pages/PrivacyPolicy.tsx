@@ -1,4 +1,4 @@
-const EFFECTIVE_DATE = '2026-07-27'
+const EFFECTIVE_DATE = '2026-08-08'
 const ADMIN_EMAIL = 'steppingstoneskorean@gmail.com'
 
 export default function PrivacyPolicy() {
@@ -127,8 +127,10 @@ export default function PrivacyPolicy() {
             이용자는 화면 하단 푸터의 ‘쿠키 설정(Cookie Settings)’을 통해 언제든지 동의를 철회하거나
             변경할 수 있습니다.
           </li>
-          <li>본 웹사이트는 구글 애드센스(Google AdSense) 등 제3자 광고 업체의 맞춤형 광고를 게재할 수 있습니다.</li>
-          <li>구글 등 제3자 파트너는 쿠키를 사용하여 이용자의 본 사이트 및 타 사이트 방문 기록을 기반으로 맞춤형 광고를 제공합니다.</li>
+          <li>현재 본 웹사이트는 광고를 게재하고 있지 않습니다. 향후 구글 애드센스(Google AdSense) 등
+            제3자 광고를 도입할 경우, 구글 등 제3자 파트너가 쿠키를 사용하여 이용자의 본 사이트 및 타
+            사이트 방문 기록을 기반으로 맞춤형 광고를 제공할 수 있으며, 광고 도입 시 본 방침을 통해 사전에
+            안내합니다.</li>
           <li>
             이용자는{' '}
             <a
