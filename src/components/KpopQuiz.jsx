@@ -53,14 +53,32 @@ const ARTIST_OPTIONS = ARTISTS.filter((a) => a !== '__all__');
 // 문자열 형태(레거시/Firestore 배포본)와 공존해야 하므로 렌더링 쪽은 pickExplanation() 을 거친다.
 const quizList = HARDCODED_QUIZZES;
 
+// 문법 품사 라벨(Verb/Adjective/Noun/Adverb)은 번역 지침상 영어로 저장돼 있다(공식 앞에 붙음).
+// 표시 언어에 맞춰 그 라벨만 현지화한다 — 한국어/영어 예문 자체는 건드리지 않는다.
+// \b 단어 경계로 "Adverb" 안의 "verb" 등 오치환을 막고, 대소문자를 정확히 맞춘다.
+const POS_LABELS = {
+  ja: { Verb: '動詞', Adjective: '形容詞', Noun: '名詞', Adverb: '副詞' },
+  es: { Verb: 'Verbo', Adjective: 'Adjetivo', Noun: 'Sustantivo', Adverb: 'Adverbio' },
+  ko: { Verb: '동사', Adjective: '형용사', Noun: '명사', Adverb: '부사' },
+  zh: { Verb: '动词', Adjective: '形容词', Noun: '名词', Adverb: '副词' },
+};
+function localizePos(text, lang) {
+  const map = POS_LABELS[lang];
+  if (!map || !text) return text;
+  return text.replace(/\b(Verb|Adjective|Noun|Adverb)\b/g, (m) => map[m] || m);
+}
+
 // explanation 다국어 객체에서 현재 UI 언어에 맞는 텍스트를 고른다.
 //   · 한국어 학습자 대상 콘텐츠라 'ko' UI 및 미번역 언어는 영어로 폴백한다.
 //   · 문자열(레거시 데이터 / Firestore 배포본 — api/generate-quiz.js 는 string 을 반환)도
 //     그대로 받아 그대로 반환해 하위 호환을 지킨다.
+//   · 실제로 반환하는 텍스트의 언어 기준으로 품사 라벨을 현지화한다(영어 폴백이면 영어 유지).
 function pickExplanation(explanation, lang) {
   if (!explanation) return '';
-  if (typeof explanation === 'string') return explanation;
-  return explanation[lang] || explanation.en || '';
+  if (typeof explanation === 'string') return explanation; // 영어 원문 — 라벨도 영어 유지
+  const hasLang = typeof explanation[lang] === 'string' && explanation[lang].trim();
+  const text = hasLang ? explanation[lang] : (explanation.en || '');
+  return localizePos(text, hasLang ? lang : 'en');
 }
 
 const STORAGE_KEY = 'kpop_quiz_stats_v1';
