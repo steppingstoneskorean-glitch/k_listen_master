@@ -17,17 +17,14 @@ export default function Footer() {
           <span className="text-sm font-black text-white">Korean</span>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/grammar" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
-            Grammar
-          </Link>
           <Link to="/about" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
-            About
+            {t('footer.about')}
           </Link>
           <Link to="/terms" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
-            이용약관
+            {t('footer.terms')}
           </Link>
           <Link to="/privacy" className="text-[11px] text-gray-700 hover:text-gray-500 transition-colors">
-            개인정보처리방침
+            {t('footer.privacy')}
           </Link>
           <button
             onClick={openCookieSettings}

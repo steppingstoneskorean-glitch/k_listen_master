@@ -207,6 +207,11 @@ const TRANSLATIONS = {
   'nav.game': { en: 'Games', ko: '게임', es: 'Juegos', ja: 'ゲーム' },
   'nav.grammar': { en: 'Grammar', ko: '문법 해설', es: 'Gramática', ja: '文法解説' },
 
+  // ── Footer links ──
+  'footer.about': { en: 'About', ko: '소개', es: 'Acerca de', ja: 'サービス紹介' },
+  'footer.terms': { en: 'Terms of Service', ko: '이용약관', es: 'Términos de servicio', ja: '利用規約' },
+  'footer.privacy': { en: 'Privacy Policy', ko: '개인정보처리방침', es: 'Política de privacidad', ja: 'プライバシーポリシー' },
+
   // ── Grammar articles (/grammar) ──
   'grammar.listTitle': {
     en: 'Grammar & Expressions',
