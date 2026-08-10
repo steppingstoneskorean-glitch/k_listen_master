@@ -13,21 +13,26 @@
 //     CRON_SECRET              — 호출자(GitHub Actions)가 보내는 Bearer 토큰과 대조
 // ─────────────────────────────────────────────────────────────────────────────
 
-import admin from 'firebase-admin'
+// ESM 환경에서 안전하게 동작하도록 모듈러 서브패스 import 사용
+// (기본 `import admin from 'firebase-admin'` 는 이 버전에서 admin.apps 가
+//  undefined 로 잡혀 init 이 실패한다. scripts/*.cjs 도 동일 방식 사용.)
+import { initializeApp, getApps, cert } from 'firebase-admin/app'
+import { getFirestore, FieldValue } from 'firebase-admin/firestore'
+import { getMessaging } from 'firebase-admin/messaging'
 
 // Hobby 플랜 서버리스 함수 실행시간 상한(60초). 사용자가 많아 60초를 넘기면
 // 배치/페이지네이션 도입 필요.
 export const config = { maxDuration: 60 }
 
 function initAdmin() {
-  if (admin.apps.length) return
+  if (getApps().length) return
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT
   if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT env var is missing')
   const sa = JSON.parse(raw)
   if (sa.private_key && sa.private_key.includes('\\n')) {
     sa.private_key = sa.private_key.replace(/\\n/g, '\n')
   }
-  admin.initializeApp({ credential: admin.credential.cert(sa) })
+  initializeApp({ credential: cert(sa) })
 }
 
 /** 주어진 IANA 타임존에서의 현재 'YYYY-MM-DD' 와 시(0~23). */
@@ -72,11 +77,11 @@ export default async function handler(req, res) {
     initAdmin()
   } catch (err) {
     console.error('[send-reminders] admin init failed:', err.message)
-    return res.status(500).json({ error: 'init_failed' })
+    return res.status(500).json({ error: 'init_failed', message: err.message })
   }
 
-  const db = admin.firestore()
-  const messaging = admin.messaging()
+  const db = getFirestore()
+  const messaging = getMessaging()
 
   let sent = 0
   let candidates = 0
@@ -139,7 +144,7 @@ export default async function handler(req, res) {
 
       const update = { lastReminderSentDate: localToday }
       if (bad.length > 0) {
-        update.fcmTokens = admin.firestore.FieldValue.arrayRemove(...bad)
+        update.fcmTokens = FieldValue.arrayRemove(...bad)
       }
       invalidTokenOps.push(doc.ref.set(update, { merge: true }))
     }
