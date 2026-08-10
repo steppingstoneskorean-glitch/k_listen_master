@@ -19,6 +19,7 @@ import {
   pickRandom,
   DictationSentence,
 } from '@/data/sentences'
+import { BEGINNER_SHADOW_PAIRS, wordAudioUrl, sample } from '@/data/minimalPairs'
 import { recordError, recordCorrect } from '@/lib/errorHistory'
 import { playExclusive, stopExclusive } from '@/lib/exclusivePlayer'
 import ShadowCompare from '@/components/ShadowCompare'
@@ -46,14 +47,25 @@ export default function ShadowingPage() {
   }, [searchParams])
 
   const [screen, setScreen] = useState<'select' | 'practice' | 'done'>(preset ? 'practice' : 'select')
+  const [mode, setMode] = useState<'sentence' | 'pair'>('sentence')
   const [deck, setDeck] = useState<DictationSentence[]>(preset ? [preset] : [])
+  const [pairDeck, setPairDeck] = useState<string[][]>([])
   const [index, setIndex] = useState(0)
   const [reviewCount, setReviewCount] = useState(0)
   const [round, setRound] = useState(0) // 같은 문장 재연습 시 ShadowItem 강제 remount
 
-  const start = (level: 'intermediate' | 'advanced') => {
-    const src = level === 'intermediate' ? INTERMEDIATE_SENTENCES : ADVANCED_SENTENCES
-    setDeck(pickRandom(src, SESSION_SIZE))
+  // 현재 세션 길이 (초급은 대립쌍, 중·고급은 문장)
+  const sessionLength = mode === 'pair' ? pairDeck.length : deck.length
+
+  const start = (level: 'beginner' | 'intermediate' | 'advanced') => {
+    if (level === 'beginner') {
+      setPairDeck(sample(BEGINNER_SHADOW_PAIRS, SESSION_SIZE))
+      setMode('pair')
+    } else {
+      const src = level === 'intermediate' ? INTERMEDIATE_SENTENCES : ADVANCED_SENTENCES
+      setDeck(pickRandom(src, SESSION_SIZE))
+      setMode('sentence')
+    }
     setIndex(0)
     setReviewCount(0)
     setRound(r => r + 1)
@@ -74,7 +86,7 @@ export default function ShadowingPage() {
 
   const handleItemDone = (reviewed: boolean) => {
     if (reviewed) setReviewCount(c => c + 1)
-    if (index + 1 >= deck.length) {
+    if (index + 1 >= sessionLength) {
       void markVideoCompleted() // 스트릭: 오늘의 학습 활동으로 기록
       setScreen('done')
     } else {
@@ -103,6 +115,12 @@ export default function ShadowingPage() {
             </div>
             <div className="w-full flex flex-col gap-3">
               <button
+                onClick={() => start('beginner')}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold hover:opacity-90 transition-opacity"
+              >
+                {t('shadowing.startBeginner')}
+              </button>
+              <button
                 onClick={() => start('intermediate')}
                 className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold hover:opacity-90 transition-opacity"
               >
@@ -118,7 +136,17 @@ export default function ShadowingPage() {
           </div>
         )}
 
-        {screen === 'practice' && deck[index] && (
+        {screen === 'practice' && mode === 'pair' && pairDeck[index] && (
+          <ShadowPairItem
+            key={`${pairDeck[index].join('-')}-${round}`}
+            pair={pairDeck[index]}
+            index={index}
+            total={pairDeck.length}
+            onDone={handleItemDone}
+          />
+        )}
+
+        {screen === 'practice' && mode === 'sentence' && deck[index] && (
           <ShadowItem
             key={`${deck[index].id}-${round}`}
             sentence={deck[index]}
@@ -133,7 +161,7 @@ export default function ShadowingPage() {
             <div className="text-5xl">🎉</div>
             <h2 className="text-2xl font-black">{t('shadowing.done')}</h2>
             <div className="flex flex-col items-center gap-1 text-sm text-slate-500">
-              <span><span className="text-slate-900 font-bold">{deck.length}</span> {t('shadowing.practiced')}</span>
+              <span><span className="text-slate-900 font-bold">{sessionLength}</span> {t('shadowing.practiced')}</span>
               {reviewCount > 0 && (
                 <span><span className="text-violet-600 font-bold">{reviewCount}</span> {t('shadowing.reviewSaved')}</span>
               )}
@@ -350,6 +378,256 @@ function ShadowItem({
       )}
 
       {/* 자가 평가 → 다음 (두 버튼 색상 통일) */}
+      <div className="w-full flex items-center gap-3">
+        <button
+          onClick={markReview}
+          className="flex-1 py-3.5 rounded-2xl border border-violet-300 bg-violet-50 text-violet-700 font-bold hover:bg-violet-100 transition-colors text-sm"
+        >
+          {t('shadowing.needPractice')}
+        </button>
+        <button
+          onClick={markGood}
+          className="flex-1 py-3.5 rounded-2xl border border-violet-300 bg-violet-50 text-violet-700 font-bold hover:bg-violet-100 transition-colors text-sm"
+        >
+          {t('shadowing.gotIt')}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ── 초급: 최소 대립쌍 비교 연습 카드 ─────────────────────────────────────────
+//   '고기 ↔ 거기' 처럼 헷갈리는 두(세) 소리를 번갈아 듣고, 따라 말하며 귀로 비교한다.
+function ShadowPairItem({
+  pair,
+  index,
+  total,
+  onDone,
+}: {
+  pair: string[]
+  index: number
+  total: number
+  onDone: (reviewed: boolean) => void
+}) {
+  const { t } = useLang()
+  const [playingWord, setPlayingWord] = useState<string | null>(null)
+  const [alternating, setAlternating] = useState(false)
+  const [rate, setRate] = useState(1)
+  const [recording, setRecording] = useState(false)
+  const [recordedUrl, setRecordedUrl] = useState<string | null>(null)
+  const [micBlocked, setMicBlocked] = useState(false)
+
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const seqTimer = useRef<number | null>(null)
+  const cancelledRef = useRef(false)
+  const mediaRecRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const chunksRef = useRef<Blob[]>([])
+
+  const canRecord = recordingSupported()
+
+  // 모든 재생/시퀀스 중단
+  const stopAll = useCallback(() => {
+    cancelledRef.current = true
+    if (seqTimer.current) { clearTimeout(seqTimer.current); seqTimer.current = null }
+    stopExclusive()
+    setAlternating(false)
+    setPlayingWord(null)
+  }, [])
+
+  // 한 단어 재생
+  const playWord = useCallback((word: string, r = rate) => {
+    stopAll()
+    cancelledRef.current = false
+    const a = new Audio(wordAudioUrl(word))
+    a.playbackRate = r
+    a.onplay = () => setPlayingWord(word)
+    a.onended = () => setPlayingWord(null)
+    a.onpause = () => setPlayingWord(null)
+    audioRef.current = a
+    playExclusive(a)
+  }, [rate, stopAll])
+
+  // 번갈아 재생 — pair 를 2회 순회하며 소리를 대비시킨다
+  const alternate = useCallback((r = rate) => {
+    stopAll()
+    cancelledRef.current = false
+    setAlternating(true)
+    const seq = [...pair, ...pair]
+    let i = 0
+    const next = () => {
+      if (cancelledRef.current) return
+      if (i >= seq.length) { setAlternating(false); setPlayingWord(null); return }
+      const word = seq[i++]
+      const a = new Audio(wordAudioUrl(word))
+      a.playbackRate = r
+      a.onplay = () => setPlayingWord(word)
+      a.onended = () => {
+        setPlayingWord(null)
+        if (!cancelledRef.current) seqTimer.current = window.setTimeout(next, 380)
+      }
+      audioRef.current = a
+      playExclusive(a)
+    }
+    next()
+  }, [pair, rate, stopAll])
+
+  // 진입 시 한 번 번갈아 들려주기 + 언마운트 정리
+  useEffect(() => {
+    alternate()
+    return () => {
+      stopAll()
+      if (mediaRecRef.current?.state === 'recording') mediaRecRef.current.stop()
+      streamRef.current?.getTracks().forEach(tr => tr.stop())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    return () => { if (recordedUrl) URL.revokeObjectURL(recordedUrl) }
+  }, [recordedUrl])
+
+  const startRecording = async () => {
+    stopAll()
+    if (recordedUrl) { URL.revokeObjectURL(recordedUrl); setRecordedUrl(null) }
+    setMicBlocked(false)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      streamRef.current = stream
+      const rec = new MediaRecorder(stream)
+      chunksRef.current = []
+      rec.ondataavailable = e => { if (e.data.size) chunksRef.current.push(e.data) }
+      rec.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: rec.mimeType || 'audio/webm' })
+        setRecordedUrl(URL.createObjectURL(blob))
+        streamRef.current?.getTracks().forEach(tr => tr.stop())
+        streamRef.current = null
+        setRecording(false)
+      }
+      mediaRecRef.current = rec
+      rec.start()
+      setRecording(true)
+    } catch {
+      setRecording(false)
+      setMicBlocked(true)
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecRef.current?.state === 'recording') mediaRecRef.current.stop()
+    else setRecording(false)
+  }
+
+  const playMine = () => {
+    if (!recordedUrl) return
+    stopAll()
+    const a = new Audio(recordedUrl)
+    audioRef.current = a
+    playExclusive(a)
+  }
+
+  const label = pair.join(' / ')
+  const markReview = () => {
+    recordError(label, '', pair, 1, { source: 'shadowing' })
+    onDone(true)
+  }
+  const markGood = () => {
+    recordCorrect(label, { source: 'shadowing' })
+    onDone(false)
+  }
+
+  return (
+    <div className="w-full max-w-md flex flex-col items-center gap-6">
+      <style>{`@keyframes shadow-wave { 0%,100% { transform: scaleY(0.4) } 50% { transform: scaleY(1) } }`}</style>
+
+      {/* 진행 표시 */}
+      <div className="w-full flex items-center gap-2">
+        <div className="flex-1 h-1.5 rounded-full bg-slate-200 overflow-hidden">
+          <div className="h-full bg-emerald-500 transition-all" style={{ width: `${(index / total) * 100}%` }} />
+        </div>
+        <span className="text-xs text-slate-500 shrink-0">{index + 1} / {total}</span>
+      </div>
+
+      {/* 대립쌍 비교 카드 — 단어를 탭하면 개별 재생 */}
+      <div className="w-full rounded-2xl border border-slate-200 bg-white shadow-sm px-5 py-6 flex flex-col items-center gap-4">
+        <Waveform active={playingWord !== null} />
+        <div className={`grid w-full gap-3 ${pair.length >= 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+          {pair.map(word => (
+            <button
+              key={word}
+              onClick={() => playWord(word)}
+              translate="no"
+              className={`notranslate rounded-2xl border-2 py-5 text-2xl font-black transition-all ${
+                playingWord === word
+                  ? 'border-emerald-400 bg-emerald-50 text-emerald-700 scale-105'
+                  : 'border-slate-200 bg-white text-slate-800 hover:border-emerald-300 hover:bg-emerald-50/40'
+              }`}
+            >
+              {word}
+            </button>
+          ))}
+        </div>
+        <p className="text-[11px] text-slate-400 text-center">{t('shadowing.pairTapHint')}</p>
+      </div>
+
+      {/* 번갈아 듣기 + 배속 */}
+      <div className="w-full flex flex-col items-center gap-3">
+        <button
+          onClick={alternating ? stopAll : () => alternate()}
+          className={`w-full py-3.5 rounded-2xl font-bold transition-colors ${
+            alternating ? 'bg-slate-200 text-slate-700' : 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:opacity-90'
+          }`}
+        >
+          {alternating ? `⏹ ${t('shadowing.pairStop')}` : `🔁 ${t('shadowing.pairAlternate')}`}
+        </button>
+        <div className="inline-flex items-center gap-1 rounded-full bg-slate-200 p-1" role="group" aria-label={t('shadowing.listenNative')}>
+          {RATES.map(r => (
+            <button
+              key={r}
+              onClick={() => setRate(r)}
+              aria-pressed={rate === r}
+              className={`rounded-full px-3 py-1.5 text-sm font-bold tabular-nums transition-colors ${
+                rate === r ? 'bg-emerald-500 text-white' : 'text-slate-500 hover:text-slate-900'
+              }`}
+            >
+              {r}×
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 녹음 + 내 목소리 듣기 */}
+      {canRecord ? (
+        <div className="w-full flex flex-col items-center gap-3">
+          <button
+            onClick={recording ? stopRecording : startRecording}
+            className={`w-full py-4 rounded-2xl text-white font-bold transition-all ${
+              recording ? 'bg-rose-500 animate-pulse' : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90'
+            }`}
+          >
+            {recording ? `⏹ ${t('shadowing.stop')}` : `🎤 ${t('shadowing.record')}`}
+          </button>
+          {recording && <p className="text-[11px] text-rose-500">🎙️ {t('shadowing.listening')}</p>}
+          {recordedUrl && !recording && (
+            <button
+              onClick={playMine}
+              className="w-full py-3 rounded-2xl border border-emerald-300 bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 transition-colors text-sm"
+            >
+              ▶ {t('shadowing.myVoice')}
+            </button>
+          )}
+          {micBlocked && !recording && (
+            <p className="text-[11px] text-rose-500 text-center max-w-xs leading-snug">🚫 {t('shadowing.micBlocked')}</p>
+          )}
+          {!recordedUrl && !recording && !micBlocked && (
+            <p className="text-[11px] text-slate-500 text-center max-w-xs leading-snug">{t('shadowing.pairRecordPrompt')}</p>
+          )}
+        </div>
+      ) : (
+        <p className="text-[12px] text-slate-500 text-center max-w-xs leading-snug">{t('shadowing.pairRecordPrompt')}</p>
+      )}
+
+      {/* 자가 평가 → 다음 */}
       <div className="w-full flex items-center gap-3">
         <button
           onClick={markReview}

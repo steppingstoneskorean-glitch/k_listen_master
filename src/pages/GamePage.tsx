@@ -13,6 +13,7 @@ import SupportCard from '@/components/SupportCard'
 import ResultCard from '@/components/ResultCard'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
+import { PAIRS_BY_LEVEL } from '@/data/minimalPairs'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
 
@@ -27,43 +28,10 @@ interface WrongAnswerData {
 // ── Game Data ───────────────────────────────────────────────────────────────
 
 const GAME_LEVELS: Record<number, { name: string; pairs: string[][] }> = {
-  1: {
-    name: '레벨 1',
-    pairs: [
-      ['아이', '오이'], ['구두', '구도'], ['나무', '너무'], ['물고기', '불고기'],
-      ['커피', '코피'], ['모래', '머리'], ['별', '벌'], ['노래', '모래'],
-      ['배', '비'], ['밤', '뱀'], ['말', '발'], ['소금', '조금'], ['운전', '안전'],
-      ['볼', '발'], ['파', '피'], ['소', '새'], ['고기', '거기'],
-      ['여유', '우유'], ['무리', '머리'], ['부모', '보모'], ['하늘', '마늘'],
-    ],
-  },
-  2: {
-    name: '레벨 2',
-    pairs: [
-      ['산', '상', '삼'], ['곰', '공'], ['방', '반'],
-      ['감', '강'], ['별', '병'], ['병', '명'], ['돈', '돌'], ['밤', '밥'],
-      ['문', '물'], ['짐', '집'], ['글', '금'],
-      ['잔', '장'], ['귤', '균'], ['솜', '솥'], ['사람', '사랑'],
-    ],
-  },
-  3: {
-    name: '레벨 3',
-    pairs: [
-      ['도끼', '토끼'], ['딸', '탈', '달'], ['불', '뿔', '풀'], ['장', '창'],
-      ['방', '빵'], ['굴', '꿀'], ['고리', '꼬리'], ['그림', '크림'],
-      ['종', '총'], ['공', '콩'], ['부리', '뿌리'], ['가다', '까다'],
-      ['살', '쌀'], ['짐', '찜'], ['대', '때'], ['소다', '쏘다'], ['마음', '마을'],
-    ],
-  },
-  4: {
-    name: '레벨 4 (최종 보스전)',
-    pairs: [
-      ['얼음', '어른'], ['단어', '다녀'], ['사다', '싸다'],
-      ['책상', '색상'], ['담', '땀'],
-      ['팔', '발'], ['굴', '글'], ['자다', '짜다', '차다'],
-      ['거울', '겨울'], ['시력', '실력'], ['고장', '공장'],
-    ],
-  },
+  1: { name: '레벨 1', pairs: PAIRS_BY_LEVEL[1] },
+  2: { name: '레벨 2', pairs: PAIRS_BY_LEVEL[2] },
+  3: { name: '레벨 3', pairs: PAIRS_BY_LEVEL[3] },
+  4: { name: '레벨 4 (최종 보스전)', pairs: PAIRS_BY_LEVEL[4] },
 }
 
 const LEVEL_PAIR_COUNTS: Record<number, number> = { 1: 10, 2: 10, 3: 10, 4: 10 }
