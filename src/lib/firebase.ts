@@ -4,6 +4,7 @@ import { getFirestore, Firestore } from 'firebase/firestore'
 
 let _auth: Auth | null = null
 let _db: Firestore | null = null
+let _app: FirebaseApp | null = null
 
 try {
   const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
@@ -16,6 +17,7 @@ try {
       messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
       appId: import.meta.env.VITE_FIREBASE_APP_ID,
     })
+    _app = app
     _auth = getAuth(app)
     _db = getFirestore(app)
   } else {
@@ -28,5 +30,6 @@ try {
   console.error('[firebase] init failed — auth/db disabled:', err)
 }
 
+export const app = _app
 export const auth = _auth
 export const db = _db

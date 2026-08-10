@@ -147,10 +147,10 @@ export default function ShadowingPage() {
               </button>
               {(reviewCount > 0 || preset) && (
                 <Link
-                  to="/errors"
+                  to="/review"
                   className="w-full py-3.5 rounded-2xl border border-slate-300 bg-white text-slate-600 font-bold hover:border-slate-400 hover:text-slate-900 transition-colors text-center"
                 >
-                  {t('errors.title')}
+                  {t('review.title')}
                 </Link>
               )}
               <Link to="/" className="text-xs text-slate-400 hover:text-slate-600 transition-colors">

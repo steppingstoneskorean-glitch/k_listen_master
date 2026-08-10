@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import AuthModal from '@/components/AuthModal'
+import TodayMission from '@/components/TodayMission'
 import KArtistLive from '@/components/KArtistLive'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
@@ -189,6 +190,9 @@ export default function HomePage() {
       )}
 
       <div className="bg-gradient-to-b from-white via-slate-50 to-indigo-50 text-slate-900">
+        {/* ══ 0. Today's Mission dashboard (logged-in only) ══ */}
+        {user && <TodayMission />}
+
         {/* ══ 1. Video Quizzes + Game Selection ══ */}
         <section className="relative overflow-hidden px-6 pt-10 pb-20">
           {/* soft ambient glows */}
