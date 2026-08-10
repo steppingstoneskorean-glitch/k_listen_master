@@ -13,7 +13,7 @@ import HomePage from '@/pages/HomePage'
 import GamePage from '@/pages/GamePage'
 import DictationPage from '@/pages/DictationPage'
 import ShadowingPage from '@/pages/ShadowingPage'
-import ErrorHistoryPage from '@/pages/ErrorHistoryPage'
+import ReviewPage from '@/pages/ReviewPage'
 import MaterialsPage from '@/pages/MaterialsPage'
 import PrivacyPolicy from '@/pages/PrivacyPolicy'
 import AboutPage from '@/pages/AboutPage'
@@ -54,7 +54,8 @@ export default function App() {
                 <Route element={<Layout />}>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/home" element={<Navigate to="/" replace />} />
-                  <Route path="/errors" element={<ErrorHistoryPage />} />
+                  <Route path="/review" element={<ReviewPage />} />
+                  <Route path="/errors" element={<Navigate to="/review" replace />} />
                   <Route path="/materials" element={<MaterialsPage />} />
                   <Route path="/games" element={<GameHubPage />} />
                   <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
