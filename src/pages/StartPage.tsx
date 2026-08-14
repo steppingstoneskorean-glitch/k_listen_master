@@ -61,11 +61,11 @@ export default function StartPage() {
       <div className="relative z-10 w-full max-w-sm flex flex-col items-center gap-8">
         {/* Logo + Title */}
         <div className="flex flex-col items-center gap-3">
-          <img src={logoImg} alt="Step Korean" className="h-14 w-auto rounded-2xl object-contain shadow-lg" />
+          <img src={logoImg} alt="K-Listen Master" className="h-14 w-auto rounded-2xl object-contain shadow-lg" />
           <h1 className="text-3xl font-black tracking-tight text-center">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-fuchsia-400">Step</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-fuchsia-400">K-Listen</span>
             {' '}
-            <span className="text-white">Korean</span>
+            <span className="text-white">Master</span>
           </h1>
           <p className="text-gray-500 text-sm text-center leading-relaxed max-w-[260px]">
             {t('start.tagline')}

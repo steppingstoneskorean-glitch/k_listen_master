@@ -25,9 +25,9 @@ export default function Header() {
           <div className="flex items-center justify-between gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 shrink-0">
-              <img src={logoImg} alt="Step Korean" className="h-8 w-auto rounded-lg object-contain" />
-              <span className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">Step</span>
-              <span className="text-xl font-black text-slate-900">Korean</span>
+              <img src={logoImg} alt="K-Listen Master" className="h-8 w-auto rounded-lg object-contain" />
+              <span className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">K-Listen</span>
+              <span className="text-xl font-black text-slate-900">Master</span>
             </Link>
 
             <div className="flex items-center gap-2">
