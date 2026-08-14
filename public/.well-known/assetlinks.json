@@ -4,8 +4,10 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.stepkorean.klistenmaster",
-      "sha256_cert_fingerprints":
-        ["4E:72:9F:CB:99:42:F7:02:24:93:DE:A7:91:3B:29:4A:6D:0E:96:92:84:2A:A7:1C:35:2F:D8:53:5B:49:48:DA"]
+      "sha256_cert_fingerprints": [
+        "3D:0F:FC:12:45:BC:97:41:30:9A:17:F9:B9:9F:08:C2:50:89:94:65:BD:04:66:E8:1B:04:AD:BA:FD:8B:38:C9",
+        "83:D1:AC:95:DF:08:D8:FC:44:30:D6:70:DE:49:48:16:C8:99:0C:47:6F:63:BA:3C:3C:D1:FC:15:21:57:0D:91"
+      ]
     }
   }
 ]
