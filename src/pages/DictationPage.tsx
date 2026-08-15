@@ -27,6 +27,7 @@ import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
+import { markStepDone } from '@/lib/todayPlan'
 
 const QUESTIONS_PER_SESSION = 10
 const BASE_POINTS = 500
@@ -679,8 +680,11 @@ export default function DictationPage() {
   // 닉네임 미설정 시 실명·이메일 노출 방지를 위한 중립 폴백 (제출은 확정된 nickname 으로만)
   const playerName = nickname || 'Player'
 
-  const [screen,       setScreen]       = useState<'level-select' | 'game' | 'result'>('level-select')
-  const [gameLevel,    setGameLevel]    = useState<1 | 2>(1)
+  // 오늘의 계획에서 넘어온 빈칸 개수(1=EASY, 2=HARD)면 레벨 선택 화면을 건너뛴다.
+  const urlLevel: 1 | 2 | null = params.get('level') === '2' ? 2 : params.get('level') === '1' ? 1 : null
+
+  const [screen,       setScreen]       = useState<'level-select' | 'game' | 'result'>(urlLevel ? 'game' : 'level-select')
+  const [gameLevel,    setGameLevel]    = useState<1 | 2>(urlLevel ?? 1)
   const [questions,    setQuestions]    = useState<GeneratedQuestion[]>([])
   const [finalScore,   setFinalScore]   = useState(0)
   const [finalCorrect, setFinalCorrect] = useState(0)
@@ -706,6 +710,12 @@ export default function DictationPage() {
     setScreen('game')
   }
 
+  // 레벨 파라미터로 진입한 경우(오늘의 계획) — 마운트 시 바로 문제를 준비한다.
+  useEffect(() => {
+    if (urlLevel) startGame(urlLevel)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // 리더보드에 실제로 제출 + 최신 순위 불러오기 (닉네임 확정 후 공통으로 사용)
   const submitAndRefreshLeaderboard = async (collectionName: string, name: string, score: number, correct: number) => {
     await submitDictationScore(collectionName, {
@@ -723,6 +733,8 @@ export default function DictationPage() {
     setFinalScore(score)
     setFinalCorrect(correct)
     setWrongEntries(wrongs)
+    // 오늘의 계획 '게임' 단계 완료 — 받아쓰기 세션(10문항)을 끝까지 진행하면 완료로 본다.
+    markStepDone('game')
 
     const collectionName = (mode === 'advanced' ? 'adv' : 'int') + 'L' + gameLevel
 

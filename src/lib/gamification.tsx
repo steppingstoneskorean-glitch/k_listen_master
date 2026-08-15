@@ -21,8 +21,12 @@ export interface UserProgress {
 }
 
 const DEFAULT_GOAL = 3
-const DEFAULT_FREEZE_TOKENS = 2
-const MAX_FREEZE_TOKENS = 3
+// 프리즈 = 눈에 띄지 않는 스트릭 안전망.
+//   · 신규 1개 지급, 최대 2개 보유(무한 방어 방지)
+//   · 7일 연속 달성마다 +1 (아래 스트릭 로직 참고)
+//   · 평소엔 UI 에 개수를 노출하지 않고, '사용된 날'에만 안내한다.
+const DEFAULT_FREEZE_TOKENS = 1
+const MAX_FREEZE_TOKENS = 2
 
 const DEFAULT_PROGRESS: UserProgress = {
   lastLoginDate: '',

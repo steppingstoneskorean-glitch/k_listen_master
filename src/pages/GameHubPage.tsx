@@ -7,7 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLang, type Lang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import { useVideoAccess } from '@/lib/accessControl'
@@ -99,10 +99,17 @@ export default function GameHubPage() {
   // 배포본 기준 실제 모드/카드 목록 (운영자가 배포하면 배지·카드가 자동 갱신)
   const { videoModes, liveVideos } = useVideoModes()
 
+  // 오늘의 계획 '영상 1개' 단계에서 넘어온 레벨 필터(?mode=B|I|A)를 초기값으로.
+  // 사용자는 상단 레벨 카테고리로 언제든 초/중/고급을 바꿀 수 있다.
+  const [params] = useSearchParams()
+  const initialMode: ModeFilter = ['B', 'I', 'A'].includes(params.get('mode') ?? '')
+    ? (params.get('mode') as ModeFilter)
+    : '__all__'
+
   const [modalTarget, setModalTarget] = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [artistFilter, setArtistFilter] = useState<HubArtist>('__all__')
-  const [modeFilter, setModeFilter] = useState<ModeFilter>('__all__')
+  const [modeFilter, setModeFilter] = useState<ModeFilter>(initialMode)
   const [sortKey, setSortKey] = useState<SortKey>('popular')
   const [desc, setDesc] = useState(true) // 기본: 내림차순(많이 도전한 순)
 

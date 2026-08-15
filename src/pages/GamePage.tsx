@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { submitScore, getLeaderboard, RankedEntry } from '@/lib/leaderboard'
 import { useAuth } from '@/lib/auth'
 import { useLang } from '@/lib/i18n'
@@ -16,6 +17,7 @@ import { LEVEL_STARS } from '@/data/gameLevels'
 import { PAIRS_BY_LEVEL } from '@/data/minimalPairs'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
+import { markStepDone } from '@/lib/todayPlan'
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -640,8 +642,15 @@ export default function GamePage() {
   // (공개 리더보드 제출은 항상 확정된 nickname 으로만 이뤄진다 — endGame 참고)
   const playerName = nickname || 'Player'
 
+  // 오늘의 계획에서 넘어온 시작 레벨(별 1~4). 이후 레벨은 이어서 진행한다.
+  const [params] = useSearchParams()
+  const startLevel = (() => {
+    const n = Number(params.get('level'))
+    return n >= 1 && n <= 4 ? (n as 1 | 2 | 3 | 4) : 1
+  })()
+
   const [screen, setScreen] = useState<Screen>('playing')
-  const [level, setLevel] = useState<1 | 2 | 3 | 4>(1)
+  const [level, setLevel] = useState<1 | 2 | 3 | 4>(startLevel)
   const [lives, setLives] = useState(MAX_LIVES)
   const [totalScore, setTotalScore] = useState(0)
   const [gameResult, setGameResult] = useState<'win' | 'lose'>('win')
@@ -687,6 +696,8 @@ export default function GamePage() {
   const endGame = useCallback(
     async (result: 'win' | 'lose') => {
       setGameResult(result)
+      // 오늘의 계획 '게임' 단계 완료 — 최종 클리어(win)든 하트 소진 게임오버(lose)든 모두 완료로 본다.
+      markStepDone('game')
       const highestLevel = level
       if (!isGuest && user) {
         if (!nickname) {
@@ -727,7 +738,7 @@ export default function GamePage() {
   }, [])
 
   const restartGame = useCallback(() => {
-    setLevel(1)
+    setLevel(startLevel)
     setLives(MAX_LIVES)
     setTotalScore(0)
     setGameResult('win')
@@ -737,7 +748,7 @@ export default function GamePage() {
     setShowNicknameModal(false)
     setPendingResult(null)
     setScreen('playing')
-  }, [])
+  }, [startLevel])
 
   return (
     <>
