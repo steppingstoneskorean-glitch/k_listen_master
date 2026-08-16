@@ -813,10 +813,10 @@ const TRANSLATIONS = {
   // ── Game Hub (통합 게임 탭) ──
   'hub.title': { en: 'Listening Games', ko: '듣기 게임', es: 'Juegos de escucha', ja: 'リスニングゲーム' },
   'hub.subtitle': {
-    en: 'Take on word-match, dictation, and video listening quizzes by level',
-    ko: '레벨별 단어 맞히기와 받아쓰기, 영상 듣기 퀴즈에 도전하세요',
-    es: 'Enfréntate a juegos de palabras, dictado y quizzes de video por nivel',
-    ja: 'レベル別に単語当て・ディクテーション・動画リスニングに挑戦しよう',
+    en: 'Pick a level and take on word-match, dictation, and video quizzes',
+    ko: '레벨을 골라 단어 맞히기·받아쓰기·영상 퀴즈에 도전하세요',
+    es: 'Elige un nivel y enfréntate a palabras, dictado y quizzes de video',
+    ja: 'レベルを選んで単語当て・ディクテーション・動画クイズに挑戦しよう',
   },
   'hub.sortLabel': { en: 'Sort', ko: '정렬', es: 'Ordenar', ja: '並び替え' },
   'hub.sortPopular': { en: 'Most Played', ko: '많이 도전한 순', es: 'Más jugados', ja: '挑戦が多い順' },
