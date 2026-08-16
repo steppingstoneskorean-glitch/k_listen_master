@@ -1026,6 +1026,49 @@ const TRANSLATIONS = {
     es: '🎧 ¡Escucha con atención!',
     ja: '🎧 耳を澄まして聞いてみましょう！',
   },
+
+  // ── Bottom tab bar ──
+  'nav.home': { en: 'Home', ko: '홈', es: 'Inicio', ja: 'ホーム' },
+  'nav.review': { en: 'Review', ko: '복습', es: 'Repaso', ja: '復習' },
+  'nav.profile': { en: 'Profile', ko: '프로필', es: 'Perfil', ja: 'プロフィール' },
+
+  // ── Today's Plan (홈 · 오늘의 계획) ──
+  'plan.title': { en: "Today's Plan", ko: '오늘의 계획', es: 'Plan de hoy', ja: '今日のプラン' },
+  'plan.chooseTitle': { en: 'Choose your level', ko: '레벨을 골라주세요', es: 'Elige tu nivel', ja: 'レベルを選ぼう' },
+  'plan.levelPrompt': { en: 'Level for today', ko: '오늘 학습할 레벨', es: 'Nivel de hoy', ja: '今日のレベル' },
+  'plan.beginnerSub': { en: 'Beginner — pick a star level to start', ko: '초급 세부 레벨 — 별 개수를 골라 시작', es: 'Principiante — elige nivel de estrellas', ja: '初級 — 星の数を選んで開始' },
+  'plan.beginnerSubHint': { en: 'Higher levels continue after', ko: '이후 레벨은 이어서 진행돼요', es: 'Los niveles siguientes continúan después', ja: '以降のレベルは続けて進みます' },
+  'plan.blankSub': { en: 'Pick how many blanks to fill', ko: '빈칸 개수를 골라 시작', es: 'Elige cuántos espacios llenar', ja: '空欄の数を選んで開始' },
+  'plan.blank1': { en: '1 blank · Easy', ko: '빈칸 1개 · EASY', es: '1 espacio · Fácil', ja: '空欄1つ · EASY' },
+  'plan.blank2': { en: '2 blanks · Hard', ko: '빈칸 2개 · HARD', es: '2 espacios · Difícil', ja: '空欄2つ · HARD' },
+  'plan.gameLevelFmt': { en: 'Level {n}', ko: '레벨 {n}', es: 'Nivel {n}', ja: 'レベル {n}' },
+  'plan.gameLevel4': { en: 'Level 4 · Boss', ko: '레벨 4 · 보스', es: 'Nivel 4 · Jefe', ja: 'レベル4 · ボス' },
+  'plan.stepVideo': { en: 'Finish 1 video', ko: '영상 1개 완료', es: 'Termina 1 video', ja: '動画を1本完了' },
+  'plan.stepVideoDesc': { en: 'Pick a video from the K-Stars list and finish one quiz', ko: 'K-Stars 목록에서 원하는 영상을 골라 퀴즈 1개 완료', es: 'Elige un video de K-Stars y completa un quiz', ja: 'K-Starsの一覧から動画を選んでクイズを1つ完了' },
+  'plan.stepGameDesc': { en: 'Catch the sounds at your chosen level', ko: '선택한 레벨로 소리를 잡아요', es: 'Atrapa los sonidos en tu nivel', ja: '選んだレベルで音を捉えよう' },
+  'plan.badgeNow': { en: 'Now', ko: '지금', es: 'Ahora', ja: '今' },
+  'plan.badgeDone': { en: 'Done', ko: '완료', es: 'Hecho', ja: '完了' },
+  'plan.badgeLocked': { en: 'Locked', ko: '잠김', es: 'Bloqueado', ja: 'ロック' },
+  'plan.ctaGame': { en: 'Start', ko: '시작하기', es: 'Empezar', ja: '始める' },
+  'plan.ctaVideo': { en: 'Pick a video', ko: '영상 고르기', es: 'Elegir video', ja: '動画を選ぶ' },
+  'plan.ctaReview': { en: 'Review', ko: '복습하기', es: 'Repasar', ja: '復習する' },
+  'plan.optional': { en: 'Optional · anytime', ko: '옵션 · 언제든', es: 'Opcional · cuando quieras', ja: '任意 · いつでも' },
+  'plan.nextFmt': { en: 'Next: {s}', ko: '다음: {s}', es: 'Siguiente: {s}', ja: '次: {s}' },
+  'plan.allDone': { en: "Today's plan complete! 🎉", ko: '오늘의 계획 완료! 🎉', es: '¡Plan de hoy completo! 🎉', ja: '今日のプラン完了！🎉' },
+  'plan.allDoneSub': { en: 'Great work — see you tomorrow.', ko: '잘했어요 — 내일 또 만나요.', es: '¡Buen trabajo! Hasta mañana.', ja: 'お疲れさま — また明日。' },
+  'plan.changeLevel': { en: 'Change level', ko: '레벨 변경', es: 'Cambiar nivel', ja: 'レベル変更' },
+  'plan.startShort': { en: 'Start', ko: '시작', es: 'Inicio', ja: '開始' },
+
+  // ── Profile (/profile) ──
+  'profile.sectionLearning': { en: 'Learning', ko: '학습 설정', es: 'Aprendizaje', ja: '学習設定' },
+  'profile.sectionMore': { en: 'More', ko: '더보기', es: 'Más', ja: 'もっと見る' },
+  'profile.sectionAccount': { en: 'Account', ko: '계정', es: 'Cuenta', ja: 'アカウント' },
+  'profile.editGoal': { en: 'Edit daily goal', ko: '하루 목표 수정', es: 'Editar meta diaria', ja: '1日の目標を編集' },
+  'profile.reminder': { en: 'Evening reminder', ko: '저녁 리마인더', es: 'Recordatorio nocturno', ja: '夜のリマインダー' },
+  'profile.language': { en: 'Language', ko: '언어', es: 'Idioma', ja: '言語' },
+  'profile.youtube': { en: 'YouTube channel', ko: '유튜브 채널', es: 'Canal de YouTube', ja: 'YouTubeチャンネル' },
+  'profile.streakLabel': { en: 'Streak', ko: '연속', es: 'Racha', ja: '連続' },
+  'profile.planLabel': { en: 'Today', ko: '오늘 계획', es: 'Hoy', ja: '今日' },
 } as const
 
 interface LangCtx {

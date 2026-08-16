@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+/* ── App shell: kill horizontal drift so the TWA/mobile view fills edge-to-edge ──
+   The app was a web build wrapped in a TWA; any element momentarily wider than the
+   viewport (scroll tracks, modals, long strings) used to push the whole page sideways
+   and reveal a black side margin. Clamp width + hide horizontal overflow globally. */
+html, body, #root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Reserve space for the fixed bottom tab bar (+ Android/iOS safe area) so page
+   content is never hidden behind it. Only applied on the app shell wrapper. */
+.app-shell {
+  --bottom-nav-h: 4rem;
+  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+}
+
 /* ── Landing page motion ── */
 @keyframes hero-fade-up {
   from { opacity: 0; transform: translateY(28px); }

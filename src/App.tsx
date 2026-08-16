@@ -25,6 +25,7 @@ import KpopQuiz from '@/components/KpopQuiz'
 import GameHubPage from '@/pages/GameHubPage'
 import QuizStudioPage from '@/pages/QuizStudioPage'
 import QuizBuilderPage from '@/pages/QuizBuilderPage'
+import ProfilePage from '@/pages/ProfilePage'
 
 export default function App() {
   return (
@@ -54,6 +55,7 @@ export default function App() {
                 <Route element={<Layout />}>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/home" element={<Navigate to="/" replace />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/review" element={<ReviewPage />} />
                   <Route path="/errors" element={<Navigate to="/review" replace />} />
                   <Route path="/materials" element={<MaterialsPage />} />

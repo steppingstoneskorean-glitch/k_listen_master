@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import { recordMarketingConsent } from '@/lib/marketingConsent'
-import logoImg from '../../assets/images/logo.jpg'
+import logoImg from '../../assets/images/logo.png'
 
 export default function StartPage() {
   const { t } = useLang()
