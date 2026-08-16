@@ -674,7 +674,7 @@ const TRANSLATIONS = {
   'goal.save': { en: 'Save', ko: '저장', es: 'Guardar', ja: '保存' },
 
   // ── Reminder (FCM push) settings ──
-  'reminder.title': { en: 'Evening study reminder', ko: '저녁 학습 리마인더', es: 'Recordatorio de estudio nocturno', ja: '夜の学習リマインダー' },
+  'reminder.title': { en: 'Study reminder', ko: '학습 리마인더', es: 'Recordatorio de estudio', ja: '学習リマインダー' },
   'reminder.desc': { en: 'On days you have not met your goal, we send a nudge at your chosen time.', ko: '목표를 아직 못 채운 날, 설정한 시각에 알림을 보내드려요.', es: 'Los días que no cumplas tu meta, te avisamos a la hora elegida.', ja: '目標未達成の日に、設定した時刻にお知らせします。' },
   'reminder.time': { en: 'Reminder time', ko: '알림 시각', es: 'Hora del recordatorio', ja: '通知時刻' },
   'reminder.enable': { en: 'Turn on reminder', ko: '리마인더 켜기', es: 'Activar recordatorio', ja: 'リマインダーをON' },
@@ -1064,7 +1064,7 @@ const TRANSLATIONS = {
   'profile.sectionMore': { en: 'More', ko: '더보기', es: 'Más', ja: 'もっと見る' },
   'profile.sectionAccount': { en: 'Account', ko: '계정', es: 'Cuenta', ja: 'アカウント' },
   'profile.editGoal': { en: 'Edit daily goal', ko: '하루 목표 수정', es: 'Editar meta diaria', ja: '1日の目標を編集' },
-  'profile.reminder': { en: 'Evening reminder', ko: '저녁 리마인더', es: 'Recordatorio nocturno', ja: '夜のリマインダー' },
+  'profile.reminder': { en: 'Study reminder', ko: '학습 리마인더', es: 'Recordatorio de estudio', ja: '学習リマインダー' },
   'profile.language': { en: 'Language', ko: '언어', es: 'Idioma', ja: '言語' },
   'profile.youtube': { en: 'YouTube channel', ko: '유튜브 채널', es: 'Canal de YouTube', ja: 'YouTubeチャンネル' },
   'profile.streakLabel': { en: 'Streak', ko: '연속', es: 'Racha', ja: '連続' },
