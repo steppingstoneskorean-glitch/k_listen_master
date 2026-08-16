@@ -36,7 +36,7 @@ const GAME_LEVELS: Record<number, { name: string; pairs: string[][] }> = {
   4: { name: '레벨 4 (최종 보스전)', pairs: PAIRS_BY_LEVEL[4] },
 }
 
-const LEVEL_PAIR_COUNTS: Record<number, number> = { 1: 10, 2: 10, 3: 10, 4: 10 }
+const LEVEL_PAIR_COUNTS: Record<number, number> = { 1: 5, 2: 5, 3: 5, 4: 5 }
 
 const MAX_LIVES = 3
 const BASE_POINTS = 500

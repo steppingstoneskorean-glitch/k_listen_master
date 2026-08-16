@@ -314,7 +314,7 @@ const TRANSLATIONS = {
     es: 'Restaurantes, metro, llamadas — escribe exactamente lo que escuchas en situaciones cotidianas.',
     ja: 'レストラン、地下鉄、電話通話 — 日常の場面で聞こえた内容をそのまま入力してください。',
   },
-  'home.level2.rounds': { en: '10 questions · Dictation', ko: '10문제 · 받아쓰기', es: '10 preguntas · Dictado', ja: '10問 · ディクテーション' },
+  'home.level2.rounds': { en: '5 questions · Dictation', ko: '5문제 · 받아쓰기', es: '5 preguntas · Dictado', ja: '5問 · ディクテーション' },
   'home.level3.label': { en: 'ADVANCED', ko: '고급', es: 'AVANZADO', ja: '上級' },
   'home.level3.title': { en: 'Media & Professional', ko: '미디어 & 전문', es: 'Medios y Profesional', ja: 'メディア＆プロ' },
   'home.level3.desc': {
@@ -323,7 +323,7 @@ const TRANSLATIONS = {
     es: 'Domina el habla conectada de informativos, reuniones de negocios y programas de variedades.',
     ja: 'ニュース、ビジネス会議、バラエティ番組 — 連続発話をマスターしましょう。',
   },
-  'home.level3.rounds': { en: '10 questions · Dictation', ko: '10문제 · 받아쓰기', es: '10 preguntas · Dictado', ja: '10問 · ディクテーション' },
+  'home.level3.rounds': { en: '5 questions · Dictation', ko: '5문제 · 받아쓰기', es: '5 preguntas · Dictado', ja: '5問 · ディクテーション' },
 
   // ── Error history ──
   'errors.title': { en: 'Error History', ko: '오답 기록', es: 'Historial de Errores', ja: '誤答履歴' },

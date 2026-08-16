@@ -30,7 +30,7 @@ import { isInstallModalHidden } from '@/lib/installPrompts'
 import { markStepDone } from '@/lib/todayPlan'
 import HangulKeyboard from '@/components/HangulKeyboard'
 
-const QUESTIONS_PER_SESSION = 10
+const QUESTIONS_PER_SESSION = 5
 const BASE_POINTS = 500
 const TIME_DECAY_PER_SEC = 30
 const REPLAY_PENALTY = 100
