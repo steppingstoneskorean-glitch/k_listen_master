@@ -102,15 +102,28 @@ TWA 빌드 툴은 **배포된 URL의 매니페스트에서 아이콘을 가져�
 > 새 키로 서명하면 Play Console이 업로드를 거부한다. 패키지명도
 > `com.stepkorean.klistenmaster` 로 동일해야 한다.
 
+**버전 값** (최초 출시 1.0.0 / versionCode 1 기준 이번 업로드):
+
+| 항목 | 이전 | 이번 | 규칙 |
+|---|---|---|---|
+| `versionCode` (App version code) | 1 | **2** | Play 강제 — 이전보다 반드시 커야 함(최소 +1). 같거나 낮으면 거부 |
+| `versionName` (App version) | 1.0.0 | **1.1.0** | 표시용. UI 대개편이라 마이너 업 |
+
+> 내부 테스트 등으로 이미 versionCode를 올린 적이 있으면 그 최댓값+1을 쓴다.
+
 - **Bubblewrap로 만든 경우** (원본 `twa-manifest.json` + `android.keystore` 보유):
+  `twa-manifest.json` 에서 `"appVersionName": "1.1.0"`, `"appVersionCode": 2` 로 수정 후:
   ```bash
   bubblewrap update      # 매니페스트에서 새 아이콘 다시 가져오기
-  bubblewrap build       # versionCode 증가한 새 .aab 생성 (기존 keystore로 서명)
+  bubblewrap build       # 새 .aab 생성 (기존 keystore로 서명)
   ```
 - **PWABuilder로 만든 경우**: pwabuilder.com에서 **같은 URL·같은 패키지명**으로
-  다시 Package for Stores → Android. 서명은 **기존 업로드 키** 사용을 지정(새 키 생성 금지).
+  다시 Package for Stores → Android. Android options에서:
+  - **App version** = `1.1.0`  (versionName)
+  - **App version code** = `2`  (versionCode)
+  - **Signing key** = **Use mine** → 기존 업로드 키스토어 사용(새 키 생성 금지)
 
-- Play Console → 새 `.aab` 업로드(versionCode 상향) → Play 앱 서명 → 검토 후 반영.
+- Play Console → 새 `.aab` 업로드(versionCode 2) → Play 앱 서명 → 검토 후 반영.
   인앱/PWA 아이콘은 배포 즉시, **스토어·런처 아이콘은 이 재업로드가 반영된 뒤** 바뀐다.
 
 ## 4. 남은 출시 체크(이 리포와 별개로 진행 권장)
