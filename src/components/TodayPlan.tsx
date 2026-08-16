@@ -354,15 +354,15 @@ export default function TodayPlan() {
         })}
       </div>
 
-      {/* 섀도잉 (옵션) — 강조하지 않는 부가 기능이라 색을 연하게 처리 */}
+      {/* 섀도잉 (옵션) — 강조하지 않는 부가 기능이라 은은한 실선 테두리 + 연한 색 */}
       <button
         type="button"
         onClick={() => navigate('/shadowing')}
-        className="mt-1 flex w-full items-center gap-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-3.5 text-left opacity-90 transition-all hover:opacity-100 active:scale-[0.99]"
+        className="mt-1 flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5 text-left transition-all hover:bg-slate-50 active:scale-[0.99]"
       >
         <span className="text-xl opacity-60">🎤</span>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold text-slate-500" translate="no">Shadowing</p>
+          <p className="text-sm font-bold text-slate-500">{t('mission.cardShadow')}</p>
           <p className="text-[11px] font-medium text-slate-400">{t('mission.cardShadowDesc')}</p>
         </div>
         <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-400">{t('plan.optional')}</span>
