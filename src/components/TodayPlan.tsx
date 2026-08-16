@@ -110,10 +110,10 @@ export default function TodayPlan() {
 
   // ════════════════════════════ 1) 레벨 선택 ════════════════════════════
   if (!plan.level) {
-    const LEVELS: { id: LevelKey; emoji: string; titleKey: 'home.level1.title' | 'home.level2.title' | 'home.level3.title'; descKey: 'home.level1.desc' | 'home.level2.desc' | 'home.level3.desc' }[] = [
-      { id: 'beginner', emoji: '🎯', titleKey: 'home.level1.title', descKey: 'home.level1.desc' },
-      { id: 'intermediate', emoji: '🗣️', titleKey: 'home.level2.title', descKey: 'home.level2.desc' },
-      { id: 'advanced', emoji: '🎙️', titleKey: 'home.level3.title', descKey: 'home.level3.desc' },
+    const LEVELS: { id: LevelKey; emoji: string; titleKey: 'home.level1.title' | 'home.level2.title' | 'home.level3.title'; descKey: 'home.level1.desc' | 'home.level2.desc' | 'home.level3.desc'; badge: string }[] = [
+      { id: 'beginner', emoji: '🎯', titleKey: 'home.level1.title', descKey: 'home.level1.desc', badge: 'border-emerald-200 bg-emerald-50 text-emerald-600' },
+      { id: 'intermediate', emoji: '🗣️', titleKey: 'home.level2.title', descKey: 'home.level2.desc', badge: 'border-blue-200 bg-blue-50 text-blue-600' },
+      { id: 'advanced', emoji: '🎙️', titleKey: 'home.level3.title', descKey: 'home.level3.desc', badge: 'border-indigo-200 bg-indigo-50 text-indigo-600' },
     ]
 
     return (
@@ -148,7 +148,10 @@ export default function TodayPlan() {
                 >
                   <span className="text-2xl">{l.emoji}</span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-black text-slate-800">{t(l.titleKey)}</p>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-black ${l.badge}`}>{levelName(l.id)}</span>
+                      <p className="truncate text-sm font-black text-slate-800">{t(l.titleKey)}</p>
+                    </div>
                     <p className="truncate text-[11px] text-slate-400">{t(l.descKey)}</p>
                   </div>
                   <span className={`text-lg ${sel ? 'text-indigo-500' : 'text-slate-300'}`}>{sel ? '▾' : '›'}</span>
