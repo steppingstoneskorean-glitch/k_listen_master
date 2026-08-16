@@ -28,6 +28,7 @@ import { LEVEL_STARS } from '@/data/gameLevels'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
 import { markStepDone } from '@/lib/todayPlan'
+import HangulKeyboard from '@/components/HangulKeyboard'
 
 const QUESTIONS_PER_SESSION = 10
 const BASE_POINTS = 500
@@ -215,6 +216,7 @@ function GameScreen({
   const [hasPlayed,    setHasPlayed]    = useState(false)
   const [timerStarted, setTimerStarted] = useState(false)
   const [potentialPts, setPotentialPts] = useState(BASE_POINTS)
+  const [kbOpen, setKbOpen] = useState(false) // 온스크린 한글 키보드 (기본 닫힘)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const current  = questions[idx]
@@ -293,6 +295,7 @@ function GameScreen({
 
   const handleSubmit = useCallback(() => {
     if (feedback !== 'idle' || !userInput.trim()) return
+    setKbOpen(false) // 제출 시 키보드를 닫아 피드백이 가려지지 않게
     stopTimer()
     const userNorm   = normalize(userInput)
     const answerNorm = normalize(current.answer)
@@ -447,6 +450,15 @@ function GameScreen({
           >
             {t('dictation.submit')}
           </button>
+
+          {/* 온스크린 한글 키보드 토글 (직접 입력 + 가상 키보드 병행) */}
+          <button
+            type="button"
+            onClick={() => { setKbOpen(o => !o); setTimeout(() => inputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 50) }}
+            className="mx-auto flex items-center gap-2 rounded-full border border-gray-700 px-3.5 py-1.5 text-xs font-bold text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-200"
+          >
+            ⌨️ {kbOpen ? t('kbd.close') : t('kbd.open')}
+          </button>
         </div>
 
         <div className="min-h-[4rem] flex flex-col items-center justify-center gap-1">
@@ -464,6 +476,15 @@ function GameScreen({
           )}
         </div>
       </div>
+
+      <HangulKeyboard
+        value={userInput}
+        onChange={setUserInput}
+        open={kbOpen}
+        onClose={() => setKbOpen(false)}
+        onSubmit={handleSubmit}
+        disabled={feedback !== 'idle'}
+      />
     </div>
   )
 }

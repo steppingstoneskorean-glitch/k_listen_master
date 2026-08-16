@@ -26,6 +26,7 @@ import { ARTISTS, LIVE_VIDEOS, MODE_ORDER } from '@/data/kArtistLive';
 import { loadPublishedQuizzes, loadModeStars } from '@/lib/quizStore';
 import { mergeQuizzes } from '@/lib/quizResolve';
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes';
+import HangulKeyboard from '@/components/HangulKeyboard';
 import { recordModeClear, getVideoProgress } from '@/lib/mastery';
 import { recordError, recordCorrect } from '@/lib/errorHistory';
 import { useGamification } from '@/lib/gamification';
@@ -256,6 +257,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   // ── Cloze / 채점 state ─────────────────────────────────────────────────────
   const [answer, setAnswer] = useState('');
+  const [kbOpen, setKbOpen] = useState(false); // 온스크린 한글 키보드 (기본 닫힘)
   const [status, setStatus] = useState('idle'); // 'idle' | 'correct' | 'partial' | 'wrong'
   const [showReview, setShowReview] = useState(false); // 발음 포인트 복습 창
   const [hintShown, setHintShown] = useState(false); // 힌트 공개 여부 (모든 유저에게 제공)
@@ -1071,6 +1073,13 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               >
                 {t('kpop.reset')}
               </button>
+              <button
+                type="button"
+                onClick={() => setKbOpen((o) => !o)}
+                className={`${liftBtn} rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow hover:bg-slate-100`}
+              >
+                ⌨️ {kbOpen ? t('kbd.close') : t('kbd.open')}
+              </button>
               {quiz.hint && quiz.hint.trim() && (
                 <button
                   onClick={() => setHintShown((v) => !v)}
@@ -1101,6 +1110,15 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                 💡 {quiz.hint}
               </p>
             )}
+
+            <HangulKeyboard
+              value={answer}
+              onChange={(v) => { setAnswer(v); if (status !== 'idle') setStatus('idle'); }}
+              open={kbOpen}
+              onClose={() => setKbOpen(false)}
+              onSubmit={checkAnswer}
+              disabled={status === 'correct'}
+            />
           </section>
           )}
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import HangulKeyboard from '@/components/HangulKeyboard'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -283,6 +284,7 @@ export default function AudioGame() {
   const [gameResult, setGameResult] = useState<'success' | 'fail'>('success')
   const [isPlaying, setIsPlaying] = useState(false)
   const [userInput, setUserInput] = useState('')
+  const [kbOpen, setKbOpen] = useState(false) // 온스크린 한글 키보드 (기본 닫힘)
   const [streak, setStreak] = useState(0)
   const [showPremiumBanner, setShowPremiumBanner] = useState(false)
 
@@ -768,7 +770,25 @@ export default function AudioGame() {
                 >
                   Submit Answer →
                 </button>
+
+                {/* 온스크린 한글 키보드 토글 (직접 입력 + 가상 키보드 병행) */}
+                <button
+                  type="button"
+                  onClick={() => setKbOpen(o => !o)}
+                  className="mx-auto flex items-center gap-2 rounded-full border border-gray-700 px-3.5 py-1.5 text-xs font-bold text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-200"
+                >
+                  ⌨️ {kbOpen ? 'Close Korean keyboard' : 'Korean keyboard'}
+                </button>
               </div>
+
+              <HangulKeyboard
+                value={userInput}
+                onChange={setUserInput}
+                open={kbOpen}
+                onClose={() => setKbOpen(false)}
+                onSubmit={handleDictationSubmit}
+                disabled={feedback !== 'idle'}
+              />
 
               {feedback === 'correct' && (
                 <div className="text-center py-2 text-green-400 font-bold">

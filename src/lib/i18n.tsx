@@ -1069,6 +1069,14 @@ const TRANSLATIONS = {
   'profile.youtube': { en: 'YouTube channel', ko: '유튜브 채널', es: 'Canal de YouTube', ja: 'YouTubeチャンネル' },
   'profile.streakLabel': { en: 'Streak', ko: '연속', es: 'Racha', ja: '連続' },
   'profile.planLabel': { en: 'Today', ko: '오늘 계획', es: 'Hoy', ja: '今日' },
+
+  // ── On-screen Korean keyboard ──
+  'kbd.open': { en: 'Open Korean keyboard', ko: '한국어 타자기 열기', es: 'Abrir teclado coreano', ja: '韓国語キーボードを開く' },
+  'kbd.close': { en: 'Close Korean keyboard', ko: '한국어 타자기 닫기', es: 'Cerrar teclado coreano', ja: '韓国語キーボードを閉じる' },
+  'kbd.title': { en: 'Korean keyboard', ko: '한국어 타자기', es: 'Teclado coreano', ja: '韓国語キーボード' },
+  'kbd.shiftHint': { en: 'double consonants', ko: '쌍자음', es: 'consonantes dobles', ja: '濃音' },
+  'kbd.space': { en: 'space', ko: '공백', es: 'espacio', ja: '空白' },
+  'kbd.done': { en: 'Done', ko: '입력 완료', es: 'Listo', ja: '完了' },
 } as const
 
 interface LangCtx {
