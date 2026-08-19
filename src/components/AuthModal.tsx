@@ -20,9 +20,15 @@ export default function AuthModal({ targetPath, onClose }: Props) {
   const handleSocial = async (provider: 'google' | 'apple') => {
     setError('')
     setSubmitting(true)
+    // 리다이렉트 경로(TWA/모바일)는 페이지를 떠나므로 동의 선택을 미리 보존한다.
+    try {
+      if (marketingOptIn) sessionStorage.setItem('pendingMarketingConsent', '1')
+      else sessionStorage.removeItem('pendingMarketingConsent')
+    } catch { /* 무시 */ }
     try {
       const { uid } = provider === 'google' ? await signInWithGoogle() : await signInWithApple()
-      if (marketingOptIn) void recordMarketingConsent(uid)
+      // 여기 도달 = 팝업 성공(리다이렉트는 페이지 이탈로 도달하지 않음)
+      if (marketingOptIn && uid) void recordMarketingConsent(uid)
       onClose()
       navigate(targetPath)
     } catch (err: unknown) {

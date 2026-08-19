@@ -5,20 +5,28 @@ import { useAuth } from '@/lib/auth'
 import { recordMarketingConsent } from '@/lib/marketingConsent'
 import logoImg from '../../assets/images/logo.png'
 
+function readSession(key: string): string | undefined {
+  try { return sessionStorage.getItem(key) ?? undefined } catch { return undefined }
+}
+
 export default function StartPage() {
   const { t } = useLang()
   const { signInWithGoogle, signInWithApple, user, loading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
-  // 로그인 후 원래 가려던 경로로 복귀 (없으면 홈)
-  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/'
+  // 로그인 후 원래 가려던 경로로 복귀 (없으면 홈).
+  //   리다이렉트 로그인은 페이지가 새로고침되어 location.state 가 사라지므로,
+  //   직전에 sessionStorage 에 저장해둔 목적지를 폴백으로 사용한다.
+  const stateFrom = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
+  const from = stateFrom ?? readSession('pendingLoginFrom') ?? '/'
 
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [marketingOptIn, setMarketingOptIn] = useState(false) // 기본 해제 — 사전 체크된 박스는 유효한 동의가 아님
 
   if (!loading && user) {
+    try { sessionStorage.removeItem('pendingLoginFrom') } catch { /* 무시 */ }
     navigate(from, { replace: true })
     return null
   }
@@ -26,9 +34,16 @@ export default function StartPage() {
   const handleSocialSignIn = async (provider: 'google' | 'apple') => {
     setError('')
     setSubmitting(true)
+    // 리다이렉트 경로는 페이지를 떠나므로, 동의·목적지를 미리 보존한다.
+    try {
+      if (marketingOptIn) sessionStorage.setItem('pendingMarketingConsent', '1')
+      else sessionStorage.removeItem('pendingMarketingConsent')
+      sessionStorage.setItem('pendingLoginFrom', from)
+    } catch { /* 무시 */ }
     try {
       const { uid } = provider === 'google' ? await signInWithGoogle() : await signInWithApple()
-      if (marketingOptIn) void recordMarketingConsent(uid)
+      // 여기 도달 = 팝업 성공(리다이렉트는 페이지 이탈로 도달하지 않음)
+      if (marketingOptIn && uid) void recordMarketingConsent(uid)
       navigate(from, { replace: true })
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code
