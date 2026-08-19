@@ -65,23 +65,25 @@ export default function TodayPlan() {
   const [plan, setPlan] = useState<PlanState>(() => loadPlan())
   const [pendingLevel, setPendingLevel] = useState<LevelKey | null>(null)
   const [dueCount, setDueCount] = useState(0)
+  const [dueLoaded, setDueLoaded] = useState(false)
 
   useEffect(() => {
     setDueCount(getDueCount())
+    setDueLoaded(true)
   }, [])
 
-  // 실제 완료 신호를 계획에 반영: 영상 1개 이상 완료 → video 단계 완료,
-  // 복습할 카드가 없으면 → review 단계 완료.
+  // 복습할 카드가 하나도 없으면 review 단계를 자동 완료로 본다.
+  //   · dueCount 초기값(0)이 '아직 로드 전'인지 '정말 0개'인지 구분하기 위해
+  //     dueLoaded 이후에만 판정한다(로드 전 0 때문에 review 가 잘못 완료되던 버그 수정).
+  //   · video 단계는 completedVideosToday(받아쓰기·섀도잉도 함께 올림) 로 자동 완료하지
+  //     않는다 — 실제 K-Stars 영상 퀴즈를 끝내면 KpopQuiz 가 markStepDone('video') 한다.
   useEffect(() => {
-    let changed = false
-    if (progress.completedVideosToday >= 1 && !plan.done.includes('video')) {
-      markStepDone('video'); changed = true
-    }
+    if (!dueLoaded) return
     if (dueCount === 0 && plan.level && !plan.done.includes('review')) {
-      markStepDone('review'); changed = true
+      markStepDone('review')
+      setPlan(loadPlan())
     }
-    if (changed) setPlan(loadPlan())
-  }, [progress.completedVideosToday, dueCount, plan])
+  }, [dueCount, dueLoaded, plan])
 
   const levelName = (l: LevelKey) =>
     l === 'beginner' ? t('mode.beginner') : l === 'intermediate' ? t('mode.intermediate') : t('mode.advanced')
@@ -234,8 +236,7 @@ export default function TodayPlan() {
     {
       key: 'game',
       emoji: '🎯',
-      title: 'Catch the Sound',
-      titleNoTranslate: true,
+      title: t('game.catchTheSound'),
       desc: t('plan.stepGameDesc'),
       cta: t('plan.ctaGame'),
       // 게임 단계는 탭이 아니라 '실제 클리어/게임오버' 시 완료된다(GamePage·DictationPage에서 표시).
@@ -248,7 +249,8 @@ export default function TodayPlan() {
       desc: t('plan.stepVideoDesc'),
       cta: t('plan.ctaVideo'),
       // 영상 단계는 실제로 영상 퀴즈 1개 완료 시 자동 표시된다(completedVideosToday 효과).
-      run: () => navigate(`/games?mode=${LEVEL_TO_MODE[level]}`),
+      // videos=1: '오늘의 계획 → 영상' 진입 시 Step & Step 퀴즈를 빼고 K-Stars 영상만 노출
+      run: () => navigate(`/games?mode=${LEVEL_TO_MODE[level]}&videos=1`),
     },
     {
       key: 'review',

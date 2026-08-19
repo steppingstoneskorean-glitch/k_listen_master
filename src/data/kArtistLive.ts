@@ -138,6 +138,21 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     plays: 0,
     addedAt: 5,
   },
+  {
+    id: 6,
+    title: { en: 'Manager Kim Interview', ko: '김부장 인터뷰', es: 'Entrevista de Manager Kim', ja: '部長K インタビュー' },
+    artist: 'K-Drama',
+    // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
+    availableModes: [
+      { mode: 'B', stars: 2 },
+      { mode: 'I', stars: 2 },
+      { mode: 'A', stars: 2 },
+    ],
+    url: '/kpop-quiz/tt6ZWE1aGJk',
+    videoId: 'tt6ZWE1aGJk',
+    plays: 0,
+    addedAt: 6,
+  },
 ]
 
 /** '__all__' = 전체 필터 값 */

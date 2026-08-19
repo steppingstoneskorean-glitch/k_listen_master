@@ -19,7 +19,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
 import { ARTISTS, LIVE_VIDEOS, MODE_ORDER } from '@/data/kArtistLive';
@@ -28,12 +28,25 @@ import { mergeQuizzes } from '@/lib/quizResolve';
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes';
 import HangulKeyboard from '@/components/HangulKeyboard';
 import { recordModeClear, getVideoProgress } from '@/lib/mastery';
-import { recordError, recordCorrect } from '@/lib/errorHistory';
+import { recordError, recordCorrect, getErrors, getSource } from '@/lib/errorHistory';
+import { gradeReview, reviewKey } from '@/lib/review';
 import { useGamification } from '@/lib/gamification';
+import { markStepDone } from '@/lib/todayPlan';
 import { ModeChip } from '@/components/kartist/ui';
 
 // 레거시(mode 없음) 문항은 'A'(딕테이션)로 간주
 const modeOf = (q) => (q && q.mode) || 'A';
+
+// 문항의 '정답 텍스트' — 오답노트(errorHistory)에 저장되는 word 와 동일 규칙으로 계산한다.
+//   · A: blankWord / I: 정답 보기 텍스트 / B: 블록을 공백으로 이어붙인 문장
+// 개인 복습에서 '틀린 문제만 다시 풀기'로 넘어올 때, 저장된 오답과 문항을 매칭하는 키로 쓴다.
+function correctTextOf(q) {
+  const m = modeOf(q);
+  if (m === 'B') return (q.blocks || []).join(' ');
+  if (m === 'I') return Array.isArray(q.options) ? (q.options[q.correctIndex] || '') : '';
+  return (q.blankWord || '').trim();
+}
+const reviewMatchKey = (mode, text) => `${mode}::${text}`;
 
 // B 모드용 셔플 (Fisher–Yates)
 function shuffleArr(arr) {
@@ -88,9 +101,21 @@ function localizeLabels(text, lang) {
 //   · 실제로 반환하는 텍스트의 언어 기준으로 품사 라벨을 현지화한다(영어 폴백이면 영어 유지).
 function pickExplanation(explanation, lang) {
   if (!explanation) return '';
-  if (typeof explanation === 'string') return explanation; // 영어 원문 — 라벨도 영어 유지
-  const hasLang = typeof explanation[lang] === 'string' && explanation[lang].trim();
-  const text = hasLang ? explanation[lang] : (explanation.en || '');
+  let exp = explanation;
+  // 다국어 객체를 JSON 문자열로 저장한 경우(스튜디오에서 편집하면 stringify 됨) →
+  // 파싱해서 언어별로 처리. 그래야 각 언어 페이지에 '전체 JSON'이 아니라 해당 언어만 뜬다.
+  if (typeof exp === 'string') {
+    const s = exp.trim();
+    if (s.startsWith('{') && s.endsWith('}')) {
+      try {
+        const parsed = JSON.parse(s);
+        if (parsed && typeof parsed === 'object') exp = parsed;
+      } catch { /* 순수 문자열 해설 — 그대로 사용 */ }
+    }
+  }
+  if (typeof exp === 'string') return exp; // 순수 문자열(영어 원문 등) — 라벨도 영어 유지
+  const hasLang = typeof exp[lang] === 'string' && exp[lang].trim();
+  const text = hasLang ? exp[lang] : (exp.en || '');
   return localizeLabels(text, hasLang ? lang : 'en');
 }
 
@@ -158,6 +183,22 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // 라우트 파라미터에서 videoId 추출
   const { videoId: routeVideoId } = useParams();
 
+  // 개인 복습에서 '틀린 문제만 다시 풀기(?review=1)'로 넘어왔는지.
+  // true 면 이 영상에서 예전에 틀린 문항만 남겨 세션을 구성한다.
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const reviewOnly = searchParams.get('review') === '1';
+  // 복습 카드에서 특정 문제로 바로 이동: ?q=<mode>::<정답텍스트>
+  const reviewQ = searchParams.get('q');
+  // 복습 카드에서 진입(q 지정)했으면: 그 한 문제만 풀고, 끝나면 결과화면 대신 복습으로 복귀
+  const fromReview = reviewOnly && !!reviewQ;
+  const [jumpMode, jumpText] = (() => {
+    if (!reviewQ) return [null, null];
+    const i = reviewQ.indexOf('::');
+    return i < 0 ? [null, reviewQ] : [reviewQ.slice(0, i), reviewQ.slice(i + 2)];
+  })();
+  const jumpedRef = useRef(false);
+
   // 로그인 상태: 외부 주입(prop) 우선, 없으면 Firebase Auth 컨텍스트 참조
   const authCtx = useAuth();
   const { markVideoCompleted } = useGamification();
@@ -184,12 +225,40 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const [modeStars, setModeStars] = useState(null); // Firestore 운영자 설정 별점
   const [remoteChecked, setRemoteChecked] = useState(false); // 배포본 조회 완료 여부 (로딩/CS 구분)
 
+  // 복습 모드: 이 영상에서 예전에 틀린 (모드, 정답텍스트) 조합 집합.
+  // reviewOnly 가 아니면 null → 전체 문항을 그대로 사용한다.
+  const wrongKeys = useMemo(() => {
+    if (!reviewOnly || !routeVideoId) return null;
+    const set = new Set();
+    for (const r of getErrors()) {
+      if (r.source !== 'k-stars' || r.videoId !== routeVideoId) continue;
+      set.add(reviewMatchKey(r.quizMode || 'A', r.word));
+    }
+    return set;
+  }, [reviewOnly, routeVideoId]);
+
+  // 복습 모드일 때만 '틀린 문항'으로 좁힌다. 매칭 결과가 없으면(데이터 불일치 등)
+  // 빈 화면 대신 전체 문항으로 폴백한다.
+  const sessionItems = useMemo(() => {
+    let base = allItems;
+    if (wrongKeys && wrongKeys.size > 0) {
+      const filtered = allItems.filter((q) => wrongKeys.has(reviewMatchKey(modeOf(q), correctTextOf(q))));
+      if (filtered.length > 0) base = filtered;
+    }
+    // 복습 카드에서 특정 문제(q)로 진입했으면 그 한 문제만 남긴다.
+    if (fromReview && jumpText) {
+      const one = base.filter((q) => correctTextOf(q) === jumpText && (!jumpMode || modeOf(q) === jumpMode));
+      if (one.length > 0) return one;
+    }
+    return base;
+  }, [allItems, wrongKeys, fromReview, jumpText, jumpMode]);
+
   // 모드별 문항 맵 + 실제 문항이 존재하는 모드 목록
   const modeMap = useMemo(() => {
     const map = { B: [], I: [], A: [] };
-    for (const q of allItems) map[modeOf(q)].push(q);
+    for (const q of sessionItems) map[modeOf(q)].push(q);
     return map;
-  }, [allItems]);
+  }, [sessionItems]);
   const availableGameModes = MODE_ORDER.filter((m) => modeMap[m].length > 0);
 
   const list = activeMode ? modeMap[activeMode] : [];
@@ -204,6 +273,20 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       setIndex(0);
     }
   }, [activeMode, availableGameModes, modeMap]);
+
+  // 복습 카드에서 '?q=<mode>::<정답>'으로 넘어오면 그 문제로 바로 이동한다(1회).
+  //   · 해당 모드를 자동 선택하고, 그 모드 안에서 틀렸던 문항의 index 로 점프.
+  useEffect(() => {
+    if (!reviewOnly || !jumpText || jumpedRef.current) return;
+    if (availableGameModes.length === 0) return; // 문항 준비 대기
+    const wantMode = jumpMode && modeMap[jumpMode] && modeMap[jumpMode].length > 0
+      ? jumpMode
+      : availableGameModes[0];
+    if (activeMode !== wantMode) { setActiveMode(wantMode); return; } // 모드 확정 후 재실행
+    const i = (modeMap[wantMode] || []).findIndex((q) => correctTextOf(q) === jumpText);
+    if (i >= 0) setIndex(i);
+    jumpedRef.current = true;
+  }, [reviewOnly, jumpText, jumpMode, availableGameModes, activeMode, modeMap]);
 
   // 배포본(published)과 하드코딩을 "모드 단위"로 병합한다.
   //   · 배포된 모드는 배포본이 우선, 배포되지 않은 모드는 하드코딩 폴백
@@ -221,6 +304,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
         setIndex(0);
         setResults([]);
         setPhase('quiz');
+        jumpedRef.current = false; // 새 데이터에 맞춰 복습 점프 재적용
+
       })
       .catch(() => { /* 오프라인/규칙 오류 시 하드코딩 fallback 유지 */ })
       .finally(() => { if (!cancelled) setRemoteChecked(true); });
@@ -293,7 +378,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   // 모드 선택 화면에서도 영상 미리보기가 뜨도록 quiz 가 없으면 라우트 videoId 로 폴백
   const playerVideoId = (quiz && quiz.videoId) || routeVideoId;
-  const playerStartTime = quiz ? quiz.startTime : (allItems[0] && allItems[0].startTime) || 0;
+  const playerStartTime = quiz ? quiz.startTime : (sessionItems[0] && sessionItems[0].startTime) || 0;
   // 문항이 하나도 없으면 위 early-return 으로 플레이어 host 가 DOM 에 없다.
   // 배포본이 늦게 도착하는 영상(하드코딩 0개)을 위해, host 가 생기는 순간 effect 를 다시 돌린다.
   const hasAnyItems = availableGameModes.length > 0;
@@ -536,8 +621,22 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     const p = playerRef.current;
 
     if (isLast) {
-      setPhase('done');
       if (p && p.pauseVideo) p.pauseVideo();
+      // 복습 카드에서 온 경우: 결과화면 대신 복습으로 돌아가 다음 카드를 이어서 본다.
+      //   · 정답(correct)일 때만 그 카드를 복습 완료 처리('good'). 아니면 대기 유지('again').
+      //   · skip 으로 방금 푼 카드를 다음 세션에서 즉시 재등장시키지 않는다(무한 반복 방지).
+      if (fromReview) {
+        const verdict = results[index];
+        const rec = getErrors().find(
+          (r) => getSource(r) === 'k-stars' && r.videoId === routeVideoId
+            && (r.quizMode || 'A') === (jumpMode || 'A') && r.word === jumpText,
+        );
+        if (rec) gradeReview(rec, verdict === 'correct' ? 'good' : 'again');
+        const skip = rec ? `&skip=${encodeURIComponent(reviewKey(rec))}` : '';
+        navigate(`/review?resume=1${skip}`);
+        return;
+      }
+      setPhase('done');
       return;
     }
 
@@ -555,7 +654,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
         p.playVideo();
       }
     }
-  }, [isLast, list, index, quiz?.videoId, resetAttempt]);
+  }, [isLast, list, index, quiz?.videoId, resetAttempt, fromReview, navigate, results, routeVideoId, jumpMode, jumpText]);
 
   const restartAll = useCallback(() => {
     setIndex(0);
@@ -600,6 +699,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   useEffect(() => {
     if (phase !== 'done' || !routeVideoId || !activeMode || list.length === 0) return;
     void markVideoCompleted(); // 하루 학습량(Completed) 카운트 — 점수와 무관하게 세션 완료 시 1회
+    markStepDone('video'); // 오늘의 계획 '영상 1개' 단계 완료 — 실제 K-Stars 영상 퀴즈 완료 시에만
     const correct = results.filter((r) => r === 'correct').length;
     if (correct / list.length < 0.6) return; // 클리어 기준: 정답률 60% 이상
     // 마스터리 기준 = 이 영상에 실제로 존재하는 모드 전부 (배포본 ∪ 하드코딩)
@@ -716,6 +816,11 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             {t('kpop.title')}
           </h1>
           <p className="text-balance break-keep text-sm text-slate-500">{t('kpop.subtitle')}</p>
+          {reviewOnly && (
+            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-fuchsia-100 px-2.5 py-1 text-xs font-bold text-fuchsia-700">
+              {t('kpop.reviewOnly')}
+            </span>
+          )}
         </div>
         <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
           {activeMode && total > 0 && (
@@ -1161,6 +1266,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           answer={answerText}
           correctText={correctText}
           isLast={isLast}
+          fromReview={fromReview}
           liftBtn={liftBtn}
           onReplay={() => {
             setShowReview(false);
@@ -1177,7 +1283,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 // ─────────────────────────────────────────────────────────────────────────────
 // 발음 포인트 복습 창: 채점 결과 + 해설 + '다음 문장 듣기' 흐름 제어
 // ─────────────────────────────────────────────────────────────────────────────
-function ReviewModal({ status, quiz, answer, correctText, isLast, liftBtn, onReplay, onNext, onClose }) {
+function ReviewModal({ status, quiz, answer, correctText, isLast, fromReview, liftBtn, onReplay, onNext, onClose }) {
   const { t, lang } = useLang();
   const isCorrect = status === 'correct';
   const isPartial = status === 'partial';
@@ -1287,7 +1393,7 @@ function ReviewModal({ status, quiz, answer, correctText, isLast, liftBtn, onRep
             onClick={onNext}
             className={`${liftBtn} rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700`}
           >
-            {isLast ? t('kpop.seeResults') : t('kpop.nextSentence')}
+            {isLast ? (fromReview ? t('review.backToReview') : t('kpop.seeResults')) : t('kpop.nextSentence')}
           </button>
         </div>
       </div>

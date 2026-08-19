@@ -129,6 +129,22 @@ export function clearErrors() {
   localStorage.removeItem(STORAGE_KEY)
 }
 
+/** 레코드로부터 저장소 키를 되짚는다(keyOf 의 역함수 — 삭제용). */
+function keyOfRecord(r: ErrorRecord): string {
+  const source = getSource(r)
+  if (source === 'k-stars') return `kstars:${r.word}`
+  if (source === 'shadowing') return `shadow:${r.word}`
+  return r.word
+}
+
+/** 선택한 오답 레코드들만 삭제한다(전체 삭제와 별개). */
+export function removeErrors(records: ErrorRecord[]) {
+  if (records.length === 0) return
+  const data = load()
+  for (const r of records) delete data[keyOfRecord(r)]
+  save(data)
+}
+
 export function getMasteryStatus(r: ErrorRecord): MasteryStatus {
   const lastMiss = Math.max(...r.missTimestamps)
   const lastCorrect = r.correctTimestamps.length > 0 ? Math.max(...r.correctTimestamps) : null

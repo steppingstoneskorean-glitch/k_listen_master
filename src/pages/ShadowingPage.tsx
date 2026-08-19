@@ -5,7 +5,8 @@
 //     원어민 음원과 자기 녹음을 직접 비교하고 스스로 평가한다(섀도잉의 본질).
 //   연동:
 //     · 스트릭 — 세션 완료 시 markVideoCompleted()
-//     · 오답노트 — '더 연습'은 recordError, '잘 됐어요'는 recordCorrect (source: 'shadowing')
+//     · 자가 평가('더 연습'/'잘 됐어요')는 진행 흐름 제어에만 쓴다 —
+//       섀도잉은 개인 복습(오답노트)에 기록을 남기지 않는다(사용자 요청).
 //   부가: 재생 중 파형 애니메이션 / 원어민·내 목소리 배타 재생 / 배속 선택
 //   녹음은 MediaRecorder 사용, 로컬 메모리 전용(서버 전송 없음).
 
@@ -20,12 +21,18 @@ import {
   DictationSentence,
 } from '@/data/sentences'
 import { BEGINNER_SHADOW_PAIRS, wordAudioUrl, sample } from '@/data/minimalPairs'
-import { recordError, recordCorrect } from '@/lib/errorHistory'
 import { playExclusive, stopExclusive } from '@/lib/exclusivePlayer'
 import ShadowCompare from '@/components/ShadowCompare'
+import ShadowScore from '@/components/ShadowScore'
 
 const SESSION_SIZE = 8
 const RATES = [0.5, 0.75, 1, 1.25] // 배속 옵션
+
+// AI 발음 채점(Azure) 노출 여부 — 아직 동의 UI·개인정보처리방침·CSP 미완이라 프로덕션에선 숨긴다.
+//   · 개발환경에서는 항상 표시(품질 테스트).
+//   · 프로덕션에서 켜려면 빌드 시 VITE_ENABLE_SHADOW_SCORE=1 을 설정한다.
+const AI_SCORE_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_ENABLE_SHADOW_SCORE === '1'
 
 function recordingSupported(): boolean {
   return typeof navigator !== 'undefined'
@@ -230,6 +237,7 @@ function ShadowItem({
   const [recording, setRecording] = useState(false)
   const [recordedUrl, setRecordedUrl] = useState<string | null>(null)
   const [micBlocked, setMicBlocked] = useState(false)
+  const [scoreNonce, setScoreNonce] = useState(0) // 녹음 시작 시 증가 → AI 채점 자동 트리거
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const mediaRecRef = useRef<MediaRecorder | null>(null)
@@ -290,6 +298,7 @@ function ShadowItem({
       mediaRecRef.current = rec
       rec.start()
       setRecording(true)
+      setScoreNonce(n => n + 1) // 녹음과 동시에 AI 채점 시작(같은 발화를 채점·비교 둘 다)
     } catch {
       // 마이크 불가(권한 거부/Permissions-Policy 차단 등) — 듣기 + 자가 평가만.
       // 예전엔 조용히 삼켜서 사용자가 원인을 몰랐다. 이제 안내를 노출한다.
@@ -303,16 +312,9 @@ function ShadowItem({
     else setRecording(false)
   }
 
-  // 자가 평가 → 오답노트 반영 후 다음
-  const markReview = () => {
-    const lvl = sentence.level === 'advanced' ? 3 : 2
-    recordError(sentence.fullSentence, '', [], lvl, { source: 'shadowing' })
-    onDone(true)
-  }
-  const markGood = () => {
-    recordCorrect(sentence.fullSentence, { source: 'shadowing' })
-    onDone(false)
-  }
+  // 자가 평가 → 다음 문장으로. 섀도잉은 개인 복습에 기록을 남기지 않는다(사용자 요청).
+  const markReview = () => { onDone(true) }
+  const markGood = () => { onDone(false) }
 
   return (
     <div className="w-full max-w-md flex flex-col items-center gap-6">
@@ -377,6 +379,11 @@ function ShadowItem({
         <p className="text-[12px] text-slate-500 text-center max-w-xs leading-snug">{t('shadowing.recordPrompt')}</p>
       )}
 
+      {/* AI 발음 채점 (Azure) — 녹음 버튼이 트리거, 같은 발화를 자동 채점 (프로덕션 숨김) */}
+      {AI_SCORE_ENABLED && (
+        <ShadowScore referenceText={sentence.fullSentence} triggerNonce={scoreNonce} hideButton />
+      )}
+
       {/* 자가 평가 → 다음 (두 버튼 색상 통일) */}
       <div className="w-full flex items-center gap-3">
         <button
@@ -416,6 +423,8 @@ function ShadowPairItem({
   const [recording, setRecording] = useState(false)
   const [recordedUrl, setRecordedUrl] = useState<string | null>(null)
   const [micBlocked, setMicBlocked] = useState(false)
+  const [target, setTarget] = useState<string>(pair[0]) // AI 채점 대상 단어
+  const [scoreNonce, setScoreNonce] = useState(0) // 녹음 시작 시 증가 → 채점 트리거
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const seqTimer = useRef<number | null>(null)
@@ -507,6 +516,7 @@ function ShadowPairItem({
       mediaRecRef.current = rec
       rec.start()
       setRecording(true)
+      setScoreNonce(n => n + 1) // 녹음과 동시에 목표 단어 AI 채점 시작
     } catch {
       setRecording(false)
       setMicBlocked(true)
@@ -526,15 +536,9 @@ function ShadowPairItem({
     playExclusive(a)
   }
 
-  const label = pair.join(' / ')
-  const markReview = () => {
-    recordError(label, '', pair, 1, { source: 'shadowing' })
-    onDone(true)
-  }
-  const markGood = () => {
-    recordCorrect(label, { source: 'shadowing' })
-    onDone(false)
-  }
+  // 섀도잉은 개인 복습에 기록을 남기지 않는다(사용자 요청) — 자가 평가는 진행 흐름에만 쓴다.
+  const markReview = () => { onDone(true) }
+  const markGood = () => { onDone(false) }
 
   return (
     <div className="w-full max-w-md flex flex-col items-center gap-6">
@@ -555,19 +559,24 @@ function ShadowPairItem({
           {pair.map(word => (
             <button
               key={word}
-              onClick={() => playWord(word)}
+              onClick={() => { playWord(word); setTarget(word) }}
               translate="no"
-              className={`notranslate rounded-2xl border-2 py-5 text-2xl font-black transition-all ${
+              className={`notranslate relative rounded-2xl border-2 py-5 text-2xl font-black transition-all ${
                 playingWord === word
                   ? 'border-emerald-400 bg-emerald-50 text-emerald-700 scale-105'
-                  : 'border-slate-200 bg-white text-slate-800 hover:border-emerald-300 hover:bg-emerald-50/40'
+                  : target === word
+                    ? 'border-indigo-400 bg-indigo-50/50 text-slate-800'
+                    : 'border-slate-200 bg-white text-slate-800 hover:border-emerald-300 hover:bg-emerald-50/40'
               }`}
             >
+              {target === word && (
+                <span className="absolute top-1.5 right-2 text-[10px] font-bold text-indigo-500">🎯</span>
+              )}
               {word}
             </button>
           ))}
         </div>
-        <p className="text-[11px] text-slate-400 text-center">{t('shadowing.pairTapHint')}</p>
+        <p className="text-[11px] text-slate-400 text-center">{t('shadowing.pairScoreTargetHint')}</p>
       </div>
 
       {/* 번갈아 듣기 + 배속 */}
@@ -625,6 +634,17 @@ function ShadowPairItem({
         </div>
       ) : (
         <p className="text-[12px] text-slate-500 text-center max-w-xs leading-snug">{t('shadowing.pairRecordPrompt')}</p>
+      )}
+
+      {/* AI 발음 채점 — 선택한 목표 단어 기준, 녹음 버튼이 트리거 (프로덕션 숨김) */}
+      {AI_SCORE_ENABLED && canRecord && (
+        <div className="w-full flex flex-col items-center gap-2">
+          <p className="text-[11px] text-slate-500 text-center">
+            🎯 {t('shadowing.scoreTargetWord')}:{' '}
+            <span translate="no" className="notranslate font-bold text-indigo-600">{target}</span>
+          </p>
+          <ShadowScore referenceText={target} triggerNonce={scoreNonce} hideButton />
+        </div>
       )}
 
       {/* 자가 평가 → 다음 */}

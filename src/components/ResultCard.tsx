@@ -19,7 +19,7 @@ export default function ResultCard({ thumbnailUrl, title, stars, score, correctC
     <div className="mx-auto aspect-square w-full max-w-[380px] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-indigo-600 to-fuchsia-600 p-4 shadow-2xl">
       <div className="flex h-full w-full flex-col overflow-hidden rounded-[2rem] bg-white">
         {/* 썸네일 배너 (없으면 그라데이션 + 로고) */}
-        <div className="relative h-[44%] w-full shrink-0 overflow-hidden bg-gradient-to-br from-indigo-500 to-fuchsia-500">
+        <div className="relative h-[40%] w-full shrink-0 overflow-hidden bg-gradient-to-br from-indigo-500 to-fuchsia-500">
           {thumbnailUrl ? (
             <img src={thumbnailUrl} alt="" crossOrigin="anonymous" className="h-full w-full object-cover" />
           ) : (
@@ -27,18 +27,18 @@ export default function ResultCard({ thumbnailUrl, title, stars, score, correctC
           )}
         </div>
 
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-4 text-center">
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-1.5 px-5 py-3 text-center">
           <p className="text-xs font-black uppercase tracking-widest text-indigo-500">🎤 K-LISTEN MASTER</p>
-          <p className="max-w-full truncate rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-extrabold text-indigo-700">
+          <p className="max-w-full truncate rounded-full bg-indigo-50 px-4 py-1 text-sm font-extrabold text-indigo-700">
             {title.toUpperCase()} {'⭐'.repeat(Math.max(0, Math.min(5, stars)))}
           </p>
-          <p className="text-6xl font-black tabular-nums text-slate-900">{score.toLocaleString()}</p>
+          <p className="text-5xl font-black leading-none tabular-nums text-slate-900">{score.toLocaleString()}</p>
           {correctCount !== undefined && total !== undefined && (
             <p className="text-sm font-semibold text-slate-500">
               {correctCount} / {total} correct
             </p>
           )}
-          {tagline && <p className="mt-1 text-sm font-bold text-fuchsia-600">{tagline}</p>}
+          {tagline && <p className="text-sm font-bold text-fuchsia-600">{tagline}</p>}
         </div>
       </div>
     </div>

@@ -105,10 +105,13 @@ export default function GameHubPage() {
   const initialMode: ModeFilter = ['B', 'I', 'A'].includes(params.get('mode') ?? '')
     ? (params.get('mode') as ModeFilter)
     : '__all__'
+  // '오늘의 계획 → 영상' 진입(videos=1): Step & Step 퀴즈를 숨기고 K-Stars 영상만 보여준다.
+  const videosOnly = params.get('videos') === '1'
 
   const [modalTarget, setModalTarget] = useState<string | null>(null)
   const [showUpgrade, setShowUpgrade] = useState(false)
-  const [artistFilter, setArtistFilter] = useState<HubArtist>('__all__')
+  // 아티스트 필터는 임시 제거(항상 전체). 복구 시 setter 와 아래 FilterDropdown 을 되살린다.
+  const [artistFilter] = useState<HubArtist>('__all__')
   const [modeFilter, setModeFilter] = useState<ModeFilter>(initialMode)
   const [sortKey, setSortKey] = useState<SortKey>('popular')
   const [desc, setDesc] = useState(true) // 기본: 내림차순(많이 도전한 순)
@@ -136,6 +139,7 @@ export default function GameHubPage() {
   const visible = useMemo(() => {
     const filtered = items.filter(
       it =>
+        (!videosOnly || it.artist !== STEP_ARTIST) &&
         (artistFilter === '__all__' || it.artist === artistFilter) &&
         (modeFilter === '__all__' ||
           videoModes(it.videoId, it.modes).some(m => m.mode === modeFilter)),
@@ -146,7 +150,7 @@ export default function GameHubPage() {
       return desc ? vb - va : va - vb
     })
     return sorted
-  }, [items, artistFilter, modeFilter, sortKey, desc, videoModes])
+  }, [items, artistFilter, modeFilter, sortKey, desc, videoModes, videosOnly])
 
   const modeName = (m: ModeFilter) =>
     m === 'B' ? t('mode.beginner') : m === 'I' ? t('mode.intermediate') : t('mode.advanced')
@@ -181,14 +185,8 @@ export default function GameHubPage() {
           </div>
 
           {/* ── 필터 + 정렬 바 ── */}
+          {/* 아티스트별 필터는 임시 제거됨 — 복구하려면 여기에 FilterDropdown(kartist.filterArtist)을 다시 추가 */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <FilterDropdown
-              label={t('kartist.filterArtist')}
-              value={artistFilter}
-              options={HUB_ARTISTS}
-              renderOption={v => <span>{v === '__all__' ? t('kartist.all') : v}</span>}
-              onSelect={setArtistFilter}
-            />
             <FilterDropdown
               label={t('hub.filterMode')}
               value={modeFilter}

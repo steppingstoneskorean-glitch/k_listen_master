@@ -5,8 +5,9 @@ import { useAuth } from '@/lib/auth'
 import { useGamification } from '@/lib/gamification'
 import { openCookieSettings } from '@/lib/cookieConsent'
 import { loadPlan, orderedDoneCount, ORDERED_STEPS } from '@/lib/todayPlan'
-import GoalEditModal from '@/components/GoalEditModal'
+import { useUserProfile } from '@/lib/userProfile'
 import ReminderSettings from '@/components/ReminderSettings'
+import NicknameModal from '@/components/NicknameModal'
 import AccountDeleteModal from '@/components/AccountDeleteModal'
 
 const PAYHIP_URL = import.meta.env.VITE_PAYHIP_URL ?? 'https://payhip.com/StepKorean'
@@ -52,10 +53,11 @@ export default function ProfilePage() {
   const { t, lang, setLang } = useLang()
   const { user, logout } = useAuth()
   const { progress } = useGamification()
+  const { nickname, saveNickname } = useUserProfile()
   const navigate = useNavigate()
 
-  const [showGoal, setShowGoal] = useState(false)
   const [showReminder, setShowReminder] = useState(false)
+  const [showNickname, setShowNickname] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
   const [showLang, setShowLang] = useState(false)
   const [showComingSoon, setShowComingSoon] = useState(false)
@@ -72,8 +74,14 @@ export default function ProfilePage() {
 
   return (
     <>
-      {showGoal && <GoalEditModal onClose={() => setShowGoal(false)} />}
       {showReminder && <ReminderSettings onClose={() => setShowReminder(false)} />}
+      {showNickname && (
+        <NicknameModal
+          defaultName={nickname ?? ''}
+          onClose={() => setShowNickname(false)}
+          onSubmit={async name => { await saveNickname(name); setShowNickname(false) }}
+        />
+      )}
       {showDelete && <AccountDeleteModal onClose={() => setShowDelete(false)} />}
       {showComingSoon && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" onClick={() => setShowComingSoon(false)}>
@@ -99,15 +107,11 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* 통계 */}
-          <div className="mt-3 grid grid-cols-3 gap-2.5">
+          {/* 통계 — '오늘 목표'는 '오늘 계획'과 혼동되어 제거 */}
+          <div className="mt-3 grid grid-cols-2 gap-2.5">
             <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center">
               <div className="text-lg font-black text-slate-900">🔥 {progress.currentStreak}</div>
               <div className="mt-0.5 text-[11px] text-slate-400">{t('profile.streakLabel')}</div>
-            </div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center">
-              <div className="text-lg font-black text-slate-900 tabular-nums">{progress.completedVideosToday}/{progress.dailyGoal}</div>
-              <div className="mt-0.5 text-[11px] text-slate-400">{t('mission.goalLabel')}</div>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center">
               <div className="text-lg font-black text-slate-900 tabular-nums">{orderedDoneCount(plan)}/{ORDERED_STEPS.length}</div>
@@ -117,8 +121,8 @@ export default function ProfilePage() {
 
           {/* 학습 설정 */}
           <Section title={t('profile.sectionLearning')}>
-            <Row icon="🎯" label={t('profile.editGoal')} onClick={() => setShowGoal(true)}
-              right={<span className="text-xs font-bold text-slate-400">{progress.dailyGoal}</span>} />
+            <Row icon="🏷️" label={t('profile.editNickname')} onClick={() => setShowNickname(true)}
+              right={<span className="max-w-[8rem] truncate text-xs font-bold text-slate-400">{nickname ?? '—'}</span>} />
             <Row icon="🔔" label={t('profile.reminder')} onClick={() => setShowReminder(true)}
               right={<span className={`text-xs font-bold ${progress.reminderEnabled ? 'text-emerald-500' : 'text-slate-300'}`}>{progress.reminderEnabled ? 'ON' : 'OFF'}</span>} />
             <Row icon="🌐" label={t('profile.language')} onClick={() => setShowLang(s => !s)}

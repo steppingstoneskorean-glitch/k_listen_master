@@ -19,6 +19,7 @@
     "firebase": "^12.15.0",
     "firebase-admin": "^14.2.0",
     "html-to-image": "^1.11.13",
+    "microsoft-cognitiveservices-speech-sdk": "^1.51.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0"

@@ -59,6 +59,8 @@ function isDue(card: SrsCard | undefined, now: number): boolean {
 export function getDueReviews(now: number = Date.now()): ErrorRecord[] {
   const map = loadMap()
   return getErrors()
+    // 섀도잉(따라 말하기)은 개인 복습 대상에서 제외한다(사용자 요청).
+    .filter(r => getSource(r) !== 'shadowing')
     .filter(r => isDue(map[reviewKey(r)], now))
     .sort((a, b) => {
       const ca = map[reviewKey(a)]
@@ -75,7 +77,11 @@ export function getDueReviews(now: number = Date.now()): ErrorRecord[] {
 /** 복습 대기 카드 수 — 대시보드/네비 배지에 사용. */
 export function getDueCount(now: number = Date.now()): number {
   const map = loadMap()
-  return getErrors().reduce((n, r) => (isDue(map[reviewKey(r)], now) ? n + 1 : n), 0)
+  return getErrors().reduce(
+    // 섀도잉은 복습 대상이 아니므로 대기 수에서도 제외한다(사용자 요청).
+    (n, r) => (getSource(r) !== 'shadowing' && isDue(map[reviewKey(r)], now) ? n + 1 : n),
+    0,
+  )
 }
 
 /** 특정 카드의 현재 스케줄 (없으면 '새 카드' 기본값). */

@@ -15,7 +15,10 @@ import { app, db } from './firebase'
 
 export type EnableResult = 'ok' | 'unsupported' | 'denied' | 'no-vapid' | 'error'
 
-const VAPID_KEY = import.meta.env.VITE_FIREBASE_VAPID_KEY as string | undefined
+// Vercel 등에 값을 붙여넣을 때 앞뒤 공백/따옴표가 섞이면 getToken 이 실패하므로 방어적으로 정리한다.
+const VAPID_KEY = (import.meta.env.VITE_FIREBASE_VAPID_KEY as string | undefined)
+  ?.trim()
+  .replace(/^["']|["']$/g, '')
 
 /** 이 브라우저가 웹 푸시를 지원하는지 (SW + Notification + PushManager). */
 export function pushSupported(): boolean {
@@ -46,9 +49,25 @@ async function registerFcmSw(): Promise<ServiceWorkerRegistration> {
   })
   // 별도 스코프로 등록해 vite-plugin-pwa 의 Workbox SW(스코프 '/')와 충돌하지 않게 한다.
   // (Firebase 기본 관례와 동일한 스코프)
-  return navigator.serviceWorker.register(`/firebase-messaging-sw.js?${params.toString()}`, {
+  const reg = await navigator.serviceWorker.register(`/firebase-messaging-sw.js?${params.toString()}`, {
     scope: '/firebase-cloud-messaging-push-scope',
   })
+  // getToken 은 '활성화된' SW 를 요구한다 — 최초 등록 직후 installing/waiting 상태면
+  // 활성화될 때까지 기다린다(SW 미준비로 getToken 이 error 로 실패하던 문제 방지).
+  if (!reg.active) {
+    await new Promise<void>(resolve => {
+      const sw = reg.installing || reg.waiting
+      if (!sw) { resolve(); return }
+      const onChange = () => {
+        if (sw.state === 'activated') {
+          sw.removeEventListener('statechange', onChange)
+          resolve()
+        }
+      }
+      sw.addEventListener('statechange', onChange)
+    })
+  }
+  return reg
 }
 
 /**
@@ -72,7 +91,10 @@ export async function enablePush(uid: string): Promise<EnableResult> {
       vapidKey: VAPID_KEY,
       serviceWorkerRegistration: swReg,
     })
-    if (!token) return 'error'
+    if (!token) {
+      console.warn('[fcm] enablePush: getToken returned an empty token')
+      return 'error'
+    }
 
     await setDoc(
       doc(db, 'users', uid),
@@ -81,7 +103,9 @@ export async function enablePush(uid: string): Promise<EnableResult> {
     )
     return 'ok'
   } catch (err) {
-    console.warn('[fcm] enablePush failed:', err)
+    // 원격 디버깅(chrome://inspect)에서 정확한 원인을 볼 수 있도록 코드/메시지를 함께 남긴다.
+    const e = err as { code?: string; message?: string }
+    console.warn('[fcm] enablePush failed:', e?.code ?? e?.message ?? err, err)
     return 'error'
   }
 }
