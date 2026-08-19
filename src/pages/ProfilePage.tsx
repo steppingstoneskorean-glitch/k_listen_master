@@ -4,6 +4,7 @@ import { useLang, LANGS } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
 import { useGamification } from '@/lib/gamification'
 import { openCookieSettings } from '@/lib/cookieConsent'
+import { AI_SCORE_ENABLED, hasShadowConsent, setShadowConsent } from '@/lib/shadowConsent'
 import { loadPlan, orderedDoneCount, ORDERED_STEPS } from '@/lib/todayPlan'
 import { useUserProfile } from '@/lib/userProfile'
 import ReminderSettings from '@/components/ReminderSettings'
@@ -61,6 +62,7 @@ export default function ProfilePage() {
   const [showDelete, setShowDelete] = useState(false)
   const [showLang, setShowLang] = useState(false)
   const [showComingSoon, setShowComingSoon] = useState(false)
+  const [aiConsent, setAiConsent] = useState(hasShadowConsent())
 
   const plan = loadPlan()
   const name = user?.displayName || user?.email?.split('@')[0] || 'Guest'
@@ -144,6 +146,14 @@ export default function ProfilePage() {
                   ))}
                 </div>
               </div>
+            )}
+            {AI_SCORE_ENABLED && (
+              <Row
+                icon="🎤"
+                label={t('profile.aiScoreConsent')}
+                onClick={() => { const v = !aiConsent; setShadowConsent(v); setAiConsent(v) }}
+                right={<span className={`text-xs font-bold ${aiConsent ? 'text-emerald-500' : 'text-slate-300'}`}>{aiConsent ? 'ON' : 'OFF'}</span>}
+              />
             )}
           </Section>
 

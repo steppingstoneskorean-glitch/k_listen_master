@@ -24,15 +24,11 @@ import { BEGINNER_SHADOW_PAIRS, wordAudioUrl, sample } from '@/data/minimalPairs
 import { playExclusive, stopExclusive } from '@/lib/exclusivePlayer'
 import ShadowCompare from '@/components/ShadowCompare'
 import ShadowScore from '@/components/ShadowScore'
+import { AI_SCORE_ENABLED } from '@/lib/shadowConsent'
 
 const SESSION_SIZE = 8
 const RATES = [0.5, 0.75, 1, 1.25] // 배속 옵션
 
-// AI 발음 채점(Azure) 노출 여부 — 아직 동의 UI·개인정보처리방침·CSP 미완이라 프로덕션에선 숨긴다.
-//   · 개발환경에서는 항상 표시(품질 테스트).
-//   · 프로덕션에서 켜려면 빌드 시 VITE_ENABLE_SHADOW_SCORE=1 을 설정한다.
-const AI_SCORE_ENABLED =
-  import.meta.env.DEV || import.meta.env.VITE_ENABLE_SHADOW_SCORE === '1'
 
 function recordingSupported(): boolean {
   return typeof navigator !== 'undefined'

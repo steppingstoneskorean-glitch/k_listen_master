@@ -26,7 +26,8 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { sub: '3. 이용자 기기에만 저장되는 정보 (회사 서버 미수집)' },
           { ul: [
             '오답 단어·문장 기록(오답 노트)은 회사 서버로 전송되지 않고, 이용자 브라우저의 로컬 저장소(localStorage)에만 보관됩니다. 브라우저 데이터를 삭제하면 함께 삭제됩니다.',
-            '섀도잉(따라 말하기) 기능에서 녹음한 이용자의 음성은 원어민 발음과의 비교(자가 학습) 목적으로만 사용되며, 이용자 기기 내에서만 임시로 재생됩니다. 회사 서버나 제3자로 전송·저장되지 않으며, 다음 문장으로 넘어가거나 페이지를 벗어나면 즉시 삭제됩니다. 이 기능은 이용자가 마이크 사용을 허용한 경우에만 동작합니다.',
+            '섀도잉(따라 말하기) 기능에서 녹음한 음성은 기본적으로 원어민 발음과의 자가 비교 목적으로 이용자 기기 내에서만 임시로 재생되며, 회사 서버나 제3자로 전송·저장되지 않고 다음 문장으로 넘어가거나 페이지를 벗어나면 즉시 삭제됩니다. 이 기능은 이용자가 마이크 사용을 허용한 경우에만 동작합니다.',
+            "(선택) 이용자가 'AI 발음 채점' 사용에 별도로 동의한 경우에 한하여, 해당 발화 음성이 발음 평가만을 위해 Microsoft Azure Speech 서비스(미국)로 실시간 전송됩니다. Azure는 이 음성을 저장하지 않으며(실시간 처리 후 미저장) 채점 결과(점수)만 반환합니다. 이 채점은 명시적 동의가 있을 때만 동작하고 동의는 언제든 철회할 수 있으며, 자세한 내용은 제3조(개인정보 처리의 위탁 및 국외 이전)에 따릅니다.",
           ] },
         ],
       },
@@ -51,9 +52,10 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
             rows: [
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', '회원 인증, 데이터베이스 저장·운영, 서비스 호스팅, 웹 이용 통계 분석', '제1조의 로그인 식별 정보, 닉네임, 점수·학습 기록, 쿠키 기반 서비스 이용 기록', '미국'],
               ['Apple Inc.', '애플 계정 소셜 로그인 인증', '이메일 주소, 이름', '미국'],
+              ['Microsoft Corporation (Azure AI Speech)', 'AI 발음 채점(발음 평가) — 이용자가 별도로 동의한 경우에만', '섀도잉 발화 음성(실시간 처리되며 Azure에 저장되지 않음)', '미국'],
             ],
           } },
-          { note: '이전 일시 및 방법: 서비스 이용 시점에 정보통신망을 통해 수시로 이전됩니다. 보유·이용 기간: 제5조에 따른 회원 탈퇴 또는 삭제 요청 시까지. 이용자는 개인정보의 국외 이전을 거부할 수 있으나, 이 경우 로그인 기반 기능(점수 저장, 리더보드 등)의 이용이 제한될 수 있습니다.' },
+          { note: '이전 일시 및 방법: 서비스 이용 시점에 정보통신망을 통해 수시로 이전됩니다. 보유·이용 기간: 제5조에 따른 회원 탈퇴 또는 삭제 요청 시까지(단, AI 발음 채점을 위한 음성은 Azure에서 저장하지 않고 채점 후 즉시 폐기됩니다). 이용자는 개인정보의 국외 이전을 거부할 수 있으며, AI 발음 채점 동의는 사용하지 않거나 언제든 철회할 수 있습니다. 국외 이전을 거부하는 경우 로그인 기반 기능(점수 저장, 리더보드 등)의 이용이 제한될 수 있습니다.' },
         ],
       },
       {
@@ -108,7 +110,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: '시행일',
-    effectiveDate: '2026-08-08',
+    effectiveDate: '2026-08-19',
     footer: '본 방침은 관련 법령 및 서비스 변경에 따라 개정될 수 있습니다.',
   },
 
@@ -133,7 +135,8 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { sub: '3. Information stored only on your device (not collected by the Company)' },
           { ul: [
             'Your record of missed words/sentences (error notes) is not sent to the Company’s servers; it is kept only in your browser’s local storage (localStorage). Clearing your browser data deletes it.',
-            'Voice you record in the shadowing feature is used only to compare with native pronunciation (self-study) and is played back only temporarily on your device. It is not transmitted to or stored on the Company’s servers or any third party, and is deleted immediately when you move to the next sentence or leave the page. This feature works only if you allow microphone access.',
+            'By default, voice you record in the shadowing feature is used only to compare with native pronunciation (self-study), is played back only temporarily on your device, is not transmitted to or stored on the Company’s servers or any third party, and is deleted immediately when you move to the next sentence or leave the page. This feature works only if you allow microphone access.',
+            'Optional: only if you separately consent to "AI pronunciation scoring", your spoken audio is sent in real time to the Microsoft Azure Speech service (in the US) solely for pronunciation assessment. Azure does not store this audio (real-time processing, no retention) and returns only the scores. This scoring runs only with your explicit consent, which you can withdraw at any time; see Article 3 (Outsourcing and Overseas Transfer of Personal Data) for details.',
           ] },
         ],
       },
@@ -158,9 +161,10 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
             rows: [
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', 'User authentication, database storage & operation, hosting, web usage analytics', 'The login identifiers, nickname, score/learning records, and cookie-based usage records in Article 1', 'USA'],
               ['Apple Inc.', 'Apple account social login authentication', 'Email address, name', 'USA'],
+              ['Microsoft Corporation (Azure AI Speech)', 'AI pronunciation scoring (assessment) — only if you separately consent', 'Shadowing spoken audio (processed in real time; not stored by Azure)', 'USA'],
             ],
           } },
-          { note: 'Timing and method of transfer: transferred from time to time via the network at the point of Service use. Retention/use period: until account withdrawal or a deletion request under Article 5. You may refuse the overseas transfer of your personal data, but in that case login-based features (score saving, leaderboard, etc.) may be restricted.' },
+          { note: 'Timing and method of transfer: transferred from time to time via the network at the point of Service use. Retention/use period: until account withdrawal or a deletion request under Article 5 (audio for AI pronunciation scoring is not stored by Azure and is discarded immediately after scoring). You may refuse the overseas transfer of your personal data, and you may decline or withdraw consent to AI pronunciation scoring at any time; if you refuse the overseas transfer, login-based features (score saving, leaderboard, etc.) may be restricted.' },
         ],
       },
       {
@@ -215,7 +219,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: 'Effective date',
-    effectiveDate: '2026-08-08',
+    effectiveDate: '2026-08-19',
     footer: 'This Policy may be revised in line with applicable laws and changes to the Service.',
   },
 
@@ -240,7 +244,8 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { sub: '3. 利用者の端末にのみ保存される情報（当社サーバー未収集）' },
           { ul: [
             '誤答した単語・文の記録（復習ノート）は当社サーバーへ送信されず、利用者のブラウザのローカルストレージ（localStorage）にのみ保存されます。ブラウザデータを削除すると併せて削除されます。',
-            'シャドーイング機能で録音した利用者の音声は、ネイティブ発音との比較（自己学習）のみを目的として使用され、利用者の端末内で一時的に再生されるだけです。当社サーバーや第三者へ送信・保存されることはなく、次の文へ進むかページを離れると直ちに削除されます。この機能は利用者がマイクの使用を許可した場合にのみ動作します。',
+            'シャドーイング機能で録音した音声は、既定ではネイティブ発音との自己比較のみを目的として利用者の端末内で一時的に再生されるだけで、当社サーバーや第三者へ送信・保存されることはなく、次の文へ進むかページを離れると直ちに削除されます。この機能は利用者がマイクの使用を許可した場合にのみ動作します。',
+            '（任意）利用者が「AI発音採点」の利用に別途同意した場合に限り、その発話音声が発音評価のためだけにMicrosoft Azure Speechサービス（米国）へリアルタイムで送信されます。Azureはこの音声を保存せず（リアルタイム処理・非保存）、採点結果（スコア）のみを返します。この採点は明示的な同意がある場合にのみ動作し、同意はいつでも撤回でき、詳細は第3条（個人情報処理の委託および国外移転）によります。',
           ] },
         ],
       },
@@ -265,9 +270,10 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
             rows: [
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', '会員認証、データベースの保存・運用、サービスホスティング、ウェブ利用統計分析', '第1条のログイン識別情報、ニックネーム、スコア・学習記録、クッキーに基づく利用記録', '米国'],
               ['Apple Inc.', 'Apple アカウントのソーシャルログイン認証', 'メールアドレス、氏名', '米国'],
+              ['Microsoft Corporation (Azure AI Speech)', 'AI発音採点（発音評価）— 利用者が別途同意した場合のみ', 'シャドーイングの発話音声（リアルタイム処理され、Azureに保存されません）', '米国'],
             ],
           } },
-          { note: '移転の日時および方法：サービス利用時点で情報通信網を通じて随時移転されます。保有・利用期間：第5条に基づく退会または削除請求時まで。利用者は個人情報の国外移転を拒否できますが、その場合ログインに基づく機能（スコア保存、リーダーボード等）の利用が制限されることがあります。' },
+          { note: '移転の日時および方法：サービス利用時点で情報通信網を通じて随時移転されます。保有・利用期間：第5条に基づく退会または削除請求時まで（ただしAI発音採点のための音声はAzureに保存されず、採点後直ちに破棄されます）。利用者は個人情報の国外移転を拒否でき、AI発音採点の同意も利用しないか、いつでも撤回できます。国外移転を拒否する場合、ログインに基づく機能（スコア保存、リーダーボード等）の利用が制限されることがあります。' },
         ],
       },
       {
@@ -322,7 +328,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: '施行日',
-    effectiveDate: '2026-08-08',
+    effectiveDate: '2026-08-19',
     footer: '本方針は関連法令およびサービスの変更に応じて改定されることがあります。',
   },
 
@@ -347,7 +353,8 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { sub: '3. Información almacenada solo en tu dispositivo (no recopilada por la Empresa)' },
           { ul: [
             'Tu registro de palabras/frases falladas (notas de errores) no se envía a los servidores de la Empresa; se guarda solo en el almacenamiento local (localStorage) de tu navegador. Al borrar los datos del navegador, se elimina.',
-            'La voz que grabas en la función de shadowing se usa únicamente para compararla con la pronunciación nativa (autoaprendizaje) y solo se reproduce temporalmente en tu dispositivo. No se transmite ni se almacena en los servidores de la Empresa ni en terceros, y se elimina de inmediato al pasar a la siguiente frase o salir de la página. Esta función solo funciona si permites el acceso al micrófono.',
+            'De forma predeterminada, la voz que grabas en la función de shadowing se usa únicamente para compararla con la pronunciación nativa (autoaprendizaje), solo se reproduce temporalmente en tu dispositivo, no se transmite ni se almacena en los servidores de la Empresa ni en terceros, y se elimina de inmediato al pasar a la siguiente frase o salir de la página. Esta función solo funciona si permites el acceso al micrófono.',
+            'Opcional: solo si consientes por separado la "puntuación de pronunciación con IA", tu voz grabada se envía en tiempo real al servicio Microsoft Azure Speech (en EE. UU.) únicamente para la evaluación de la pronunciación. Azure no almacena este audio (procesamiento en tiempo real, sin retención) y solo devuelve las puntuaciones. Esta puntuación funciona solo con tu consentimiento explícito, que puedes retirar en cualquier momento; consulta el Artículo 3 (Encargo y transferencia internacional de datos) para más detalles.',
           ] },
         ],
       },
@@ -372,9 +379,10 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
             rows: [
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', 'Autenticación de usuarios, almacenamiento y operación de la base de datos, alojamiento, analítica web', 'Los identificadores de inicio de sesión, el apodo, los registros de puntuación/aprendizaje y los registros de uso basados en cookies del Artículo 1', 'EE. UU.'],
               ['Apple Inc.', 'Autenticación de inicio de sesión social con cuenta de Apple', 'Dirección de correo, nombre', 'EE. UU.'],
+              ['Microsoft Corporation (Azure AI Speech)', 'Puntuación de pronunciación con IA (evaluación) — solo si consientes por separado', 'Voz del shadowing (procesada en tiempo real; Azure no la almacena)', 'EE. UU.'],
             ],
           } },
-          { note: 'Momento y método de la transferencia: se transfiere de forma periódica a través de la red en el momento del uso del Servicio. Periodo de conservación/uso: hasta la baja o una solicitud de eliminación conforme al Artículo 5. Puedes rechazar la transferencia internacional de tus datos, pero en ese caso las funciones basadas en inicio de sesión (guardado de puntuaciones, clasificación, etc.) pueden quedar restringidas.' },
+          { note: 'Momento y método de la transferencia: se transfiere de forma periódica a través de la red en el momento del uso del Servicio. Periodo de conservación/uso: hasta la baja o una solicitud de eliminación conforme al Artículo 5 (el audio para la puntuación de pronunciación con IA no lo almacena Azure y se descarta inmediatamente tras la evaluación). Puedes rechazar la transferencia internacional de tus datos, y puedes no usar o retirar el consentimiento a la puntuación con IA en cualquier momento; si rechazas la transferencia internacional, las funciones basadas en inicio de sesión (guardado de puntuaciones, clasificación, etc.) pueden quedar restringidas.' },
         ],
       },
       {
@@ -429,7 +437,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: 'Fecha de entrada en vigor',
-    effectiveDate: '2026-08-08',
+    effectiveDate: '2026-08-19',
     footer: 'Esta Política puede revisarse conforme a la legislación aplicable y a los cambios del Servicio.',
   },
 }
