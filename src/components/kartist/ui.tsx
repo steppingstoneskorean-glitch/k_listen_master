@@ -158,6 +158,7 @@ export function VideoCard({
   imageSrc,
   playable,
   onPlay,
+  compact = false,
 }: {
   title: string
   desc?: string
@@ -171,6 +172,8 @@ export function VideoCard({
   imageSrc?: string
   playable: boolean
   onPlay?: () => void
+  /** 좁은 2열 그리드(모바일)용 — 모바일에서만 여백/글자를 줄이고 ≥sm 에선 기존과 동일 */
+  compact?: boolean
 }) {
   const { t } = useLang()
 
@@ -228,13 +231,13 @@ export function VideoCard({
       </div>
 
       {/* 본문 */}
-      <div className="flex flex-1 flex-col p-4">
-        <span className="w-fit whitespace-nowrap rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-indigo-600" translate="no">
+      <div className={`flex flex-1 flex-col ${compact ? 'p-2.5 sm:p-4' : 'p-4'}`}>
+        <span className={`w-fit whitespace-nowrap rounded-full border border-indigo-200 bg-indigo-50 py-0.5 font-bold uppercase tracking-widest text-indigo-600 ${compact ? 'px-2 text-[9px] sm:px-2.5 sm:text-[10px]' : 'px-2.5 text-[10px]'}`} translate="no">
           {artist}
         </span>
-        <h3 className="mt-2.5 break-keep text-sm font-black leading-snug text-slate-900">{title}</h3>
-        {desc && <p className="mt-1 text-xs leading-relaxed text-slate-500">{desc}</p>}
-        <div className="mt-auto flex items-center justify-between pt-3 text-xs">
+        <h3 className={`break-keep font-black leading-snug text-slate-900 ${compact ? 'mt-2 line-clamp-2 text-[13px] sm:mt-2.5 sm:text-sm' : 'mt-2.5 text-sm'}`}>{title}</h3>
+        {desc && <p className={`mt-1 leading-relaxed text-slate-500 ${compact ? 'line-clamp-2 text-[11px] sm:line-clamp-none sm:text-xs' : 'text-xs'}`}>{desc}</p>}
+        <div className={`mt-auto flex items-center justify-between text-xs ${compact ? 'pt-2 sm:pt-3' : 'pt-3'}`}>
           {playable ? (
             <>
               <span className="text-slate-400">{t('kartist.tryQuiz')}</span>

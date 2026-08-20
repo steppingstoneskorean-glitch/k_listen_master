@@ -113,8 +113,8 @@ export default function GameHubPage() {
   // 아티스트 필터는 임시 제거(항상 전체). 복구 시 setter 와 아래 FilterDropdown 을 되살린다.
   const [artistFilter] = useState<HubArtist>('__all__')
   const [modeFilter, setModeFilter] = useState<ModeFilter>(initialMode)
-  const [sortKey, setSortKey] = useState<SortKey>('popular')
-  const [desc, setDesc] = useState(true) // 기본: 내림차순(많이 도전한 순)
+  const [sortKey, setSortKey] = useState<SortKey>('newest') // 기본: 최신순(게임 탭 진입 시)
+  const [desc, setDesc] = useState(true) // 기본: 내림차순(최신 → 과거)
 
   const handlePlay = async (to: string, videoId?: string) => {
     if (!to) return
@@ -228,7 +228,7 @@ export default function GameHubPage() {
           {visible.length === 0 ? (
             <p className="mt-16 text-center text-sm font-semibold text-slate-400">{t('hub.empty')}</p>
           ) : (
-            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
               {visible.map((it, i) => (
                 <div key={it.key} className="ka-card-in" style={{ animationDelay: `${i * 50}ms` }}>
                   <VideoCard
@@ -242,6 +242,7 @@ export default function GameHubPage() {
                     imageSrc={it.imageSrc}
                     playable={Boolean(it.url)}
                     onPlay={() => handlePlay(it.url, it.videoId)}
+                    compact
                   />
                 </div>
               ))}
