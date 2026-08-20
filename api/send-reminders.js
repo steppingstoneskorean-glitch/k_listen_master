@@ -64,13 +64,17 @@ const COPY = {
 }
 
 export default async function handler(req, res) {
-  // ── 크론 인증 ──
+  // ── 크론 인증 (fail-closed) ──
+  // CRON_SECRET 미설정 시 엔드포인트를 열어두면 누구나 FCM 발송을 트리거할 수
+  // 있으므로, 시크릿이 없으면 아예 거부한다(설정 누락 = 잠금).
   const secret = process.env.CRON_SECRET
-  if (secret) {
-    const auth = req.headers['authorization'] || ''
-    if (auth !== `Bearer ${secret}`) {
-      return res.status(401).json({ error: 'unauthorized' })
-    }
+  if (!secret) {
+    console.error('[send-reminders] CRON_SECRET is not set — refusing to run (fail-closed)')
+    return res.status(500).json({ error: 'server_misconfigured' })
+  }
+  const auth = req.headers['authorization'] || ''
+  if (auth !== `Bearer ${secret}`) {
+    return res.status(401).json({ error: 'unauthorized' })
   }
 
   try {
