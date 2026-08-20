@@ -461,7 +461,6 @@ const TRANSLATIONS = {
     ja: '発音比較練習',
   },
   'game.correctIndicator': { en: '→ Correct:', ko: '→ 정답:', es: '→ Correcto:', ja: '→ 正解：' },
-  'game.pronTip': { en: 'Pronunciation tip', ko: '발음 팁', es: 'Consejo de pronunciación', ja: '発音のコツ' },
   'game.tapInstruction': {
     en: 'Tap each word to hear the pronunciation',
     ko: '각 단어를 탭해서 발음을 들어보세요',

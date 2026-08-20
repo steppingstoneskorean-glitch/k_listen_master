@@ -15,7 +15,6 @@ import ResultCard from '@/components/ResultCard'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { PAIRS_BY_LEVEL } from '@/data/minimalPairs'
-import { getPronunciationTip } from '@/data/pronunciationTips'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
 import { markStepDone } from '@/lib/todayPlan'
@@ -124,7 +123,6 @@ function ReviewModeScreen({
 
   const current = wrongAnswers[idx]
   const isLast = idx === wrongAnswers.length - 1
-  const pronTip = getPronunciationTip(current.pair) // 발음팁(있는 쌍만)
 
   const playWord = useCallback((word: string) => {
     if (audioRef.current) { audioRef.current.pause(); audioRef.current.onended = null }
@@ -165,14 +163,6 @@ function ReviewModeScreen({
         <span className="text-gray-600 mx-2">{t('game.correctIndicator')}</span>
         <span className="text-green-400 font-bold">{current.correct}</span>
       </div>
-
-      {/* 발음 팁 — 큐레이션된 쌍에만 표시 */}
-      {pronTip && (
-        <div className="mb-5 w-full max-w-xs rounded-2xl border border-purple-500/30 bg-purple-500/10 px-4 py-3 text-center">
-          <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-purple-300">🎯 {t('game.pronTip')}</p>
-          <p className="text-sm leading-relaxed text-gray-200 break-keep">{pronTip}</p>
-        </div>
-      )}
 
       <p className="text-gray-600 text-xs mb-4">{t('game.tapInstruction')}</p>
 
