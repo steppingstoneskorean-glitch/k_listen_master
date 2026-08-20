@@ -153,6 +153,21 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     plays: 0,
     addedAt: 6,
   },
+  {
+    id: 7,
+    title: { en: 'Live in Madrid', ko: '[마드리드에서의 라이브', es: 'En directo desde Madrid', ja: 'マドリードからライブ' },
+    artist: 'BTS',
+    // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
+    availableModes: [
+      { mode: 'B', stars: 1 },
+      { mode: 'I', stars: 2 },
+      { mode: 'A', stars: 2 },
+    ],
+    url: '/kpop-quiz/dHhBKHEIpQs',
+    videoId: 'dHhBKHEIpQs',
+    plays: 0,
+    addedAt: 7,
+  },
 ]
 
 /** '__all__' = 전체 필터 값 */
