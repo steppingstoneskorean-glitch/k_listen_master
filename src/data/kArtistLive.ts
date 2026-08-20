@@ -155,7 +155,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
   },
   {
     id: 7,
-    title: { en: 'Live in Madrid', ko: '[마드리드에서의 라이브', es: 'En directo desde Madrid', ja: 'マドリードからライブ' },
+    title: { en: 'Live in Madrid', ko: '마드리드에서의 라이브', es: 'En directo desde Madrid', ja: 'マドリードからライブ' },
     artist: 'BTS',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
