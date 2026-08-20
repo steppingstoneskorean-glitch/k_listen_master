@@ -6,30 +6,11 @@ import {
   GoogleAuthProvider,
   OAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   deleteUser,
   reauthenticateWithPopup,
 } from 'firebase/auth'
 import { doc, deleteDoc } from 'firebase/firestore'
 import { auth, db } from './firebase'
-import { recordMarketingConsent } from './marketingConsent'
-
-// 팝업 vs 리다이렉트 선택.
-//   · TWA(Play 스토어 앱)·설치형 PWA·모바일 브라우저에서는 signInWithPopup 의 팝업이
-//     로그인 결과를 앱으로 돌려주지 못해 '로그인 화면 무한 반복'이 발생한다.
-//   · 이런 환경에서는 페이지 전체가 이동했다 돌아오는 signInWithRedirect 를 쓴다.
-//   · 데스크톱 일반 브라우저는 팝업이 매끄러워 그대로 유지.
-function preferRedirect(): boolean {
-  if (typeof window === 'undefined') return false
-  const nav = navigator as Navigator & { standalone?: boolean }
-  const standalone =
-    window.matchMedia?.('(display-mode: standalone)').matches ||
-    nav.standalone === true ||
-    (typeof document !== 'undefined' && document.referrer.startsWith('android-app://'))
-  const mobile = /Android|iPhone|iPad|iPod/i.test(nav.userAgent || '')
-  return Boolean(standalone || mobile)
-}
 
 interface AuthCtx {
   user: User | null
@@ -51,22 +32,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!auth) { setLoading(false); return }
-    // 리다이렉트 로그인(TWA/모바일)에서 돌아온 경우 결과를 마무리한다.
-    //   · 리다이렉트는 페이지를 떠났다 오므로, 마케팅 동의 선택은 sessionStorage 로 넘겨받아 반영.
-    getRedirectResult(auth)
-      .then(res => {
-        if (res?.user) {
-          try {
-            if (sessionStorage.getItem('pendingMarketingConsent') === '1') {
-              void recordMarketingConsent(res.user.uid)
-            }
-          } catch { /* sessionStorage 접근 실패 — 무시 */ }
-        }
-      })
-      .catch(() => { /* 대기 중인 리다이렉트 결과 없음/오류 — 정상 흐름 */ })
-      .finally(() => {
-        try { sessionStorage.removeItem('pendingMarketingConsent') } catch { /* 무시 */ }
-      })
     return onAuthStateChanged(auth, u => {
       setUser(u)
       setLoading(false)
@@ -77,10 +42,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!auth) throw new Error('auth_unavailable')
     const provider = new GoogleAuthProvider()
     provider.setCustomParameters({ prompt: 'select_account' })
-    if (preferRedirect()) {
-      await signInWithRedirect(auth, provider) // 페이지 이동 — 아래 return 에는 도달하지 않음
-      return { email: null, uid: '' }
-    }
     const cred = await signInWithPopup(auth, provider)
     return { email: cred.user.email, uid: cred.user.uid }
   }
@@ -90,10 +51,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const provider = new OAuthProvider('apple.com')
     provider.addScope('email')
     provider.addScope('name')
-    if (preferRedirect()) {
-      await signInWithRedirect(auth, provider)
-      return { email: null, uid: '' }
-    }
     const cred = await signInWithPopup(auth, provider)
     return { email: cred.user.email, uid: cred.user.uid }
   }
