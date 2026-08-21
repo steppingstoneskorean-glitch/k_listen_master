@@ -120,7 +120,6 @@ function pickExplanation(explanation, lang) {
 }
 
 const STORAGE_KEY = 'kpop_quiz_stats_v1';
-const MAX_RECORD_MS = 10_000; // 최대 녹음 10초
 
 // ── 유튜브 IFrame API 로더 (전역 콜백 안전 처리) ─────────────────────────────
 let ytApiPromise = null;
@@ -1226,9 +1225,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             />
           </section>
           )}
-
-          {/* ── 섀도잉 녹음기 (I 모드 제외 — 상황 이해 4지선다엔 따라말하기가 맞지 않음) ── */}
-          {currentMode !== 'I' && <ShadowingRecorder liftBtn={liftBtn} />}
         </>
       )}
 
@@ -1695,113 +1691,6 @@ function FinalResult({
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Web Audio 기반 섀도잉 녹음기 (서버 전송 없음, 로컬 blob URL 만 사용)
-// ─────────────────────────────────────────────────────────────────────────────
-function ShadowingRecorder({ liftBtn }) {
-  const { t } = useLang();
-  const mediaRecorderRef = useRef(null);
-  const chunksRef = useRef([]);
-  const streamRef = useRef(null);
-  const stopTimerRef = useRef(null);
-
-  const [recording, setRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    return () => {
-      if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
-      if (streamRef.current) streamRef.current.getTracks().forEach((t) => t.stop());
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const startRecording = useCallback(async () => {
-    setError('');
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
-      chunksRef.current = [];
-
-      const rec = new MediaRecorder(stream);
-      mediaRecorderRef.current = rec;
-
-      rec.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-      rec.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        setAudioUrl((prev) => {
-          if (prev) URL.revokeObjectURL(prev);
-          return URL.createObjectURL(blob);
-        });
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach((t) => t.stop());
-          streamRef.current = null;
-        }
-        setRecording(false);
-      };
-
-      rec.start();
-      setRecording(true);
-      stopTimerRef.current = setTimeout(() => {
-        if (rec.state === 'recording') rec.stop();
-      }, MAX_RECORD_MS);
-    } catch {
-      setError(t('kpop.recError'));
-      setRecording(false);
-    }
-  }, [t]);
-
-  const stopRecording = useCallback(() => {
-    if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
-    const rec = mediaRecorderRef.current;
-    if (rec && rec.state === 'recording') rec.stop();
-  }, []);
-
-  return (
-    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-base font-bold text-slate-900">{t('kpop.recTitle')}</h3>
-          <p className="text-xs text-slate-500">{t('kpop.recSub')}</p>
-        </div>
-        {recording && (
-          <span className="flex items-center gap-1.5 text-sm font-bold text-red-500">
-            <span className="kq-rec-dot h-2.5 w-2.5 rounded-full bg-red-500" />
-            REC
-          </span>
-        )}
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {!recording ? (
-          <button
-            onClick={startRecording}
-            className={`${liftBtn} rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-600`}
-          >
-            {t('kpop.recStart')}
-          </button>
-        ) : (
-          <button
-            onClick={stopRecording}
-            className={`${liftBtn} rounded-xl bg-slate-800 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-slate-900`}
-          >
-            {t('kpop.recStop')}
-          </button>
-        )}
-
-        {audioUrl && !recording && (
-          <audio src={audioUrl} controls className="h-9 max-w-full" />
-        )}
-      </div>
-
-      {error && <p className="mt-2 text-sm font-medium text-red-500">{error}</p>}
-    </section>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 운영자용 퀴즈 데이터 생성기 (아코디언 + JSON Export)
