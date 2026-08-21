@@ -1537,13 +1537,6 @@ async function createResultCardBlob({ artist, stars, percent, correctCount, tota
     y += rowGap;
   }
 
-  // 스트릭 (Duolingo 스타일 — 1일 초과일 때만)
-  if (streak > 1) {
-    ctx.fillStyle = '#ea580c';
-    ctx.font = `700 ${compact ? 34 : 46}px system-ui, sans-serif`;
-    ctx.fillText(`🔥 ${streak}-day streak`, cx, y + (compact ? 22 : 30));
-  }
-
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
 }
 
