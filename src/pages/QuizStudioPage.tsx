@@ -96,9 +96,33 @@ function emptyItem(videoId: string, mode: GameMode, seq: number): QuizItem {
 }
 
 // 모드별 검증 — 문제 문자열 or null
+// 해설이 다국어 JSON 문자열이면 파싱해 객체로 정규화한다.
+//   · 스튜디오 편집 시 해설은 문자열로 저장되는데, '{…}' 형태(다국어 객체)를 그대로 두면
+//     JSON 파싱 실패 시 원문이 그대로 노출된다. 저장 전에 파싱해 객체로 넣어 이를 방지한다.
+//   · '{' 로 시작하면 JSON 으로 간주 — 유효하면 객체, 아니면 오류(ok:false).
+//   · 일반 문자열(영어 원문 등)은 그대로 둔다.
+function normalizeExplanation(
+  exp: unknown,
+): { ok: true; value: string | Record<string, string> } | { ok: false } {
+  if (typeof exp !== 'string') return { ok: true, value: exp as Record<string, string> }
+  const s = exp.trim()
+  if (!s.startsWith('{')) return { ok: true, value: exp }
+  try {
+    const parsed = JSON.parse(s)
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      return { ok: true, value: parsed as Record<string, string> }
+    }
+    return { ok: false }
+  } catch {
+    return { ok: false }
+  }
+}
+
 function itemProblem(q: QuizItem, i: number): string | null {
   const tag = `#${i + 1}`
   if (q.endTime <= q.startTime) return `${tag}: 종료 시간이 시작 시간보다 빨라요`
+  if (!normalizeExplanation(q.explanation).ok)
+    return `${tag}: 해설 JSON 형식 오류 — 닫는 따옴표/쉼표/줄바꿈(\\n) 확인 (다국어는 한 줄 JSON으로)`
   const m = itemMode(q)
   if (m === 'A') {
     if (!q.fullSentence.trim()) return `${tag}(A): 전체 문장이 비어 있어요`
@@ -251,7 +275,12 @@ export default function QuizStudioPage() {
           setPublishedCount(0)
           say('ok', '배포가 취소되었습니다.')
         } else {
-          await saveModeItems(videoId, presentModes, items, mode === 'publish', modeStars)
+          // 저장 전에 해설 JSON 문자열을 객체로 정규화(파싱) — 언어별 표시 안정화
+          const normalizedItems = items.map((q) => {
+            const r = normalizeExplanation(q.explanation)
+            return r.ok ? { ...q, explanation: r.value } : q
+          })
+          await saveModeItems(videoId, presentModes, normalizedItems, mode === 'publish', modeStars)
           if (mode === 'publish') {
             setPublishedCount(items.length)
             say('ok', `🎉 배포 완료! /kpop-quiz/${videoId} 에서 ${presentModes.join('/')} 모드가 보입니다.`)

@@ -821,22 +821,17 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             </span>
           )}
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
-          {activeMode && total > 0 && (
+        {/* 진행 표시(sentence N/N)만 — 스트릭·점수는 제거. 결과(done) 화면에서는 이것도 숨김 */}
+        {phase !== 'done' && activeMode && total > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
             <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-indigo-100 px-3 py-1.5 text-sm font-bold text-indigo-700 shadow-sm">
               <ModeChip mode={activeMode} /> 📄{' '}
               {t('kpop.progress')
                 .replace('{i}', String(Math.min(index + 1, total)))
                 .replace('{n}', String(total))}
             </span>
-          )}
-          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-orange-100 px-3 py-1.5 text-sm font-bold text-orange-700 shadow-sm">
-            🔥 {t('kpop.streak').replace('{n}', String(stats.streak))}
-          </span>
-          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-emerald-100 px-3 py-1.5 text-sm font-bold text-emerald-700 shadow-sm">
-            ⭐ {t('kpop.points').replace('{n}', String(stats.score))}
-          </span>
-        </div>
+          </div>
+        )}
       </header>
 
       {/* ── 유튜브 플레이어 ─────────────────────────────────────────────────
@@ -1625,7 +1620,6 @@ function FinalResult({
         total={total}
         thumbnailUrl={videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : undefined}
         variant="light"
-        shareMessage={shareText}
         captureImage={() =>
           createResultCardBlob({ artist, stars, percent, correctCount, total, results, streak, videoId }).catch(() => null)
         }
