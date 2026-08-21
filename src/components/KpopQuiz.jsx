@@ -1537,6 +1537,11 @@ async function createResultCardBlob({ artist, stars, percent, correctCount, tota
     y += rowGap;
   }
 
+  // 도전 유도 문구 (모든 앱에서 이미지로 전달되도록 카드에 새김)
+  ctx.fillStyle = '#6366f1';
+  ctx.font = `800 ${compact ? 40 : 54}px system-ui, sans-serif`;
+  ctx.fillText('🎵 Beat my score!', cx, y + (compact ? 24 : 34));
+
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
 }
 
