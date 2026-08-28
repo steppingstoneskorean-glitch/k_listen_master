@@ -92,7 +92,7 @@ async function translate(enText) {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: 'nvidia/llama-3.3-nemotron-super-49b-v1.5',
+      model: process.env.NVIDIA_TRANSLATE_MODEL || 'nvidia/nemotron-3-super-120b-a12b',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: `Translate this explanation into ${LANGS.join(', ')}:\n\n${enText}` },

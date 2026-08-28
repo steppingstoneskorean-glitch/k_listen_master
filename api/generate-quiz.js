@@ -23,7 +23,9 @@
 export const config = { maxDuration: 300 }
 
 const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1'
-const NVIDIA_MODEL = 'nvidia/llama-3.3-nemotron-super-49b-v1.5'
+// 이전 모델(llama-3.3-nemotron-super-49b-v1.5)은 NVIDIA 측에서 폐기(HTTP 410, 2026-08-26 EOL)됨.
+// 현재 제공되는 지시형 Nemotron 모델로 교체. NVIDIA_QUIZ_MODEL 로 오버라이드 가능.
+const NVIDIA_MODEL = process.env.NVIDIA_QUIZ_MODEL || 'nvidia/nemotron-3-super-120b-a12b'
 const TRANSLATE_LANGS = ['ja', 'es', 'zh', 'vi']
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'steppingstoneskorean@gmail.com'

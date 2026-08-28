@@ -26,7 +26,8 @@ const REVIEW_DIR = path.join(ROOT, 'i18n-review');
 const TXT_FILE = path.join(REVIEW_DIR, 'explanations-review.txt');
 const MAP_FILE = path.join(REVIEW_DIR, 'explanations-review.map.json');
 const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1';
-const NVIDIA_MODEL = 'nvidia/llama-3.3-nemotron-super-49b-v1.5';
+// 이전 모델(llama-3.3-nemotron-super-49b-v1.5)은 NVIDIA 측에서 폐기(HTTP 410)됨.
+const NVIDIA_MODEL = process.env.NVIDIA_TRANSLATE_MODEL || 'nvidia/nemotron-3-super-120b-a12b';
 
 // ── env ──────────────────────────────────────────────────────────────────────
 function loadEnvFile(file) {
