@@ -18,7 +18,7 @@
 //   9) 운영자용 퀴즈 데이터 생성기 (아코디언 + JSON Export)
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
@@ -745,18 +745,16 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   const currentMode = quiz ? modeOf(quiz) : null;
 
-  // A 모드: fullSentence 를 blankWord 기준으로 분해 (prefix / suffix)
-  const blankIdx =
-    quiz && quiz.blankWord ? quiz.fullSentence.indexOf(quiz.blankWord) : -1;
-  const prefix = quiz
-    ? blankIdx >= 0
-      ? quiz.fullSentence.slice(0, blankIdx)
-      : quiz.fullSentence
-    : '';
-  const suffix =
-    quiz && blankIdx >= 0
-      ? quiz.fullSentence.slice(blankIdx + quiz.blankWord.length)
-      : '';
+  // A 모드: fullSentence 를 blankWord 기준으로 분해.
+  //   정답 단어가 문장에 두 번 이상 나오면(예: "자, 끝났어. 너는 이제 끝났어." → "끝났어")
+  //   split 으로 모든 위치를 잘라 각 위치마다 빈칸(입력창)을 렌더한다.
+  //   빈칸 사이 세그먼트가 (occurrences + 1)개 → 입력창은 (세그먼트 - 1)개.
+  //   · 정답 단어를 못 찾으면 폴백: 문장 뒤 단일 입력창 [문장, ''].
+  const clozeSegments = quiz
+    ? quiz.blankWord && quiz.fullSentence.includes(quiz.blankWord)
+      ? quiz.fullSentence.split(quiz.blankWord)
+      : [quiz.fullSentence, '']
+    : [''];
 
   // B 모드: 현재 조립 중인 문장 / I·B 공용 리뷰 표시 텍스트
   const builtSentence = picked
@@ -1134,28 +1132,33 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               translate="no"
               className="notranslate flex flex-wrap items-center gap-1 text-lg leading-relaxed"
             >
-              <span>{prefix}</span>
-              <input
-                translate="no"
-                value={answer}
-                onChange={(e) => {
-                  setAnswer(e.target.value);
-                  if (status !== 'idle') setStatus('idle');
-                }}
-                onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
-                placeholder={t('kpop.answerPlaceholder')}
-                style={{ width: `${Math.max((quiz.blankWord || '').length, 1) * 1.15 + 2.2}em` }}
-                className={`notranslate rounded-lg border-2 px-3 py-1 text-center font-bold outline-none transition-colors placeholder:text-xs placeholder:font-normal placeholder:tracking-tight placeholder:text-slate-400 ${
-                  status === 'correct'
-                    ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
-                    : status === 'partial'
-                    ? 'border-amber-400 bg-amber-50 text-amber-700'
-                    : status === 'wrong'
-                    ? 'border-red-400 bg-red-50 text-red-700'
-                    : 'border-slate-300 focus:border-indigo-400'
-                }`}
-              />
-              <span>{suffix}</span>
+              {clozeSegments.map((seg, i) => (
+                <Fragment key={i}>
+                  {seg && <span>{seg}</span>}
+                  {i < clozeSegments.length - 1 && (
+                    <input
+                      translate="no"
+                      value={answer}
+                      onChange={(e) => {
+                        setAnswer(e.target.value);
+                        if (status !== 'idle') setStatus('idle');
+                      }}
+                      onKeyDown={(e) => e.key === 'Enter' && checkAnswer()}
+                      placeholder={t('kpop.answerPlaceholder')}
+                      style={{ width: `${Math.max((quiz.blankWord || '').length, 1) * 1.15 + 2.2}em` }}
+                      className={`notranslate rounded-lg border-2 px-3 py-1 text-center font-bold outline-none transition-colors placeholder:text-xs placeholder:font-normal placeholder:tracking-tight placeholder:text-slate-400 ${
+                        status === 'correct'
+                          ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
+                          : status === 'partial'
+                          ? 'border-amber-400 bg-amber-50 text-amber-700'
+                          : status === 'wrong'
+                          ? 'border-red-400 bg-red-50 text-red-700'
+                          : 'border-slate-300 focus:border-indigo-400'
+                      }`}
+                    />
+                  )}
+                </Fragment>
+              ))}
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
