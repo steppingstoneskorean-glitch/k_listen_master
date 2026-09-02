@@ -10,7 +10,28 @@ import { Link, useParams } from 'react-router-dom'
 import { getArticle, GRAMMAR_ARTICLES } from '@/data/grammarArticles'
 import { useLang } from '@/lib/i18n'
 import { useGrammarT } from '@/lib/grammarI18n'
+import type { ArticleExample } from '@/data/grammarArticles'
 import NotFoundPage from '@/pages/NotFoundPage'
+
+// 예문 묶음(불릿) — 한국어 예문(굵게) + 그 뜻(영어)을 카드로. blocks/legacy 양쪽에서 재사용.
+function ExampleList({ items }: { items: ArticleExample[] }) {
+  return (
+    <ul className="mt-4 flex flex-col gap-2.5">
+      {items.map(ex => (
+        <li key={ex.ko} className="rounded-xl bg-white border border-slate-200 px-4 py-3 shadow-sm">
+          {/* 한국어 예문은 브라우저 자동 번역 차단 */}
+          <p translate="no" className="notranslate text-sm font-semibold text-slate-900">{ex.ko}</p>
+          {/* 예문의 영어 뜻풀이는 번역하지 않는다 — 한국어 UI 에서 번역하면
+              바로 위 한국어 예문과 똑같아져 뜻풀이 역할을 잃는다 */}
+          <p className="mt-0.5 text-xs text-slate-500">
+            <span className="text-slate-400">→ </span>{ex.en}
+          </p>
+          {ex.note && <p className="mt-1 text-[11px] text-amber-600">{ex.note}</p>}
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 export default function GrammarArticlePage() {
   const { slug } = useParams()
@@ -60,24 +81,23 @@ export default function GrammarArticlePage() {
           {article.sections.map(sec => (
             <section key={sec.heading}>
               <h2 className="text-lg font-bold text-slate-900">{tr(sec.heading)}</h2>
-              {sec.paragraphs?.map((p, i) => (
-                <p key={i} className="mt-3 text-sm leading-relaxed text-slate-700">
-                  {tr(p)}
-                </p>
-              ))}
-              {sec.examples && (
-                <ul className="mt-4 flex flex-col gap-2.5">
-                  {sec.examples.map(ex => (
-                    <li key={ex.ko} className="rounded-xl bg-white border border-slate-200 px-4 py-3 shadow-sm">
-                      {/* 한국어 예문은 브라우저 자동 번역 차단 */}
-                      <p translate="no" className="notranslate text-sm font-semibold text-slate-900">{ex.ko}</p>
-                      {/* 예문의 영어 뜻풀이는 번역하지 않는다 — 한국어 UI 에서 번역하면
-                          바로 위 한국어 예문과 똑같아져 뜻풀이 역할을 잃는다 */}
-                      <p className="mt-0.5 text-xs text-slate-500">{ex.en}</p>
-                      {ex.note && <p className="mt-1 text-[11px] text-amber-600">{ex.note}</p>}
-                    </li>
+              {sec.blocks ? (
+                // 신규: 문단·예문을 정의된 순서대로 교차 렌더 (읽기 쉬운 시각적 리듬)
+                sec.blocks.map((b, i) =>
+                  'examples' in b ? (
+                    <ExampleList key={i} items={b.examples} />
+                  ) : (
+                    <p key={i} className="mt-3 text-sm leading-relaxed text-slate-700">{tr(b.text)}</p>
+                  ),
+                )
+              ) : (
+                // 레거시: 문단들 뒤에 예문 한 번
+                <>
+                  {sec.paragraphs?.map((p, i) => (
+                    <p key={i} className="mt-3 text-sm leading-relaxed text-slate-700">{tr(p)}</p>
                   ))}
-                </ul>
+                  {sec.examples && <ExampleList items={sec.examples} />}
+                </>
               )}
             </section>
           ))}
