@@ -26,7 +26,6 @@ const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1'
 // 이전 모델(llama-3.3-nemotron-super-49b-v1.5)은 NVIDIA 측에서 폐기(HTTP 410, 2026-08-26 EOL)됨.
 // 현재 제공되는 지시형 Nemotron 모델로 교체. NVIDIA_QUIZ_MODEL 로 오버라이드 가능.
 const NVIDIA_MODEL = process.env.NVIDIA_QUIZ_MODEL || 'nvidia/nemotron-3-super-120b-a12b'
-const TRANSLATE_LANGS = ['ja', 'es', 'zh', 'vi']
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'steppingstoneskorean@gmail.com'
 
@@ -224,67 +223,9 @@ function stripThinking(raw) {
   return closeIdx === -1 ? raw : raw.slice(closeIdx + '</think>'.length)
 }
 
-// ── explanation 부분 자동 번역 (partial auto-translation) ───────────────────
-// scripts/translate-explanations.cjs 와 동일한 규칙을 퀴즈 생성 파이프라인에 바로 연결한다.
-// 기존에는 이 로직이 git pre-commit 훅으로 KpopQuiz.jsx(하드코딩 데이터)에만 연결되어
-// 있어, 스튜디오 → Firestore 로 배포되는 문항의 explanation 은 절대 번역되지 않았다.
-// 번역 실패는 fail-open — 생성 자체를 막지 않고 en 단일 문자열로 남긴다.
-const TRANSLATE_SYSTEM_PROMPT = `detailed thinking off
-
-You are a professional translator for a Korean-listening app aimed at foreign K-pop fans.
-You will receive a JSON array of English "explanation" strings (grammar/pronunciation notes for Korean listening quiz items) that may contain Korean words or sentences mixed in.
-
-Rules:
-1. NEVER translate, romanize, or alter ANY Korean (Hangul) text. Copy every Korean substring byte-for-byte, unchanged, in the exact same position.
-2. Translate ONLY the English prose and English glosses into ${TRANSLATE_LANGS.join(', ')}.
-3. Keep the literal words "Verb" / "Adjective" untranslated when they appear right before a "+" grammar formula.
-4. Preserve the original line breaks (as \\n) and paragraph structure exactly.
-5. Respond with ONLY a single JSON array — no markdown fences, no commentary — the SAME length and order as the input. Each element is an object with exactly these keys: ${TRANSLATE_LANGS.join(', ')}.`
-
-async function translateExplanations(explanations, apiKey) {
-  const jobs = explanations
-    .map((text, i) => ({ text, i }))
-    .filter((x) => typeof x.text === 'string' && x.text.trim())
-  if (jobs.length === 0) return {}
-
-  try {
-    const r = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: NVIDIA_MODEL,
-        messages: [
-          { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
-          { role: 'user', content: JSON.stringify(jobs.map((x) => x.text)) },
-        ],
-        temperature: 0.3,
-        top_p: 0.9,
-        max_tokens: 8000,
-        stream: false,
-      }),
-    })
-    if (!r.ok) {
-      console.error('[generate-quiz] translateExplanations HTTP', r.status)
-      return {}
-    }
-    const data = await r.json()
-    const raw = stripThinking(
-      (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '',
-    )
-    const jsonMatch = raw.match(/\[[\s\S]*\]/)
-    if (!jsonMatch) return {}
-    const arr = JSON.parse(jsonMatch[0])
-    const out = {}
-    jobs.forEach((job, k) => {
-      const t = arr[k]
-      if (t && typeof t === 'object') out[job.i] = t
-    })
-    return out
-  } catch (err) {
-    console.error('[generate-quiz] translateExplanations failed', err)
-    return {} // fail-open — 번역 실패해도 퀴즈 생성은 계속 진행
-  }
-}
+// explanation 다국어(ja/es)는 이 파이프라인에서 처리하지 않는다 —
+// 배포 후 크론(api/translate-explanations)이 한글 보존 가드와 함께 채운다.
+// 여기서 두 번째 LLM 번역 호출을 없애 Hobby 60초 상한 초과(504)를 방지한다.
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -348,6 +289,11 @@ export default async function handler(req, res) {
         ],
         temperature: 0.4,
         top_p: 0.9,
+        // 추론형(nemotron-3) 모델은 이 지시가 없으면 <think> 로 수천 토큰을 소모해
+        // Hobby 60초 상한을 넘겨 504 가 났다(프런트는 그 게이트웨이 에러 텍스트를
+        // JSON.parse 하다 "Unexpected token 'A'" 로 깨짐). json_object 강제 시 곧바로
+        // JSON 만 출력 → 생성 시간 단축 + 파싱 안정화.
+        response_format: { type: 'json_object' },
         // B10+I6+A20 처럼 레벨 합계가 크면 explanation 이 길어 16000 으로는 자주
         // 잘렸다(finish_reason: "length") — JSON 이 중간에 끊겨 파싱 실패의 원인이었다.
         // 이 모델의 실제 출력 한도(65536)에 맞춰 여유를 둔다.
@@ -395,19 +341,10 @@ export default async function handler(req, res) {
       return res.status(422).json({ error: '유효한 퀴즈를 생성하지 못했습니다. 자막에 타임스탬프가 포함되어 있는지 확인해 주세요.' })
     }
 
-    // 5) explanation 부분 자동 번역 — Studio → Firestore 배포 문항에도 다국어를 채운다.
-    //    (기존에는 KpopQuiz.jsx 하드코딩 데이터에만 pre-commit 훅으로 연결되어 있었음)
-    const translations = await translateExplanations(
-      quizzes.map((q) => q.explanation),
-      apiKey,
-    )
-    quizzes.forEach((q, i) => {
-      const en = q.explanation || ''
-      if (en.trim() && translations[i]) {
-        q.explanation = { en, ...translations[i] }
-      }
-    })
-
+    // 5) explanation 다국어는 여기서 처리하지 않는다(en 원문만 반환).
+    //    · 배포 후 크론(api/translate-explanations)이 ja/es 를 자동 채운다 —
+    //      이쪽 경로는 한국어(한글) 보존 가드가 있어 예문 훼손 위험이 없고,
+    //      두 번째 느린 LLM 호출을 없애 생성이 Hobby 60초 상한 안에서 끝난다.
     return res.status(200).json({ quizzes, generated, model: NVIDIA_MODEL })
   } catch (err) {
     console.error('[generate-quiz]', err)
