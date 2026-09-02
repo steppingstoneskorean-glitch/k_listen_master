@@ -139,6 +139,27 @@ function orderChunks(sentence, chunks) {
 const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : NaN)
 const validTime = (q) => num(q.endTime) > num(q.startTime) && num(q.startTime) >= 0
 
+// ── NVIDIA 호출 (503/429 일시 오류 재시도) ───────────────────────────────────
+// NVIDIA 공용 NIM 엔드포인트는 혼잡 시 "Service temporarily overloaded"(503)를
+// 즉시(≈0.2s) 돌려주므로 짧은 백오프로 몇 번 재시도하면 대부분 통과한다.
+async function callNvidia(body, apiKey, tries = 3) {
+  let last = null
+  for (let attempt = 1; attempt <= tries; attempt++) {
+    last = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify(body),
+    })
+    if (last.ok) return last
+    if ((last.status === 503 || last.status === 429) && attempt < tries) {
+      await new Promise((res) => setTimeout(res, 1200 * attempt))
+      continue
+    }
+    return last // 최종 응답은 호출부에서 상태코드별 처리
+  }
+  return last
+}
+
 // ── 레벨별 응답 → 앱 QuizItem(B/I/A 멀티 모드 스키마) 매핑 ───────────────────
 function mapToQuizItems(parsed, videoId) {
   const vid = videoId.slice(0, 6).toLowerCase()
@@ -278,10 +299,8 @@ export default async function handler(req, res) {
       `Use ids like "${videoId.slice(0, 6).toLowerCase()}_b01" / "_i01" / "_a01", ordered by startTime within each level.\n\n` +
       `=== TRANSCRIPT (timestamp + text lines) ===\n${transcript.slice(0, 60000)}`
 
-    const r = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
+    const r = await callNvidia(
+      {
         model: NVIDIA_MODEL,
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
@@ -289,18 +308,22 @@ export default async function handler(req, res) {
         ],
         temperature: 0.4,
         top_p: 0.9,
-        // 추론형(nemotron-3) 모델은 이 지시가 없으면 <think> 로 수천 토큰을 소모해
-        // Hobby 60초 상한을 넘겨 504 가 났다(프런트는 그 게이트웨이 에러 텍스트를
-        // JSON.parse 하다 "Unexpected token 'A'" 로 깨짐). json_object 강제 시 곧바로
-        // JSON 만 출력 → 생성 시간 단축 + 파싱 안정화.
+        // ⚠️ nemotron-3 계열은 시스템 프롬프트의 "detailed thinking off"(구 모델용 관례)를
+        // 무시하고 reasoning_content 로 수천 토큰의 사고 과정을 생성한다 — 이 때문에
+        // B+I 소량 생성도 ~89s 가 걸려 Hobby 60초 상한을 넘겼고, Vercel 이 함수를 죽이며
+        // 반환한 텍스트("An error occurred...")를 프런트가 JSON.parse 하다
+        // "Unexpected token 'A'" 로 깨졌다. 아래 스위치로 추론을 실제로 끄면 ~9s 로 단축된다.
+        chat_template_kwargs: { thinking: false },
+        // json_object 강제 — 마크다운/설명 없이 JSON 만 출력해 파싱을 안정화.
         response_format: { type: 'json_object' },
         // B10+I6+A20 처럼 레벨 합계가 크면 explanation 이 길어 16000 으로는 자주
         // 잘렸다(finish_reason: "length") — JSON 이 중간에 끊겨 파싱 실패의 원인이었다.
         // 이 모델의 실제 출력 한도(65536)에 맞춰 여유를 둔다.
         max_tokens: 32000,
         stream: false,
-      }),
-    })
+      },
+      apiKey,
+    )
     if (r.status === 429) {
       const bodyText = await r.text().catch(() => '')
       const err = new Error(`NVIDIA API rate limit (429): ${bodyText.slice(0, 200)}`)

@@ -205,7 +205,21 @@ export default function QuizStudioPage() {
         headers: { 'content-type': 'application/json', authorization: `Bearer ${idToken}` },
         body: JSON.stringify({ videoId, transcript, counts: genCounts }),
       })
-      const data = await r.json()
+      // 서버가 JSON 대신 Vercel 게이트웨이 오류 텍스트("An error occurred…")를 반환할 수 있다
+      // (함수 시간 초과 등) — 그대로 JSON.parse 하면 "Unexpected token 'A'" 로 깨지므로
+      // 먼저 text 로 읽고 방어적으로 파싱해 원인을 알 수 있는 메시지로 바꿔준다.
+      const text = await r.text()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let data: any
+      try {
+        data = JSON.parse(text)
+      } catch {
+        throw new Error(
+          r.status === 504 || /timeout|timed out|FUNCTION_INVOCATION/i.test(text)
+            ? `서버 시간 초과 (${r.status}) — 레벨별 생성 개수를 줄여 다시 시도해 주세요`
+            : `서버 오류 (${r.status}) — 잠시 후 다시 시도해 주세요`,
+        )
+      }
       if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`)
       // 서버가 이미 mode 태그를 붙여 반환 — 생성된 모드만 교체, 나머지 모드는 보존
       // 재생 속도는 영상 설정의 기본 속도를 적용
