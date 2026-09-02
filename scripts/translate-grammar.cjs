@@ -26,6 +26,9 @@ const RETRY_FAILED = process.argv.includes('--retry-failed');
 const LANGS = ['ko', 'es', 'ja'];
 const LANG_NAMES = { ko: 'Korean', es: 'Spanish', ja: 'Japanese' };
 const BATCH_SIZE = 12;
+// 이전 모델(llama-3.3-nemotron-super-49b-v1.5)은 NVIDIA 폐기(HTTP 410). 현행 모델로 교체.
+// NVIDIA_TRANSLATE_MODEL 로 오버라이드 가능(해설 번역 코어와 동일 기본값).
+const NVIDIA_MODEL = process.env.NVIDIA_TRANSLATE_MODEL || 'nvidia/nemotron-3-super-120b-a12b';
 
 // ── .env.local / .env 수동 로드 ──────────────────────────────────────────────
 function loadEnvFile(file) {
@@ -67,7 +70,8 @@ function collectStrings(articles) {
     set.add(a.summary);
     for (const sec of a.sections) {
       set.add(sec.heading);
-      for (const p of sec.paragraphs || []) set.add(p);
+      for (const p of sec.paragraphs || []) set.add(p);            // 레거시(문단 배열)
+      for (const b of sec.blocks || []) if (b && typeof b.text === 'string') set.add(b.text); // 교차 배치 블록
     }
   }
   return [...set];
@@ -108,9 +112,15 @@ Rules:
 2. Translate ONLY the English prose into the requested target language.
 3. Keep the literal words "Verb" / "Adjective" untranslated when they appear right before a "+" grammar formula (e.g. "Verb + -자"), matching the source style.
 4. Preserve line breaks and punctuation structure.
-5. Respond with ONLY a JSON array of translated strings, same length and order as the input. No markdown fences, no commentary.`;
+5. Respond with ONLY a JSON object of the form {"translations": [ ... ]}, where the array holds the translated strings in the same length and order as the input. No markdown fences, no commentary.`;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// 추론형(nemotron-3) 모델이 남기는 <think>...</think> 흔적 제거(안전망).
+const stripThinking = raw => {
+  const i = raw.lastIndexOf('</think>');
+  return i === -1 ? raw : raw.slice(i + '</think>'.length);
+};
 
 // fetch 실패/레이트리밋은 지수 백오프로 재시도한다 (이전 실행에서 es 가 전멸한 원인)
 async function withRetry(fn, label, attempts = 4) {
@@ -138,7 +148,7 @@ async function translateBatch(strings, lang) {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: 'nvidia/llama-3.3-nemotron-super-49b-v1.5',
+      model: NVIDIA_MODEL,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         {
@@ -146,9 +156,13 @@ async function translateBatch(strings, lang) {
           content: `Translate each string in this JSON array into ${LANG_NAMES[lang]}:\n\n${JSON.stringify(strings, null, 0)}`,
         },
       ],
+      // 추론형 모델은 이 지시가 없으면 JSON 대신 사고 과정을 길게 출력해 파싱 실패·타임아웃.
+      // json_object 강제 시 곧바로 JSON 만 반환(프롬프트는 {"translations":[...]} 객체를 요구).
+      response_format: { type: 'json_object' },
       temperature: 0.3,
       top_p: 0.9,
-      max_tokens: 4000,
+      // 배치(최대 12문) 번역 + 추론 여유. 2000~4000 에서는 잘려 파싱 실패가 잦았다.
+      max_tokens: 8000,
       stream: false,
     }),
   });
@@ -157,12 +171,14 @@ async function translateBatch(strings, lang) {
     throw new Error(`NVIDIA API HTTP ${r.status}: ${body.slice(0, 200)}`);
   }
   const data = await r.json();
-  const raw = data?.choices?.[0]?.message?.content || '';
-  const jsonMatch = raw.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) throw new Error('응답에서 JSON 배열을 찾지 못했습니다');
-  const parsed = JSON.parse(jsonMatch[0]);
+  const raw = stripThinking(data?.choices?.[0]?.message?.content || '');
+  const jsonMatch = raw.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('응답에서 JSON 객체를 찾지 못했습니다');
+  const obj = JSON.parse(jsonMatch[0]);
+  // {"translations":[...]} 우선, 혹시 배열로 오면 그것도 수용
+  const parsed = Array.isArray(obj) ? obj : obj.translations;
   if (!Array.isArray(parsed) || parsed.length !== strings.length) {
-    throw new Error(`응답 배열 길이 불일치 (기대 ${strings.length}, 실제 ${parsed.length})`);
+    throw new Error(`응답 배열 길이 불일치 (기대 ${strings.length}, 실제 ${Array.isArray(parsed) ? parsed.length : 'N/A'})`);
   }
   return parsed;
 }
