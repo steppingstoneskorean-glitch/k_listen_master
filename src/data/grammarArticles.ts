@@ -673,7 +673,7 @@ export const GRAMMAR_ARTICLES: GrammarArticle[] = [
         ],
       },
     ],
-    quiz: { videoId: '9D-8kb6RIK4', label: 'K-Content', sentence: '이거 할 줄 아는 사람 있어?' },
+    quiz: { videoId: '9D-8kb6RIK4', label: 'BTS', sentence: '이거 할 줄 아는 사람 있어?' },
     related: ['ill-do-it-lgeyo', 'noun-making-eum', 'it-seems-geot-gatda'],
   },
   {
@@ -729,7 +729,7 @@ export const GRAMMAR_ARTICLES: GrammarArticle[] = [
         ],
       },
     ],
-    quiz: { videoId: '9D-8kb6RIK4', label: 'K-Content', sentence: '형, 요리까지 해 주고 감동이에요.' },
+    quiz: { videoId: '9D-8kb6RIK4', label: 'BTS', sentence: '형, 요리까지 해 주고 감동이에요.' },
     related: ['doing-for-someone-a-eo-juda', 'background-neunde', 'korean-word-order-sov'],
   },
   {
@@ -788,7 +788,7 @@ export const GRAMMAR_ARTICLES: GrammarArticle[] = [
         ],
       },
     ],
-    quiz: { videoId: '9D-8kb6RIK4', label: 'K-Content', sentence: '정국아, 뭐 도와줄 거 없어?' },
+    quiz: { videoId: '9D-8kb6RIK4', label: 'BTS', sentence: '정국아, 뭐 도와줄 거 없어?' },
     related: ['even-kkaji', 'ill-do-it-lgeyo', 'polite-promise-dorok'],
   },
   {
@@ -863,7 +863,7 @@ export const GRAMMAR_ARTICLES: GrammarArticle[] = [
         ],
       },
     ],
-    quiz: { videoId: '9D-8kb6RIK4', label: 'K-Content', sentence: '배운 게 멤버의 소중함이었어.' },
+    quiz: { videoId: '9D-8kb6RIK4', label: 'BTS', sentence: '배운 게 멤버의 소중함이었어.' },
     related: ['turning-verbs-into-nouns', 'know-how-to-l-jul-alda', 'it-seems-geot-gatda'],
   },
 ]
