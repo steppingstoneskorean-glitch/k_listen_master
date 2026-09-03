@@ -168,10 +168,140 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     plays: 0,
     addedAt: 7,
   },
+  {
+    id: 8,
+    title: {
+      en: 'Drama 《Apartment》 Episodes 1–2 Summary',
+      ko: '드라마 《아파트》 1-2화 요약',
+      es: 'Resumen de los episodios 1 y 2 del drama «Apartamento»',
+      ja: 'ドラマ『アパート』第1～2話まとめ',
+    },
+    desc: {
+      en: "A former gang boss's takeover of an apartment",
+      ko: '전직 조폭 보스의 아파트 점령기',
+      es: 'La conquista de un edificio por un exjefe de la mafia',
+      ja: '元ヤクザのボスによるアパート占領記',
+    },
+    artist: 'K-Drama',
+    // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
+    availableModes: [
+      { mode: 'B', stars: 2 },
+      { mode: 'I', stars: 2 },
+      { mode: 'A', stars: 2 },
+    ],
+    url: '/kpop-quiz/yvSkqmgBC-g',
+    videoId: 'yvSkqmgBC-g',
+    plays: 0,
+    addedAt: 8,
+  },
+  {
+    id: 9,
+    title: {
+      en: 'BTS Reunite for a Late-Night Talk',
+      ko: '오랜만에 뭉친 방탄의 심야 토크',
+      es: 'BTS se reúne para una charla nocturna',
+      ja: '久しぶりに集合したBTSの深夜トーク',
+    },
+    desc: {
+      en: 'BTS swap old stories and get heated over penalty games.',
+      ko: '방탄소년단의 옛날이야기 & 벌칙 대토론',
+      es: 'BTS recuerda viejas anécdotas y debate acaloradamente sobre los castigos.',
+      ja: 'BTSの思い出話＆罰ゲーム大論争。',
+    },
+    artist: 'BTS',
+    // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
+    availableModes: [
+      { mode: 'B', stars: 2 },
+      { mode: 'I', stars: 2 },
+      { mode: 'A', stars: 2 },
+    ],
+    url: '/kpop-quiz/9D-8kb6RIK4',
+    videoId: '9D-8kb6RIK4',
+    plays: 0,
+    addedAt: 9,
+  },
+  {
+    id: 10,
+    title: {
+      en: "BIGBANG's 19th Anniversary Impromptu Party",
+      ko: '빅뱅 19주년 기념 번개 파티',
+      es: 'Fiesta improvisada por el 19.º aniversario de BIGBANG',
+      ja: 'BIGBANG 19周年記念の突撃パーティー',
+    },
+    desc: {
+      en: "Today's host is G-Dragon — come hang out with us!",
+      ko: '오늘의 MC는 지드래곤, 너도 놀러와!',
+      es: 'El anfitrión de hoy es G-Dragon. ¡Vente tú también!',
+      ja: '今日のMCはG-DRAGON、君も遊びに来て！',
+    },
+    artist: 'BIGBANG',
+    // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
+    availableModes: [
+      { mode: 'B', stars: 2 },
+      { mode: 'I', stars: 2 },
+      { mode: 'A', stars: 2 },
+    ],
+    url: '/kpop-quiz/MuWu6jD6l94',
+    videoId: 'MuWu6jD6l94',
+    plays: 0,
+    addedAt: 10,
+  },
+  {
+    id: 11,
+    title: {
+      en: 'Jisoo Reveals the Stories Behind Her Legendary Memes',
+      ko: '지수가 직접 밝히는 레전드 짤들의 비하인드',
+      es: 'Jisoo revela la historia detrás de sus memes legendarios',
+      ja: 'ジスが自ら明かす伝説のミーム(名場面)の裏話',
+    },
+    desc: {
+      en: 'A candid interview with Jisoo on her 10th debut anniversary.',
+      ko: '데뷔 10주년을 맞은 지수의 솔직담백한 인터뷰',
+      es: 'Una entrevista sincera con Jisoo por su décimo aniversario de debut.',
+      ja: 'デビュー10周年を迎えたジスの率直なインタビュー。',
+    },
+    artist: 'Blackpink',
+    // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
+    availableModes: [
+      { mode: 'B', stars: 2 },
+      { mode: 'I', stars: 2 },
+      { mode: 'A', stars: 2 },
+    ],
+    url: '/kpop-quiz/ql667WQxH_Q',
+    videoId: 'ql667WQxH_Q',
+    plays: 0,
+    addedAt: 11,
+  },
+  {
+    id: 12,
+    title: {
+      en: 'The Best Guests Ever Visit DJ Yoo In-na!',
+      ko: '유인나 DJ를 찾아온 역대급 게스트!',
+      es: '¡Invitados de leyenda visitan a la DJ Yoo In-na!',
+      ja: 'DJユ・インナのもとに歴代最高のゲストが登場！',
+    },
+    desc: {
+      en: 'A laughter-filled chat with IU and Byeon Woo-seok.',
+      ko: '아이유와 변우석의 웃음 가득한 이야기',
+      es: 'Una charla llena de risas con IU y Byeon Woo-seok.',
+      ja: 'IUとピョン・ウソクの笑いあふれるトーク。',
+    },
+    artist: 'K-Drama',
+    // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
+    availableModes: [
+      { mode: 'B', stars: 2 },
+      { mode: 'I', stars: 2 },
+      { mode: 'A', stars: 2 },
+    ],
+    url: '/kpop-quiz/C-dJAFvMpzQ',
+    videoId: 'C-dJAFvMpzQ',
+    plays: 0,
+    addedAt: 12,
+  },
 ]
 
 /** '__all__' = 전체 필터 값 */
-export const ARTISTS = ['__all__', 'BTS', 'Blackpink', 'EXO', 'SKZ', 'Ateez', 'K-Drama'] as const
+export const ARTISTS = ['__all__', 'BTS', 'Blackpink', 'BIGBANG', 'EXO', 'SKZ', 'Ateez', 'K-Drama'] as const
 export type ArtistFilter = (typeof ARTISTS)[number]
 
 /** Game Hub 모드 필터: '__all__' = 전체 */
