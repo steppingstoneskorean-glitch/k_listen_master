@@ -278,7 +278,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
       en: 'The Best Guests Ever Visit DJ Yoo In-na!',
       ko: '유인나 DJ를 찾아온 역대급 게스트!',
       es: '¡Invitados de leyenda visitan a la DJ Yoo In-na!',
-      ja: 'DJユ・インナのもとに歴代最高のゲストが登場！',
+      ja: 'DJユ・インナのもとを訪れた超豪華ゲスト！',
     },
     desc: {
       en: 'A laughter-filled chat with IU and Byeon Woo-seok.',
