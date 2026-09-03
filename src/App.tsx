@@ -42,6 +42,11 @@ export default function App() {
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/terms" element={<TermsPage />} />
+                {/* 문법 해설은 SEO 유입 채널 — 비로그인/크롤러도 읽을 수 있게 공개.
+                    (본문은 정적 콘텐츠라 auth 불필요. 하단 '퀴즈 도전' 링크는
+                     여전히 로그인 필수인 /kpop-quiz 로 이어져 제품 본체는 게이트 유지) */}
+                <Route path="/grammar" element={<GrammarListPage />} />
+                <Route path="/grammar/:slug" element={<GrammarArticlePage />} />
               </Route>
 
               {/* Protected — 로그인 필수 */}
@@ -63,8 +68,6 @@ export default function App() {
                   <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
                   <Route path="/quiz-studio" element={<QuizStudioPage />} />
                   <Route path="/quiz-builder" element={<QuizBuilderPage />} />
-                  <Route path="/grammar" element={<GrammarListPage />} />
-                  <Route path="/grammar/:slug" element={<GrammarArticlePage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Route>
               </Route>
