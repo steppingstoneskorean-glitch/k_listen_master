@@ -64,7 +64,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     desc: {
       en: "Learn Korean while enjoying the members' healing journey.",
       ko: '멤버들의 힐링 여행과 함께 즐기는 한국어 공부',
-      es: 'Aprende coreano mientras disfrutas del viaje de descanso de los miembros..',
+      es: 'Aprende coreano mientras disfrutas del relajante viaje de los miembros.',
       ja: 'メンバーたちの癒やしの旅を楽しみながら韓国語を学ぼう。',
     },
     artist: 'BTS',
