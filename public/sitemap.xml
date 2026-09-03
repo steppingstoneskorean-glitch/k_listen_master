@@ -91,6 +91,26 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://k-listen-master.vercel.app/grammar/know-how-to-l-jul-alda</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://k-listen-master.vercel.app/grammar/even-kkaji</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://k-listen-master.vercel.app/grammar/doing-for-someone-a-eo-juda</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://k-listen-master.vercel.app/grammar/noun-making-eum</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://k-listen-master.vercel.app/materials</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
