@@ -262,6 +262,9 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   const list = activeMode ? modeMap[activeMode] : [];
   const quiz = list[index];
+  // 문항 식별 키 — 스튜디오 실수로 quiz.id 가 중복돼도 절대 겹치지 않도록 mode+index 로 구성.
+  // 문항별 셔플/배속/상태초기화 훅은 quiz.id 대신 이 키에 의존해, 문항이 바뀔 때마다 확실히 재실행된다.
+  const quizKey = quiz ? `${activeMode}:${index}` : null;
 
   // 모드가 1개뿐이면 선택 화면 없이 자동 진입 / 선택된 모드가 사라지면 선택 화면으로 복귀
   useEffect(() => {
@@ -354,7 +357,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     if (!quiz || modeOf(quiz) !== 'B' || !Array.isArray(quiz.blocks)) return null;
     return shuffleArr(quiz.blocks.map((text, i) => ({ text, key: `${i}-${text}` })));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quiz && quiz.id]);
+  }, [quizKey]);
 
   // ── 학습 기록 state ────────────────────────────────────────────────────────
   const [stats, setStats] = useState(() => {
@@ -459,14 +462,17 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     return () => {
       if (loopTimerRef.current) clearInterval(loopTimerRef.current);
     };
-  }, [playerReady, quiz?.startTime, quiz?.endTime]);
+    // quizKey 포함: 문항이 바뀌면 start/end 가 우연히 같아도 구간을 다시 seek 한다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playerReady, quiz?.startTime, quiz?.endTime, quizKey]);
 
   // 문항별 자동 배속: 새 문항으로 넘어가면 저장된 initialSpeed 로 재설정
   // (미지정 시 K-Artist Live 기본값 0.75 — 원어민 속도가 빨라 학습자 배려)
   useEffect(() => {
     if (!quiz) return;
     setSpeed(quiz.initialSpeed || 0.75);
-  }, [quiz?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizKey]);
 
   // 배속 유지: 플레이어 준비/재생성 시에도 현재 배속 적용
   useEffect(() => {
@@ -608,7 +614,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // 퀴즈가 바뀌면(다음 문장/운영자 미리보기) 시도 상태 초기화
   useEffect(() => {
     resetAttempt();
-  }, [quiz?.id, resetAttempt]);
+  }, [quizKey, resetAttempt]);
 
   // ─────────────────────────────────────────────────────────────────────────
   // 4) 문장 전환 / 최종 완료 흐름 제어
