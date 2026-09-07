@@ -10,7 +10,9 @@ import {
   pickRandom,
   generateBlank,
   GeneratedQuestion,
+  DictationSentence,
 } from '@/data/sentences'
+import { sentenceMeaning } from '@/data/sentenceMeanings'
 import {
   submitDictationScore,
   getDictationLeaderboard,
@@ -181,6 +183,7 @@ type WrongEntry = {
   correctAnswer: string
   audioUrl: string
   fullSentence: string
+  sentence: DictationSentence
 }
 
 function GameScreen({
@@ -194,7 +197,7 @@ function GameScreen({
   questions: GeneratedQuestion[]
   onComplete: (score: number, correct: number, wrongs: WrongEntry[]) => void
 }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const total = questions.length
   const isAdv = mode === 'advanced'
 
@@ -314,6 +317,7 @@ function GameScreen({
         correctAnswer: current.answer,
         audioUrl:      current.sentence.audioUrl,
         fullSentence:  current.sentence.fullSentence,
+        sentence:      current.sentence,
       }])
       setFeedback('wrong')
     }
@@ -474,6 +478,12 @@ function GameScreen({
               </p>
             </>
           )}
+          {/* 정답 확인 후 문장 의미 노출 (빈칸 힌트 방지를 위해 idle 상태에서는 숨김) */}
+          {feedback !== 'idle' && sentenceMeaning(current.sentence, lang) && (
+            <p className="mt-1 text-xs text-gray-400 text-center leading-relaxed max-w-sm">
+              💬 {sentenceMeaning(current.sentence, lang)}
+            </p>
+          )}
         </div>
       </div>
 
@@ -516,7 +526,7 @@ function ResultScreen({
   onRestart: () => void
   onUpgrade?: () => void   // Level 1 → Level 2 upgrade (undefined when already at Level 2)
 }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { isInstalled } = usePwaInstall()
   const [showGuestModal, setShowGuestModal] = useState(isGuest)
   const [showInstallModal, setShowInstallModal] = useState(() => !isGuest && !isInstalled && !isInstallModalHidden())
@@ -632,6 +642,9 @@ function ResultScreen({
                         <span className="text-red-400 text-xs">✗ {e.userAnswer || '(미입력)'}</span>
                         <span className="text-green-400 font-bold text-xs">✓ {e.correctAnswer}</span>
                       </div>
+                      {sentenceMeaning(e.sentence, lang) && (
+                        <p className="text-gray-500 text-xs mt-1 leading-relaxed">💬 {sentenceMeaning(e.sentence, lang)}</p>
+                      )}
                     </div>
                   </div>
                 ))}
