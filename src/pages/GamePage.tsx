@@ -15,6 +15,7 @@ import ResultCard from '@/components/ResultCard'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
 import { PAIRS_BY_LEVEL } from '@/data/minimalPairs'
+import { wordMeaning } from '@/data/wordMeanings'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
 import { markStepDone } from '@/lib/todayPlan'
@@ -115,7 +116,7 @@ function ReviewModeScreen({
   wrongAnswers: WrongAnswerData[]
   onComplete: () => void
 }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const [idx, setIdx] = useState(0)
   const [heardWords, setHeardWords] = useState<Set<string>>(new Set())
   const [playingWord, setPlayingWord] = useState<string | null>(null)
@@ -190,6 +191,9 @@ function ReviewModeScreen({
                 }`}
             >
               <div className="text-4xl font-black text-white">{word}</div>
+              {wordMeaning(word, lang) && (
+                <div className="mt-0.5 text-[11px] leading-tight text-gray-400 font-medium px-1">{wordMeaning(word, lang)}</div>
+              )}
               {isCorrect && <div className="mt-1 text-xs text-green-400 font-bold">{t('game.wordCorrect')}</div>}
               {wasWrong && !isCorrect && <div className="mt-1 text-xs text-red-400 font-bold">{t('game.wordWrong')}</div>}
               {playing ? (
@@ -246,7 +250,7 @@ function GamePlayScreen({
   onWrong: (data: WrongAnswerData) => void
   onScorePenalty: (pts: number) => void
 }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const levelData = GAME_LEVELS[level]
   const [pairs, setPairs] = useState<string[][]>([])
   const [pairIdx, setPairIdx] = useState(0)
@@ -476,6 +480,9 @@ function GamePlayScreen({
                   ${feedback === 'idle' && !isPlaying ? 'cursor-pointer' : 'cursor-default'}`}
               >
                 <span className="text-4xl font-black text-white">{word}</span>
+                {wordMeaning(word, lang) && (
+                  <span className="mt-1 block text-xs leading-tight text-gray-400 font-medium px-1">{wordMeaning(word, lang)}</span>
+                )}
                 {feedback !== 'idle' && word === chosenWord && (
                   <span className="absolute bottom-2 left-0 right-0 text-center text-xs text-green-400 font-bold">
                     {t('game.answerLabel')}
