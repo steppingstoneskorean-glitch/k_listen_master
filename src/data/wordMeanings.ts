@@ -115,7 +115,7 @@ export const WORD_MEANINGS: Record<string, Meaning> = {
   '불': M('fire', 'fuego', '火'),
   '뿔': M('horn', 'cuerno', '角'),
   '풀': M('grass', 'hierba', '草'),
-  '창': M('window', 'ventana', '窓'),
+  '창': M('spear', 'lanza', '槍'),
   '빵': M('bread', 'pan', 'パン'),
   '굴': M('oyster; cave', 'ostra; cueva', '牡蠣、洞窟'),
   '꿀': M('honey', 'miel', '蜂蜜'),
