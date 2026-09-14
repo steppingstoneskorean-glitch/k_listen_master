@@ -31,7 +31,12 @@ export type Phenomenon = 'pause' | 'carry' | 'change' | 'sound-contrast'
  */
 export type ChangeType = 'soften' | 'flow' | 'front-shift' | 'breath' | 'h-weaken'
 
-/** 표준발음법 항 참조. 예: '제18항'. PAUSE 조건·Flow ㄹ방향 등 하위 분기를 담는다. */
+/**
+ * 규칙 식별용 **내부 불투명 코드** (rules.json 의 키). 예: 'r24'.
+ * ⚠ 사용자에게 절대 노출하지 않는다 — '제24항' 같은 라벨은 rules.json 에만 두고,
+ *   학습자에게는 note/question 처럼 평이한 말로만 설명한다.
+ * PAUSE 조건(r23/24/25/27)·Flow ㄹ방향(r19/r20) 등 하위 분기를 이 코드로 구분한다.
+ */
 export type RuleId = string
 
 /**
@@ -43,7 +48,7 @@ export interface Annotation {
   phenomenon: Phenomenon
   /** phenomenon === 'change' 일 때. */
   changeType?: ChangeType
-  /** 선택 — 표준발음법 참조. 대부분 (phenomenon+changeType+맥락)에서 도출, 경계 사례만 수동 기입. */
+  /** 선택 — 내부 규칙 코드(rules.json 키, 사용자 비노출). 대부분 도출 가능, 경계 사례만 수동 기입. */
   rule?: RuleId
   /** transcript 의 문자 인덱스 [start, end). canonical = transcript.slice(start, end). */
   span: [number, number]
@@ -76,9 +81,9 @@ export interface DictationItem {
  */
 export interface ContrastSet {
   id: number
-  /** 무엇을 가르는 축. 예: '경음화 적용 여부'. */
+  /** 내부 학습 분류(시스템용, 학습자 비노출). 예: '경음화 적용 여부'. */
   axis: string
-  /** 판별 질문 — 전이되는 스킬의 실체. 예: '어미가 붙은 용언인가?'. */
+  /** 학습자에게 보이는 유일한 텍스트 — 판별 질문. 전문용어 없이. 예: '어미가 붙은 용언인가?'. */
   question: string
   members: ContrastMember[]
   note?: string
@@ -87,7 +92,7 @@ export interface ContrastSet {
 export interface ContrastMember {
   /** 재생할 항목(오디오/transcript)의 id. */
   ref: number
-  /** 발화한 규칙. null = 적용 안 됨(신문). applies 는 (firedRule === null) 의 파생값이라 저장 X. */
+  /** 발화한 규칙 — 내부 코드(rules.json 키, 사용자 비노출). null = 적용 안 됨(신문). applies 는 파생값. */
   firedRule: RuleId | null
   /** 들리는 형태. */
   surface: string

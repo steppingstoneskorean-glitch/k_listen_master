@@ -27,7 +27,7 @@ const PHENOMENA = ['pause', 'carry', 'change', 'sound-contrast']
 const CHANGE_TYPES = ['soften', 'flow', 'front-shift', 'breath', 'h-weaken']
 const LEVELS = ['intermediate', 'advanced']
 const SPEEDS = ['slow', 'normal', 'fast']
-const RULE_RE = /^제\d+항(-\d+)?$/ // 예: 제18항, 제12항-4
+const RULE_CODE_RE = /^r[0-9a-z_]+$/ // 내부 코드: r24, r12h … (rules.json 부재 시 폴백 검사)
 
 const isStr = (v) => typeof v === 'string' && v.trim().length > 0
 const isInt = (v) => Number.isInteger(v)
@@ -35,11 +35,13 @@ const stripSpace = (s) => String(s).replace(/\s/g, '')
 
 // ── 순수 검증 로직 ───────────────────────────────────────────────────────────
 /** @returns {{errors: string[], warnings: string[]}} */
-export function validate(items, contrastSets) {
+export function validate(items, contrastSets, knownRules = null) {
   const errors = []
   const warnings = []
   const E = (m) => errors.push(m)
   const W = (m) => warnings.push(m)
+  // 규칙 코드는 rules.json 의 키여야 한다(있으면). 없으면 형식(r…)만 검사.
+  const ruleOk = (code) => (knownRules ? knownRules.has(code) : RULE_CODE_RE.test(code))
 
   if (!Array.isArray(items)) { E('items 는 배열이어야 합니다.'); items = [] }
   if (!Array.isArray(contrastSets)) { E('contrastSets 는 배열이어야 합니다.'); contrastSets = [] }
@@ -99,7 +101,7 @@ export function validate(items, contrastSets) {
       }
 
       if (!isStr(an.surface)) E(`${aat}: surface 가 비었습니다.`)
-      if (an.rule != null && !RULE_RE.test(an.rule)) E(`${aat}: rule 형식이 '제N항' 이 아닙니다. (받음: ${an.rule})`)
+      if (an.rule != null && !ruleOk(an.rule)) E(`${aat}: rule 이 rules.json 의 코드가 아닙니다. (받음: ${an.rule})`)
       if (an.note != null && typeof an.note !== 'string') E(`${aat}: note 는 문자열이어야 합니다.`)
     }
     if (it.annotations.length === 0 && Array.isArray(it.chunks)) {
@@ -131,8 +133,8 @@ export function validate(items, contrastSets) {
       if (!isInt(m.ref)) E(`${mat}: ref 는 정수(item id)여야 합니다.`)
       else if (!itemIds.has(m.ref)) E(`${mat}: ref=${m.ref} 에 해당하는 item 이 없습니다.`)
 
-      if (m.firedRule !== null && !RULE_RE.test(m.firedRule ?? '')) {
-        E(`${mat}: firedRule 은 null 또는 '제N항' 이어야 합니다. (받음: ${JSON.stringify(m.firedRule)})`)
+      if (m.firedRule !== null && !ruleOk(m.firedRule ?? '')) {
+        E(`${mat}: firedRule 은 null 또는 rules.json 의 코드여야 합니다. (받음: ${JSON.stringify(m.firedRule)})`)
       }
       firedRules.add(m.firedRule)
 
@@ -164,12 +166,12 @@ function selfTest() {
   const goodItems = [{
     id: 101, level: 'intermediate', audioUrl: '/audio/x.wav', transcript: '신고',
     speed: 'normal', chunks: ['신고'],
-    annotations: [{ phenomenon: 'pause', rule: '제24항', span: [0, 2], surface: '신꼬' }],
+    annotations: [{ phenomenon: 'pause', rule: 'r24', span: [0, 2], surface: '신꼬' }],
   }]
   const goodCs = [{
     id: 1, axis: '경음화 적용 여부', question: '어미가 붙은 용언인가?',
     members: [
-      { ref: 101, firedRule: '제24항', surface: '신꼬' },
+      { ref: 101, firedRule: 'r24', surface: '신꼬' },
       { ref: 101, firedRule: null, surface: '신문', commonError: '신꾼' },
     ],
   }]
@@ -210,9 +212,14 @@ function main() {
 
   const items = loadJson(itemsPath)
   const cs = loadJson(csPath)
+  const rules = loadJson(resolve(ROOT, 'src/data/listening/rules.json'))
+  const knownRules = rules.ok && rules.data && typeof rules.data === 'object' && !Array.isArray(rules.data)
+    ? new Set(Object.keys(rules.data))
+    : null
 
   if (items.parseError) { console.error(`❌ JSON 파싱 실패: ${itemsPath}\n   ${items.parseError}`); process.exit(1) }
   if (cs.parseError) { console.error(`❌ JSON 파싱 실패: ${csPath}\n   ${cs.parseError}`); process.exit(1) }
+  if (rules.parseError) { console.error(`❌ JSON 파싱 실패: rules.json\n   ${rules.parseError}`); process.exit(1) }
 
   if (!items.ok && !cs.ok) {
     console.log('ℹ️  아직 태깅 데이터가 없습니다.')
@@ -222,8 +229,9 @@ function main() {
     process.exit(0)
   }
 
-  const { errors, warnings } = validate(items.data, cs.data)
-  console.log(`검증: items=${Array.isArray(items.data) ? items.data.length : '?'} · contrastSets=${Array.isArray(cs.data) ? cs.data.length : '?'}`)
+  if (!knownRules) console.log('  ⚠️  rules.json 없음 — 규칙 코드는 형식(r…)만 검사합니다.')
+  const { errors, warnings } = validate(items.data, cs.data, knownRules)
+  console.log(`검증: items=${Array.isArray(items.data) ? items.data.length : '?'} · contrastSets=${Array.isArray(cs.data) ? cs.data.length : '?'} · rules=${knownRules ? knownRules.size : 0}`)
   warnings.forEach((w) => console.log('  ⚠️  ' + w))
   if (errors.length === 0) {
     console.log(`✅ 통과 (경고 ${warnings.length}건)`)
