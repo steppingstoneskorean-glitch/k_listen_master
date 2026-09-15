@@ -1,9 +1,11 @@
+import type { Phenomenon, ChangeType, RuleId } from '@/data/listening/schema'
+
 const STORAGE_KEY = 'klisten_errors'
 
 export type MasteryStatus = 'needs_review' | 'improving' | 'watch'
 
 /** 오답이 발생한 게임. 기존(v1) 레코드에는 이 필드가 없으므로 없으면 'catch-the-sound' 로 본다. */
-export type ErrorSource = 'catch-the-sound' | 'k-stars' | 'shadowing'
+export type ErrorSource = 'catch-the-sound' | 'k-stars' | 'shadowing' | 'listening'
 
 /** Listen to K-Stars 의 문제 유형 — B: 블록 배열, I: 의미 고르기, A: 받아쓰기 */
 export type QuizMode = 'A' | 'B' | 'I'
@@ -23,6 +25,11 @@ export interface ErrorRecord {
   quizMode?: QuizMode
   /** 빈칸이 포함된 원문 문장 — 오답 카드에 맥락을 보여주기 위해 저장 */
   context?: string
+
+  // ── 리스닝 디코딩 전용 (source==='listening') — 현상별 약점 집계용 ──
+  phenomenon?: Phenomenon
+  changeType?: ChangeType
+  rule?: RuleId
 }
 
 export interface ErrorMeta {
@@ -30,6 +37,9 @@ export interface ErrorMeta {
   videoId?: string
   quizMode?: QuizMode
   context?: string
+  phenomenon?: Phenomenon
+  changeType?: ChangeType
+  rule?: RuleId
 }
 
 /**
@@ -41,6 +51,7 @@ export interface ErrorMeta {
 function keyOf(word: string, meta?: ErrorMeta): string {
   if (meta?.source === 'k-stars') return `kstars:${word}`
   if (meta?.source === 'shadowing') return `shadow:${word}`
+  if (meta?.source === 'listening') return `listen:${word}`
   return word
 }
 
@@ -87,6 +98,9 @@ export function recordError(
     if (meta?.context) existing.context = meta.context
     if (meta?.videoId) existing.videoId = meta.videoId
     if (meta?.quizMode) existing.quizMode = meta.quizMode
+    if (meta?.phenomenon) existing.phenomenon = meta.phenomenon
+    if (meta?.changeType) existing.changeType = meta.changeType
+    if (meta?.rule) existing.rule = meta.rule
     if (pair.length > 0) existing.pair = pair
   } else {
     data[key] = {
@@ -101,6 +115,9 @@ export function recordError(
       ...(meta?.videoId ? { videoId: meta.videoId } : {}),
       ...(meta?.quizMode ? { quizMode: meta.quizMode } : {}),
       ...(meta?.context ? { context: meta.context } : {}),
+      ...(meta?.phenomenon ? { phenomenon: meta.phenomenon } : {}),
+      ...(meta?.changeType ? { changeType: meta.changeType } : {}),
+      ...(meta?.rule ? { rule: meta.rule } : {}),
     }
   }
   save(data)
@@ -134,6 +151,7 @@ function keyOfRecord(r: ErrorRecord): string {
   const source = getSource(r)
   if (source === 'k-stars') return `kstars:${r.word}`
   if (source === 'shadowing') return `shadow:${r.word}`
+  if (source === 'listening') return `listen:${r.word}`
   return r.word
 }
 
@@ -152,6 +170,33 @@ export function getMasteryStatus(r: ErrorRecord): MasteryStatus {
   if (lastCorrect !== null && lastCorrect > lastMiss) return 'improving'
   if (r.missCount >= 2) return 'needs_review'
   return 'watch'
+}
+
+// ── 리스닝 디코딩 — 현상별 약점 (Diagnose → Train 루프) ──────────────────────────
+
+/** 리스닝 디코딩 오답 기록 — recordError 의 얇은 래퍼(현상 메타 포함, pair 불필요). */
+export function recordListeningMiss(
+  answer: string,
+  userAnswer: string,
+  meta: { phenomenon?: Phenomenon; changeType?: ChangeType; rule?: RuleId; context?: string } = {},
+) {
+  recordError(answer, userAnswer, [], 0, { source: 'listening', ...meta })
+}
+
+/**
+ * 현상별 약점 가중치 — source==='listening' 레코드를 현상별로 합산한다.
+ * generateItemBlank(item, { weakness }) 의 weakness 로 그대로 넘길 수 있다.
+ * 가중 = max(0, missCount − 정답횟수) → 이미 교정된 현상은 낮게 잡힌다.
+ */
+export function getPhenomenonWeakness(): Partial<Record<Phenomenon, number>> {
+  const out: Partial<Record<Phenomenon, number>> = {}
+  for (const r of Object.values(load())) {
+    if (r.source !== 'listening' || !r.phenomenon) continue
+    const net = Math.max(0, r.missCount - r.correctTimestamps.length)
+    if (net <= 0) continue
+    out[r.phenomenon] = (out[r.phenomenon] ?? 0) + net
+  }
+  return out
 }
 
 // ── Mock data for development ─────────────────────────────────────────────────

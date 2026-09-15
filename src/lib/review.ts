@@ -59,8 +59,9 @@ function isDue(card: SrsCard | undefined, now: number): boolean {
 export function getDueReviews(now: number = Date.now()): ErrorRecord[] {
   const map = loadMap()
   return getErrors()
-    // 섀도잉(따라 말하기)은 개인 복습 대상에서 제외한다(사용자 요청).
-    .filter(r => getSource(r) !== 'shadowing')
+    // 섀도잉·리스닝 디코딩은 개인 복습(SRS) 대상에서 제외한다.
+    // (섀도잉=사용자 요청, 리스닝=현상별 약점 집계로 따로 처방하므로 SRS에 넣지 않음)
+    .filter(r => getSource(r) !== 'shadowing' && getSource(r) !== 'listening')
     .filter(r => isDue(map[reviewKey(r)], now))
     .sort((a, b) => {
       const ca = map[reviewKey(a)]
@@ -78,8 +79,11 @@ export function getDueReviews(now: number = Date.now()): ErrorRecord[] {
 export function getDueCount(now: number = Date.now()): number {
   const map = loadMap()
   return getErrors().reduce(
-    // 섀도잉은 복습 대상이 아니므로 대기 수에서도 제외한다(사용자 요청).
-    (n, r) => (getSource(r) !== 'shadowing' && isDue(map[reviewKey(r)], now) ? n + 1 : n),
+    // 섀도잉·리스닝은 복습 대상이 아니므로 대기 수에서도 제외한다.
+    (n, r) =>
+      (getSource(r) !== 'shadowing' && getSource(r) !== 'listening' && isDue(map[reviewKey(r)], now)
+        ? n + 1
+        : n),
     0,
   )
 }
