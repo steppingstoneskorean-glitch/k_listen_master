@@ -26,6 +26,7 @@ import GameHubPage from '@/pages/GameHubPage'
 import QuizStudioPage from '@/pages/QuizStudioPage'
 import QuizBuilderPage from '@/pages/QuizBuilderPage'
 import ProfilePage from '@/pages/ProfilePage'
+import DecodeLabPage from '@/pages/DecodeLabPage'
 
 export default function App() {
   return (
@@ -55,6 +56,7 @@ export default function App() {
                 <Route path="/game" element={<GamePage />} />
                 <Route path="/dictation" element={<DictationPage />} />
                 <Route path="/shadowing" element={<ShadowingPage />} />
+                <Route path="/decode" element={<DecodeLabPage />} />
 
                 {/* Layout-wrapped pages */}
                 <Route element={<Layout />}>

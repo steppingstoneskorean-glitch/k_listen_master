@@ -17,7 +17,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { readFileSync, existsSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -242,4 +242,5 @@ function main() {
   process.exit(1)
 }
 
-main()
+// 직접 실행할 때만 main() — import 로 validate() 만 재사용할 수 있게 가드.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) main()
