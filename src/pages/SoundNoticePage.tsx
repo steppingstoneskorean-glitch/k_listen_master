@@ -41,7 +41,6 @@ export default function SoundNoticePage() {
   const [rounds, setRounds] = useState<Round[]>(() => buildSession())
   const [idx, setIdx] = useState(0)
   const [chosen, setChosen] = useState<number | null>(null)
-  const [showWhy, setShowWhy] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
 
@@ -70,13 +69,12 @@ export default function SoundNoticePage() {
   }, [chosen, round])
 
   const next = useCallback(() => {
-    setShowWhy(false)
     if (idx + 1 >= rounds.length) { setDone(true); return }
     setIdx((i) => i + 1); setChosen(null)
   }, [idx, rounds.length])
 
   const restart = useCallback(() => {
-    setRounds(buildSession()); setIdx(0); setChosen(null); setShowWhy(false); setCorrectCount(0); setDone(false)
+    setRounds(buildSession()); setIdx(0); setChosen(null); setCorrectCount(0); setDone(false)
   }, [])
 
   // ── 결과 ──
@@ -180,13 +178,12 @@ export default function SoundNoticePage() {
               </p>
             </div>
 
-            {/* 원리 설명은 '필요할 때' — 규칙 먼저가 아니라 접었다 펴기 */}
-            {an?.note && !showWhy && (
-              <button onClick={() => setShowWhy(true)}
-                className="mx-auto text-sm text-indigo-300 hover:text-indigo-200 underline underline-offset-4">왜 그럴까요?</button>
-            )}
-            {an?.note && showWhy && (
-              <p className="text-sm text-gray-300 text-center leading-relaxed px-4">{resolveString(an.note, lang)}</p>
+            {/* 소리를 확인한 뒤 설명을 바로 보여준다(감각 중심, 전문용어 없음) */}
+            {an?.note && (
+              <div className="text-center px-4">
+                <p className="text-xs font-bold text-indigo-300/80 mb-1">왜 그럴까요?</p>
+                <p className="text-sm text-gray-300 leading-relaxed">{resolveString(an.note, lang)}</p>
+              </div>
             )}
 
             <div className="flex items-center justify-center gap-3">
