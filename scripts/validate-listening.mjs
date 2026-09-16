@@ -60,6 +60,16 @@ export function validate(items, contrastSets, opts = {}) {
   const ruleOk = (c) => (rules ? rules.has(c) : RULE_CODE_RE.test(c))
   const axisOk = (c) => AXIS_ID_RE.test(c) && (!axes || axes.has(c))
   const stringOk = (c) => STRING_ID_RE.test(c) && (!strings || strings.has(c))
+  // note 는 StringId(번역셋 키) 또는 초안 원문 텍스트 허용. 원문이면 경고(배포 전 추출 필요).
+  const checkNote = (val, where) => {
+    if (val == null) return
+    if (typeof val !== 'string' || !val.trim()) { E(`${where}: note 가 비었습니다.`); return }
+    if (STRING_ID_RE.test(val)) {
+      if (strings && !strings.has(val)) E(`${where}: note StringId '${val}' 가 번역셋(strings)에 없습니다.`)
+    } else {
+      W(`${where}: note 가 원문 텍스트(초안) — 배포 전 StringId 로 추출 필요.`)
+    }
+  }
 
   if (!Array.isArray(items)) { E('items 는 배열이어야 합니다.'); items = [] }
   if (!Array.isArray(contrastSets)) { E('contrastSets 는 배열이어야 합니다.'); contrastSets = [] }
@@ -76,7 +86,8 @@ export function validate(items, contrastSets, opts = {}) {
     else { itemIds.add(it.id); itemById.set(it.id, it) }
 
     if (!LEVELS.includes(it.level)) E(`${at}: level 은 ${LEVELS.join('|')} 중 하나. (받음: ${it.level})`)
-    if (!isStr(it.audioUrl)) E(`${at}: audioUrl 이 비었습니다.`)
+    if (typeof it.audioUrl !== 'string') E(`${at}: audioUrl 은 문자열이어야 합니다.`)
+    else if (!it.audioUrl.trim()) W(`${at}: audioUrl 이 비었습니다 — 오디오 미녹음(데모 TTS 재생).`)
     if (!SPEEDS.includes(it.speed)) E(`${at}: speed 는 ${SPEEDS.join('|')} 중 하나. (받음: ${it.speed})`)
     if (it.difficulty != null && typeof it.difficulty !== 'number') E(`${at}: difficulty 는 숫자여야 합니다.`)
 
@@ -110,7 +121,7 @@ export function validate(items, contrastSets, opts = {}) {
       }
       if (!isStr(an.surface)) E(`${aat}: surface 가 비었습니다.`)
       if (an.rule != null && !ruleOk(an.rule)) E(`${aat}: rule 이 rules.json 코드가 아닙니다. (받음: ${an.rule})`)
-      if (an.note != null && !stringOk(an.note)) E(`${aat}: note 는 번역셋의 StringId 여야 합니다. (받음: ${an.note})`)
+      checkNote(an.note, aat)
     }
 
     // commonErrors — 항목 소유, 확인된 L1 오답
@@ -125,7 +136,7 @@ export function validate(items, contrastSets, opts = {}) {
           if (!isStr(ce.surface)) E(`${cat}: surface 가 비었습니다.`)
           else if (ce.surface === correct) E(`${cat}: surface 가 정답 발음('${correct}')과 같습니다. (오개념은 정답과 달라야 함)`)
           if (ce.l1 != null && !isStr(ce.l1)) E(`${cat}: l1 은 비지 않은 문자열이어야 합니다.`)
-          if (ce.note != null && !stringOk(ce.note)) E(`${cat}: note 는 번역셋의 StringId 여야 합니다. (받음: ${ce.note})`)
+          checkNote(ce.note, cat)
         }
       }
     }
@@ -143,7 +154,7 @@ export function validate(items, contrastSets, opts = {}) {
 
     if (!isStr(cs.axis) || !axisOk(cs.axis)) E(`${at}: axis 는 axes.json 의 AxisId(ax.*) 여야 합니다. (받음: ${cs.axis})`)
     if (!isStr(cs.question) || !stringOk(cs.question)) E(`${at}: question 은 번역셋의 StringId 여야 합니다. (받음: ${cs.question})`)
-    if (cs.note != null && !stringOk(cs.note)) E(`${at}: note 는 번역셋의 StringId 여야 합니다. (받음: ${cs.note})`)
+    checkNote(cs.note, at)
 
     if (!Array.isArray(cs.members) || cs.members.length < 2) { E(`${at}: members 는 2개 이상이어야 합니다.`); continue }
     const fired = new Set()

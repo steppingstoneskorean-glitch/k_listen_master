@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { SOUND_ITEMS } from '@/data/listening/mockSounds'
+import ITEMS from '@/data/listening/items.json'
 import { phenomenonLabel } from '@/data/listening/labels'
 import { resolveString } from '@/data/listening/strings'
 import type { DictationItem, Phenomenon } from '@/data/listening/schema'
@@ -32,8 +33,15 @@ function buildRound(item: DictationItem): Round {
   const options = Math.random() < 0.5 ? [item.transcript, surface] : [surface, item.transcript]
   return { item, surface, options, answerIdx: options.indexOf(surface) }
 }
+// 태깅된 실제 항목(items.json) 중 '표기≠실제소리'만 사용, 없으면 데모(mockSounds) 폴백.
+const REAL = (ITEMS as DictationItem[]).filter((it) => {
+  const a = it.annotations?.[0]
+  return !!a && !!a.surface && a.surface !== it.transcript
+})
+const POOL: DictationItem[] = REAL.length > 0 ? REAL : SOUND_ITEMS
+
 function buildSession(n = 6): Round[] {
-  return [...SOUND_ITEMS].sort(() => Math.random() - 0.5).slice(0, n).map(buildRound)
+  return [...POOL].sort(() => Math.random() - 0.5).slice(0, n).map(buildRound)
 }
 
 export default function SoundNoticePage() {
