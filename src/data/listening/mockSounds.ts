@@ -25,7 +25,7 @@ export const SOUND_ITEMS: DictationItem[] = [
     annotations: [{ phenomenon: 'change', changeType: 'flow', rule: 'r19', span: [0, 2], surface: '정니',
       note: 'ㄹ이 물러나 콧소리처럼 들려요.' }] },
   { id: 7106, level: 'intermediate', audioUrl: '', speed: 'normal', transcript: '좋아요', chunks: ['좋아요'],
-    annotations: [{ phenomenon: 'change', changeType: 'h-weaken', rule: 'r12h', span: [0, 3], surface: '조아요',
+    annotations: [{ phenomenon: 'h-weaken', rule: 'r12h', span: [0, 3], surface: '조아요',
       note: 'ㅎ이 모음 앞에서 힘없이 사라져요.' }] },
   { id: 7107, level: 'intermediate', audioUrl: '', speed: 'normal', transcript: '축하', chunks: ['축하'],
     annotations: [{ phenomenon: 'change', changeType: 'breath', rule: 'r12a', span: [0, 2], surface: '추카',

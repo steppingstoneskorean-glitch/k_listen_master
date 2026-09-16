@@ -22,8 +22,8 @@ import { dirname, resolve } from 'node:path'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
-const PHENOMENA = ['pause', 'carry', 'change', 'sound-contrast']
-const CHANGE_TYPES = ['soften', 'flow', 'front-shift', 'breath', 'h-weaken']
+const PHENOMENA = ['pause', 'carry', 'change', 'h-weaken', 'sound-contrast']
+const CHANGE_TYPES = ['soften', 'flow', 'front-shift', 'breath']
 const LEVELS = ['intermediate', 'advanced']
 const SPEEDS = ['slow', 'normal', 'fast']
 const RULE_CODE_RE = /^r[0-9a-z_]+$/       // r24, r12h
@@ -122,6 +122,11 @@ export function validate(items, contrastSets, opts = {}) {
       if (!isStr(an.surface)) E(`${aat}: surface 가 비었습니다.`)
       if (an.rule != null && !ruleOk(an.rule)) E(`${aat}: rule 이 rules.json 코드가 아닙니다. (받음: ${an.rule})`)
       checkNote(an.note, aat)
+      if (an.alsoInvolves != null) {
+        if (!Array.isArray(an.alsoInvolves)) E(`${aat}: alsoInvolves 는 배열이어야 합니다.`)
+        else an.alsoInvolves.forEach((r) => { if (!ruleOk(r)) E(`${aat}: alsoInvolves 코드 '${r}' 가 rules.json 에 없습니다.`) })
+      }
+      if (an.editorNote != null && typeof an.editorNote !== 'string') E(`${aat}: editorNote 는 문자열이어야 합니다.`)
     }
 
     // commonErrors — 항목 소유, 확인된 L1 오답

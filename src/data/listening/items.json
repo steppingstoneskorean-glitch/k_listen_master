@@ -2,7 +2,7 @@
   {
     "id": 1,
     "level": "intermediate",
-    "audioUrl": "/audio/listening/0001-singo.mp3",
+    "audioUrl": "",
     "speed": "normal",
     "transcript": "신고",
     "chunks": ["신고"],
@@ -12,21 +12,164 @@
         "rule": "r24",
         "span": [0, 2],
         "surface": "신꼬",
-        "note": "note.item.singo"
+        "note": "잠깐 막혔다가 뒤 소리가 세게 나요.",
+        "editorNote": "반례 신문(id 2)과 대비 — 용언 어간 받침 ㄴ 뒤라 적용."
       }
     ]
   },
   {
     "id": 2,
     "level": "intermediate",
-    "audioUrl": "/audio/listening/0002-sinmun.mp3",
+    "audioUrl": "",
     "speed": "normal",
     "transcript": "신문",
     "chunks": ["신문"],
-    "annotations": [],
-    "commonErrors": [
-      { "surface": "싱뭉", "l1": "ja" },
-      { "surface": "싱문", "l1": "ja" }
+    "annotations": []
+  },
+  {
+    "id": 3,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "꽃이",
+    "chunks": ["꽃이"],
+    "annotations": [
+      {
+        "phenomenon": "carry",
+        "rule": "r14",
+        "span": [0, 2],
+        "surface": "꼬치",
+        "note": "받침이 다음 소리로 이어져요. (받침 뒤에 모음이 오면 빈 소리 'ㅇ' 자리에 받침 소리가 가요.)",
+        "editorNote": "반례 꽃 위(id 4)와 대비 — 조사 '이'라 그대로 이어짐."
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "꽃 위",
+    "chunks": ["꽃", "위"],
+    "annotations": [
+      {
+        "phenomenon": "carry",
+        "rule": "r15",
+        "span": [0, 3],
+        "surface": "꼬뒤",
+        "note": "받침이 다음 소리로 이어져요. (받침 뒤에 모음이 오면 빈 소리 'ㅇ' 자리에 받침 소리가 가요.)",
+        "alsoInvolves": ["r08"],
+        "editorNote": "꽃이(id 3)의 반례 — 뒤가 뜻있는 낱말이라 대표음 [꼳]을 거쳐 [꼬뒤]."
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "신라",
+    "chunks": ["신라"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "flow",
+        "rule": "r20",
+        "span": [0, 2],
+        "surface": "실라",
+        "note": "두 소리가 만나 부드럽게 이어져요.",
+        "editorNote": "반례 정리(id 6)와 대비 — ㄹ이 이겨 [실라]."
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "정리",
+    "chunks": ["정리"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "flow",
+        "rule": "r19",
+        "span": [0, 2],
+        "surface": "정니",
+        "note": "ㄹ이 물러나 콧소리처럼 들려요.",
+        "editorNote": "신라(id 5)의 반례 — ㄹ이 물러나 [정니]."
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "국물",
+    "chunks": ["국물"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "soften",
+        "rule": "r18",
+        "span": [0, 2],
+        "surface": "궁물",
+        "note": "받침이 뒤 콧소리를 만나 부드러워져요."
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "같이",
+    "chunks": ["같이"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "front-shift",
+        "rule": "r17",
+        "span": [0, 2],
+        "surface": "가치",
+        "note": "받침과 '이'가 만나 앞쪽에서 소리가 나요."
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "좋아요",
+    "chunks": ["좋아요"],
+    "annotations": [
+      {
+        "phenomenon": "h-weaken",
+        "rule": "r12h",
+        "span": [0, 3],
+        "surface": "조아요",
+        "note": "ㅎ이 모음 앞에서 힘없이 사라져요."
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "축하",
+    "chunks": ["축하"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "breath",
+        "rule": "r12a",
+        "span": [0, 2],
+        "surface": "추카",
+        "note": "ㅎ과 만나 숨이 섞여 거세게 들려요."
+      }
     ]
   }
 ]

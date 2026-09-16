@@ -16,20 +16,18 @@ const CHANGE: Record<'ko' | 'en', Record<ChangeType, string>> = {
     flow: '흐름',
     'front-shift': '앞으로 옮김',
     breath: '거세짐',
-    'h-weaken': 'ㅎ 약해짐',
   },
   en: {
     soften: 'Soften',
     flow: 'Flow',
     'front-shift': 'Front Shift',
     breath: 'Breath',
-    'h-weaken': 'H-weaken',
   },
 }
 
 const FAMILY: Record<'ko' | 'en', Record<Phenomenon, string>> = {
-  ko: { pause: '멈춤', carry: '이어가기', change: '소리 바뀜', 'sound-contrast': '소리 구별' },
-  en: { pause: 'Pause', carry: 'Carry', change: 'Change', 'sound-contrast': 'Sound Contrast' },
+  ko: { pause: '멈춤', carry: '이어가기', change: '소리 바뀜', 'h-weaken': 'ㅎ 약해짐', 'sound-contrast': '소리 구별' },
+  en: { pause: 'Pause', carry: 'Carry', change: 'Change', 'h-weaken': 'H-weaken', 'sound-contrast': 'Sound Contrast' },
 }
 
 const CHANGE_EN_FAMILY = 'Change'

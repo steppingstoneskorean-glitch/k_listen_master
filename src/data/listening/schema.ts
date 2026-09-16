@@ -11,25 +11,24 @@
 
 /**
  * 듣기 현상 — 학습자용 1차 축 (층③ 연결 규칙 + 지각축).
- *   pause         책 PAUSE  · 경음화/미파 (제23·24·25·27항)
- *   carry         책 CARRY  · 연음 (제13·14·15항)
- *   change        책 CHANGE · 아래 ChangeType 으로 세분
+ *   pause          책 PAUSE  · 경음화/미파 (제23·24·25·27항)
+ *   carry          책 CARRY  · 연음 (제13·14·15항)
+ *   change         책 CHANGE · 동화·축약 (아래 ChangeType)
+ *   h-weaken       ㅎ약화(탈락) 제12-4 · 좋아요[조아요] — '탈락'이라 change와 메커니즘이 달라 독립 현상
  *   sound-contrast 지각축   · 최소대립쌍 (불/뿔/풀) — 기존 minimalPairs 시스템과 연동
  *
  * 층② 읽기 규칙(7종성·겹받침·ㅢ)과 casual 층(reduction·omission)은 Phase 1 범위 밖.
  */
-export type Phenomenon = 'pause' | 'carry' | 'change' | 'sound-contrast'
+export type Phenomenon = 'pause' | 'carry' | 'change' | 'h-weaken' | 'sound-contrast'
 
 /**
- * CHANGE 하위 유형 — 책의 4 changes + ㅎ약화.
- *   soften      비음화(장애음)  제18항   국물[궁물]·합니다[함니다]   ┐
- *   flow        유음화/ㄹ비음화 제20/19  신라[실라](ㄹ이김)·정리[정니](ㄹ물러섬) ├ 동화
- *   front-shift 구개음화        제17항   같이[가치]·굳이[구지]        ┘
- *   breath      격음화(자음축약) 제12항   좋다[조타]·축하[추카]        ┐ 축약/결합
- *   h-weaken    ㅎ탈락          제12-4   좋아요[조아요]·놓아[노아]     ┘
- * ※ soften/flow/front-shift = 동화, breath/h-weaken = 축약·탈락 (파생 메타, 별도 저장 X)
+ * CHANGE 하위 유형 — 책의 4 changes(동화·축약). ㅎ약화(탈락)는 별도 phenomenon 으로 분리됨.
+ *   soften      비음화(장애음)  제18항   국물[궁물]·합니다[함니다]
+ *   flow        유음화/ㄹ비음화 제20/19  신라[실라](ㄹ이김)·정리[정니](ㄹ물러섬)
+ *   front-shift 구개음화        제17항   같이[가치]·굳이[구지]
+ *   breath      격음화(자음축약) 제12항   좋다[조타]·축하[추카]
  */
-export type ChangeType = 'soften' | 'flow' | 'front-shift' | 'breath' | 'h-weaken'
+export type ChangeType = 'soften' | 'flow' | 'front-shift' | 'breath'
 
 /**
  * 규칙 식별용 **내부 불투명 코드** (rules.json 의 키). 예: 'r24'.
@@ -69,6 +68,13 @@ export interface Annotation {
   surface: string
   /** 학습자 설명(왜 이렇게 들리나) — i18n 키(StringId). 학습자 언어로 표시. */
   note?: StringId
+  /**
+   * 보조로 함께 얽힌 규칙(주로 읽기층 ↔ 연결층). 층을 뭉개지 않으려는 내부 메타 — 학습자 비노출.
+   * 예: 꽃 위[꼬뒤]는 carry(r15) + 대표음(r08) → alsoInvolves: ['r08'].
+   */
+  alsoInvolves?: RuleId[]
+  /** 편집용 메모(비교·대비 등 교사/편집자용). 내부 전용, 번역·노출 안 함 — note(학습자용)와 분리. */
+  editorNote?: string
 }
 
 /**

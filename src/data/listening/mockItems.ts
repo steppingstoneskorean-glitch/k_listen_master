@@ -53,7 +53,7 @@ export const MOCK_ITEMS: DictationItem[] = [
     id: 9006, level: 'intermediate', audioUrl: '', speed: 'normal',
     transcript: '좋아요', chunks: ['좋아요'],
     annotations: [
-      { phenomenon: 'change', changeType: 'h-weaken', rule: 'r12h', span: [0, 3], surface: '조아요',
+      { phenomenon: 'h-weaken', rule: 'r12h', span: [0, 3], surface: '조아요',
         note: 'ㅎ이 모음 앞에서 사라져 [조아요]로 들려요.' },
     ],
   },
