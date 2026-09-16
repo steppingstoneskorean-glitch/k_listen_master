@@ -27,6 +27,7 @@ import QuizStudioPage from '@/pages/QuizStudioPage'
 import QuizBuilderPage from '@/pages/QuizBuilderPage'
 import ProfilePage from '@/pages/ProfilePage'
 import DecodeLabPage from '@/pages/DecodeLabPage'
+import ContrastLabPage from '@/pages/ContrastLabPage'
 
 export default function App() {
   return (
@@ -57,6 +58,7 @@ export default function App() {
                 <Route path="/dictation" element={<DictationPage />} />
                 <Route path="/shadowing" element={<ShadowingPage />} />
                 <Route path="/decode" element={<DecodeLabPage />} />
+                <Route path="/contrast" element={<ContrastLabPage />} />
 
                 {/* Layout-wrapped pages */}
                 <Route element={<Layout />}>
