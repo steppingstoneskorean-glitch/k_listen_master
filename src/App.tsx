@@ -40,6 +40,13 @@ export default function App() {
             <Routes>
               {/* Public — 로그인 없이 접근 가능 */}
               <Route path="/login" element={<StartPage />} />
+              {/* DEV 전용 미리보기 — 프로덕션 빌드에는 포함되지 않음(import.meta.env.DEV) */}
+              {import.meta.env.DEV && (
+                <>
+                  <Route path="/contrast-preview" element={<ContrastLabPage />} />
+                  <Route path="/decode-preview" element={<DecodeLabPage />} />
+                </>
+              )}
               <Route element={<Layout />}>
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/about" element={<AboutPage />} />
