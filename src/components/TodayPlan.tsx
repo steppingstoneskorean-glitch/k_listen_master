@@ -356,6 +356,23 @@ export default function TodayPlan() {
         })}
       </div>
 
+      {/* 소리 듣기 (핵심) — 표기 vs 실제 소리. Hear → Notice → (필요 시) 설명 */}
+      <button
+        type="button"
+        onClick={() => navigate('/notice')}
+        className="mt-4 flex w-full items-center gap-3 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 p-3.5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99]"
+      >
+        <span className="text-xl">🎧</span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-black text-slate-900">{t('notice.card')}</p>
+            <span className="shrink-0 rounded-full border border-indigo-200 bg-white px-1.5 py-0.5 text-[10px] font-black text-indigo-600">{t('notice.cardBadge')}</span>
+          </div>
+          <p className="text-[11px] font-medium text-slate-500 break-keep">{t('notice.cardDesc')}</p>
+        </div>
+        <span className="shrink-0 text-lg text-indigo-400">›</span>
+      </button>
+
       {/* 섀도잉 (옵션) — 강조하지 않는 부가 기능이라 은은한 실선 테두리 + 연한 색 */}
       <button
         type="button"

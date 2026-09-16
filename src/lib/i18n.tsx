@@ -696,6 +696,9 @@ const TRANSLATIONS = {
   'mission.cardReviewEmpty': { en: 'All caught up', ko: '복습할 카드 없음', es: 'Todo al día', ja: '復習は完了' },
   'mission.cardShadow': { en: 'Shadowing', ko: '섀도잉', es: 'Shadowing', ja: 'シャドーイング' },
   'mission.cardShadowDesc': { en: 'Listen and repeat aloud', ko: '듣고 따라 말하기', es: 'Escucha y repite', ja: '聞いて繰り返す' },
+  'notice.card': { en: 'Hear the Sound', ko: '소리 듣기', es: 'Escucha el sonido', ja: '音を聞く' },
+  'notice.cardDesc': { en: 'The real sound behind the spelling', ko: '글자와 다르게 들리는 진짜 소리', es: 'El sonido real tras la ortografía', ja: '文字と違う本当の音' },
+  'notice.cardBadge': { en: 'New', ko: '새 훈련', es: 'Nuevo', ja: '新着' },
   'mission.reminderOn': { en: 'Reminder on · daily {h}:00', ko: '리마인더 켜짐 · 매일 {h}시', es: 'Recordatorio activado · {h}:00 diario', ja: 'リマインダーON · 毎日{h}時' },
   'mission.reminderOff': { en: 'Get an evening reminder', ko: '저녁 리마인더 받기', es: 'Recibir un recordatorio nocturno', ja: '夜のリマインダーを受け取る' },
 
