@@ -22,7 +22,7 @@ import { dirname, resolve } from 'node:path'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
-const PHENOMENA = ['pause', 'carry', 'change', 'h-weaken', 'sound-contrast']
+const PHENOMENA = ['pause', 'carry', 'change', 'h-weaken', 'reading', 'sound-contrast']
 const CHANGE_TYPES = ['soften', 'flow', 'front-shift', 'breath']
 const LEVELS = ['intermediate', 'advanced']
 const SPEEDS = ['slow', 'normal', 'fast']

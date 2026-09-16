@@ -15,11 +15,13 @@
  *   carry          책 CARRY  · 연음 (제13·14·15항)
  *   change         책 CHANGE · 동화·축약 (아래 ChangeType)
  *   h-weaken       ㅎ약화(탈락) 제12-4 · 좋아요[조아요] — '탈락'이라 change와 메커니즘이 달라 독립 현상
+ *   reading        읽기층(층②) · 옆 소리 없이 혼자 정해짐 (7종성/대표음·겹받침). 꽃[꼳]·값[갑]
  *   sound-contrast 지각축   · 최소대립쌍 (불/뿔/풀) — 기존 minimalPairs 시스템과 연동
  *
- * 층② 읽기 규칙(7종성·겹받침·ㅢ)과 casual 층(reduction·omission)은 Phase 1 범위 밖.
+ * 화면 라벨(내부→표시): pause 막힘 · carry 넘김 · change/h-weaken 바뀜 · reading 읽기 (labels.ts).
+ * casual 층(reduction·omission)은 Phase 1 범위 밖.
  */
-export type Phenomenon = 'pause' | 'carry' | 'change' | 'h-weaken' | 'sound-contrast'
+export type Phenomenon = 'pause' | 'carry' | 'change' | 'h-weaken' | 'reading' | 'sound-contrast'
 
 /**
  * CHANGE 하위 유형 — 책의 4 changes(동화·축약). ㅎ약화(탈락)는 별도 phenomenon 으로 분리됨.

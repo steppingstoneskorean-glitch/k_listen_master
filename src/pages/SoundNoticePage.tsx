@@ -186,11 +186,14 @@ export default function SoundNoticePage() {
               </p>
             </div>
 
-            {/* 소리를 확인한 뒤 설명을 바로 보여준다(감각 중심, 전문용어 없음) */}
-            {an?.note && (
-              <div className="text-center px-4">
-                <p className="text-xs font-bold text-indigo-300/80 mb-1">왜 그럴까요?</p>
-                <p className="text-sm text-gray-300 leading-relaxed">{resolveString(an.note, lang)}</p>
+            {/* 소리를 확인한 뒤: 책 프레임 라벨(막힘·넘김·바뀜·읽기) → 설명 → 항목별 note */}
+            {an && (
+              <div className="flex flex-col items-center gap-1 px-4 text-center">
+                <span className="rounded-full border border-indigo-400/40 bg-indigo-500/15 px-2.5 py-0.5 text-[11px] font-bold text-indigo-300">
+                  {phenomenonLabel(an.phenomenon, an.changeType, lang).title}
+                </span>
+                <p className="text-xs text-gray-500">{phenomenonLabel(an.phenomenon, an.changeType, lang).subtitle}</p>
+                {an.note && <p className="mt-0.5 text-sm leading-relaxed text-gray-300">{resolveString(an.note, lang)}</p>}
               </div>
             )}
 
