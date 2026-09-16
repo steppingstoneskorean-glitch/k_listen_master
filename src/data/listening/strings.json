@@ -1,0 +1,14 @@
+{
+  "q.gyeongeumhwa.eomi": {
+    "ko": "동작이나 상태를 나타내는 말에 뒤가 붙었나요?",
+    "en": "Is it attached after a word for an action or state?"
+  },
+  "note.item.singo": {
+    "ko": "뒤 소리가 더 세게 나요.",
+    "en": "The next sound comes out stronger."
+  },
+  "note.contrast.singo_sinmun": {
+    "ko": "신고에서는 뒤 소리가 더 세게 나지만, 신문에서는 소리가 바뀌지 않아요.",
+    "en": "In 신고 the next sound is tensed, but in 신문 it stays the same."
+  }
+}

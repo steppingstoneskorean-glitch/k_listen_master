@@ -4,6 +4,7 @@ import { useLang } from '@/lib/i18n'
 import { generateItemBlank, pickItems, type ItemBlank } from '@/data/listening/blank'
 import { MOCK_ITEMS } from '@/data/listening/mockItems'
 import { phenomenonLabel } from '@/data/listening/labels'
+import { resolveString } from '@/data/listening/strings'
 import type { DictationItem, Phenomenon } from '@/data/listening/schema'
 import {
   recordListeningMiss,
@@ -257,7 +258,7 @@ export default function DecodeLabPage() {
                     <span className="text-green-300 font-bold">{current.answer}</span>
                   </div>
                   {current.annotation?.note && (
-                    <p className="text-sm text-gray-300 text-center leading-relaxed">{current.annotation.note}</p>
+                    <p className="text-sm text-gray-300 text-center leading-relaxed">{resolveString(current.annotation.note, lang)}</p>
                   )}
                 </div>
               )}

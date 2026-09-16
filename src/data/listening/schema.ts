@@ -39,6 +39,19 @@ export type ChangeType = 'soften' | 'flow' | 'front-shift' | 'breath' | 'h-weake
  */
 export type RuleId = string
 
+/** 대비 축 분류 코드 — axes.json 의 키(내부 전용, 번역 안 함). 예: 'ax.gyeongeumhwa'. */
+export type AxisId = string
+
+/**
+ * 학습자용 표시 텍스트의 i18n 키. 실제 언어는 번역셋(strings.json)에서 학습자 언어로.
+ * 한국어 음성형(transcript·surface·commonError)과 달리, 설명(question·note)은 번역 대상이다.
+ * 예: 'q.gyeongeumhwa.eomi'.
+ */
+export type StringId = string
+
+/** 학습자 언어(모국어 L1 대용) 코드 — commonError 를 L1별로 나눈다. 예: 'ja' 'en' 'es'. */
+export type LangId = string
+
 /**
  * 한 문장 안에서 "어디서 무슨 현상이 일어나는가".
  *   · 한 위치의 연쇄(앞문: 앞→[압]→[암])는 annotation 1개 — 최종 surface + note.
@@ -54,8 +67,23 @@ export interface Annotation {
   span: [number, number]
   /** 실제 들리는 형태. 예: '궁물' '신꼬' '실라' '정니'. */
   surface: string
-  /** 학습자 설명(왜 이렇게 들리나). 다단계 연쇄 과정도 여기에. */
-  note?: string
+  /** 학습자 설명(왜 이렇게 들리나) — i18n 키(StringId). 학습자 언어로 표시. */
+  note?: StringId
+}
+
+/**
+ * 학습자가 이 항목에 대해 실제로 내는 **확인된** 오답(오개념) — L1별.
+ *   · 한국어 음성형(원문). 번역 안 함. 정답 surface 와 달라야 함.
+ *   · 확인된 것만 채우고 없으면 생략(추측 금지). 사용 로그(lastUserAnswer)에서 채워질 수 있음.
+ *   · ⚠ 채점에서 절대 정답 불인정 — distractor·진단 전용.
+ *   예: 신문 → { surface: '싱뭉', l1: 'ja' } (일본어 화자 ㄴ받침 곤란).
+ */
+export interface CommonError {
+  surface: string
+  /** 이 오류를 내는 학습자 언어. 생략 = 특정 L1 무관(일반). */
+  l1?: LangId
+  /** 선택 — 왜 그런지(학습자 언어 설명, StringId). */
+  note?: StringId
 }
 
 /**
@@ -71,6 +99,8 @@ export interface DictationItem {
   /** 의미 단위 청크. 예: ['저는', '밥을 먹어요']. annotations 와는 다른 레이어. */
   chunks: string[]
   annotations: Annotation[]
+  /** 선택 — 확인된 L1별 오답(오개념). 없으면 생략. */
+  commonErrors?: CommonError[]
   /** 선택 — 실제 정답률로 사후 보정. 초기엔 비워둠. */
   difficulty?: number
 }
@@ -81,25 +111,23 @@ export interface DictationItem {
  */
 export interface ContrastSet {
   id: number
-  /** 내부 학습 분류(시스템용, 학습자 비노출). 예: '경음화 적용 여부'. */
-  axis: string
-  /** 학습자에게 보이는 유일한 텍스트 — 판별 질문. 전문용어 없이. 예: '어미가 붙은 용언인가?'. */
-  question: string
+  /** 내부 학습 분류 — axes.json 의 키(AxisId). 학습자 비노출, 번역 안 함. 예: 'ax.gyeongeumhwa'. */
+  axis: AxisId
+  /** 학습자용 판별 질문 — i18n 키(StringId). 실제 텍스트는 번역셋. 예: 'q.gyeongeumhwa.eomi'. */
+  question: StringId
   members: ContrastMember[]
-  note?: string
+  /** 학습자용 설명 — i18n 키(StringId). */
+  note?: StringId
 }
 
+/**
+ * 순수 연결 — 어느 항목이 어떤 규칙으로 대비되는가. 음성/오답 값은 항목에서 파생한다.
+ *   surface     : firedRule≠null → ref 항목의 그 rule annotation.surface, null → 항목 transcript
+ *   distractor  : ref 항목의 commonErrors(학습자 L1 필터) 또는 상대 멤버
+ */
 export interface ContrastMember {
-  /** 재생할 항목(오디오/transcript)의 id. */
+  /** 재생/참조할 항목의 id. */
   ref: number
-  /** 발화한 규칙 — 내부 코드(rules.json 키, 사용자 비노출). null = 적용 안 됨(신문). applies 는 파생값. */
+  /** 발화한 규칙 — 내부 코드(rules.json 키). null = 적용 안 됨. surface·annotation 을 잇는 조인 키. */
   firedRule: RuleId | null
-  /** 들리는 형태. */
-  surface: string
-  /**
-   * 학습자가 해당 멤버에 대해 흔히 예상/생성하는 오답 표면형 (예: 신문 → '신꾼').
-   * 정답성(correctness) 데이터가 아니라 오개념(misconception) 데이터다.
-   * ⚠ 채점에서 절대 정답으로 인정하지 말 것 — distractor·진단 신호 전용.
-   */
-  commonError?: string
 }

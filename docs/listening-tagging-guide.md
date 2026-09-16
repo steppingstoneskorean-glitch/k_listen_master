@@ -79,3 +79,25 @@
 
 > `rule` 은 대부분 자동 도출 가능 — 애매할 때만 손으로.
 > reduction/omission/register 는 Phase 1에 **없음**(전부 표준층).
+
+---
+
+## 6. ID 규약 & 레지스트리 (전문용어 비노출)
+
+내부 값은 코드, 학습자 텍스트는 번역 키로 관리한다. **화면엔 전문용어가 절대 안 나간다.**
+
+| 종류 | 형식 | 사는 곳 | 번역? |
+|---|---|---|---|
+| 규칙 `rule` / `firedRule` | `r24`, `r12h` | `rules.json` | ❌ 내부 |
+| 축 `axis` (AxisId) | `ax.gyeongeumhwa` | `axes.json` | ❌ 내부 |
+| 설명 `question` / `note` (StringId) | `q.…` / `note.…` | 번역셋 `strings.json` | ✅ 학습자 언어 |
+
+- **romanization 통일:** 개념은 표준 표기 하나로 — 경음화=`gyeongeumhwa` (혼용 금지).
+- **한국어 원문 vs 번역:** 음성형(`transcript`·`surface`·`commonError`)은 한국어 원문 그대로 · 설명(`note`·`question`)은 StringId.
+- **작성 마찰 완화:** note를 매번 키로 쓰기 번거로우면 초안은 한국어로 쓰고 기존 `explanations-i18n` 방식으로 키를 추출하면 됨.
+
+## 7. commonError (항목의 확인된 오답)
+
+- 항목(items.json)에 `commonErrors?: [{ surface, l1?, note? }]` — 학습자가 실제로 내는 틀린 소리.
+- **확인된 것만**, 없으면 생략(추측 금지). **L1별**(예: 일본어 신문→싱뭉/싱문).
+- 정답 발음과 달라야 하고, 채점에서 정답으로 인정하지 않는다(distractor·진단 전용).

@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": 1,
+    "level": "intermediate",
+    "audioUrl": "/audio/listening/0001-singo.mp3",
+    "speed": "normal",
+    "transcript": "신고",
+    "chunks": ["신고"],
+    "annotations": [
+      {
+        "phenomenon": "pause",
+        "rule": "r24",
+        "span": [0, 2],
+        "surface": "신꼬",
+        "note": "note.item.singo"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "level": "intermediate",
+    "audioUrl": "/audio/listening/0002-sinmun.mp3",
+    "speed": "normal",
+    "transcript": "신문",
+    "chunks": ["신문"],
+    "annotations": [],
+    "commonErrors": [
+      { "surface": "싱뭉", "l1": "ja" },
+      { "surface": "싱문", "l1": "ja" }
+    ]
+  }
+]

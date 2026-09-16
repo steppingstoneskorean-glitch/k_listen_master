@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": 1,
+    "axis": "ax.gyeongeumhwa",
+    "question": "q.gyeongeumhwa.eomi",
+    "members": [
+      { "ref": 1, "firedRule": "r24" },
+      { "ref": 2, "firedRule": null }
+    ],
+    "note": "note.contrast.singo_sinmun"
+  }
+]
