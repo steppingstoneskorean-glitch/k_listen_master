@@ -28,6 +28,7 @@ import QuizBuilderPage from '@/pages/QuizBuilderPage'
 import ProfilePage from '@/pages/ProfilePage'
 import DecodeLabPage from '@/pages/DecodeLabPage'
 import ContrastLabPage from '@/pages/ContrastLabPage'
+import SoundNoticePage from '@/pages/SoundNoticePage'
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
               {/* DEV 전용 미리보기 — 프로덕션 빌드에는 포함되지 않음(import.meta.env.DEV) */}
               {import.meta.env.DEV && (
                 <>
+                  <Route path="/notice-preview" element={<SoundNoticePage />} />
                   <Route path="/contrast-preview" element={<ContrastLabPage />} />
                   <Route path="/decode-preview" element={<DecodeLabPage />} />
                 </>
@@ -65,6 +67,7 @@ export default function App() {
                 <Route path="/dictation" element={<DictationPage />} />
                 <Route path="/shadowing" element={<ShadowingPage />} />
                 <Route path="/decode" element={<DecodeLabPage />} />
+                <Route path="/notice" element={<SoundNoticePage />} />
                 <Route path="/contrast" element={<ContrastLabPage />} />
 
                 {/* Layout-wrapped pages */}
