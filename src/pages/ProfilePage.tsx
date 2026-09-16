@@ -5,7 +5,8 @@ import { useAuth } from '@/lib/auth'
 import { useGamification } from '@/lib/gamification'
 import { openCookieSettings } from '@/lib/cookieConsent'
 import { AI_SCORE_ENABLED, hasShadowConsent, setShadowConsent } from '@/lib/shadowConsent'
-import { loadPlan, orderedDoneCount, ORDERED_STEPS } from '@/lib/todayPlan'
+import { loadPlan, orderedDoneCount, ORDERED_STEPS, getLevelPref, setPlanLevel } from '@/lib/todayPlan'
+import type { LevelKey } from '@/data/gameLevels'
 import { useUserProfile } from '@/lib/userProfile'
 import ReminderSettings from '@/components/ReminderSettings'
 import NicknameModal from '@/components/NicknameModal'
@@ -63,6 +64,12 @@ export default function ProfilePage() {
   const [showLang, setShowLang] = useState(false)
   const [showComingSoon, setShowComingSoon] = useState(false)
   const [aiConsent, setAiConsent] = useState(hasShadowConsent())
+  const [level, setLevelState] = useState<LevelKey | null>(() => getLevelPref()?.level ?? null)
+  const [showLevel, setShowLevel] = useState(false)
+
+  const LEVELS: LevelKey[] = ['beginner', 'intermediate', 'advanced']
+  const levelName = (l: LevelKey) =>
+    l === 'beginner' ? t('mode.beginner') : l === 'intermediate' ? t('mode.intermediate') : t('mode.advanced')
 
   const plan = loadPlan()
   const name = user?.displayName || user?.email?.split('@')[0] || 'Guest'
@@ -123,6 +130,26 @@ export default function ProfilePage() {
 
           {/* 학습 설정 */}
           <Section title={t('profile.sectionLearning')}>
+            <Row icon="🎯" label={t('profile.levelLabel')} onClick={() => setShowLevel(s => !s)}
+              right={<span className="text-xs font-bold text-slate-400">{level ? levelName(level) : '—'}</span>} />
+            {showLevel && (
+              <div className="bg-slate-50 px-3 py-2">
+                <div className="grid grid-cols-3 gap-2">
+                  {LEVELS.map(l => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => { setPlanLevel(l, 1); setLevelState(l); setShowLevel(false) }}
+                      className={`rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
+                        l === level ? 'border-indigo-300 bg-indigo-50 text-indigo-600' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      {levelName(l)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <Row icon="🏷️" label={t('profile.editNickname')} onClick={() => setShowNickname(true)}
               right={<span className="max-w-[8rem] truncate text-xs font-bold text-slate-400">{nickname ?? '—'}</span>} />
             <Row icon="🔔" label={t('profile.reminder')} onClick={() => setShowReminder(true)}

@@ -1110,6 +1110,7 @@ const TRANSLATIONS = {
   'profile.aiScoreConsent': { en: 'AI pronunciation scoring (Azure)', ko: 'AI 발음 채점 동의 (Azure)', es: 'Puntuación de pronunciación con IA (Azure)', ja: 'AI発音採点の同意 (Azure)' },
   'profile.editNickname': { en: 'Edit nickname', ko: '닉네임 수정', es: 'Editar apodo', ja: 'ニックネーム編集' },
   'profile.language': { en: 'Language', ko: '언어', es: 'Idioma', ja: '言語' },
+  'profile.levelLabel': { en: 'Level', ko: '학습 레벨', es: 'Nivel', ja: 'レベル' },
   'profile.youtube': { en: 'YouTube channel', ko: '유튜브 채널', es: 'Canal de YouTube', ja: 'YouTubeチャンネル' },
   'profile.streakLabel': { en: 'Streak', ko: '연속', es: 'Racha', ja: '連続' },
   'profile.planLabel': { en: 'Today', ko: '오늘 계획', es: 'Hoy', ja: '今日' },

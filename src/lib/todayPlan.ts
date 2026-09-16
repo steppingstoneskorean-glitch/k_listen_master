@@ -27,6 +27,38 @@ export interface TodayPlan {
 }
 
 const KEY = 'klisten_today_plan_v1'
+const LEVEL_KEY = 'klisten_level_v1' // 영속 레벨(프로필) — 일일 계획 리셋과 분리
+
+/** 사용자가 정한 레벨(초/중/고 + 세부). 매일 리셋되지 않고 유지된다. */
+export interface LevelPref { level: LevelKey; subLevel: number }
+
+export function getLevelPref(): LevelPref | null {
+  try {
+    const raw = localStorage.getItem(LEVEL_KEY)
+    if (!raw) return null
+    const p = JSON.parse(raw) as Partial<LevelPref>
+    if (!p.level) return null
+    return { level: p.level as LevelKey, subLevel: typeof p.subLevel === 'number' ? p.subLevel : 1 }
+  } catch {
+    return null
+  }
+}
+
+export function setLevelPref(level: LevelKey, subLevel: number): void {
+  try {
+    localStorage.setItem(LEVEL_KEY, JSON.stringify({ level, subLevel }))
+  } catch {
+    /* storage disabled — 레벨은 계획에도 저장되니 치명적이지 않음 */
+  }
+}
+
+export function clearLevelPref(): void {
+  try {
+    localStorage.removeItem(LEVEL_KEY)
+  } catch {
+    /* ignore */
+  }
+}
 
 function todayStr(): string {
   const d = new Date()
@@ -34,7 +66,9 @@ function todayStr(): string {
 }
 
 function empty(): TodayPlan {
-  return { date: todayStr(), level: null, subLevel: 1, done: [] }
+  // 일일 리셋 시에도 레벨은 영속 pref 에서 이어받는다(매일 레벨 재선택 마찰 제거).
+  const pref = getLevelPref()
+  return { date: todayStr(), level: pref?.level ?? null, subLevel: pref?.subLevel ?? 1, done: [] }
 }
 
 /** 오늘의 계획을 읽어온다. 날짜가 바뀌었으면 새 계획으로 리셋. */
@@ -64,8 +98,9 @@ function save(plan: TodayPlan): TodayPlan {
   return plan
 }
 
-/** 오늘의 레벨 + 세부레벨을 설정(또는 변경)한다. */
+/** 오늘의 레벨 + 세부레벨을 설정(또는 변경)한다. 영속 pref 에도 저장해 매일 유지된다. */
 export function setPlanLevel(level: LevelKey, subLevel: number): TodayPlan {
+  setLevelPref(level, subLevel)
   const plan = loadPlan()
   return save({ ...plan, level, subLevel })
 }
@@ -77,8 +112,9 @@ export function markStepDone(step: PlanStepKey): TodayPlan {
   return save({ ...plan, done: [...plan.done, step] })
 }
 
-/** 계획을 처음부터 다시(레벨 재선택). */
+/** 계획을 처음부터 다시(레벨 재선택). 영속 pref 도 지워 선택 화면이 다시 나오게 한다. */
 export function resetPlan(): TodayPlan {
+  clearLevelPref()
   return save(empty())
 }
 
