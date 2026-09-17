@@ -2,6 +2,9 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { useGamification } from '@/lib/gamification'
+import { useAuth } from '@/lib/auth'
+import { useUserProfile } from '@/lib/userProfile'
+import NicknameModal from '@/components/NicknameModal'
 import { getDueCount } from '@/lib/review'
 import type { LevelKey } from '@/data/gameLevels'
 import {
@@ -62,7 +65,10 @@ export default function TodayPlan() {
   const { t } = useLang()
   const navigate = useNavigate()
   const { progress } = useGamification()
+  const { user, isGuest } = useAuth()
+  const { nickname, saveNickname } = useUserProfile()
   const [plan, setPlan] = useState<PlanState>(() => loadPlan())
+  const [showNickname, setShowNickname] = useState(false)
   const [pendingLevel, setPendingLevel] = useState<LevelKey | null>(null)
   const [dueCount, setDueCount] = useState(0)
   const [dueLoaded, setDueLoaded] = useState(false)
@@ -92,6 +98,8 @@ export default function TodayPlan() {
   const commit = (level: LevelKey, subLevel: number) => {
     setPlan(setPlanLevel(level, subLevel))
     setPendingLevel(null)
+    // 첫 진입: 레벨을 고른 직후 닉네임 1회 입력(리더보드용). 이미 있으면 생략, 게스트도 생략.
+    if (user && !isGuest && !nickname) setShowNickname(true)
   }
 
   const changeLevel = () => {
@@ -270,6 +278,12 @@ export default function TodayPlan() {
 
   return (
     <section className="mx-auto w-full max-w-lg px-4 pt-5">
+      {showNickname && (
+        <NicknameModal
+          onSubmit={async name => { await saveNickname(name); setShowNickname(false) }}
+          onClose={() => setShowNickname(false)}
+        />
+      )}
       {/* 헤더 */}
       <div className="animate-hero-fade-up rounded-3xl border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/50">
         <div className="flex items-center gap-4">
