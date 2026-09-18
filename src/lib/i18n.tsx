@@ -878,6 +878,11 @@ const TRANSLATIONS = {
   'mode.beginner': { en: 'Beginner', ko: '초급', es: 'Principiante', ja: '初級' },
   'mode.intermediate': { en: 'Intermediate', ko: '중급', es: 'Intermedio', ja: '中級' },
   'mode.advanced': { en: 'Advanced', ko: '고급', es: 'Avanzado', ja: '上級' },
+  'level.gradeBeginner': { en: 'TOPIK 1', ko: '1급', es: 'TOPIK 1', ja: '1級' },
+  'level.gradeIntermediate': { en: 'TOPIK 2–3', ko: '2~3급', es: 'TOPIK 2–3', ja: '2〜3級' },
+  'level.gradeAdvanced': { en: 'TOPIK 4–6', ko: '4~6급', es: 'TOPIK 4–6', ja: '4〜6級' },
+  'onboard.langTitle': { en: 'Choose your language', ko: '언어를 선택하세요', es: 'Elige tu idioma', ja: '言語を選ぼう' },
+  'onboard.back': { en: 'Back', ko: '뒤로', es: 'Atrás', ja: '戻る' },
   'mode.selectTitle': { en: 'Choose your mode', ko: '모드를 선택하세요', es: 'Elige tu modo', ja: 'モードを選んでください' },
   'mode.selectSub': {
     en: 'Clear every mode of this video to earn the Mastery Crown 👑',

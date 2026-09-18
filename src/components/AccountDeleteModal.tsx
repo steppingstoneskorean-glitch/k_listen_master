@@ -8,6 +8,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/lib/auth'
 import { useLang } from '@/lib/i18n'
+import { resetPlan } from '@/lib/todayPlan'
+import { clearErrors } from '@/lib/errorHistory'
 
 export default function AccountDeleteModal({ onClose }: { onClose: () => void }) {
   const { t } = useLang()
@@ -22,6 +24,10 @@ export default function AccountDeleteModal({ onClose }: { onClose: () => void })
     setError(null)
     try {
       await deleteAccount()
+      // 로컬 학습 상태 초기화 — 새 계정이 이전 데이터를 물려받지 않게(레벨/닉네임 재온보딩).
+      resetPlan()
+      clearErrors()
+      try { localStorage.removeItem('klisten_srs_v1') } catch { /* ignore */ }
       navigate('/login', { replace: true })
     } catch {
       setError(t('account.deleteError'))

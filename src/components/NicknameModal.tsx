@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import { useLang } from '@/lib/i18n'
+import HangulKeyboard from '@/components/HangulKeyboard'
 
 export default function NicknameModal({
   defaultName,
@@ -18,6 +19,7 @@ export default function NicknameModal({
   const [value, setValue] = useState(defaultName || '')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [kbOpen, setKbOpen] = useState(false) // 한글 키보드 없는 사용자용 온스크린 키보드
 
   const submit = async () => {
     const trimmed = value.trim()
@@ -38,6 +40,7 @@ export default function NicknameModal({
   }
 
   return (
+    <>
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
         className="w-full max-w-sm rounded-2xl bg-gray-900 border border-gray-800 p-6 text-center"
@@ -59,6 +62,13 @@ export default function NicknameModal({
           className="mt-4 w-full rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-center text-white outline-none focus:border-indigo-500"
         />
         {error && <p className="mt-1.5 text-xs text-red-400">{error}</p>}
+        <button
+          type="button"
+          onClick={() => setKbOpen(o => !o)}
+          className="mt-3 mx-auto flex items-center gap-2 rounded-full border border-gray-700 px-3.5 py-1.5 text-xs font-bold text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-200"
+        >
+          ⌨️ {kbOpen ? t('kbd.close') : t('kbd.open')}
+        </button>
         <div className="mt-4 flex gap-2">
           {onClose && (
             <button
@@ -80,5 +90,18 @@ export default function NicknameModal({
         </div>
       </div>
     </div>
+    {kbOpen && (
+      <div style={{ position: 'relative', zIndex: 90 }}>
+        <HangulKeyboard
+          value={value}
+          onChange={v => { setValue(v); setError('') }}
+          open={kbOpen}
+          onClose={() => setKbOpen(false)}
+          onSubmit={submit}
+          disabled={busy}
+        />
+      </div>
+    )}
+    </>
   )
 }

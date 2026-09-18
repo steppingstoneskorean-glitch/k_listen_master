@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '@/lib/i18n'
+import { useLang, LANGS } from '@/lib/i18n'
 import { useGamification } from '@/lib/gamification'
 import { useAuth } from '@/lib/auth'
 import { useUserProfile } from '@/lib/userProfile'
@@ -62,14 +62,14 @@ function ProgressRing({ done, total }: { done: number; total: number }) {
 }
 
 export default function TodayPlan() {
-  const { t } = useLang()
+  const { t, lang, setLang } = useLang()
   const navigate = useNavigate()
   const { progress } = useGamification()
   const { user, isGuest } = useAuth()
   const { nickname, saveNickname } = useUserProfile()
   const [plan, setPlan] = useState<PlanState>(() => loadPlan())
   const [showNickname, setShowNickname] = useState(false)
-  const [pendingLevel, setPendingLevel] = useState<LevelKey | null>(null)
+  const [step, setStep] = useState<'lang' | 'level'>('lang') // 온보딩: 언어 → 레벨
   const [dueCount, setDueCount] = useState(0)
   const [dueLoaded, setDueLoaded] = useState(false)
 
@@ -97,14 +97,13 @@ export default function TodayPlan() {
   // ── 레벨 확정 → 계획 생성 ──
   const commit = (level: LevelKey, subLevel: number) => {
     setPlan(setPlanLevel(level, subLevel))
-    setPendingLevel(null)
     // 첫 진입: 레벨을 고른 직후 닉네임 1회 입력(리더보드용). 이미 있으면 생략, 게스트도 생략.
     if (user && !isGuest && !nickname) setShowNickname(true)
   }
 
   const changeLevel = () => {
     setPlan(resetPlan())
-    setPendingLevel(null)
+    setStep('lang')
   }
 
   // ── 단계 실행 (완료 표시 + 이동) ──
@@ -118,102 +117,65 @@ export default function TodayPlan() {
       ? `/game?level=${sub}`
       : `/dictation?mode=${level}&level=${sub}`
 
-  // ════════════════════════════ 1) 레벨 선택 ════════════════════════════
+  // ════════════════════════════ 1) 온보딩: 언어 → 레벨 ════════════════════════════
   if (!plan.level) {
-    const LEVELS: { id: LevelKey; emoji: string; titleKey: 'home.level1.title' | 'home.level2.title' | 'home.level3.title'; descKey: 'home.level1.desc' | 'home.level2.desc' | 'home.level3.desc'; badge: string }[] = [
-      { id: 'beginner', emoji: '🎯', titleKey: 'home.level1.title', descKey: 'home.level1.desc', badge: 'border-emerald-200 bg-emerald-50 text-emerald-600' },
-      { id: 'intermediate', emoji: '🗣️', titleKey: 'home.level2.title', descKey: 'home.level2.desc', badge: 'border-blue-200 bg-blue-50 text-blue-600' },
-      { id: 'advanced', emoji: '🎙️', titleKey: 'home.level3.title', descKey: 'home.level3.desc', badge: 'border-indigo-200 bg-indigo-50 text-indigo-600' },
+    const LEVELS: { id: LevelKey; emoji: string; grade: string }[] = [
+      { id: 'beginner', emoji: '🎯', grade: t('level.gradeBeginner') },
+      { id: 'intermediate', emoji: '🗣️', grade: t('level.gradeIntermediate') },
+      { id: 'advanced', emoji: '🎙️', grade: t('level.gradeAdvanced') },
     ]
 
     return (
-      <section className="mx-auto w-full max-w-lg px-4 pt-5">
-        {/* 헤더 */}
-        <div className="animate-hero-fade-up rounded-3xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-200/50">
-          <div className="flex items-center gap-4">
-            <ProgressRing done={0} total={ORDERED_STEPS.length} />
-            <div>
-              <span className="text-xs font-black uppercase tracking-widest text-indigo-500">✦ {t('plan.title')}</span>
-              <h2 className="mt-0.5 text-lg font-black text-slate-900 break-keep">{t('plan.chooseTitle')}</h2>
-              <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-orange-200 bg-orange-50 px-2 py-0.5 text-xs font-bold text-orange-600">
-                🔥 {t('gamification.streakFmt').replace('{n}', String(progress.currentStreak))}
-              </span>
-            </div>
+      <section className="mx-auto w-full max-w-lg px-4 pt-8">
+        <div className="animate-hero-fade-up rounded-3xl border border-slate-200 bg-white p-5 text-center shadow-lg shadow-slate-200/50">
+          <span className="text-xs font-black uppercase tracking-widest text-indigo-500">✦ {t('plan.title')}</span>
+          <h2 className="mt-1 text-lg font-black text-slate-900 break-keep">
+            {step === 'lang' ? t('onboard.langTitle') : t('plan.chooseTitle')}
+          </h2>
+        </div>
+
+        {step === 'lang' ? (
+          <div className="mt-5 grid grid-cols-2 gap-2.5">
+            {LANGS.map(l => (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => { setLang(l.code); setStep('level') }}
+                className={`flex items-center gap-2 rounded-2xl border bg-white px-4 py-3.5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-95 ${
+                  l.code === lang ? 'border-indigo-400 ring-2 ring-indigo-100' : 'border-slate-200'
+                }`}
+              >
+                <span className="text-xl">{l.flag}</span>
+                <span className="text-sm font-black text-slate-800">{l.label}</span>
+              </button>
+            ))}
           </div>
-        </div>
-
-        {/* 레벨 카드 (고정 별 없음) */}
-        <p className="mt-5 px-1 text-sm font-black text-slate-600">{t('plan.levelPrompt')}</p>
-        <div className="mt-2.5 flex flex-col gap-2.5">
-          {LEVELS.map(l => {
-            const sel = pendingLevel === l.id
-            return (
-              <div key={l.id}>
-                <button
-                  type="button"
-                  onClick={() => setPendingLevel(sel ? null : l.id)}
-                  className={`flex w-full items-center gap-3 rounded-2xl border bg-white p-3.5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] ${
-                    sel ? 'border-indigo-400 ring-4 ring-indigo-100' : 'border-slate-200'
-                  }`}
-                >
-                  <span className="text-2xl">{l.emoji}</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className={`shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-black ${l.badge}`}>{levelName(l.id)}</span>
-                      <p className="truncate text-sm font-black text-slate-800">{t(l.titleKey)}</p>
-                    </div>
-                    <p className="truncate text-[11px] text-slate-400">{t(l.descKey)}</p>
-                  </div>
-                  <span className={`text-lg ${sel ? 'text-indigo-500' : 'text-slate-300'}`}>{sel ? '▾' : '›'}</span>
-                </button>
-
-                {/* 세부 선택 */}
-                {sel && (
-                  <div className="ka-pop mt-2 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/40 p-3">
-                    {l.id === 'beginner' ? (
-                      <>
-                        <p className="text-xs font-bold text-indigo-600">{t('plan.beginnerSub')}</p>
-                        <div className="mt-2.5 grid grid-cols-2 gap-2">
-                          {[1, 2, 3, 4].map(n => (
-                            <button
-                              key={n}
-                              type="button"
-                              onClick={() => commit('beginner', n)}
-                              className="rounded-xl border border-indigo-100 bg-white px-3 py-2.5 text-center transition-all hover:border-indigo-400 hover:bg-indigo-50 active:scale-95"
-                            >
-                              <div className="text-sm tracking-widest text-amber-500">{'★'.repeat(n)}</div>
-                              <div className="mt-0.5 text-[11px] font-bold text-slate-500">
-                                {n === 4 ? t('plan.gameLevel4') : t('plan.gameLevelFmt').replace('{n}', String(n))}
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                        <p className="mt-2 text-[11px] text-slate-400">{t('plan.beginnerSubHint')}</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-xs font-bold text-indigo-600">{t('plan.blankSub')}</p>
-                        <div className="mt-2.5 grid grid-cols-2 gap-2">
-                          {[1, 2].map(n => (
-                            <button
-                              key={n}
-                              type="button"
-                              onClick={() => commit(l.id, n)}
-                              className="rounded-xl border border-indigo-100 bg-white px-3 py-3 text-center transition-all hover:border-indigo-400 hover:bg-indigo-50 active:scale-95"
-                            >
-                              <div className={`text-base font-black ${n === 1 ? 'text-blue-500' : 'text-rose-500'}`}>{'▭'.repeat(n)}</div>
-                              <div className="mt-0.5 text-[11px] font-bold text-slate-500">{n === 1 ? t('plan.blank1') : t('plan.blank2')}</div>
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
+        ) : (
+          <div className="mt-5 flex flex-col gap-2.5">
+            {LEVELS.map(l => (
+              <button
+                key={l.id}
+                type="button"
+                onClick={() => commit(l.id, 1)}
+                className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]"
+              >
+                <span className="text-2xl">{l.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-base font-black text-slate-900">{levelName(l.id)}</p>
+                  <p className="text-xs font-bold text-indigo-500">{l.grade}</p>
+                </div>
+                <span className="text-lg text-slate-300">›</span>
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setStep('lang')}
+              className="mt-1 text-center text-xs font-bold text-slate-400 hover:text-slate-600"
+            >
+              ← {t('onboard.back')}
+            </button>
+          </div>
+        )}
       </section>
     )
   }
