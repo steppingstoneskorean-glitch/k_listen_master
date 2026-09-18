@@ -195,6 +195,7 @@ const SOURCE_STYLE: Record<ErrorSource, { label: string; cls: string }> = {
   'catch-the-sound': { label: '🎧 Catch the Sound', cls: 'bg-indigo-50 text-indigo-600 border-indigo-200' },
   'k-stars':         { label: '⭐ Listen to K-Stars', cls: 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-200' },
   'shadowing':       { label: '🎤 Shadowing', cls: 'bg-violet-50 text-violet-600 border-violet-200' },
+  'listening':       { label: '🎧 Listening', cls: 'bg-sky-50 text-sky-600 border-sky-200' },
 }
 
 const MODE_LABEL: Record<string, string> = { A: 'Dictation', B: 'Word Order', I: 'Meaning' }
