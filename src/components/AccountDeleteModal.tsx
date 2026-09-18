@@ -28,6 +28,7 @@ export default function AccountDeleteModal({ onClose }: { onClose: () => void })
       resetPlan()
       clearErrors()
       try { localStorage.removeItem('klisten_srs_v1') } catch { /* ignore */ }
+      try { sessionStorage.removeItem('pendingLoginFrom') } catch { /* ignore */ }
       navigate('/login', { replace: true })
     } catch {
       setError(t('account.deleteError'))

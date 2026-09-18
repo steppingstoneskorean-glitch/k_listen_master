@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useLang, LanguageSwitcher } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
+import { getLevelPref } from '@/lib/todayPlan'
 import { recordMarketingConsent } from '@/lib/marketingConsent'
 import logoImg from '../../assets/images/logo.png'
 
@@ -20,6 +21,8 @@ export default function StartPage() {
   //   직전에 sessionStorage 에 저장해둔 목적지를 폴백으로 사용한다.
   const stateFrom = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
   const from = stateFrom ?? readSession('pendingLoginFrom') ?? '/'
+  // 온보딩(레벨 미설정)이면 직전 경로 대신 항상 홈으로 → 언어→레벨→닉네임 순서가 먼저 나온다.
+  const dest = getLevelPref() === null ? '/' : from
 
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -27,7 +30,7 @@ export default function StartPage() {
 
   if (!loading && user) {
     try { sessionStorage.removeItem('pendingLoginFrom') } catch { /* 무시 */ }
-    navigate(from, { replace: true })
+    navigate(dest, { replace: true })
     return null
   }
 
@@ -44,7 +47,7 @@ export default function StartPage() {
       const { uid } = provider === 'google' ? await signInWithGoogle() : await signInWithApple()
       // 여기 도달 = 팝업 성공(리다이렉트는 페이지 이탈로 도달하지 않음)
       if (marketingOptIn && uid) void recordMarketingConsent(uid)
-      navigate(from, { replace: true })
+      navigate(dest, { replace: true })
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code
       if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return
