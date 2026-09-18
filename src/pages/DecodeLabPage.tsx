@@ -11,6 +11,7 @@ import {
   recordCorrect,
   getPhenomenonWeakness,
 } from '@/lib/errorHistory'
+import { useGamification } from '@/lib/gamification'
 
 const SESSION_SIZE = 5
 
@@ -92,6 +93,7 @@ function PlayRow({ spoken }: { spoken: string }) {
 
 export default function DecodeLabPage() {
   const { lang } = useLang()
+  const { recordListeningRep } = useGamification()
   const [blanks, setBlanks] = useState<ItemBlank[]>(() => buildSession())
   const [idx, setIdx] = useState(0)
   const [input, setInput] = useState('')
@@ -115,6 +117,7 @@ export default function DecodeLabPage() {
 
   const submit = useCallback(() => {
     if (phase !== 'ask' || !input.trim() || !current) return
+    void recordListeningRep() // 문항 완료 1회 기록(마일스톤)
     const correct = normalize(input) === normalize(current.answer)
     setLastCorrect(correct)
     setResults((r) => [...r, { phenomenon: current.phenomenon, correct }])
@@ -129,7 +132,7 @@ export default function DecodeLabPage() {
       })
     }
     setPhase('reveal')
-  }, [phase, input, current])
+  }, [phase, input, current, recordListeningRep])
 
   const next = useCallback(() => {
     if (idx + 1 >= blanks.length) { setDone(true); return }

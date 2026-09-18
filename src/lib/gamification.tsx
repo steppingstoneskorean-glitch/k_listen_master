@@ -18,7 +18,14 @@ export interface UserProgress {
   reminderEnabled: boolean
   /** 리마인더 발송 시각 (로컬 기준 0~23시) */
   reminderHour: number
+  /** 누적 듣기 문항 완료 수 — 마일스톤 카운터. 1 rep = 문항 1회 완료(재제출 제외). */
+  listeningReps: number
+  /** 이미 축하한 마일스톤 임계값 목록 — 중복 축하 방지. */
+  milestonesShown: number[]
 }
+
+/** 듣기 문항 완료 마일스톤 (학습 성과 피드백 — XP/뱃지/스트릭 아님). */
+export const LISTENING_MILESTONES = [25, 50, 100, 200, 300, 500]
 
 const DEFAULT_GOAL = 3
 // 프리즈 = 눈에 띄지 않는 스트릭 안전망.
@@ -38,6 +45,8 @@ const DEFAULT_PROGRESS: UserProgress = {
   streakFreezeUsedOn: '',
   reminderEnabled: false,
   reminderHour: 20,
+  listeningReps: 0,
+  milestonesShown: [],
 }
 
 function clampGoal(n: number): number {
@@ -86,6 +95,12 @@ interface GamificationCtx {
   setDailyGoal: (n: number) => Promise<void>
   /** 리마인더(FCM) 사용 여부/시각/언어를 저장 */
   setReminderPrefs: (prefs: { enabled?: boolean; hour?: number; lang?: string }) => Promise<void>
+  /** 듣기 문항 1회 완료 기록 (+1). 마일스톤을 넘으면 pendingMilestone 을 세운다. */
+  recordListeningRep: () => Promise<void>
+  /** 방금 넘긴 마일스톤(축하 대기). 없으면 null. */
+  pendingMilestone: number | null
+  /** 마일스톤 축하 닫기. */
+  clearMilestone: () => void
 }
 
 const GamificationContext = createContext<GamificationCtx>({
@@ -94,12 +109,16 @@ const GamificationContext = createContext<GamificationCtx>({
   markVideoCompleted: async () => {},
   setDailyGoal: async () => {},
   setReminderPrefs: async () => {},
+  recordListeningRep: async () => {},
+  pendingMilestone: null,
+  clearMilestone: () => {},
 })
 
 export function GamificationProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
   const [progress, setProgress] = useState<UserProgress>(DEFAULT_PROGRESS)
   const [loading, setLoading] = useState(false)
+  const [pendingMilestone, setPendingMilestone] = useState<number | null>(null)
 
   // Real-time subscription to this user's progress doc
   useEffect(() => {
@@ -226,8 +245,33 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     }
   }, [user])
 
+  const recordListeningRep = useCallback(async () => {
+    if (!db || !user) return
+    const ref = doc(db, 'users', user.uid)
+    try {
+      let crossed: number | null = null
+      await runTransaction(db, async tx => {
+        const snap = await tx.get(ref)
+        const data = (snap.exists() ? snap.data() : {}) as Partial<UserProgress>
+        const oldReps = data.listeningReps ?? 0
+        const newReps = oldReps + 1
+        const shown = Array.isArray(data.milestonesShown) ? data.milestonesShown : []
+        crossed = LISTENING_MILESTONES.find(m => m > oldReps && m <= newReps && !shown.includes(m)) ?? null
+        tx.set(ref, {
+          listeningReps: newReps,
+          ...(crossed != null ? { milestonesShown: [...shown, crossed] } : {}),
+        }, { merge: true })
+      })
+      if (crossed != null) setPendingMilestone(crossed)
+    } catch (err) {
+      console.warn('Failed to record listening rep:', err)
+    }
+  }, [user])
+
+  const clearMilestone = useCallback(() => setPendingMilestone(null), [])
+
   return (
-    <GamificationContext.Provider value={{ progress, loading, markVideoCompleted, setDailyGoal, setReminderPrefs }}>
+    <GamificationContext.Provider value={{ progress, loading, markVideoCompleted, setDailyGoal, setReminderPrefs, recordListeningRep, pendingMilestone, clearMilestone }}>
       {children}
     </GamificationContext.Provider>
   )

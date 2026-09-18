@@ -7,7 +7,7 @@ import { openCookieSettings } from '@/lib/cookieConsent'
 import { AI_SCORE_ENABLED, hasShadowConsent, setShadowConsent } from '@/lib/shadowConsent'
 import { loadPlan, orderedDoneCount, ORDERED_STEPS, getLevelPref, setPlanLevel } from '@/lib/todayPlan'
 import type { LevelKey } from '@/data/gameLevels'
-import { useUserProfile } from '@/lib/userProfile'
+import { useUserProfile, type GoalPreset } from '@/lib/userProfile'
 import ReminderSettings from '@/components/ReminderSettings'
 import NicknameModal from '@/components/NicknameModal'
 import AccountDeleteModal from '@/components/AccountDeleteModal'
@@ -55,7 +55,7 @@ export default function ProfilePage() {
   const { t, lang, setLang } = useLang()
   const { user, logout } = useAuth()
   const { progress } = useGamification()
-  const { nickname, saveNickname } = useUserProfile()
+  const { nickname, saveNickname, goal, saveGoal } = useUserProfile()
   const navigate = useNavigate()
 
   const [showReminder, setShowReminder] = useState(false)
@@ -66,10 +66,25 @@ export default function ProfilePage() {
   const [aiConsent, setAiConsent] = useState(hasShadowConsent())
   const [level, setLevelState] = useState<LevelKey | null>(() => getLevelPref()?.level ?? null)
   const [showLevel, setShowLevel] = useState(false)
+  const [showGoal, setShowGoal] = useState(false)
+  const [customGoal, setCustomGoal] = useState('')
 
   const LEVELS: LevelKey[] = ['beginner', 'intermediate', 'advanced']
   const levelName = (l: LevelKey) =>
     l === 'beginner' ? t('mode.beginner') : l === 'intermediate' ? t('mode.intermediate') : t('mode.advanced')
+
+  const GOAL_PRESETS: { id: Exclude<GoalPreset, 'custom'>; key: 'goal.preset.drama' | 'goal.preset.kpop' | 'goal.preset.travel' | 'goal.preset.topik' | 'goal.preset.work' }[] = [
+    { id: 'drama', key: 'goal.preset.drama' },
+    { id: 'kpop', key: 'goal.preset.kpop' },
+    { id: 'travel', key: 'goal.preset.travel' },
+    { id: 'topik', key: 'goal.preset.topik' },
+    { id: 'work', key: 'goal.preset.work' },
+  ]
+  const goalLabel = (): string => {
+    if (!goal) return ''
+    if (goal.preset === 'custom') return goal.text || ''
+    return t(GOAL_PRESETS.find(p => p.id === goal.preset)?.key ?? 'goal.label')
+  }
 
   const plan = loadPlan()
   const name = user?.displayName || user?.email?.split('@')[0] || 'Guest'
@@ -130,7 +145,7 @@ export default function ProfilePage() {
 
           {/* 학습 설정 */}
           <Section title={t('profile.sectionLearning')}>
-            <Row icon="🎯" label={t('profile.levelLabel')} onClick={() => setShowLevel(s => !s)}
+            <Row icon="🎚️" label={t('profile.levelLabel')} onClick={() => setShowLevel(s => !s)}
               right={<span className="text-xs font-bold text-slate-400">{level ? levelName(level) : '—'}</span>} />
             {showLevel && (
               <div className="bg-slate-50 px-3 py-2">
@@ -147,6 +162,41 @@ export default function ProfilePage() {
                       {levelName(l)}
                     </button>
                   ))}
+                </div>
+              </div>
+            )}
+            <Row icon="🎯" label={t('goal.label')} onClick={() => setShowGoal(s => !s)}
+              right={<span className="max-w-[9rem] truncate text-xs font-bold text-slate-400">{goal ? goalLabel() : t('goal.setPrompt')}</span>} />
+            {showGoal && (
+              <div className="flex flex-col gap-2 bg-slate-50 px-3 py-2">
+                {GOAL_PRESETS.map(p => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => { void saveGoal({ preset: p.id }); setShowGoal(false) }}
+                    className={`rounded-xl border px-3 py-2 text-left text-sm font-semibold transition-colors ${
+                      goal?.preset === p.id ? 'border-indigo-300 bg-indigo-50 text-indigo-600' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {t(p.key)}
+                  </button>
+                ))}
+                <div className="flex gap-2">
+                  <input
+                    value={customGoal}
+                    onChange={e => setCustomGoal(e.target.value)}
+                    maxLength={40}
+                    placeholder={t('goal.customPlaceholder')}
+                    className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-indigo-400"
+                  />
+                  <button
+                    type="button"
+                    disabled={!customGoal.trim()}
+                    onClick={() => { void saveGoal({ preset: 'custom', text: customGoal.trim() }); setCustomGoal(''); setShowGoal(false) }}
+                    className="shrink-0 rounded-xl bg-indigo-600 px-3 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                  >
+                    {t('goal.preset.custom')}
+                  </button>
                 </div>
               </div>
             )}

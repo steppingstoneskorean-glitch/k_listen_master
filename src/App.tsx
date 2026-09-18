@@ -8,6 +8,7 @@ import { PwaInstallProvider } from '@/lib/pwaInstall'
 import Layout from '@/components/layout/Layout'
 import RequireAuth from '@/components/RequireAuth'
 import CookieConsent from '@/components/CookieConsent'
+import MilestoneToast from '@/components/MilestoneToast'
 import StartPage from '@/pages/StartPage'
 import HomePage from '@/pages/HomePage'
 import GamePage from '@/pages/GamePage'
@@ -90,6 +91,7 @@ export default function App() {
               <Route path="/index" element={<Navigate to="/" replace />} />
             </Routes>
             <CookieConsent />
+            <MilestoneToast />
           </PwaInstallProvider>
           </VideoAccessProvider>
           </UserProfileProvider>

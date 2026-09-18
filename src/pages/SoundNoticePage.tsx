@@ -7,6 +7,7 @@ import { phenomenonLabel } from '@/data/listening/labels'
 import { resolveString } from '@/data/listening/strings'
 import type { DictationItem, Phenomenon } from '@/data/listening/schema'
 import { recordListeningMiss, getPhenomenonWeakness } from '@/lib/errorHistory'
+import { useGamification } from '@/lib/gamification'
 
 // ── TTS (오디오 있으면 오디오, 실패/없으면 TTS) ────────────────────────────────
 function speak(text: string, rate = 1) {
@@ -46,6 +47,7 @@ function buildSession(n = 6): Round[] {
 
 export default function SoundNoticePage() {
   const { lang } = useLang()
+  const { recordListeningRep } = useGamification()
   const [rounds, setRounds] = useState<Round[]>(() => buildSession())
   const [idx, setIdx] = useState(0)
   const [chosen, setChosen] = useState<number | null>(null)
@@ -64,6 +66,7 @@ export default function SoundNoticePage() {
   const pick = useCallback((i: number) => {
     if (chosen !== null || !round) return
     setChosen(i)
+    void recordListeningRep() // 문항 완료 1회 기록(마일스톤)
     if (i === round.answerIdx) {
       setCorrectCount((c) => c + 1)
     } else {
@@ -74,7 +77,7 @@ export default function SoundNoticePage() {
         })
       }
     }
-  }, [chosen, round])
+  }, [chosen, round, recordListeningRep])
 
   const next = useCallback(() => {
     if (idx + 1 >= rounds.length) { setDone(true); return }

@@ -66,7 +66,7 @@ export default function TodayPlan() {
   const navigate = useNavigate()
   const { progress } = useGamification()
   const { user, isGuest } = useAuth()
-  const { nickname, saveNickname } = useUserProfile()
+  const { nickname, saveNickname, goal } = useUserProfile()
   const [plan, setPlan] = useState<PlanState>(() => loadPlan())
   const [showNickname, setShowNickname] = useState(false)
   const [step, setStep] = useState<'lang' | 'level'>('lang') // 온보딩: 언어 → 레벨
@@ -273,6 +273,13 @@ export default function TodayPlan() {
         </div>
         {allDone && <p className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700">{t('plan.allDoneSub')}</p>}
       </div>
+
+      {/* 목표 한 줄 (은은한 맥락 — 주요 CTA 아님) */}
+      {goal && (
+        <p className="mt-3 truncate px-1 text-xs font-semibold text-slate-400">
+          🎯 {t('goal.label')}: <span className="text-slate-500">{goal.preset === 'custom' ? goal.text : t(('goal.preset.' + goal.preset) as Parameters<typeof t>[0])}</span>
+        </p>
+      )}
 
       {/* 세로 타임라인 */}
       <div className="mt-4">

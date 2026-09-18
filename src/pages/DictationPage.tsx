@@ -198,6 +198,7 @@ function GameScreen({
   onComplete: (score: number, correct: number, wrongs: WrongEntry[]) => void
 }) {
   const { t, lang } = useLang()
+  const { recordListeningRep } = useGamification()
   const total = questions.length
   const isAdv = mode === 'advanced'
 
@@ -298,6 +299,7 @@ function GameScreen({
 
   const handleSubmit = useCallback(() => {
     if (feedback !== 'idle' || !userInput.trim()) return
+    void recordListeningRep() // 문항 완료 1회 기록(마일스톤). 재제출은 위 가드로 방지.
     setKbOpen(false) // 제출 시 키보드를 닫아 피드백이 가려지지 않게
     stopTimer()
     const userNorm   = normalize(userInput)
@@ -321,7 +323,7 @@ function GameScreen({
       }])
       setFeedback('wrong')
     }
-  }, [feedback, userInput, current, stopTimer])
+  }, [feedback, userInput, current, stopTimer, recordListeningRep])
 
   useEffect(() => {
     if (feedback === 'idle') return
