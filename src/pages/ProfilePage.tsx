@@ -5,7 +5,8 @@ import { useAuth } from '@/lib/auth'
 import { useGamification } from '@/lib/gamification'
 import { openCookieSettings } from '@/lib/cookieConsent'
 import { AI_SCORE_ENABLED, hasShadowConsent, setShadowConsent } from '@/lib/shadowConsent'
-import { loadPlan, orderedDoneCount, ORDERED_STEPS, getLevelPref, setPlanLevel } from '@/lib/todayPlan'
+import { loadPlan, orderedDoneCount, ORDERED_STEPS, getLevelPref, setPlanLevel, resetPlan } from '@/lib/todayPlan'
+import { clearErrors } from '@/lib/errorHistory'
 import type { LevelKey } from '@/data/gameLevels'
 import { useUserProfile, type GoalPreset } from '@/lib/userProfile'
 import ReminderSettings from '@/components/ReminderSettings'
@@ -93,6 +94,12 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     await logout()
+    // 로컬 학습 상태 초기화 — 같은 기기에서 다른 계정으로 로그인해도
+    // 이전 사용자의 레벨/계획을 물려받지 않게(온보딩 재실행). 계정삭제와 동일 처리.
+    resetPlan()
+    clearErrors()
+    try { localStorage.removeItem('klisten_srs_v1') } catch { /* ignore */ }
+    try { sessionStorage.removeItem('pendingLoginFrom') } catch { /* ignore */ }
     navigate('/')
   }
 
