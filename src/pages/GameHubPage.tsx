@@ -137,13 +137,17 @@ export default function GameHubPage() {
   const items = useMemo(() => buildItems(t, lang, liveVideos), [t, lang, liveVideos])
 
   const visible = useMemo(() => {
-    const filtered = items.filter(
-      it =>
-        (!videosOnly || it.artist !== STEP_ARTIST) &&
-        (artistFilter === '__all__' || it.artist === artistFilter) &&
-        (modeFilter === '__all__' ||
-          videoModes(it.videoId, it.modes).some(m => m.mode === modeFilter)),
-    )
+    const filtered = items.filter(it => {
+      if (videosOnly && it.artist === STEP_ARTIST) return false
+      if (artistFilter !== '__all__' && it.artist !== artistFilter) return false
+      if (modeFilter === '__all__') return true
+      const itModes = videoModes(it.videoId, it.modes).map(m => m.mode)
+      // Step & Step 퀴즈는 레벨 엄격 — 중급→중급만, 고급→고급만.
+      if (it.artist === STEP_ARTIST) return itModes.includes(modeFilter)
+      // K-content 영상은 중급/고급을 하나로 — 중급도 고급도 두 레벨 영상을 모두 자동 노출.
+      const allow: ModeFilter[] = modeFilter === 'B' ? ['B'] : ['I', 'A']
+      return itModes.some(m => allow.includes(m))
+    })
     const sorted = [...filtered].sort((a, b) => {
       const va = sortKey === 'popular' ? a.plays : a.addedAt
       const vb = sortKey === 'popular' ? b.plays : b.addedAt
