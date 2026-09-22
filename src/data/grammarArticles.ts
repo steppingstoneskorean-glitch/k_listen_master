@@ -721,7 +721,7 @@ export const GRAMMAR_ARTICLES: GrammarArticle[] = [
           { examples: [
             { ko: '요리까지 해 주고 감동이에요.', en: "You even cooked for us — I'm touched." },
           ] },
-          { text: 'You will also hear it stacked with 는 for emphasis: 이렇게까지 = "to this extent."' },
+          { text: 'You will also hear it stacked with 는 for emphasis: 이렇게까지는 = "to this extent."' },
           { examples: [
             { ko: '이렇게까지 안 해도 돼요.', en: "You don't have to go this far." },
             { ko: '마지막까지 최선을 다할게요.', en: "I'll do my best to the very end." },

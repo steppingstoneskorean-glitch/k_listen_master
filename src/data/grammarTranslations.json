@@ -450,9 +450,9 @@
   "ja": "-자 は何をするのか？"
  },
  "How to form it": {
-  "ko": "이것을 어떻게 만들까?",
+  "ko": "만드는 방법",
   "es": "Cómo formarlo",
-  "ja": " 形成方法"
+  "ja": "作り方"
  },
  "Take the verb stem (the dictionary form minus 다) and add -자. There are no sound changes to worry about — this one is refreshingly simple.": {
   "ko": "동사 어간(사전 형태에서 다를 뺀 것)을 가져와 -자를 붙입니다. 발음 변화가 없기 때문에 매우 간단합니다.",
@@ -570,24 +570,24 @@
   "ja": "話し言葉では 것＋助詞はほぼ必ず縮約します：것을 → 걸、것이 → 게、것은 → 건。字幕にはどちらの形も出ますが、耳にするのは完全形よりも 걸/게/건のほうがずっと多いです。"
  },
  "even... / up to... / all the way to...": {
-  "ko": "조차... / 최대... / 끝까지...",
+  "ko": "조차... / ~까지... / 끝까지...",
   "es": "incluso... / hasta... / hasta el final...",
   "ja": "でも... / まで... / ずっとまで..."
  },
  "-까지 marks an endpoint (\"up to, until\") — but in conversation it more often means \"even,\" flagging something beyond what you expected. Learn both jobs and hear it in a real live.": {
-  "ko": "-까지는 끝점(\"까지,까지\")을 표시하지만 — 대화에서는 더 자주 \"조차\"라는 의미로 쓰이며, 예상 밖의 것을 가리킵니다. 두 가지 기능을 모두 배우고 실제 라이브에서 들어보세요.",
-  "es": "-까지 marca un punto final (\"hasta, hasta\") — pero en conversación más a menudo significa \"incluso,\" indicando algo más allá de lo esperado. Aprende ambos usos y escúchalo en un directo real.",
-  "ja": "-까지は端点（まで）を示すが、会話ではしばしば「でも」という意味になり、予期を超えたものを示す。両方の使い方を学び、実際のライブで聞いてみよう。"
+  "ko": "-까지는 끝점(\"~까지\", \"~할 때까지\")을 표시하지만 — 대화에서는 더 자주 \"조차\"라는 의미로 쓰이며 예상 밖의 것을 가리킵니다. 두 가지 기능을 모두 배우고 실제 라이브에서 들어 보세요.",
+  "es": "-까지 marca un punto final (\"hasta\", \"hasta que\") — pero en conversación más a menudo significa \"incluso\", indicando algo más allá de lo esperado. Aprende ambos usos y escúchalo en un directo real.",
+  "ja": "-까지は端点（「まで」「するまで」）を示しますが、会話ではしばしば「でも」という意味になり、予期を超えたものを示します。両方の使い方を学び、実際のライブで聞いてみましょう。"
  },
  "Two jobs: \"up to\" and \"even\"": {
-  "ko": "두 가지 기능: \"까지\"와 \"조차\"",
+  "ko": "두 가지 기능: \"~까지\"와 \"조차\"",
   "es": "Dos usos: \"hasta\" y \"incluso\"",
   "ja": "2つの用法: 「まで」と「でも」"
  },
  "The literal job of -까지 is to mark a limit or endpoint in space, time, or degree — \"up to / until / all the way to.\" It often pairs with -부터 (\"from\").": {
-  "ko": "-까지의 직역적인 기능은 공간, 시간, 또는 정도의 한계나 끝점을 표시하는 것입니다 — \"까지 /까지/ 끝까지\". 종종 -부터와 함께 사용됩니다.",
-  "es": "El trabajo literal de -까지 es marcar un límite o punto final en espacio, tiempo o grado — \"hasta / hasta / todo el camino hasta\". A menudo se combina con -부터 (\"desde\").",
-  "ja": "-까지の直訳的な用法は、空間、時間、または程度の限界や端点を示すことです — 「まで / まで / ずっとまで」。これはしばしば -부터 (「から」) と組み合わされます。"
+  "ko": "-까지의 문자 그대로의 기능은 공간·시간·정도의 한계나 끝점을 표시하는 것입니다 — \"~까지 / ~할 때까지 / 끝까지\". 종종 -부터(\"~부터\")와 함께 쓰입니다.",
+  "es": "El uso literal de -까지 es marcar un límite o punto final en espacio, tiempo o grado — \"hasta / hasta que / hasta el final\". A menudo se combina con -부터 (\"desde\").",
+  "ja": "-까지の文字どおりの働きは、空間・時間・程度の限界や端点を示すことです — 「まで / するまで / ずっと〜まで」。しばしば -부터（「から」）と組み合わされます。"
  },
  "But in everyday speech, -까지 just as often means \"even\" — adding something that goes beyond expectation. The nuance is \"and this too, which is more than I expected.\"": {
   "ko": "하지만 일상 대화에서 -까지는 같은 정도로 자주 \"조차\"라는 의미로 쓰이며 — 기대 이상의 것을 더합니다. 뉘앙스는 \"이것도 더해서, 내가 예상했던 것보다 더\"입니다.",
@@ -600,63 +600,58 @@
   "ja": "-도 と -까지 も「も / でも」と訳せますが、-까지 の方が強調が強いです。-도 は単に「も」を追加します；-까지 は「これさえも、驚くべきことに」と言います。"
  },
  "Reach for -까지 when you want to signal that a line was crossed — usually with gratitude or astonishment.": {
-  "ko": "-까지를 사용해서 선이 넘어졌음을 신호하고 싶을 때 — 보통 감사나 놀라움과 함께.",
+  "ko": "어떤 선을 넘었다는 것을 나타내고 싶을 때 -까지를 씁니다 — 보통 감사나 놀라움과 함께요.",
   "es": "Recurre a -까지 cuando quieras indicar que se cruzó una línea — generalmente con gratitud o asombro.",
-  "ja": "-까지 を使ってラインが越えられたことを示したいときに使いましょう — 通常は感謝や驚きとともに。"
+  "ja": "一線を越えたことを示したいときに -까지 を使いましょう — たいてい感謝や驚きとともに。"
  },
  "In the live this article comes from, a member says 형, 요리까지 해 주고 감동이에요 — \"Hyung, you even cooked for us, I'm so touched.\" The -까지 is doing pure emotional work: the cooking was above and beyond, and that is exactly why it is moving.": {
   "ko": "이 기사가 나온 라이브에서 한 멤버가 형, 요리까지 해 주고 감동이에요 — \"형, 너희를 위해 요리까지 해줘서 정말 감동이에요.\" 라고 말합니다. -까지는 순수한 감정 표현을 합니다: 요리가 기대 이상이었고, 그것이 감동적인 이유입니다.",
   "es": "En el directo del que proviene este artículo, un miembro dice 형, 요리까지 해 주고 감동이에요 — \"Hyung, tú incluso cocinaste para nosotros, estoy muy conmovido/a\". El -까지 está realizando un trabajo puramente emocional: la cocina fue más allá de lo esperado, y eso es exactamente por qué es conmovedor.",
   "ja": "この記事の元になったライブで、あるメンバーがこう言います：형, 요리까지 해 주고 감동이에요 —「ヒョン、料理まで作ってくれて本当に感動です」。この -까지は純粋に感情を表す働きをしています：料理は期待以上で、だからこそ胸を打つのです。"
  },
- "You will also hear it stacked with 는 for emphasis: 이렇게까지 = \"to this extent.\"": {
-  "ko": "-는를 붙여 강조할 수도 있습니다: 이렇게까지 = \"이 정도까지\".",
-  "es": "También lo escucharás combinado con 는 para énfasis: 이렇게까지 = \"hasta este punto.\"",
-  "ja": "強調のために 는と重ねて使うのも耳にします：이렇게까지 =「ここまで」。"
- },
  "-아/어 주다: Doing Something *For* Someone in Korean": {
-  "ko": "-아/어 주다: 한국어에서 누군가를 위해 무언가를 하다(호의 또는 친절로서)",
+  "ko": "-아/어 주다: 한국어에서 누군가를 *위해* 무언가를 하기",
   "es": "-아/어 주다: Hacer algo *por* alguien en coreano",
   "ja": "-아/어 주다：韓国語で「誰かのために」何かをする"
  },
  "to do something for someone (as a favor / kindness)": {
-  "ko": "누군가를 위해 무언가를 하다(호의 또는 친절로서)",
+  "ko": "누군가를 위해 무언가를 해 주다 (호의·친절로서)",
   "es": "hacer algo para alguien (como un favor / amabilidad)",
   "ja": "誰かのために何かをする（好意・親切として）"
  },
  "What -(으)ㅁ does": {
-  "ko": "-(으)ㅁ은 무엇을 하나요?",
-  "ja": "-(으)ㅁ は何をするのか",
+  "ko": "-(으)ㅁ이 하는 일",
+  "ja": "-(으)ㅁ の働き",
   "es": "¿Qué hace -(으)ㅁ?"
  },
  "Attach -(으)ㅁ to a verb or adjective stem and it becomes a noun — usually naming the quality, feeling, or result.": {
   "ko": "-(으)ㅁ을 동사 또는 형용사 어간에 붙이면 명사가 됩니다 — 보통 품질, 감정, 또는 결과를 나타냅니다.",
   "ja": "-(으)ㅁ を動詞または形容詞の語幹に付けると、名詞になります — 通常、質、感情、または結果を表します。",
-  "es": "Adjunta -(으)ㅁ a un tallo de verbo o adjetivo y se convierte en un sustantivo — usualmente nombrando la calidad, el sentimiento o el resultado."
+  "es": "Adjunta -(으)ㅁ a la raíz de un verbo o adjetivo y se convierte en un sustantivo — normalmente nombrando la cualidad, el sentimiento o el resultado."
  },
  "Many everyday Korean nouns are frozen -(으)ㅁ forms — you already know several without realizing it.": {
-  "ko": "많은 일상 한국어 명사는 얼어붙은 -(으)ㅁ 형태입니다 — 여러분은 이미 몇 개를 무의식적으로 알고 계실 겁니다.",
-  "ja": "日常的な韓国語の名詞の多くは凍結された -(으)ㅁ 形です — 気づかずにいくつか既に知っています。",
-  "es": "Muchos sustantivos coreanos cotidianos son formas congeladas de -(으)ㅁ — ya conoces varios sin darte cuenta."
+  "ko": "일상적인 한국어 명사 중에는 굳어진 -(으)ㅁ 형태가 많습니다 — 여러분은 이미 그중 몇 개를 자기도 모르게 알고 있습니다.",
+  "ja": "日常的な韓国語の名詞の多くは化石化した -(으)ㅁ 形です — 気づかないうちにいくつも知っています。",
+  "es": "Muchos sustantivos coreanos cotidianos son formas fosilizadas de -(으)ㅁ — ya conoces varios sin darte cuenta."
  },
  "-(으)ㅁ vs -기 vs 것": {
-  "ko": "-(으)ㅁ 대비 -기 대비 것",
   "ja": "-(으)ㅁ・-기・것 の違い",
-  "es": "-(으)ㅁ, -기 y 것: las diferencias"
+  "es": "-(으)ㅁ, -기 y 것: las diferencias",
+  "ko": "-(으)ㅁ · -기 · 것 비교"
  },
  "Korean has three main ways to nominalize, and they are not interchangeable. -(으)ㅁ names a state or result and feels bookish; -기 names an activity and is common in casual speech and lists; 것/거 makes \"the thing that...\" and rules spoken sentences (see our 것 nominalizer article).": {
   "ko": "한국어에는 명사화의 세 가지 주요 방법이 있으며, 이들은 서로 대체할 수 없습니다. -(으)ㅁ은 상태나 결과를 나타내며 문어체 같은 느낌을 줍니다; -기는 활동을 나타내며 일상 대화와 목록에서 흔히 사용됩니다; 것/거는 \"...하는 것\"을 의미하며 말하는 문장을 지배합니다 (우리 것 명사화 문서를 참조하세요).",
-  "es": "El coreano tiene tres formas principales de nominalizar, y no son intercambiables. -(으)ㅁ nombra un estado o resultado y suena formal; -기 nombra una actividad y es común en el habla informal y en listas; 것/거 significa \"lo que...\" y rige las oraciones habladas (mira nuestro 것 nominalizador artículo).",
+  "es": "El coreano tiene tres formas principales de nominalizar, y no son intercambiables. -(으)ㅁ nombra un estado o resultado y suena formal; -기 nombra una actividad y es común en el habla informal y en listas; 것/거 significa \"lo que...\" y rige las oraciones habladas (consulta nuestro artículo sobre el nominalizador 것).",
   "ja": "韓国語には名詞化の主な方法が3つあり、これらは互換できません。-(으)ㅁ は状態または結果を名詞とし、書き言葉っぽい感じがあります；-기 は活動を名詞とし、カジュアルな会話やリストでよく使われます；것/거 は「…のもの」という意味を作り、話し言葉の文を支配します（것 名詞化の記事を参照）。"
  },
  "Rough guide: quality or result → -ㅁ, activity → -기, a concrete \"thing\" → 것.": {
-  "ko": "간단한 안내: 품질 또는 결과 → -ㅁ, 활동 → -기, 구체적인 \"것\" → 것",
+  "ko": "간단한 기준: 성질이나 결과 → -ㅁ, 활동 → -기, 구체적인 \"것\" → 것.",
   "ja": "大まかな目安：質・結果 → -ㅁ、動作 → -기、具体的な「もの」 → 것。",
   "es": "Guía rápida: cualidad o resultado → -ㅁ, actividad → -기, una «cosa» concreta → 것."
  },
  "Stems ending in a vowel or ㄹ take -ㅁ; stems ending in other consonants take -음.": {
   "ko": "모음이나 ㄹ로 끝나는 어간은 -ㅁ을 취하고, 다른 자음으로 끝나는 어간은 -음을 취합니다.",
-  "es": "Los tallos que terminan en vocal o ㄹ toman -ㅁ; los tallos que terminan en otras consonantes toman -음.",
+  "es": "Las raíces que terminan en vocal o ㄹ toman -ㅁ; las que terminan en otras consonantes toman -음.",
   "ja": "母音または ㄹ で終わる語幹は -ㅁ を取り、その他の子音で終わる語幹は -음 を取ります。"
  },
  "The same ending powers Korea's clipped memo and caption style, where whole sentences are compressed into a noun ending.": {
@@ -756,13 +751,13 @@
  },
  "Korean -(으)ㄹ 줄 알다: How to Say \"I Know How To...\"": {
   "es": "Coreano -(으)ㄹ 줄 알다: Cómo decir \"Sé cómo...\"",
-  "ko": "한국어 -(으)ㄹ 줄 알다: \"나는 어떻게 하는지 아는 방법\"을 말하는 방법",
+  "ko": "한국어 -(으)ㄹ 줄 알다: \"~할 줄 안다\"라고 말하는 법",
   "ja": "韓国語の -(으)ㄹ 줄 알다：「〜する方法を知っている」の言い方"
  },
  "to know / not know how to (do something)": {
   "es": "saber / no saber cómo (hacer algo)",
   "ja": "〜する方法を知っている／知らない",
-  "ko": "알다 / 모르다 (무엇을 하는 방법)"
+  "ko": "~할 줄 알다 / 모르다 (무엇을 하는 방법)"
  },
  "What -(으)ㄹ 줄 알다 does": {
   "es": "Qué hace -(으)ㄹ 줄 알다",
@@ -771,38 +766,38 @@
  },
  "Here, 줄 is a bound noun that roughly means \"the way\" or \"the method,\" so the whole expression literally reads \"to know the way to do something.\"": {
   "es": "Aquí, 줄 es un sustantivo ligado que aproximadamente significa \"el camino\" o \"el método\", por lo que toda la expresión se lee literalmente como \"saber el camino para hacer algo.\"",
-  "ja": "ここでは、줄은束縛名詞で、おおむね「方法」や「やり方」を意味し、したがって全体の表現は文字通り「何かをする方法を知っている」と読まれます。",
+  "ja": "ここで 줄 は依存名詞であり、おおむね「方法」や「やり方」を意味します。したがって全体の表現は文字どおり「何かをする方法を知っている」と読めます。",
   "ko": "여기서 줄은 \"방법\" 또는 \"방식\"을 의미하는 의존 명사이므로, 전체 표현은 직역하면 \"무언가를 할 줄 아는 방법\"을 의미합니다."
  },
  "Watch the \"I thought...\" trap": {
   "es": "Cuidado con la trampa del \"Pensé que...\"",
   "ja": "「〜だと思った」という落とし穴に注意",
-  "ko": "\"I thought...\" 함정에 주의하세요"
+  "ko": "'~인 줄 알았다(=생각했다)' 함정에 주의하세요"
  },
  "Tense is your clue: present tense = a skill, past tense about a whole situation = an expectation.": {
   "es": "El tiempo verbal es tu pista: presente = una habilidad, pasado sobre una situación completa = una expectativa.",
   "ja": "時制が手がかりです：現在形 = スキル、過去形（全体の状況について） = 期待。",
-  "ko": "시제가 당신의 단서입니다: 현재 시제 = 기술, 과거 시제(전체 상황에 대해) = 기대."
+  "ko": "시제가 핵심 단서입니다: 현재 시제 = 기술(스킬), 과거 시제(전체 상황에 대한 것) = 기대·예상."
  },
  "Verb stems ending in a vowel or ㄹ take -ㄹ 줄; other consonant stems take -을 줄. Then add 알다 (know) or 모르다 (not know), conjugated normally.": {
   "es": "Los radicales de verbo que terminan en vocal o ㄹ toman -ㄹ 줄; los que terminan en otra consonante toman -을 줄. Luego se añade 알다 (saber) o 모르다 (no saber), conjugado normalmente.",
-  "ja": "母音またはㄹで終わる動詞の語幹は-ㄹ 줄을付ける；その他の子音で終わる語幹は-을 줄을付ける。それから 알다 (知る) 또는 모르다 (知らない) を通常通り活用して付ける。",
-  "ko": "Verb 어간이 모음이나 ㄹ로 끝나는 경우 -ㄹ 줄을 취하고, 다른 자음 어간은 -을 줄을 취합니다. 그 후에 알다(know) 또는 모르다(not know)를 정상적으로 활용합니다."
+  "ja": "母音または ㄹ で終わる動詞の語幹には -ㄹ 줄 を、それ以外の子音で終わる語幹には -을 줄 を付けます。そのあとに 알다（知る）または 모르다（知らない）を通常どおり活用して続けます。",
+  "ko": "동사 어간이 모음이나 ㄹ로 끝나면 -ㄹ 줄을, 그 밖의 자음으로 끝나면 -을 줄을 붙입니다. 그런 다음 알다 또는 모르다를 평소대로 활용해 덧붙입니다."
  },
  "In the live this article comes from, someone asks 이거 할 줄 아는 사람 있어? — \"Is there anyone who knows how to do this?\" Notice 할 줄 아는 사람: the pattern becomes a modifier (\"a person who knows how to do it\") by adding -는 사람.": {
   "es": "En el directo del que proviene este artículo, alguien pregunta 이거 할 줄 아는 사람 있어? — \"¿Hay alguien que sepa cómo hacer esto?\" Fíjate en 할 줄 아는 사람: el patrón se convierte en un modificador (\"una persona que sabe cómo hacerlo\") al añadir -는 사람.",
-  "ja": "この記事が元になったライブで、誰かが 이거 할 줄 아는 사람 있어? — \"このことをできる人はいますか？\" と尋ねます。 할 줄 아는 사람: このパターンは-는 사람を付けることで修飾語（「それをする方法を知っている人」）になります。",
-  "ko": "이 글의 출처가 된 라이브에서 누군가 이렇게 묻습니다: 이거 할 줄 아는 사람 있어? — \"이거 할 줄 아는 사람 있어요?\" 할 줄 아는 사람에 주목하세요: -는 사람을 붙이면 이 패턴이 수식어(\"할 줄 아는 사람\")가 됩니다."
+  "ja": "この記事の元になったライブで、誰かが 이거 할 줄 아는 사람 있어? —「これをできる人はいますか？」と尋ねます。할 줄 아는 사람 に注目してください: -는 사람 を付けると、このパターンは修飾語（「それをする方法を知っている人」）になります。",
+  "ko": "이 글의 출처가 된 라이브에서 누군가 이렇게 묻습니다: 이거 할 줄 아는 사람 있어? 할 줄 아는 사람에 주목하세요: -는 사람을 붙이면 이 패턴이 수식어('할 줄 아는 사람')가 됩니다."
  },
  "Casual forms simply drop the polite 요: 할 줄 알아 / 할 줄 몰라. And it combines happily with other verbs — 할 줄 알게 됐어요 = \"I've come to know how (I learned).\"": {
   "es": "Las formas informales simplemente eliminan el cortés 요: 할 줄 알아 / 할 줄 몰라. Y se combina felizmente con otros verbos — 할 줄 알게 됐어요 = \"He llegado a saber cómo (lo aprendí).\"",
-  "ja": "カジュアル形は単に礼貌の 요 を落とすだけです: 할 줄 알아 / 할 줄 몰라。そして他の動詞と自然に組み合わせられます — 할 줄 알게 됐어요 = \"習得した（知るようになった)\"。",
-  "ko": "캐주얼 형태는 semplicemente 요를 떨어뜨립니다: 할 줄 알아 / 할 줄 몰라. 그리고 다른 동사와 기쁘게 결합됩니다 — 할 줄 알게 됐어요 = \"나는 어떻게 하는지 알게 되었어요 (배웠어요)\"."
+  "ja": "カジュアル形は丁寧の 요 を落とすだけです: 할 줄 알아 / 할 줄 몰라。そして他の動詞とも自然に組み合わせられます — 할 줄 알게 됐어요 =「できるようになった（習得した）」。",
+  "ko": "반말(캐주얼) 형태는 정중한 요만 빼면 됩니다: 할 줄 알아 / 할 줄 몰라. 그리고 다른 동사와도 잘 결합합니다 — 할 줄 알게 됐어요 = \"할 줄 알게 되었어요(= 배웠어요)\"."
  },
  "-까지: The Korean \"Even\" That Raises the Stakes": {
-  "es": "-까지: El coreano \"Even\" que aumenta la apuesta",
+  "es": "-까지: El \"incluso\" coreano que eleva la apuesta",
   "ja": "-까지：意外性を高める韓国語の「〜さえ」",
-  "ko": "-까지: 판도를 높이는 한국어의 \"Even\""
+  "ko": "-까지: 기대를 뛰어넘게 만드는 한국어의 \"조차\""
  },
  "-까지 vs -도": {
   "es": "-까지 contra -도",
@@ -811,7 +806,7 @@
  },
  "Add -아/어 주다 to a verb and it becomes a favor — done for someone else's benefit. It also turns blunt commands into warm requests. Learn the form, the 주다/드리다 politeness split, and hear it live.": {
   "es": "Agrega -아/어 주다 a un verbo y se convierte en un favor — hecho para beneficio de otra persona. También transforma órdenes directas en peticiones cálidas. Aprende la forma, la división de cortesía 주다/드리다, y escúchalo en vivo.",
-  "ko": "-아/어 주다를 동사에 붙이면 타인을 위한 혜택이 된다. 또한 직설적인 명령을 따뜻한 요청으로 바꾼다. 형태를 배우고, 주다/드리다의 공손법 차이를 알아보고, 라이브에서 들어보세요.",
+  "ko": "-아/어 주다를 동사에 붙이면 남을 위한 호의가 됩니다. 또한 직설적인 명령을 따뜻한 요청으로 바꿔 줍니다. 형태와 주다/드리다의 공손법 차이를 배우고, 라이브에서 들어 보세요.",
   "ja": "動詞に -아/어 주다を付けると「好意」になります——誰か他の人のためにする行為です。ぶっきらぼうな命令を温かい依頼にも変えます。作り方、주다/드리다の敬意の使い分けを学び、ライブで聞いてみましょう。"
  },
  "What -아/어 주다 adds": {
@@ -821,7 +816,7 @@
  },
  "On its own, 하다 just means \"to do.\" Add -아/어 주다 and it becomes \"to do FOR someone\" — the 주다 (\"to give\") layer marks the action as a kindness aimed at another person.": {
   "es": "Por sí mismo, 하다 simplemente significa \"hacer\". Agrega -아/어 주다 y se convierte en \"hacer POR alguien\" — la capa 주다 (\"dar\") marca la acción como una amabilidad dirigida a otra persona.",
-  "ko": "혼자서 하다는 단순히 \"하다\"를 의미한다. -아/어 주다를 추가하면 \"누구를 위해 하다\"가 된다 — 주다 (\"주다\") 층이 행동을 다른 사람을 향한 친절로 표시한다.",
+  "ko": "하다는 그 자체로는 단순히 \"하다\"를 뜻합니다. 여기에 -아/어 주다를 붙이면 \"누군가를 위해 하다\"가 됩니다 — 주다라는 요소가 그 행동을 다른 사람을 향한 친절로 표시하기 때문입니다.",
   "ja": "하다だけなら単に「する」という意味です。-아/어 주다を付けると「誰かのためにする」になります——주다（「あげる」）の層が、その行為を他の人へ向けた親切として示すのです。"
  },
  "-(으)ㄹ 줄 알다 means \"to know how to do\" an action, while -(으)ㄹ 줄 모르다 means \"to not know how to.\"": {
@@ -830,7 +825,7 @@
   "es": "-(으)ㄹ 줄 알다 significa «saber hacer» una acción, mientras que -(으)ㄹ 줄 모르다 significa «no saber hacer»."
  },
  "This is different from plain 알다, which means \"to know a fact, person, or piece of information.\"": {
-  "ko": "이것은 알다 자체와 다릅니다; 이는 \"사실, 사람, 또는 정보 조각을 아는 것\"을 의미합니다.",
+  "ko": "이것은 알다 자체와는 다릅니다. 알다는 \"사실이나 사람, 정보를 아는 것\"을 의미합니다.",
   "ja": "これは、単なる 알다——「事実・人・情報を知っている」という意味——とは異なります。",
   "es": "Esto se distingue de 알다 a secas, que significa «conocer un hecho, a una persona o un dato»."
  },
@@ -845,13 +840,13 @@
   "es": "Confundir 알다 y -(으)ㄹ 줄 알다 es uno de los errores más comunes de los estudiantes."
  },
  "In the PAST tense, -(으)ㄹ 줄 알았다 takes on a second, completely different meaning: \"I thought / assumed that something would happen.\"": {
-  "ko": "과거 시제에서 -(으)ㄹ 줄 알았다는 두 번째 완전히 다른 의미를 갖게 됩니다: \"something이 일어날 것이라고 생각하거나 가정했습니다.\"",
+  "ko": "과거 시제에서 -(으)ㄹ 줄 알았다는 완전히 다른 두 번째 의미를 갖습니다: \"무언가가 일어날 것이라고 생각하거나 가정했다.\"",
   "ja": "過去形の -(으)ㄹ 줄 알았다は、まったく別の第二の意味を持ちます：「〜だと思っていた／思い込んでいた」。",
   "es": "En pasado, -(으)ㄹ 줄 알았다 adopta un segundo significado totalmente distinto: «pensaba / suponía que algo pasaría»."
  },
  "That is also why it softens requests. 하세요 (\"do it\") can sound like an order; 해 주세요 (\"do it for me, please\") sounds like a warm request.": {
-  "ko": "하세요 (\"해라\")는 명령처럼 들릴 수 있다; 해 주세요 (\"제발 나를 위해 해 줘\")는 따뜻한 요청처럼 들린다.",
-  "es": "Eso también es por qué suaviza las peticiones. 하세요 (\"do it\") puede sonar como una orden; 해 주세요 (\"do it for me, please\") suena como una petición cálida.",
+  "ko": "이것이 요청을 부드럽게 만들어 주는 이유이기도 합니다. 하세요(\"하라\")는 명령처럼 들릴 수 있지만, 해 주세요(\"나를 위해 해 달라\")는 따뜻한 요청처럼 들립니다.",
+  "es": "Por eso también suaviza las peticiones. 하세요 (\"haz esto\") puede sonar como una orden; 해 주세요 (\"hazlo por mí, por favor\") suena como una petición cálida.",
   "ja": "依頼を和らげるのもそのためです。하세요（「してください」）は命令のように聞こえることがありますが、해 주세요（「（私のために）してください」）は温かいお願いに聞こえます。"
  },
  "How to form it (and 주다 vs 드리다)": {
@@ -860,43 +855,48 @@
   "ja": "作り方（と 주다 vs 드리다）"
  },
  "Attach -아 주다 to stems whose last vowel is ㅏ or ㅗ, and -어 주다 to everything else; 하다 becomes 해 주다.": {
-  "ko": "-아 주다를 마지막 모음이 ㅏ 또는 ㅗ인 어간에 붙이고, 나머지는 -어 주다를 붙인다; 하다는 해 주다가 된다.",
-  "es": "Adjunta -아 주다 a las raíces cuyo último vocal es ㅏ o ㅗ, y -어 주다 a todo lo demás; 하다 se convierte en 해 주다.",
+  "ko": "마지막 모음이 ㅏ나 ㅗ인 어간에는 -아 주다를, 그 밖의 어간에는 -어 주다를 붙입니다. 하다는 해 주다가 됩니다.",
+  "es": "Adjunta -아 주다 a las raíces cuya última vocal es ㅏ o ㅗ, y -어 주다 al resto; 하다 se convierte en 해 주다.",
   "ja": "最後の母音が ㅏまたは ㅗの語幹には -아 주다を、それ以外には -어 주다を付けます；하다は 해 주다になります。"
  },
  "When the favor is for someone you should honor — an elder, a customer — swap 주다 for the humble 드리다.": {
-  "ko": "은혜를 베풀 대상이 존경해야 할 사람 — 어르신, 고객 — 일 때 주다를 겸손한 드리다로 바꾼다.",
+  "ko": "호의를 베푸는 상대가 높여야 할 사람 — 어르신, 고객 — 일 때는 주다를 겸양어인 드리다로 바꿉니다.",
   "es": "Cuando el favor es para alguien a quien debes honrar — un mayor, un cliente — cambia 주다 por el humilde 드리다.",
   "ja": "その好意が敬うべき相手——目上の人、お客様——のためなら、주다を謙譲の 드리다に置き換えます。"
  },
  "A subtle point: -아/어 주다 always implies a direction — someone benefits. If you are just describing your own neutral action, drop it: 밥 먹었어요 (\"I ate\") takes no 주다, because no one else is on the receiving end.": {
-  "ko": "미묘한 점: -아/어 주다는 항상 방향을 내포한다 — 누군가가 혜택을 받는다. 자신의 중립적인 행동을 단순히 설명할 때는 이를 생략하세요: 밥 먹었어요 (\"나는 먹었다\")는 주다를 사용하지 않습니다, 왜냐하면 받는 사람이 아무도 없기 때문입니다.",
-  "ja": "微妙な点: -아/어 주다は常に方向性を示します — 誰かが利益を得ます。ただ自分の中立的な行動を説明しているだけなら、これを省略してください：밥 먹었어요 (\"私は食べた\") は 주다를 취しません。なぜなら受け取る側が誰もいないからです。",
-  "es": "Un punto sutil: -아/어 주다 siempre implica una dirección — alguien se beneficia. Si solo estás describiendo tu propia acción neutral, elimínalo: 밥 먹었어요 (\"I ate\") no lleva 주다, porque nadie más está en el lado receptor."
+  "ko": "미묘한 점: -아/어 주다는 항상 방향을 내포합니다 — 누군가가 혜택을 받습니다. 그저 자신의 중립적인 행동을 설명할 때는 이를 생략하세요: 밥 먹었어요(\"나는 먹었다\")에는 주다를 쓰지 않습니다. 받는 사람이 따로 없기 때문입니다.",
+  "ja": "微妙な点: -아/어 주다は常に方向性を示します — 誰かが利益を得ます。ただ自分の中立的な行動を説明するだけなら、これは省きます：밥 먹었어요（「私は食べた」）に 주다 は付きません。受け取る相手がいないからです。",
+  "es": "Un punto sutil: -아/어 주다 siempre implica una dirección — alguien se beneficia. Si solo describes tu propia acción neutral, omítelo: 밥 먹었어요 (\"comí\") no lleva 주다, porque no hay nadie del lado receptor."
  },
  "-(으)ㅁ: Turning Korean Verbs and Adjectives into Nouns": {
   "ko": "-(으)ㅁ: 한국어 동사와 형용사를 명사로 만드는 방법",
-  "ja": "-(으)ㅁ: 韓国の動詞と形容詞を名詞に変換する",
+  "ja": "-(으)ㅁ: 韓国語の動詞と形容詞を名詞に変える",
   "es": "-(으)ㅁ: Convirtiendo los verbos y adjetivos coreanos en sustantivos"
  },
  "the quality / act / fact of ~ (makes a noun)": {
-  "ko": "~의 품질 / 행위 / 사실 (명사를 만든다)",
+  "ko": "~의 성질 / 행위 / 사실 (명사를 만듦)",
   "ja": "～の質／行為／事実（名詞を作る）",
-  "es": "la calidad / acto / hecho de ~ (hace un sustantivo)"
+  "es": "la cualidad / acto / hecho de ~ (forma un sustantivo)"
  },
  "How does 소중하다 (\"to be precious\") become 소중함 (\"preciousness\")? The -(으)ㅁ ending turns actions and qualities into nouns. Learn the rule, how it differs from -기 and 것, and hear it in a live.": {
-  "ko": "소중하다 (\"소중하다\")가 소중함 (\"소중함\")이 되는 방법은? -(으)ㅁ 끝은 동작과 성질을 명사로 바꾼다. 규칙을 배우고, -기과 것과의 차이를 알아보고, 생방송에서 들어보세요.",
+  "ko": "소중하다가 어떻게 소중함이 될까요? -(으)ㅁ 어미는 동작과 성질을 명사로 바꿔 줍니다. 규칙을 배우고, -기·것과 어떻게 다른지 알아본 뒤, 라이브에서 들어 보세요.",
   "ja": "소중하다（大切だ）はどうやって 소중함（大切さ）になるのでしょう？ -(으)ㅁの語尾は動作や性質を名詞に変えます。その規則、-기や 것との違いを学び、ライブで聞いてみましょう。",
-  "es": "¿Cómo se convierte 소중하다 (\"to be precious\") en 소중함 (\"preciousness\")? El final -(으)ㅁ convierte acciones y cualidades en sustantivos. Aprende la regla, cómo difiere de -기 y de 것, y escucha en un directo."
+  "es": "¿Cómo se convierte 소중하다 (\"ser precioso\") en 소중함 (\"preciosidad\")? La terminación -(으)ㅁ convierte acciones y cualidades en sustantivos. Aprende la regla, en qué se diferencia de -기 y 것, y escúchalo en un directo."
  },
  "Korean has a dedicated pattern for skills — knowing *how* to do something, not just knowing a fact. Learn -(으)ㄹ 줄 알다/모르다, dodge the \"I thought...\" trap, and hear it in a real live.": {
-  "ko": "한국어는 기술을 위한 전용 패턴을 가지고 있다 — 사실을 아는 것이 아니라 *어떻게 하는지* 아는 것이다. -(으)ㄹ 줄 알다/모르다를 배우고, \"나는 생각했...\" 함정을 피하며, 실제 라이브에서 들어 보자.",
+  "ko": "한국어에는 기술(스킬)을 위한 전용 패턴이 있습니다 — 단순히 사실을 아는 것이 아니라 *어떻게 하는지* 아는 것입니다. -(으)ㄹ 줄 알다/모르다를 배우고, '~인 줄 알았다(=~라고 생각했다)' 함정을 피하며, 실제 라이브에서 들어 보세요.",
   "ja": "韓国語には「スキル」専用のパターンがあります——単に事実を知っているのではなく、やり方を知っている、という意味です。-(으)ㄹ 줄 알다/모르다を学び、「〜だと思った」の落とし穴を避け、実際のライブで聞いてみましょう。",
   "es": "El coreano tiene un patrón específico para las destrezas: saber CÓMO hacer algo, no solo conocer un hecho. Aprende -(으)ㄹ 줄 알다/모르다, evita la trampa del «pensaba que...» y escúchalo en un live real."
  },
  "In the live this article comes from, a member asks 정국아, 뭐 도와줄 거 없어? — \"Jungkook, is there anything I can help with?\" 도와주다 is 돕다 (\"help\") + -아/어 주다, so the favor meaning is baked right in.": {
   "es": "En el directo del que proviene este artículo, un miembro pregunta 정국아, 뭐 도와줄 거 없어? — \"Jungkook, ¿hay algo en lo que pueda ayudar?\" 도와주다 es 돕다 (\"ayuda\") + -아/어 주다, por lo que el significado de favor está incorporado directamente.",
   "ja": "この記事の元になったライブで、あるメンバーがこう尋ねます：정국아, 뭐 도와줄 거 없어? —「ジョングク、何か手伝うことない？」。도와주다は 돕다（「手伝う」）＋ -아/어 주다なので、「〜のために」という好意の意味が初めから組み込まれています。",
-  "ko": "이 글의 출처가 된 라이브에서 한 멤버가 이렇게 묻습니다: 정국아, 뭐 도와줄 거 없어? — \"정국아, 뭐 도와줄 거 없어?\" 도와주다는 돕다(\"help\") + -아/어 주다라서, '~을 위해 해준다'는 호의의 의미가 처음부터 들어 있습니다."
+  "ko": "이 글의 출처가 된 라이브에서 한 멤버가 이렇게 묻습니다: 정국아, 뭐 도와줄 거 없어? 도와주다는 돕다 + -아/어 주다라서, '~을 위해 해 준다'는 호의의 의미가 처음부터 들어 있습니다."
+ },
+ "You will also hear it stacked with 는 for emphasis: 이렇게까지는 = \"to this extent.\"": {
+  "ko": "'는'을 붙여 강조하기도 합니다: 이렇게까지는 = \"이 정도까지\".",
+  "es": "También lo escucharás combinado con 는 para énfasis: 이렇게까지는 = \"hasta este punto.\"",
+  "ja": "強調のために 는と重ねて使うのも耳にします：이렇게까지는 =「ここまで」。"
  }
 }
