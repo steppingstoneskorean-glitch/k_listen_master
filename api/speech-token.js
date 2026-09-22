@@ -40,8 +40,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const region = process.env.AZURE_SPEECH_REGION
-  const key = process.env.AZURE_SPEECH_KEY
+  // trim() — 환경변수에 붙여넣을 때 섞인 앞뒤 공백/개행이 헤더값에 들어가면
+  //          Azure STS 가 키를 거부해 401 이 난다(가장 흔한 오설정).
+  const region = (process.env.AZURE_SPEECH_REGION || '').trim()
+  const key = (process.env.AZURE_SPEECH_KEY || '').trim()
   if (!region || !key) {
     return res.status(500).json({ error: 'Azure Speech 환경변수(AZURE_SPEECH_KEY / AZURE_SPEECH_REGION)가 설정되지 않았습니다' })
   }
