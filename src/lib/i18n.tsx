@@ -98,6 +98,20 @@ const TRANSLATIONS = {
   'shadowing.pairTapHint': { en: 'Tap a word to hear it', ko: '단어를 눌러 각각 들어보세요', es: 'Toca una palabra para oírla', ja: '単語をタップして聞いてみましょう' },
   'shadowing.pairScoreTargetHint': { en: 'Tap a word to hear it & pick it as your scoring target', ko: '단어를 눌러 듣고, 채점할 단어로 선택하세요', es: 'Toca una palabra para oírla y elegirla como objetivo', ja: '単語をタップして聞き、採点する単語を選びましょう' },
   'shadowing.scoreTargetWord': { en: 'Scoring', ko: '채점 대상', es: 'Objetivo', ja: '採点対象' },
+  // AI 발음 채점 — 정식 출시 준비 중(티저). Azure 유료 전환 전까지 기능 대신 기대감을 노출.
+  'shadowing.scoreComingSoonBadge': { en: 'COMING SOON', ko: '준비 중', es: 'PRÓXIMAMENTE', ja: '準備中' },
+  'shadowing.scoreComingSoonTitle': {
+    en: 'AI Pronunciation Scoring',
+    ko: 'AI 발음 채점',
+    es: 'Puntuación de pronunciación con IA',
+    ja: 'AI発音採点',
+  },
+  'shadowing.scoreComingSoonDesc': {
+    en: 'Get your pronunciation scored phoneme-by-phoneme against a native speaker. Launching with the full release — stay tuned!',
+    ko: '원어민 대비 발음을 음소 단위로 채점해드릴 기능을 준비하고 있어요. 정식 출시에서 만나요!',
+    es: 'Puntuaremos tu pronunciación fonema a fonema frente a un nativo. ¡Llega con el lanzamiento oficial!',
+    ja: 'ネイティブと比べて発音を音素単位で採点する機能を準備中です。正式リリースでお会いしましょう！',
+  },
   'shadowing.pairAlternate': { en: 'Play alternately', ko: '번갈아 듣기', es: 'Reproducir alternando', ja: '交互に聞く' },
   'shadowing.pairStop': { en: 'Stop', ko: '정지', es: 'Detener', ja: '停止' },
   'shadowing.pairRecordPrompt': {

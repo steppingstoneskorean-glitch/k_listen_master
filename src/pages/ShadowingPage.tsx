@@ -24,7 +24,7 @@ import { BEGINNER_SHADOW_PAIRS, wordAudioUrl, sample } from '@/data/minimalPairs
 import { playExclusive, stopExclusive } from '@/lib/exclusivePlayer'
 import ShadowCompare from '@/components/ShadowCompare'
 import ShadowScore from '@/components/ShadowScore'
-import { AI_SCORE_ENABLED } from '@/lib/shadowConsent'
+import { AI_SCORE_ENABLED, AI_SCORE_COMING_SOON } from '@/lib/shadowConsent'
 
 const SESSION_SIZE = 8
 const RATES = [0.5, 0.75, 1, 1.25] // 배속 옵션
@@ -191,6 +191,24 @@ export default function ShadowingPage() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// ── AI 발음 채점 '정식 출시 준비 중' 티저 ────────────────────────────────────
+//   실제 채점 대신, 곧 나올 기능을 미리 보여줘 기대감을 심는다(Azure 유료 전환 전 단계).
+function ScoreComingSoon() {
+  const { t } = useLang()
+  return (
+    <div className="w-full max-w-md rounded-2xl border border-dashed border-indigo-300 bg-indigo-50/50 px-4 py-3.5">
+      <div className="flex items-center gap-2">
+        <span className="text-lg" aria-hidden>🎤</span>
+        <span className="text-sm font-black text-slate-800">{t('shadowing.scoreComingSoonTitle')}</span>
+        <span className="ml-auto rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-black tracking-wide text-indigo-600">
+          ✨ {t('shadowing.scoreComingSoonBadge')}
+        </span>
+      </div>
+      <p className="mt-1.5 text-[11.5px] leading-snug text-slate-500 break-keep">{t('shadowing.scoreComingSoonDesc')}</p>
     </div>
   )
 }
@@ -379,6 +397,8 @@ function ShadowItem({
       {AI_SCORE_ENABLED && (
         <ShadowScore referenceText={sentence.fullSentence} triggerNonce={scoreNonce} hideButton />
       )}
+      {/* 중지 중: 실제 채점 대신 '정식 출시 준비 중' 티저로 기대감 노출 */}
+      {AI_SCORE_COMING_SOON && <ScoreComingSoon />}
 
       {/* 자가 평가 → 다음 (두 버튼 색상 통일) */}
       <div className="w-full flex items-center gap-3">
@@ -642,6 +662,8 @@ function ShadowPairItem({
           <ShadowScore referenceText={target} triggerNonce={scoreNonce} hideButton />
         </div>
       )}
+      {/* 중지 중: 실제 채점 대신 '정식 출시 준비 중' 티저로 기대감 노출 */}
+      {AI_SCORE_COMING_SOON && <ScoreComingSoon />}
 
       {/* 자가 평가 → 다음 */}
       <div className="w-full flex items-center gap-3">

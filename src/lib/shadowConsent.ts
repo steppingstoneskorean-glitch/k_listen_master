@@ -18,6 +18,11 @@ export const AI_SCORE_ENABLED =
   !SHADOW_SCORE_PAUSED &&
   (import.meta.env.DEV || import.meta.env.VITE_ENABLE_SHADOW_SCORE === '1')
 
+// 중지 중에도 섀도잉 화면에 '정식 출시 준비 중' 티저를 노출해 기대감을 심는다.
+//   · 실제 채점(마이크·Azure)은 돌지 않으므로 401·비용이 발생하지 않는다.
+//   · 프로필의 AI 채점 '동의 토글'은 티저 대상이 아니다(동의받을 기능이 아직 안 도니 계속 숨김).
+export const AI_SCORE_COMING_SOON = SHADOW_SCORE_PAUSED
+
 export function hasShadowConsent(): boolean {
   try {
     return localStorage.getItem(STORAGE_KEY) === 'granted'
