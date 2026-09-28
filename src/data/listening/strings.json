@@ -10,5 +10,49 @@
   "note.contrast.singo_sinmun": {
     "ko": "신고에서는 뒤 소리가 더 세게 나지만, 신문에서는 소리가 바뀌지 않아요.",
     "en": "In 신고 the next sound is tensed, but in 신문 it stays the same."
+  },
+  "note.item.silla": {
+    "ko": "받침 ㄴ이 뒤의 ㄹ을 만나 ㄹ로 바뀌어요 — ㄹ이 이겨요. 그래서 [실라]로 들려요.",
+    "en": "The final ㄴ meets the following ㄹ and turns into ㄹ — the ㄹ wins. So 신라 sounds like [실라]."
+  },
+  "note.item.jeongni": {
+    "ko": "ㅇ 뒤의 ㄹ은 ㄴ으로 바뀌어요 — 이번엔 ㄹ이 물러나요. 그래서 [정니]로 들려요.",
+    "en": "After ㅇ, the ㄹ turns into ㄴ — here the ㄹ gives way. So 정리 sounds like [정니]."
+  },
+  "note.item.nallo": {
+    "ko": "받침 ㄴ이 ㄹ을 만나 ㄹ로 바뀌어요 — 신라와 똑같이 ㄹ이 이겨요. [날로]",
+    "en": "ㄴ before ㄹ becomes ㄹ — the ㄹ wins, just like 신라. → [날로]"
+  },
+  "note.item.seollal": {
+    "ko": "이번엔 ㄹ이 먼저예요. 뒤의 ㄴ도 ㄹ로 바뀌어요 — 방향은 반대여도 ㄹ이 이겨요. [설랄]",
+    "en": "Here the ㄹ comes first; the following ㄴ also becomes ㄹ — opposite order, but the ㄹ still wins. → [설랄]"
+  },
+  "note.item.jongno": {
+    "ko": "ㅇ 뒤의 ㄹ은 ㄴ으로 바뀌어요 — 정리와 똑같이 ㄹ이 물러나요. [종노]",
+    "en": "After ㅇ, ㄹ becomes ㄴ — the ㄹ gives way, just like 정리. → [종노]"
+  },
+  "note.item.simni": {
+    "ko": "ㅁ 뒤의 ㄹ도 ㄴ으로 바뀌어요 — 방아쇠만 다르고 결과는 정리와 같아요. [심니]",
+    "en": "After ㅁ, ㄹ also becomes ㄴ — a different trigger, same result as 정리. → [심니]"
+  },
+  "note.err.silla_nasal": {
+    "ko": "ㄹ이 ㄴ으로 바뀐다고 생각해 [신나]로 듣기 쉬워요. 신라는 반대로 ㄹ이 이겨 [실라]예요.",
+    "en": "It's easy to hear [신나], expecting ㄹ to become ㄴ. But in 신라 the ㄹ wins → [실라]."
+  },
+  "note.err.jeongni_none": {
+    "ko": "글자대로 [정리]로 듣기 쉽지만, ㅇ 뒤의 ㄹ은 ㄴ으로 바뀌어 [정니]예요.",
+    "en": "It's easy to hear [정리] as spelled, but after ㅇ the ㄹ becomes ㄴ → [정니]."
+  },
+  "q.flow.direction": {
+    "ko": "ㄹ 옆에 오는 소리가 ㄴ인가요, 아니면 ㅁ·ㅇ인가요? (ㄴ이면 ㄹ이 이기고, ㅁ·ㅇ이면 ㄹ이 물러나요.)",
+    "en": "What does the ㄹ sit next to — an ㄴ, or an ㅁ/ㅇ? (With ㄴ the ㄹ wins; with ㅁ/ㅇ the ㄹ gives way.)"
+  },
+  "note.contrast.silla_jeongni": {
+    "ko": "신라는 ㄴ+ㄹ이라 ㄹ이 이겨 [실라], 정리는 ㅇ+ㄹ이라 ㄹ이 물러나 [정니]예요.",
+    "en": "신라 is ㄴ+ㄹ, so the ㄹ wins → [실라]; 정리 is ㅇ+ㄹ, so the ㄹ gives way → [정니]."
+  },
+  "note.contrast.seollal_jongno": {
+    "ko": "설날도 ㄹ이 이겨 [설랄], 종로는 ㄹ이 물러나 [종노] — 같은 판단이 새 단어에도 통해요.",
+    "en": "설날 also has the ㄹ winning → [설랄], while 종로 has it giving way → [종노]. The same judgment transfers to new words."
   }
 }

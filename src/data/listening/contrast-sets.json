@@ -8,5 +8,25 @@
       { "ref": 2, "firedRule": null }
     ],
     "note": "note.contrast.singo_sinmun"
+  },
+  {
+    "id": 2,
+    "axis": "ax.flow_direction",
+    "question": "q.flow.direction",
+    "members": [
+      { "ref": 5, "firedRule": "r20" },
+      { "ref": 6, "firedRule": "r19" }
+    ],
+    "note": "note.contrast.silla_jeongni"
+  },
+  {
+    "id": 3,
+    "axis": "ax.flow_direction",
+    "question": "q.flow.direction",
+    "members": [
+      { "ref": 12, "firedRule": "r20" },
+      { "ref": 13, "firedRule": "r19" }
+    ],
+    "note": "note.contrast.seollal_jongno"
   }
 ]

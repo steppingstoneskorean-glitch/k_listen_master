@@ -77,9 +77,12 @@
         "rule": "r20",
         "span": [0, 2],
         "surface": "실라",
-        "note": "두 소리가 만나 부드럽게 이어져요.",
-        "editorNote": "반례 정리(id 6)와 대비 — ㄹ이 이겨 [실라]."
+        "note": "note.item.silla",
+        "editorNote": "반례 정리(id 6)와 대비 — ㄴ+ㄹ 이라 ㄹ이 이겨 [실라]."
       }
+    ],
+    "commonErrors": [
+      { "surface": "신나", "note": "note.err.silla_nasal" }
     ]
   },
   {
@@ -96,9 +99,12 @@
         "rule": "r19",
         "span": [0, 2],
         "surface": "정니",
-        "note": "ㄹ이 물러나 콧소리처럼 들려요.",
-        "editorNote": "신라(id 5)의 반례 — ㄹ이 물러나 [정니]."
+        "note": "note.item.jeongni",
+        "editorNote": "신라(id 5)의 반례 — ㅇ+ㄹ 이라 ㄹ이 물러나 [정니]."
       }
+    ],
+    "commonErrors": [
+      { "surface": "정리", "note": "note.err.jeongni_none" }
     ]
   },
   {
@@ -169,6 +175,82 @@
         "span": [0, 2],
         "surface": "추카",
         "note": "ㅎ과 만나 숨이 섞여 거세게 들려요."
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "난로",
+    "chunks": ["난로"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "flow",
+        "rule": "r20",
+        "span": [0, 2],
+        "surface": "날로",
+        "note": "note.item.nallo",
+        "editorNote": "신라(id 5)와 같은 ㄴ+ㄹ → ㄹ이 이김. 전이 훈련용."
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "설날",
+    "chunks": ["설날"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "flow",
+        "rule": "r20",
+        "span": [0, 2],
+        "surface": "설랄",
+        "note": "note.item.seollal",
+        "editorNote": "ㄹ+ㄴ 방향도 ㄹ이 이김 — 신라(ㄴ+ㄹ)와 방향만 반대, 결과 같음."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "종로",
+    "chunks": ["종로"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "flow",
+        "rule": "r19",
+        "span": [0, 2],
+        "surface": "종노",
+        "note": "note.item.jongno",
+        "editorNote": "정리(id 6)와 같은 ㅇ+ㄹ → ㄹ이 물러남. 전이 훈련용."
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "심리",
+    "chunks": ["심리"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "flow",
+        "rule": "r19",
+        "span": [0, 2],
+        "surface": "심니",
+        "note": "note.item.simni",
+        "editorNote": "ㅁ+ㄹ 도 ㄹ이 물러남 — 정리(ㅇ+ㄹ)와 방아쇠만 다르고 결과 같음."
       }
     ]
   }
