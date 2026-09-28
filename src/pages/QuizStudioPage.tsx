@@ -506,9 +506,9 @@ export default function QuizStudioPage() {
             </div>
           </section>
 
-          {/* ── 구간 미리듣기 ── */}
+          {/* ── 구간 미리듣기 (스크롤해도 상단에 고정) ── */}
           {previewSrc && (
-            <section className="mt-4 overflow-hidden rounded-2xl bg-black shadow-lg">
+            <section className="sticky top-2 z-10 mt-4 overflow-hidden rounded-2xl bg-black shadow-lg">
               <div className="relative aspect-video w-full">
                 <iframe
                   key={previewSrc}
