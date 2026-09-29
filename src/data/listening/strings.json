@@ -4,8 +4,8 @@
     "en": "Is it attached after a word for an action or state?"
   },
   "note.item.singo": {
-    "ko": "뒤 소리가 더 세게 나요.",
-    "en": "The next sound comes out stronger."
+    "ko": "'신고'처럼 동작을 나타내는 말은 받침 ㄴ 뒤 소리가 된소리로 세게 나요. [신꼬]",
+    "en": "In an action word like 신고, the sound after the ㄴ batchim tenses. → [신꼬]"
   },
   "note.contrast.singo_sinmun": {
     "ko": "신고에서는 뒤 소리가 더 세게 나지만, 신문에서는 소리가 바뀌지 않아요.",
@@ -54,5 +54,73 @@
   "note.contrast.seollal_jongno": {
     "ko": "설날도 ㄹ이 이겨 [설랄], 종로는 ㄹ이 물러나 [종노] — 같은 판단이 새 단어에도 통해요.",
     "en": "설날 also has the ㄹ winning → [설랄], while 종로 has it giving way → [종노]. The same judgment transfers to new words."
+  },
+  "note.item.gamda": {
+    "ko": "'감다'도 동작을 나타내는 말이라 받침 ㅁ 뒤가 된소리로 세져요. [감따]",
+    "en": "감다 is also an action word, so the sound after the ㅁ batchim tenses. → [감따]"
+  },
+  "note.item.hakgyo": {
+    "ko": "받침 ㄱ·ㄷ·ㅂ 뒤에서는 조건 없이 늘 된소리로 세져요. [학꾜]",
+    "en": "After a ㄱ/ㄷ/ㅂ batchim, the next sound always tenses — no condition needed. → [학꾜]"
+  },
+  "note.item.gukbap": {
+    "ko": "받침 ㄱ 뒤라 뒤 소리가 된소리로 세져요 — 학교와 같은 경우. [국빱]",
+    "en": "After the ㄱ batchim the next sound tenses, just like 학교. → [국빱]"
+  },
+  "note.item.kkochi": {
+    "ko": "뒤가 조사 '이'라 받침 ㅊ이 그대로 다음 자리로 넘어가요. [꼬치]",
+    "en": "Because '이' is a particle, the ㅊ batchim carries straight over. → [꼬치]"
+  },
+  "note.item.kkoch_wi": {
+    "ko": "뒤가 뜻있는 낱말 '위'라 받침이 먼저 대표음 [ㄷ]이 된 뒤 넘어가요. [꼬뒤]",
+    "en": "Because 위 is a real word, the batchim first becomes its representative sound [ㄷ], then carries over. → [꼬뒤]"
+  },
+  "note.item.oseul": {
+    "ko": "뒤가 조사 '을'이라 받침 ㅅ이 그대로 넘어가요 — 꽃이와 같아요. [오슬]",
+    "en": "Because '을' is a particle, the ㅅ batchim carries straight over, like 꽃이. → [오슬]"
+  },
+  "note.item.osan": {
+    "ko": "뒤가 뜻있는 낱말 '안'이라 받침이 대표음 [ㄷ]을 거쳐 넘어가요 — 꽃 위와 같아요. [오단]",
+    "en": "Because 안 is a real word, the batchim goes through [ㄷ] first, like 꽃 위. → [오단]"
+  },
+  "note.err.singo_none": {
+    "ko": "글자대로 [신고]로 듣기 쉽지만, 동작 말이라 뒤가 세져 [신꼬]예요.",
+    "en": "It's easy to hear [신고] as spelled, but as an action word it tenses → [신꼬]."
+  },
+  "note.err.gamda_none": {
+    "ko": "[감다]로 듣기 쉽지만, 동작 말이라 [감따]로 세져요.",
+    "en": "Easy to hear [감다], but as an action word it tenses → [감따]."
+  },
+  "note.err.hakgyo_none": {
+    "ko": "[학교]로 듣기 쉽지만, 받침 ㄱ 뒤라 늘 [학꾜]로 세져요.",
+    "en": "Easy to hear [학교], but after a ㄱ batchim it always tenses → [학꾜]."
+  },
+  "note.err.kkochi_repr": {
+    "ko": "꽃 위처럼 대표음을 거쳐 [꼬디]로 듣기 쉬워요. 하지만 뒤가 조사라 그대로 넘어가 [꼬치]예요.",
+    "en": "It's easy to hear [꼬디], going through the representative sound like 꽃 위. But here a particle follows, so it carries straight → [꼬치]."
+  },
+  "note.err.kkochwi_direct": {
+    "ko": "꽃이처럼 그대로 넘겨 [꼬취]로 듣기 쉬워요. 하지만 뜻있는 낱말 앞이라 대표음을 거쳐 [꼬뒤]예요.",
+    "en": "It's easy to hear [꼬취], carrying straight like 꽃이. But before a real word it goes through the representative sound → [꼬뒤]."
+  },
+  "note.err.osan_direct": {
+    "ko": "옷을처럼 그대로 넘겨 [오산]으로 듣기 쉬워요. 하지만 뜻있는 낱말 앞이라 대표음을 거쳐 [오단]이에요.",
+    "en": "It's easy to hear [오산], carrying straight like 옷을. But before a real word it goes through the representative sound → [오단]."
+  },
+  "q.carry.target": {
+    "ko": "뒤에 오는 게 조사·어미인가요, 아니면 뜻을 가진 낱말인가요? (조사·어미면 받침이 그대로 넘어가고, 뜻있는 낱말이면 대표음을 거쳐요.)",
+    "en": "Is what follows a particle/ending, or a word with its own meaning? (After a particle the batchim carries straight over; before a real word it goes through the representative sound first.)"
+  },
+  "note.contrast.gamda_gamgi": {
+    "ko": "감다는 동작 말이라 [감따]로 세지지만, 감기는 명사라 그대로 [감기]예요.",
+    "en": "감다 is an action word so it tenses → [감따], but 감기 is a noun and stays [감기]."
+  },
+  "note.contrast.kkochi_kkochwi": {
+    "ko": "꽃이는 조사 앞이라 그대로 넘어가 [꼬치], 꽃 위는 뜻있는 낱말 앞이라 대표음을 거쳐 [꼬뒤]예요.",
+    "en": "꽃이 carries straight before a particle → [꼬치]; 꽃 위 goes through the representative sound before a real word → [꼬뒤]."
+  },
+  "note.contrast.oseul_osan": {
+    "ko": "옷을도 조사 앞이라 [오슬], 옷 안은 낱말 앞이라 [오단] — 같은 판단이 새 단어에도 통해요.",
+    "en": "옷을 before a particle → [오슬]; 옷 안 before a word → [오단]. The same judgment transfers to new words."
   }
 }

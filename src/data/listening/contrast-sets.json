@@ -28,5 +28,35 @@
       { "ref": 13, "firedRule": "r19" }
     ],
     "note": "note.contrast.seollal_jongno"
+  },
+  {
+    "id": 4,
+    "axis": "ax.gyeongeumhwa",
+    "question": "q.gyeongeumhwa.eomi",
+    "members": [
+      { "ref": 15, "firedRule": "r24" },
+      { "ref": 16, "firedRule": null }
+    ],
+    "note": "note.contrast.gamda_gamgi"
+  },
+  {
+    "id": 5,
+    "axis": "ax.carry_target",
+    "question": "q.carry.target",
+    "members": [
+      { "ref": 3, "firedRule": "r14" },
+      { "ref": 4, "firedRule": "r15" }
+    ],
+    "note": "note.contrast.kkochi_kkochwi"
+  },
+  {
+    "id": 6,
+    "axis": "ax.carry_target",
+    "question": "q.carry.target",
+    "members": [
+      { "ref": 19, "firedRule": "r13" },
+      { "ref": 20, "firedRule": "r15" }
+    ],
+    "note": "note.contrast.oseul_osan"
   }
 ]

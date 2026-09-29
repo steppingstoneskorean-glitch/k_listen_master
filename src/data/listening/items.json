@@ -12,9 +12,12 @@
         "rule": "r24",
         "span": [0, 2],
         "surface": "신꼬",
-        "note": "잠깐 막혔다가 뒤 소리가 세게 나요.",
+        "note": "note.item.singo",
         "editorNote": "반례 신문(id 2)과 대비 — 용언 어간 받침 ㄴ 뒤라 적용."
       }
+    ],
+    "commonErrors": [
+      { "surface": "신고", "note": "note.err.singo_none" }
     ]
   },
   {
@@ -39,9 +42,12 @@
         "rule": "r14",
         "span": [0, 2],
         "surface": "꼬치",
-        "note": "받침이 다음 소리로 이어져요. (받침 뒤에 모음이 오면 빈 소리 'ㅇ' 자리에 받침 소리가 가요.)",
+        "note": "note.item.kkochi",
         "editorNote": "반례 꽃 위(id 4)와 대비 — 조사 '이'라 그대로 이어짐."
       }
+    ],
+    "commonErrors": [
+      { "surface": "꼬디", "note": "note.err.kkochi_repr" }
     ]
   },
   {
@@ -57,10 +63,13 @@
         "rule": "r15",
         "span": [0, 3],
         "surface": "꼬뒤",
-        "note": "받침이 다음 소리로 이어져요. (받침 뒤에 모음이 오면 빈 소리 'ㅇ' 자리에 받침 소리가 가요.)",
+        "note": "note.item.kkoch_wi",
         "alsoInvolves": ["r08"],
         "editorNote": "꽃이(id 3)의 반례 — 뒤가 뜻있는 낱말이라 대표음 [꼳]을 거쳐 [꼬뒤]."
       }
+    ],
+    "commonErrors": [
+      { "surface": "꼬취", "note": "note.err.kkochwi_direct" }
     ]
   },
   {
@@ -252,6 +261,115 @@
         "note": "note.item.simni",
         "editorNote": "ㅁ+ㄹ 도 ㄹ이 물러남 — 정리(ㅇ+ㄹ)와 방아쇠만 다르고 결과 같음."
       }
+    ]
+  },
+  {
+    "id": 15,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "감다",
+    "chunks": ["감다"],
+    "annotations": [
+      {
+        "phenomenon": "pause",
+        "rule": "r24",
+        "span": [0, 2],
+        "surface": "감따",
+        "note": "note.item.gamda",
+        "editorNote": "신고(id 1)와 같은 용언 어간 받침(ㅁ) 뒤 경음화. 반례 감기(id 16)."
+      }
+    ],
+    "commonErrors": [
+      { "surface": "감다", "note": "note.err.gamda_none" }
+    ]
+  },
+  {
+    "id": 16,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "감기",
+    "chunks": ["감기"],
+    "annotations": []
+  },
+  {
+    "id": 17,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "학교",
+    "chunks": ["학교"],
+    "annotations": [
+      {
+        "phenomenon": "pause",
+        "rule": "r23",
+        "span": [0, 2],
+        "surface": "학꾜",
+        "note": "note.item.hakgyo",
+        "editorNote": "제23항 — 받침 ㄱ 뒤 무조건 경음화. 조건 없는 유형(신고류와 구분)."
+      }
+    ],
+    "commonErrors": [
+      { "surface": "학교", "note": "note.err.hakgyo_none" }
+    ]
+  },
+  {
+    "id": 18,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "국밥",
+    "chunks": ["국밥"],
+    "annotations": [
+      {
+        "phenomenon": "pause",
+        "rule": "r23",
+        "span": [0, 2],
+        "surface": "국빱",
+        "note": "note.item.gukbap",
+        "editorNote": "학교(id 17)와 같은 제23항 — 받침 ㄱ 뒤 무조건 경음화."
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "옷을",
+    "chunks": ["옷을"],
+    "annotations": [
+      {
+        "phenomenon": "carry",
+        "rule": "r13",
+        "span": [0, 2],
+        "surface": "오슬",
+        "note": "note.item.oseul",
+        "editorNote": "꽃이(id 3)와 같은 조사 앞 직접 연음. 반례 옷 안(id 20)."
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "옷 안",
+    "chunks": ["옷", "안"],
+    "annotations": [
+      {
+        "phenomenon": "carry",
+        "rule": "r15",
+        "span": [0, 3],
+        "surface": "오단",
+        "note": "note.item.osan",
+        "alsoInvolves": ["r08"],
+        "editorNote": "꽃 위(id 4)와 같은 실질 낱말 앞 대표음 경유 연음."
+      }
+    ],
+    "commonErrors": [
+      { "surface": "오산", "note": "note.err.osan_direct" }
     ]
   }
 ]
