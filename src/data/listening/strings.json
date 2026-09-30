@@ -35,14 +35,6 @@
     "ko": "ㅁ 뒤의 ㄹ도 ㄴ으로 바뀌어요 — 방아쇠만 다르고 결과는 정리와 같아요. [심니]",
     "en": "After ㅁ, ㄹ also becomes ㄴ — a different trigger, same result as 정리. → [심니]"
   },
-  "note.err.silla_nasal": {
-    "ko": "ㄹ이 ㄴ으로 바뀐다고 생각해 [신나]로 듣기 쉬워요. 신라는 반대로 ㄹ이 이겨 [실라]예요.",
-    "en": "It's easy to hear [신나], expecting ㄹ to become ㄴ. But in 신라 the ㄹ wins → [실라]."
-  },
-  "note.err.jeongni_none": {
-    "ko": "글자대로 [정리]로 듣기 쉽지만, ㅇ 뒤의 ㄹ은 ㄴ으로 바뀌어 [정니]예요.",
-    "en": "It's easy to hear [정리] as spelled, but after ㅇ the ㄹ becomes ㄴ → [정니]."
-  },
   "q.flow.direction": {
     "ko": "ㄹ 옆에 오는 소리가 ㄴ인가요, 아니면 ㅁ·ㅇ인가요? (ㄴ이면 ㄹ이 이기고, ㅁ·ㅇ이면 ㄹ이 물러나요.)",
     "en": "What does the ㄹ sit next to — an ㄴ, or an ㅁ/ㅇ? (With ㄴ the ㄹ wins; with ㅁ/ㅇ the ㄹ gives way.)"
@@ -82,30 +74,6 @@
   "note.item.osan": {
     "ko": "뒤가 뜻있는 낱말 '안'이라 받침이 대표음 [ㄷ]을 거쳐 넘어가요 — 꽃 위와 같아요. [오단]",
     "en": "Because 안 is a real word, the batchim goes through [ㄷ] first, like 꽃 위. → [오단]"
-  },
-  "note.err.singo_none": {
-    "ko": "글자대로 [신고]로 듣기 쉽지만, 동작 말이라 뒤가 세져 [신꼬]예요.",
-    "en": "It's easy to hear [신고] as spelled, but as an action word the next sound comes out strong → [신꼬]."
-  },
-  "note.err.gamda_none": {
-    "ko": "[감다]로 듣기 쉽지만, 동작 말이라 [감따]로 세져요.",
-    "en": "Easy to hear [감다], but as an action word the next sound comes out strong → [감따]."
-  },
-  "note.err.hakgyo_none": {
-    "ko": "[학교]로 듣기 쉽지만, 받침 ㄱ 뒤라 늘 [학꾜]로 세져요.",
-    "en": "Easy to hear [학교], but after a ㄱ batchim the next sound always comes out strong → [학꾜]."
-  },
-  "note.err.kkochi_repr": {
-    "ko": "꽃 위처럼 대표음을 거쳐 [꼬디]로 듣기 쉬워요. 하지만 뒤가 조사라 그대로 넘어가 [꼬치]예요.",
-    "en": "It's easy to hear [꼬디], going through the representative sound like 꽃 위. But here a particle follows, so it carries straight → [꼬치]."
-  },
-  "note.err.kkochwi_direct": {
-    "ko": "꽃이처럼 그대로 넘겨 [꼬취]로 듣기 쉬워요. 하지만 뜻있는 낱말 앞이라 대표음을 거쳐 [꼬뒤]예요.",
-    "en": "It's easy to hear [꼬취], carrying straight like 꽃이. But before a real word it goes through the representative sound → [꼬뒤]."
-  },
-  "note.err.osan_direct": {
-    "ko": "옷을처럼 그대로 넘겨 [오산]으로 듣기 쉬워요. 하지만 뜻있는 낱말 앞이라 대표음을 거쳐 [오단]이에요.",
-    "en": "It's easy to hear [오산], carrying straight like 옷을. But before a real word it goes through the representative sound → [오단]."
   },
   "q.carry.target": {
     "ko": "뒤에 오는 게 조사·어미인가요, 아니면 뜻을 가진 낱말인가요? (조사·어미면 받침이 그대로 넘어가고, 뜻있는 낱말이면 대표음을 거쳐요.)",
@@ -167,22 +135,6 @@
     "ko": "받침 ㅂ이 ㅎ과 만나 숨이 섞이며 거세게 나요 — 축하와 같아요. [이팍]",
     "en": "The ㅂ batchim meets ㅎ and comes out with a puff of breath, harder, like 축하. → [이팍]"
   },
-  "note.err.gukmul_none": {
-    "ko": "글자대로 [국물]로 듣기 쉽지만, 뒤에 콧소리가 와서 받침이 콧소리로 바뀌어 [궁물]이에요.",
-    "en": "Easy to hear [국물] as spelled, but the following nasal makes the batchim nasal too → [궁물]."
-  },
-  "note.err.gachi_carry": {
-    "ko": "받침만 그대로 넘겨 [가티]로 듣기 쉬워요. 하지만 '이' 앞이라 앞쪽 소리로 바뀌어 [가치]예요.",
-    "en": "Easy to hear [가티], just carrying the batchim over. But before '이' it shifts forward → [가치]."
-  },
-  "note.err.joayo_h": {
-    "ko": "ㅎ을 살려 [조하요]로 듣기 쉽지만, 모음 앞에서 ㅎ이 사라져 [조아요]예요.",
-    "en": "Easy to keep the ㅎ and hear [조하요], but before a vowel the ㅎ drops → [조아요]."
-  },
-  "note.err.chukha_none": {
-    "ko": "글자대로 [축하]로 듣기 쉽지만, ㄱ과 ㅎ이 만나 숨이 섞이며 [추카]로 거세게 나요.",
-    "en": "Easy to hear [축하] as spelled, but ㄱ meets ㅎ and comes out harder → [추카]."
-  },
   "q.biumhwa.trigger": {
     "ko": "받침 뒤에 오는 게 콧소리(ㄴ·ㅁ)인가요, 모음인가요? (콧소리면 받침이 콧소리로 바뀌고, 모음이면 그냥 넘어가요.)",
     "en": "After the batchim, does a nasal (ㄴ/ㅁ) come, or a vowel? (A nasal turns the batchim nasal; a vowel just lets it carry over.)"
@@ -210,10 +162,6 @@
   "note.item.balgarak": {
     "ko": "'발'과 '가락' 두 낱말이 붙으면서, 공기가 잠깐 갇혔다 터져 나와 뒤 소리가 세게 나요. [발까락]",
     "en": "As the two words 발 and 가락 join, the air is briefly trapped and bursts out, so the next sound comes out strong. → [발까락]"
-  },
-  "note.err.balgarak_none": {
-    "ko": "글자대로 [발가락]으로 듣기 쉽지만, 두 낱말이 붙어 뒤 소리가 세게 나 [발까락]이에요.",
-    "en": "Easy to hear [발가락] as spelled, but where the two words join the next sound comes out strong → [발까락]."
   },
   "q.assim.direction": {
     "ko": "바뀌는 소리가 앞에 있나요, 뒤에 있나요? 뒤 소리 때문에 앞이 바뀌기도 하고(국물→궁물), 앞 소리 때문에 뒤가 바뀌기도 해요(정리→정니).",

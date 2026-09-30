@@ -15,9 +15,6 @@
         "note": "note.item.singo",
         "editorNote": "반례 신문(id 2)과 대비 — 용언 어간 받침 ㄴ 뒤라 적용."
       }
-    ],
-    "commonErrors": [
-      { "surface": "신고", "note": "note.err.singo_none" }
     ]
   },
   {
@@ -45,9 +42,6 @@
         "note": "note.item.kkochi",
         "editorNote": "반례 꽃 위(id 4)와 대비 — 조사 '이'라 그대로 이어짐."
       }
-    ],
-    "commonErrors": [
-      { "surface": "꼬디", "note": "note.err.kkochi_repr" }
     ]
   },
   {
@@ -67,9 +61,6 @@
         "alsoInvolves": ["r08"],
         "editorNote": "꽃이(id 3)의 반례 — 뒤가 뜻있는 낱말이라 대표음 [꼳]을 거쳐 [꼬뒤]."
       }
-    ],
-    "commonErrors": [
-      { "surface": "꼬취", "note": "note.err.kkochwi_direct" }
     ]
   },
   {
@@ -90,9 +81,6 @@
         "note": "note.item.silla",
         "editorNote": "유음화(역행) — 뒤 ㄹ이 앞 ㄴ을 ㄹ로. 정리(비음화)와 유형 대비, 설날(유음화 순행)과 방향 대비."
       }
-    ],
-    "commonErrors": [
-      { "surface": "신나", "note": "note.err.silla_nasal" }
     ]
   },
   {
@@ -113,9 +101,6 @@
         "note": "note.item.jeongni",
         "editorNote": "비음화(순행) — 앞 ㅇ이 뒤 ㄹ을 ㄴ으로. 국물(비음화 역행)과 방향 대비, 신라(유음화 역행)와 유형 대비."
       }
-    ],
-    "commonErrors": [
-      { "surface": "정리", "note": "note.err.jeongni_none" }
     ]
   },
   {
@@ -136,9 +121,6 @@
         "note": "note.item.gukmul",
         "editorNote": "비음화(역행) — 뒤 콧소리 ㅁ이 앞 ㄱ을 ㅇ으로. 정리(비음화 순행)와 방향 대비, 반례 국이(id 23)."
       }
-    ],
-    "commonErrors": [
-      { "surface": "국물", "note": "note.err.gukmul_none" }
     ]
   },
   {
@@ -158,9 +140,6 @@
         "note": "note.item.gachi",
         "editorNote": "제17항 구개음화 — ㅌ+이 → ㅊ. 반례 같아(id 25)."
       }
-    ],
-    "commonErrors": [
-      { "surface": "가티", "note": "note.err.gachi_carry" }
     ]
   },
   {
@@ -179,9 +158,6 @@
         "note": "note.item.joayo",
         "editorNote": "제12-4항 ㅎ탈락 — 모음 앞. 대비 좋다(id 26, 격음화)."
       }
-    ],
-    "commonErrors": [
-      { "surface": "조하요", "note": "note.err.joayo_h" }
     ]
   },
   {
@@ -201,9 +177,6 @@
         "note": "note.item.chukha",
         "editorNote": "제12항 격음화 — ㄱ+ㅎ → ㅋ."
       }
-    ],
-    "commonErrors": [
-      { "surface": "축하", "note": "note.err.chukha_none" }
     ]
   },
   {
@@ -302,9 +275,6 @@
         "note": "note.item.gamda",
         "editorNote": "신고(id 1)와 같은 용언 어간 받침(ㅁ) 뒤 경음화. 반례 감기(id 16)."
       }
-    ],
-    "commonErrors": [
-      { "surface": "감다", "note": "note.err.gamda_none" }
     ]
   },
   {
@@ -332,9 +302,6 @@
         "note": "note.item.hakgyo",
         "editorNote": "제23항 — 받침 ㄱ 뒤 무조건 경음화. 조건 없는 유형(신고류와 구분)."
       }
-    ],
-    "commonErrors": [
-      { "surface": "학교", "note": "note.err.hakgyo_none" }
     ]
   },
   {
@@ -390,9 +357,6 @@
         "alsoInvolves": ["r08"],
         "editorNote": "꽃 위(id 4)와 같은 실질 낱말 앞 대표음 경유 연음."
       }
-    ],
-    "commonErrors": [
-      { "surface": "오산", "note": "note.err.osan_direct" }
     ]
   },
   {
@@ -544,9 +508,6 @@
         "note": "note.item.balgarak",
         "editorNote": "제28항 사잇소리 — 두 낱말(발+가락)이 붙으며 경음화(p.13 셋째 갈래)."
       }
-    ],
-    "commonErrors": [
-      { "surface": "발가락", "note": "note.err.balgarak_none" }
     ]
   }
 ]
