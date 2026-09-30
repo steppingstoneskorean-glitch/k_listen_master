@@ -11,7 +11,7 @@
   },
   {
     "id": 2,
-    "axis": "ax.flow_direction",
+    "axis": "ax.change_type",
     "question": "q.flow.direction",
     "members": [
       { "ref": 5, "firedRule": "r20" },
@@ -21,7 +21,7 @@
   },
   {
     "id": 3,
-    "axis": "ax.flow_direction",
+    "axis": "ax.change_type",
     "question": "q.flow.direction",
     "members": [
       { "ref": 12, "firedRule": "r20" },
@@ -91,7 +91,7 @@
   },
   {
     "id": 10,
-    "axis": "ax.assim_direction",
+    "axis": "ax.change_direction",
     "question": "q.assim.direction",
     "members": [
       { "ref": 7, "firedRule": "r18" },
@@ -101,7 +101,7 @@
   },
   {
     "id": 11,
-    "axis": "ax.assim_direction",
+    "axis": "ax.change_direction",
     "question": "q.assim.direction",
     "members": [
       { "ref": 5, "firedRule": "r20" },

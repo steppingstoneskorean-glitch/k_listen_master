@@ -1,10 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
-import { CONTRAST_ITEMS, CONTRAST_SETS } from '@/data/listening/mockContrasts'
+import ITEMS from '@/data/listening/items.json'
+import CONTRAST_SETS_JSON from '@/data/listening/contrast-sets.json'
 import type { ContrastSet, DictationItem, Annotation } from '@/data/listening/schema'
 import { resolveString } from '@/data/listening/strings'
 import { recordListeningMiss } from '@/lib/errorHistory'
+
+// 실 태깅 데이터(items.json + contrast-sets.json)
+const CONTRAST_ITEMS = ITEMS as DictationItem[]
+const CONTRAST_SETS = CONTRAST_SETS_JSON as unknown as ContrastSet[]
 
 // ── 데이터 해석 ───────────────────────────────────────────────────────────────
 function itemById(id: number): DictationItem {

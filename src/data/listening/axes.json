@@ -3,9 +3,9 @@
     "phenomenon": "pause",
     "label": "경음화(된소리되기) 적용 여부 — 용언 어간 ㄴ·ㅁ 뒤"
   },
-  "ax.flow_direction": {
+  "ax.change_type": {
     "phenomenon": "change",
-    "label": "ㄹ이 만난 소리 — 유음화(ㄴ+ㄹ→ㄹㄹ, ㄹ이 이김) vs 비음화(ㅁㅇ+ㄹ→ㄴ, ㄹ이 물러섬)"
+    "label": "동화 유형 — 유음화(ㄴ+ㄹ→ㄹㄹ) vs 비음화(ㅁㅇ+ㄹ→ㄴ)"
   },
   "ax.carry_target": {
     "phenomenon": "carry",
@@ -23,7 +23,7 @@
     "phenomenon": "change",
     "label": "ㅎ의 이웃 — 모음(ㅎ 사라짐) vs 자음(격음화·거세짐)"
   },
-  "ax.assim_direction": {
+  "ax.change_direction": {
     "phenomenon": "change",
     "label": "동화 방향 — 역행(뒤가 앞을 바꿈) vs 순행(앞이 뒤를 바꿈). 유형 고정, 방향만 대비"
   }

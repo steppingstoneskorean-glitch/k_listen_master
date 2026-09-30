@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { generateItemBlank, pickItems, type ItemBlank } from '@/data/listening/blank'
-import { MOCK_ITEMS } from '@/data/listening/mockItems'
+import ITEMS from '@/data/listening/items.json'
 import { phenomenonLabel } from '@/data/listening/labels'
 import { resolveString } from '@/data/listening/strings'
 import type { DictationItem, Phenomenon } from '@/data/listening/schema'
@@ -14,6 +14,9 @@ import {
 import { useGamification } from '@/lib/gamification'
 
 const SESSION_SIZE = 5
+
+// 실 태깅 데이터(items.json) 중 현상(annotation)이 있는 항목만 디코드 풀로 — 반례(annotation 없음) 제외
+const REAL_ITEMS = (ITEMS as DictationItem[]).filter((it) => it.annotations.length > 0)
 
 // 입력 비교용 — 공백/문장부호 제거
 function normalize(s: string) {
@@ -45,7 +48,7 @@ function speak(text: string, rate = 1) {
 
 function buildSession(): ItemBlank[] {
   const weakness = getPhenomenonWeakness()
-  return pickItems(MOCK_ITEMS, SESSION_SIZE).map((it) => generateItemBlank(it, { weakness }))
+  return pickItems(REAL_ITEMS, SESSION_SIZE).map((it) => generateItemBlank(it, { weakness }))
 }
 
 type Result = { phenomenon: Phenomenon | null; correct: boolean }
