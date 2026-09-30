@@ -180,10 +180,10 @@ const TRANSLATIONS = {
   },
 
   'login.trust.summary': {
-    en: 'Why log in? So your scores, reviews, and streak are saved — pick up right where you left off. (Google or Apple)',
-    ko: '왜 로그인하나요? 점수·복습·연속 학습일이 저장돼 다음에 이어서 학습할 수 있어요. (구글·애플 계정)',
-    es: '¿Por qué iniciar sesión? Para guardar tus puntuaciones, repasos y racha, y seguir donde lo dejaste. (Google o Apple)',
-    ja: 'なぜログイン？ スコア・復習・連続学習日が保存され、続きから学べます。(Google・Apple アカウント)',
+    en: 'Log in to save your scores, reviews, and streak so you can keep learning where you left off.',
+    ko: '점수·복습·연속 학습일을 기록하여 이어서 학습하기 위해 로그인이 필요합니다.',
+    es: 'Inicia sesión para guardar tus puntuaciones, repasos y racha y seguir aprendiendo donde lo dejaste.',
+    ja: 'スコア・復習・連続学習日を記録して続きから学ぶために、ログインが必要です。',
   },
 
   // ── Auth ──
