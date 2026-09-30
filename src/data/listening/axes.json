@@ -10,5 +10,17 @@
   "ax.carry_target": {
     "phenomenon": "carry",
     "label": "연음 대상 — 조사·어미(그대로 넘김) vs 뜻있는 낱말(대표음 경유)"
+  },
+  "ax.biumhwa_trigger": {
+    "phenomenon": "change",
+    "label": "비음화 방아쇠 — 받침 ㄱㄷㅂ 뒤에 콧소리(ㄴㅁ)가 오는가 vs 모음이 오는가"
+  },
+  "ax.palatal_i": {
+    "phenomenon": "change",
+    "label": "구개음화 방아쇠 — ㄷ·ㅌ 받침 뒤에 '이'가 오는가 vs 다른 모음이 오는가"
+  },
+  "ax.h_neighbor": {
+    "phenomenon": "change",
+    "label": "ㅎ의 이웃 — 모음(ㅎ 사라짐) vs 자음(격음화·거세짐)"
   }
 }

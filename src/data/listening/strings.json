@@ -122,5 +122,89 @@
   "note.contrast.oseul_osan": {
     "ko": "옷을도 조사 앞이라 [오슬], 옷 안은 낱말 앞이라 [오단] — 같은 판단이 새 단어에도 통해요.",
     "en": "옷을 before a particle → [오슬]; 옷 안 before a word → [오단]. The same judgment transfers to new words."
+  },
+  "note.item.gukmul": {
+    "ko": "받침 ㄱ이 뒤의 콧소리 ㅁ을 만나 콧소리 ㅇ으로 바뀌어요. [궁물]",
+    "en": "The ㄱ batchim meets the nasal ㅁ and turns into the nasal ㅇ. → [궁물]"
+  },
+  "note.item.meokneun": {
+    "ko": "받침 ㄱ이 뒤의 콧소리 ㄴ을 만나 콧소리 ㅇ으로 바뀌어요 — 국물과 같아요. [멍는]",
+    "en": "The ㄱ batchim meets the nasal ㄴ and becomes the nasal ㅇ, like 국물. → [멍는]"
+  },
+  "note.item.imnida": {
+    "ko": "받침 ㅂ이 뒤의 콧소리 ㄴ을 만나 콧소리 ㅁ으로 바뀌어요. [임니다]",
+    "en": "The ㅂ batchim meets the nasal ㄴ and becomes the nasal ㅁ. → [임니다]"
+  },
+  "note.item.guki": {
+    "ko": "뒤가 조사 '이'(모음)라 콧소리로 바뀌지 않고 받침이 그대로 넘어가요. [구기]",
+    "en": "Because '이' is a particle (a vowel), there's no nasal change — the batchim just carries over. → [구기]"
+  },
+  "note.item.gachi": {
+    "ko": "받침 ㅌ이 '이'를 만나 앞쪽 소리 ㅊ으로 바뀌어요. [가치]",
+    "en": "The ㅌ batchim meets '이' and shifts forward to ㅊ. → [가치]"
+  },
+  "note.item.guji": {
+    "ko": "받침 ㄷ이 '이'를 만나 앞쪽 소리 ㅈ으로 바뀌어요 — 같이와 같아요. [구지]",
+    "en": "The ㄷ batchim meets '이' and shifts forward to ㅈ, like 같이. → [구지]"
+  },
+  "note.item.gata": {
+    "ko": "뒤가 '아'(모음)라 앞쪽으로 바뀌지 않고 받침이 그대로 넘어가요. [가타]",
+    "en": "Because '아' follows (not '이'), there's no forward shift — the batchim just carries over. → [가타]"
+  },
+  "note.item.joayo": {
+    "ko": "ㅎ이 모음 앞에서 힘없이 사라져요. [조아요]",
+    "en": "ㅎ fades away before a vowel. → [조아요]"
+  },
+  "note.item.chukha": {
+    "ko": "받침 ㄱ이 ㅎ과 만나 숨이 섞이며 거세게 나요. [추카]",
+    "en": "The ㄱ batchim meets ㅎ and comes out with a puff of breath, harder. → [추카]"
+  },
+  "note.item.jota": {
+    "ko": "ㅎ이 뒤의 자음 ㄷ과 만나 숨이 섞이며 거세게 나요. [조타]",
+    "en": "ㅎ meets the following consonant ㄷ and comes out with a puff of breath, harder. → [조타]"
+  },
+  "note.item.iphak": {
+    "ko": "받침 ㅂ이 ㅎ과 만나 숨이 섞이며 거세게 나요 — 축하와 같아요. [이팍]",
+    "en": "The ㅂ batchim meets ㅎ and comes out with a puff of breath, harder, like 축하. → [이팍]"
+  },
+  "note.err.gukmul_none": {
+    "ko": "글자대로 [국물]로 듣기 쉽지만, 뒤에 콧소리가 와서 받침이 콧소리로 바뀌어 [궁물]이에요.",
+    "en": "Easy to hear [국물] as spelled, but the following nasal makes the batchim nasal too → [궁물]."
+  },
+  "note.err.gachi_carry": {
+    "ko": "받침만 그대로 넘겨 [가티]로 듣기 쉬워요. 하지만 '이' 앞이라 앞쪽 소리로 바뀌어 [가치]예요.",
+    "en": "Easy to hear [가티], just carrying the batchim over. But before '이' it shifts forward → [가치]."
+  },
+  "note.err.joayo_h": {
+    "ko": "ㅎ을 살려 [조하요]로 듣기 쉽지만, 모음 앞에서 ㅎ이 사라져 [조아요]예요.",
+    "en": "Easy to keep the ㅎ and hear [조하요], but before a vowel the ㅎ drops → [조아요]."
+  },
+  "note.err.chukha_none": {
+    "ko": "글자대로 [축하]로 듣기 쉽지만, ㄱ과 ㅎ이 만나 숨이 섞이며 [추카]로 거세게 나요.",
+    "en": "Easy to hear [축하] as spelled, but ㄱ meets ㅎ and comes out harder → [추카]."
+  },
+  "q.biumhwa.trigger": {
+    "ko": "받침 뒤에 오는 게 콧소리(ㄴ·ㅁ)인가요, 모음인가요? (콧소리면 받침이 콧소리로 바뀌고, 모음이면 그냥 넘어가요.)",
+    "en": "After the batchim, does a nasal (ㄴ/ㅁ) come, or a vowel? (A nasal turns the batchim nasal; a vowel just lets it carry over.)"
+  },
+  "q.palatal.i": {
+    "ko": "받침 ㄷ·ㅌ 뒤에 오는 게 '이'인가요, 다른 모음인가요? ('이'면 앞쪽 소리로 바뀌고, 다른 모음이면 그냥 넘어가요.)",
+    "en": "After a ㄷ/ㅌ batchim, does '이' follow, or another vowel? (With '이' it shifts forward; with another vowel it just carries over.)"
+  },
+  "q.h.neighbor": {
+    "ko": "ㅎ 옆에 오는 게 모음인가요, 자음인가요? (모음이면 ㅎ이 사라지고, 자음이면 숨이 섞여 거세져요.)",
+    "en": "Does the ㅎ sit next to a vowel or a consonant? (Before a vowel it disappears; next to a consonant it blends into a harder sound.)"
+  },
+  "note.contrast.gukmul_guki": {
+    "ko": "국물은 뒤가 콧소리라 받침이 바뀌어 [궁물], 국이는 뒤가 모음이라 그대로 넘어가 [구기]예요.",
+    "en": "국물 has a nasal after it, so the batchim changes → [궁물]; 국이 has a vowel, so it just carries → [구기]."
+  },
+  "note.contrast.gachi_gata": {
+    "ko": "같이는 '이' 앞이라 [가치]로 바뀌지만, 같아는 '아' 앞이라 그대로 [가타]로 넘어가요.",
+    "en": "같이 shifts to [가치] before '이'; 같아 just carries to [가타] before '아'."
+  },
+  "note.contrast.joayo_jota": {
+    "ko": "좋아요는 ㅎ 뒤가 모음이라 사라져 [조아요], 좋다는 ㅎ 뒤가 자음이라 거세져 [조타]예요.",
+    "en": "In 좋아요 the ㅎ is before a vowel so it disappears → [조아요]; in 좋다 it's next to a consonant so it comes out harder → [조타]."
   }
 }

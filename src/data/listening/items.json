@@ -130,8 +130,12 @@
         "rule": "r18",
         "span": [0, 2],
         "surface": "궁물",
-        "note": "받침이 뒤 콧소리를 만나 부드러워져요."
+        "note": "note.item.gukmul",
+        "editorNote": "제18항 비음화 — 받침 ㄱ이 뒤 콧소리 ㅁ을 만나 ㅇ으로. 반례 국이(id 23)."
       }
+    ],
+    "commonErrors": [
+      { "surface": "국물", "note": "note.err.gukmul_none" }
     ]
   },
   {
@@ -148,8 +152,12 @@
         "rule": "r17",
         "span": [0, 2],
         "surface": "가치",
-        "note": "받침과 '이'가 만나 앞쪽에서 소리가 나요."
+        "note": "note.item.gachi",
+        "editorNote": "제17항 구개음화 — ㅌ+이 → ㅊ. 반례 같아(id 25)."
       }
+    ],
+    "commonErrors": [
+      { "surface": "가티", "note": "note.err.gachi_carry" }
     ]
   },
   {
@@ -165,8 +173,12 @@
         "rule": "r12h",
         "span": [0, 3],
         "surface": "조아요",
-        "note": "ㅎ이 모음 앞에서 힘없이 사라져요."
+        "note": "note.item.joayo",
+        "editorNote": "제12-4항 ㅎ탈락 — 모음 앞. 대비 좋다(id 26, 격음화)."
       }
+    ],
+    "commonErrors": [
+      { "surface": "조하요", "note": "note.err.joayo_h" }
     ]
   },
   {
@@ -183,8 +195,12 @@
         "rule": "r12a",
         "span": [0, 2],
         "surface": "추카",
-        "note": "ㅎ과 만나 숨이 섞여 거세게 들려요."
+        "note": "note.item.chukha",
+        "editorNote": "제12항 격음화 — ㄱ+ㅎ → ㅋ."
       }
+    ],
+    "commonErrors": [
+      { "surface": "축하", "note": "note.err.chukha_none" }
     ]
   },
   {
@@ -370,6 +386,137 @@
     ],
     "commonErrors": [
       { "surface": "오산", "note": "note.err.osan_direct" }
+    ]
+  },
+  {
+    "id": 21,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "먹는",
+    "chunks": ["먹는"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "soften",
+        "rule": "r18",
+        "span": [0, 2],
+        "surface": "멍는",
+        "note": "note.item.meokneun",
+        "editorNote": "국물(id 7)과 같은 비음화 — ㄱ+ㄴ → ㅇ. 전이 훈련용."
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "입니다",
+    "chunks": ["입니다"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "soften",
+        "rule": "r18",
+        "span": [0, 2],
+        "surface": "임니",
+        "note": "note.item.imnida",
+        "editorNote": "ㅂ+ㄴ → ㅁ 비음화. span 은 '입니'(받침 ㅂ이 바뀌는 구간)."
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "국이",
+    "chunks": ["국이"],
+    "annotations": [
+      {
+        "phenomenon": "carry",
+        "rule": "r13",
+        "span": [0, 2],
+        "surface": "구기",
+        "note": "note.item.guki",
+        "editorNote": "국물(id 7)의 반례 — 뒤가 모음이라 비음화 없이 그대로 연음."
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "굳이",
+    "chunks": ["굳이"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "front-shift",
+        "rule": "r17",
+        "span": [0, 2],
+        "surface": "구지",
+        "note": "note.item.guji",
+        "editorNote": "같이(id 8)와 같은 구개음화 — ㄷ+이 → ㅈ. 전이 훈련용."
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "level": "advanced",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "같아",
+    "chunks": ["같아"],
+    "annotations": [
+      {
+        "phenomenon": "carry",
+        "rule": "r13",
+        "span": [0, 2],
+        "surface": "가타",
+        "note": "note.item.gata",
+        "editorNote": "같이(id 8)의 반례 — 뒤가 '아'라 구개음화 없이 그대로 연음."
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "좋다",
+    "chunks": ["좋다"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "breath",
+        "rule": "r12a",
+        "span": [0, 2],
+        "surface": "조타",
+        "note": "note.item.jota",
+        "editorNote": "좋아요(id 9)의 대비 — ㅎ 뒤가 자음(ㄷ)이라 사라지지 않고 거세짐."
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "level": "intermediate",
+    "audioUrl": "",
+    "speed": "normal",
+    "transcript": "입학",
+    "chunks": ["입학"],
+    "annotations": [
+      {
+        "phenomenon": "change",
+        "changeType": "breath",
+        "rule": "r12a",
+        "span": [0, 2],
+        "surface": "이팍",
+        "note": "note.item.iphak",
+        "editorNote": "축하(id 10)와 같은 격음화 — ㅂ+ㅎ → ㅍ. 전이 훈련용."
+      }
     ]
   }
 ]
