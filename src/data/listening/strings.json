@@ -4,12 +4,12 @@
     "en": "Is it attached after a word for an action or state?"
   },
   "note.item.singo": {
-    "ko": "'신고'처럼 동작을 나타내는 말은 받침 ㄴ 뒤에서 잠깐 막혔다가 된소리로 세게 나요. [신꼬]",
-    "en": "In an action word like 신고, after the ㄴ batchim the sound briefly holds, then comes out tense. → [신꼬]"
+    "ko": "'신고'처럼 동작을 나타내는 말은 받침 ㄴ 뒤에서 공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 세게 나요. [신꼬]",
+    "en": "In an action word like 신고, after the ㄴ batchim the air is briefly trapped and then bursts out, so the next sound comes out strong. → [신꼬]"
   },
   "note.contrast.singo_sinmun": {
     "ko": "신고에서는 뒤 소리가 더 세게 나지만, 신문에서는 소리가 바뀌지 않아요.",
-    "en": "In 신고 the next sound is tensed, but in 신문 it stays the same."
+    "en": "In 신고 the next sound comes out strong, but in 신문 it stays the same."
   },
   "note.item.silla": {
     "ko": "받침 ㄴ이 뒤의 ㄹ을 만나 ㄹ로 바뀌어요 — ㄹ이 이겨요. 그래서 [실라]로 들려요.",
@@ -56,16 +56,16 @@
     "en": "설날 also has the ㄹ winning → [설랄], while 종로 has it giving way → [종노]. The same judgment transfers to new words."
   },
   "note.item.gamda": {
-    "ko": "'감다'도 동작을 나타내는 말이라 받침 ㅁ 뒤에서 잠깐 막혔다가 된소리로 세져요. [감따]",
-    "en": "감다 is also an action word, so after the ㅁ batchim the sound briefly holds, then tenses. → [감따]"
+    "ko": "'감다'도 동작을 나타내는 말이라 받침 ㅁ 뒤에서 공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 세게 나요. [감따]",
+    "en": "감다 is also an action word, so after the ㅁ batchim the air is briefly trapped and bursts out, making the next sound come out strong. → [감따]"
   },
   "note.item.hakgyo": {
-    "ko": "받침 ㄱ·ㄷ·ㅂ 뒤에서는 잠깐 막혔다가 조건 없이 늘 된소리로 세져요. [학꾜]",
-    "en": "After a ㄱ/ㄷ/ㅂ batchim the sound briefly holds, then always comes out tense — no condition needed. → [학꾜]"
+    "ko": "받침 ㄱ·ㄷ·ㅂ 뒤에서는 공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 늘 세게 나요. [학꾜]",
+    "en": "After a ㄱ/ㄷ/ㅂ batchim the air is briefly trapped and bursts out, so the next sound always comes out strong. → [학꾜]"
   },
   "note.item.gukbap": {
-    "ko": "받침 ㄱ 뒤라 잠깐 막혔다가 된소리로 세져요 — 학교와 같은 경우. [국빱]",
-    "en": "After the ㄱ batchim the sound briefly holds, then tenses, just like 학교. → [국빱]"
+    "ko": "받침 ㄱ 뒤라 공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 세게 나요 — 학교와 같은 경우. [국빱]",
+    "en": "After the ㄱ batchim the air is briefly trapped and bursts out, so the next sound comes out strong, just like 학교. → [국빱]"
   },
   "note.item.kkochi": {
     "ko": "뒤가 조사 '이'라 받침 ㅊ이 그대로 다음 자리로 넘어가요. [꼬치]",
@@ -85,15 +85,15 @@
   },
   "note.err.singo_none": {
     "ko": "글자대로 [신고]로 듣기 쉽지만, 동작 말이라 뒤가 세져 [신꼬]예요.",
-    "en": "It's easy to hear [신고] as spelled, but as an action word it tenses → [신꼬]."
+    "en": "It's easy to hear [신고] as spelled, but as an action word the next sound comes out strong → [신꼬]."
   },
   "note.err.gamda_none": {
     "ko": "[감다]로 듣기 쉽지만, 동작 말이라 [감따]로 세져요.",
-    "en": "Easy to hear [감다], but as an action word it tenses → [감따]."
+    "en": "Easy to hear [감다], but as an action word the next sound comes out strong → [감따]."
   },
   "note.err.hakgyo_none": {
     "ko": "[학교]로 듣기 쉽지만, 받침 ㄱ 뒤라 늘 [학꾜]로 세져요.",
-    "en": "Easy to hear [학교], but after a ㄱ batchim it always tenses → [학꾜]."
+    "en": "Easy to hear [학교], but after a ㄱ batchim the next sound always comes out strong → [학꾜]."
   },
   "note.err.kkochi_repr": {
     "ko": "꽃 위처럼 대표음을 거쳐 [꼬디]로 듣기 쉬워요. 하지만 뒤가 조사라 그대로 넘어가 [꼬치]예요.",
@@ -113,7 +113,7 @@
   },
   "note.contrast.gamda_gamgi": {
     "ko": "감다는 동작 말이라 [감따]로 세지지만, 감기는 명사라 그대로 [감기]예요.",
-    "en": "감다 is an action word so it tenses → [감따], but 감기 is a noun and stays [감기]."
+    "en": "감다 is an action word so its sound comes out strong → [감따], but 감기 is a noun and stays [감기]."
   },
   "note.contrast.kkochi_kkochwi": {
     "ko": "꽃이는 조사 앞이라 그대로 넘어가 [꼬치], 꽃 위는 뜻있는 낱말 앞이라 대표음을 거쳐 [꼬뒤]예요.",
