@@ -83,11 +83,12 @@
       {
         "phenomenon": "change",
         "changeType": "flow",
+        "direction": "regressive",
         "rule": "r20",
         "span": [0, 2],
         "surface": "실라",
         "note": "note.item.silla",
-        "editorNote": "반례 정리(id 6)와 대비 — ㄴ+ㄹ 이라 ㄹ이 이겨 [실라]."
+        "editorNote": "유음화(역행) — 뒤 ㄹ이 앞 ㄴ을 ㄹ로. 정리(비음화)와 유형 대비, 설날(유음화 순행)과 방향 대비."
       }
     ],
     "commonErrors": [
@@ -104,12 +105,13 @@
     "annotations": [
       {
         "phenomenon": "change",
-        "changeType": "flow-reverse",
+        "changeType": "soften",
+        "direction": "progressive",
         "rule": "r19",
         "span": [0, 2],
         "surface": "정니",
         "note": "note.item.jeongni",
-        "editorNote": "신라(id 5)의 반례 — ㅇ+ㄹ 이라 ㄹ이 물러나 [정니]."
+        "editorNote": "비음화(순행) — 앞 ㅇ이 뒤 ㄹ을 ㄴ으로. 국물(비음화 역행)과 방향 대비, 신라(유음화 역행)와 유형 대비."
       }
     ],
     "commonErrors": [
@@ -127,11 +129,12 @@
       {
         "phenomenon": "change",
         "changeType": "soften",
+        "direction": "regressive",
         "rule": "r18",
         "span": [0, 2],
         "surface": "궁물",
         "note": "note.item.gukmul",
-        "editorNote": "제18항 비음화 — 받침 ㄱ이 뒤 콧소리 ㅁ을 만나 ㅇ으로. 반례 국이(id 23)."
+        "editorNote": "비음화(역행) — 뒤 콧소리 ㅁ이 앞 ㄱ을 ㅇ으로. 정리(비음화 순행)와 방향 대비, 반례 국이(id 23)."
       }
     ],
     "commonErrors": [
@@ -214,11 +217,12 @@
       {
         "phenomenon": "change",
         "changeType": "flow",
+        "direction": "regressive",
         "rule": "r20",
         "span": [0, 2],
         "surface": "날로",
         "note": "note.item.nallo",
-        "editorNote": "신라(id 5)와 같은 ㄴ+ㄹ → ㄹ이 이김. 전이 훈련용."
+        "editorNote": "신라(id 5)와 같은 유음화(역행) — ㄴ+ㄹ → ㄹㄹ. 전이 훈련용."
       }
     ]
   },
@@ -233,11 +237,12 @@
       {
         "phenomenon": "change",
         "changeType": "flow",
+        "direction": "progressive",
         "rule": "r20",
         "span": [0, 2],
         "surface": "설랄",
         "note": "note.item.seollal",
-        "editorNote": "ㄹ+ㄴ 방향도 ㄹ이 이김 — 신라(ㄴ+ㄹ)와 방향만 반대, 결과 같음."
+        "editorNote": "유음화(순행) — 앞 ㄹ이 뒤 ㄴ을 ㄹ로. 신라(역행)와 방향 대비, 결과 같음."
       }
     ]
   },
@@ -251,12 +256,13 @@
     "annotations": [
       {
         "phenomenon": "change",
-        "changeType": "flow-reverse",
+        "changeType": "soften",
+        "direction": "progressive",
         "rule": "r19",
         "span": [0, 2],
         "surface": "종노",
         "note": "note.item.jongno",
-        "editorNote": "정리(id 6)와 같은 ㅇ+ㄹ → ㄹ이 물러남. 전이 훈련용."
+        "editorNote": "정리(id 6)와 같은 비음화(순행) — ㅇ+ㄹ → ㄴ. 전이 훈련용."
       }
     ]
   },
@@ -270,12 +276,13 @@
     "annotations": [
       {
         "phenomenon": "change",
-        "changeType": "flow-reverse",
+        "changeType": "soften",
+        "direction": "progressive",
         "rule": "r19",
         "span": [0, 2],
         "surface": "심니",
         "note": "note.item.simni",
-        "editorNote": "ㅁ+ㄹ 도 ㄹ이 물러남 — 정리(ㅇ+ㄹ)와 방아쇠만 다르고 결과 같음."
+        "editorNote": "ㅁ+ㄹ 비음화(순행) — 정리(ㅇ+ㄹ)와 방아쇠만 다르고 결과 같음."
       }
     ]
   },
@@ -399,11 +406,12 @@
       {
         "phenomenon": "change",
         "changeType": "soften",
+        "direction": "regressive",
         "rule": "r18",
         "span": [0, 2],
         "surface": "멍는",
         "note": "note.item.meokneun",
-        "editorNote": "국물(id 7)과 같은 비음화 — ㄱ+ㄴ → ㅇ. 전이 훈련용."
+        "editorNote": "국물(id 7)과 같은 비음화(역행) — ㄱ+ㄴ → ㅇ. 전이 훈련용."
       }
     ]
   },
@@ -418,11 +426,12 @@
       {
         "phenomenon": "change",
         "changeType": "soften",
+        "direction": "regressive",
         "rule": "r18",
         "span": [0, 2],
         "surface": "임니",
         "note": "note.item.imnida",
-        "editorNote": "ㅂ+ㄴ → ㅁ 비음화. span 은 '입니'(받침 ㅂ이 바뀌는 구간)."
+        "editorNote": "ㅂ+ㄴ → ㅁ 비음화(역행). span 은 '입니'(받침 ㅂ이 바뀌는 구간)."
       }
     ]
   },

@@ -23,7 +23,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
 const PHENOMENA = ['pause', 'carry', 'change', 'h-weaken', 'reading', 'sound-contrast']
-const CHANGE_TYPES = ['soften', 'flow', 'flow-reverse', 'front-shift', 'breath']
+const CHANGE_TYPES = ['soften', 'flow', 'front-shift', 'breath']
+const DIRECTIONS = ['regressive', 'progressive']
 const LEVELS = ['intermediate', 'advanced']
 const SPEEDS = ['slow', 'normal', 'fast']
 const RULE_CODE_RE = /^r[0-9a-z_]+$/       // r24, r12h
@@ -112,6 +113,9 @@ export function validate(items, contrastSets, opts = {}) {
         if (!CHANGE_TYPES.includes(an.changeType)) E(`${aat}: change 에는 changeType(${CHANGE_TYPES.join('|')}) 필요 (받음: ${an.changeType})`)
       } else if (an.changeType != null) {
         E(`${aat}: changeType 은 phenomenon='change' 일 때만.`)
+      }
+      if (an.direction != null && !DIRECTIONS.includes(an.direction)) {
+        E(`${aat}: direction 은 ${DIRECTIONS.join('|')} 중 하나. (받음: ${an.direction})`)
       }
       if (!Array.isArray(an.span) || an.span.length !== 2 || !isInt(an.span[0]) || !isInt(an.span[1])) {
         E(`${aat}: span 은 [정수, 정수] 여야 합니다. (받음: ${JSON.stringify(an.span)})`)

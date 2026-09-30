@@ -25,21 +25,21 @@
 export type Phenomenon = 'pause' | 'carry' | 'change' | 'h-weaken' | 'reading' | 'sound-contrast'
 
 /**
- * CHANGE 하위 유형 — 책의 changes(동화·축약). ㅎ약화(탈락)는 별도 phenomenon(h-weaken=Carry 예외).
- *   soften       비음화(장애음)  제18항   국물[궁물]·먹는[멍는]
- *   flow         유음화          제20항   신라[실라]·난로[날로]·설날[설랄] (ㄹ이 이김)
- *   flow-reverse ㄹ비음화        제19항   정리[정니]·종로[종노]·심리[심니] (ㄹ이 물러섬)
- *                              ⚠ flow와 통합 금지 — 신라≠정리가 같은 값이 되면 안 됨(p.24 전체가 이 구별).
- *   front-shift  구개음화        제17항   같이[가치]·굳이[구지]
+ * CHANGE 하위 유형(유형 축). 방향(역행/순행)은 Annotation.direction 으로 **직교 분리**.
+ *   soften       비음화   제18항(장애음 비음화, 역행: 국물[궁물]) + 제19항(ㄹ비음화, 순행: 정리[정니])
+ *   flow         유음화   제20항   신라[실라](역행) · 설날[설랄](순행)
+ *   front-shift  구개음화 제17항   같이[가치]·굳이[구지]
  *   breath       격음화(자음축약) 제12항   좋다[조타]·축하[추카]
+ * ⚠ 정리[정니]는 유음화의 역방향이 아니라 **비음화(순행)** — soften 으로 분류.
+ *   2×2 = {비음화, 유음화} × {역행(뒤가 앞 바꿈), 순행(앞이 뒤 바꿈)}. 유형=changeType, 방향=direction.
  */
-export type ChangeType = 'soften' | 'flow' | 'flow-reverse' | 'front-shift' | 'breath'
+export type ChangeType = 'soften' | 'flow' | 'front-shift' | 'breath'
 
 /**
  * 규칙 식별용 **내부 불투명 코드** (rules.json 의 키). 예: 'r24'.
  * ⚠ 사용자에게 절대 노출하지 않는다 — '제24항' 같은 라벨은 rules.json 에만 두고,
  *   학습자에게는 note/question 처럼 평이한 말로만 설명한다.
- * PAUSE 조건(r23/24/25/27)·Flow ㄹ방향(r19/r20) 등 하위 분기를 이 코드로 구분한다.
+ * PAUSE 조건(r23~28)·비음화(r18역행/r19순행)·유음화(r20) 등 하위 분기를 이 코드로 구분한다.
  */
 export type RuleId = string
 
@@ -65,6 +65,11 @@ export interface Annotation {
   phenomenon: Phenomenon
   /** phenomenon === 'change' 일 때. */
   changeType?: ChangeType
+  /**
+   * 동화 방향(직교 축) — 'regressive'=역행(뒤가 앞을 바꿈), 'progressive'=순행(앞이 뒤를 바꿈).
+   * 비음화(soften)·유음화(flow)에만 기록. 예: 국물 역행 · 정리 순행 · 신라 역행 · 설날 순행.
+   */
+  direction?: 'regressive' | 'progressive'
   /** 선택 — 내부 규칙 코드(rules.json 키, 사용자 비노출). 대부분 도출 가능, 경계 사례만 수동 기입. */
   rule?: RuleId
   /** transcript 의 문자 인덱스 [start, end). canonical = transcript.slice(start, end). */

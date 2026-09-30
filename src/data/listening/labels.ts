@@ -33,8 +33,8 @@ const PHENO: Record<'ko' | 'en', Record<Phenomenon, Label>> = {
 
 // change 세부(선택) — 화면엔 "바뀜 · 부드러워짐" 처럼 붙인다.
 const CHANGE_SUB: Record<'ko' | 'en', Record<ChangeType, string>> = {
-  ko: { soften: '부드러워짐', flow: '흐름', 'flow-reverse': '콧소리로', 'front-shift': '앞으로 옮김', breath: '거세짐' },
-  en: { soften: 'Soften', flow: 'Flow', 'flow-reverse': 'Nasal', 'front-shift': 'Front shift', breath: 'Breath' },
+  ko: { soften: '콧소리로', flow: '흐름', 'front-shift': '앞으로 옮김', breath: '거세짐' },
+  en: { soften: 'Nasal', flow: 'Flow', 'front-shift': 'Front shift', breath: 'Breath' },
 }
 
 function base(lang: Lang): 'ko' | 'en' {

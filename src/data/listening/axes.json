@@ -5,7 +5,7 @@
   },
   "ax.flow_direction": {
     "phenomenon": "change",
-    "label": "ㄹ 방향 — 유음화(ㄹ이 이김) vs ㄹ비음화(ㄹ이 물러섬)"
+    "label": "ㄹ이 만난 소리 — 유음화(ㄴ+ㄹ→ㄹㄹ, ㄹ이 이김) vs 비음화(ㅁㅇ+ㄹ→ㄴ, ㄹ이 물러섬)"
   },
   "ax.carry_target": {
     "phenomenon": "carry",
