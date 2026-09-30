@@ -167,6 +167,7 @@ export function validate(items, contrastSets, opts = {}) {
 
     if (!Array.isArray(cs.members) || cs.members.length < 2) { E(`${at}: members 는 2개 이상이어야 합니다.`); continue }
     const fired = new Set()
+    const dirs = new Set() // 방향(역행/순행) 대비 — firedRule 이 같아도 direction 이 다르면 유효한 변별
     for (const [j, m] of cs.members.entries()) {
       const mat = `${at} member[${j}]`
       if (!m || typeof m !== 'object') { E(`${mat}: 객체가 아닙니다.`); continue }
@@ -177,12 +178,13 @@ export function validate(items, contrastSets, opts = {}) {
         E(`${mat}: firedRule 은 null 또는 rules.json 코드여야 합니다. (받음: ${JSON.stringify(m.firedRule)})`)
       } else if (m.firedRule !== null && itemById.has(m.ref)) {
         const it = itemById.get(m.ref)
-        const has = Array.isArray(it.annotations) && it.annotations.some((a) => a.rule === m.firedRule)
-        if (!has) E(`${mat}: firedRule=${m.firedRule} 인 annotation 이 ref=${m.ref} 항목에 없습니다.`)
+        const ann = Array.isArray(it.annotations) ? it.annotations.find((a) => a.rule === m.firedRule) : null
+        if (!ann) E(`${mat}: firedRule=${m.firedRule} 인 annotation 이 ref=${m.ref} 항목에 없습니다.`)
+        else if (ann.direction != null) dirs.add(ann.direction)
       }
       fired.add(m.firedRule)
     }
-    if (fired.size < 2) W(`${at}: 모든 member 의 firedRule 이 동일합니다 — 변별 대비가 아닐 수 있습니다.`)
+    if (fired.size < 2 && dirs.size < 2) W(`${at}: member 들이 firedRule·direction 모두 동일 — 변별 대비가 아닐 수 있습니다.`)
   }
 
   return { errors, warnings }

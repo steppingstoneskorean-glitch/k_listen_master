@@ -22,5 +22,9 @@
   "ax.h_neighbor": {
     "phenomenon": "change",
     "label": "ㅎ의 이웃 — 모음(ㅎ 사라짐) vs 자음(격음화·거세짐)"
+  },
+  "ax.assim_direction": {
+    "phenomenon": "change",
+    "label": "동화 방향 — 역행(뒤가 앞을 바꿈) vs 순행(앞이 뒤를 바꿈). 유형 고정, 방향만 대비"
   }
 }

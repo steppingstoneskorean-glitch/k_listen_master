@@ -88,5 +88,25 @@
       { "ref": 26, "firedRule": "r12a" }
     ],
     "note": "note.contrast.joayo_jota"
+  },
+  {
+    "id": 10,
+    "axis": "ax.assim_direction",
+    "question": "q.assim.direction",
+    "members": [
+      { "ref": 7, "firedRule": "r18" },
+      { "ref": 6, "firedRule": "r19" }
+    ],
+    "note": "note.contrast.gukmul_jeongni"
+  },
+  {
+    "id": 11,
+    "axis": "ax.assim_direction",
+    "question": "q.assim.direction",
+    "members": [
+      { "ref": 5, "firedRule": "r20" },
+      { "ref": 12, "firedRule": "r20" }
+    ],
+    "note": "note.contrast.silla_seollal"
   }
 ]

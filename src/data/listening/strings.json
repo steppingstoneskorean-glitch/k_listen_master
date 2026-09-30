@@ -214,5 +214,17 @@
   "note.err.balgarak_none": {
     "ko": "글자대로 [발가락]으로 듣기 쉽지만, 두 낱말이 붙어 뒤 소리가 세게 나 [발까락]이에요.",
     "en": "Easy to hear [발가락] as spelled, but where the two words join the next sound comes out strong → [발까락]."
+  },
+  "q.assim.direction": {
+    "ko": "바뀌는 소리가 앞에 있나요, 뒤에 있나요? 뒤 소리 때문에 앞이 바뀌기도 하고(국물→궁물), 앞 소리 때문에 뒤가 바뀌기도 해요(정리→정니).",
+    "en": "Which sound changes — the front one or the back one? Sometimes the back sound changes the front (국물→궁물); sometimes the front changes the back (정리→정니)."
+  },
+  "note.contrast.gukmul_jeongni": {
+    "ko": "국물은 뒤 ㅁ이 앞 ㄱ을 바꿔 [궁물](뒤→앞), 정리는 앞 ㅇ이 뒤 ㄹ을 바꿔 [정니](앞→뒤) — 둘 다 콧소리로 바뀌지만 방향이 반대예요.",
+    "en": "In 국물 the back ㅁ changes the front ㄱ → [궁물] (back→front); in 정리 the front ㅇ changes the back ㄹ → [정니] (front→back). Both go nasal, opposite directions."
+  },
+  "note.contrast.silla_seollal": {
+    "ko": "신라는 뒤 ㄹ이 앞 ㄴ을 바꿔 [실라](뒤→앞), 설날은 앞 ㄹ이 뒤 ㄴ을 바꿔 [설랄](앞→뒤) — 둘 다 ㄹ로 이어지지만 방향이 반대예요.",
+    "en": "In 신라 the back ㄹ changes the front ㄴ → [실라] (back→front); in 설날 the front ㄹ changes the back ㄴ → [설랄] (front→back). Both become ㄹㄹ, opposite directions."
   }
 }
