@@ -14,18 +14,18 @@ export interface Label { title: string; subtitle: string }
 // 내부 phenomenon → 화면 말(title) + 한 줄 설명(subtitle). note 설명과 같은 프레임.
 const PHENO: Record<'ko' | 'en', Record<Phenomenon, Label>> = {
   ko: {
-    pause: { title: '막힘', subtitle: '받침에서 한 번 막혔다 나옵니다' },
-    carry: { title: '넘김', subtitle: '받침이 다음 자리로 옮겨 갑니다' },
-    change: { title: '바뀜', subtitle: '옆 소리를 만나 소리가 달라집니다' },
-    'h-weaken': { title: '바뀜', subtitle: '옆 소리를 만나 소리가 달라집니다' },
+    pause: { title: '막힘', subtitle: '공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 세게 나요.' },
+    carry: { title: '넘김', subtitle: "받침이 다음 소리로 이어져요. 받침 뒤에 모음이 오면, 빈 소리인 'ㅇ' 자리에 받침 소리가 가요." },
+    change: { title: '바뀜', subtitle: '두 소리가 만나면서 소리가 달라져요.' },
+    'h-weaken': { title: '바뀜', subtitle: '두 소리가 만나면서 소리가 달라져요.' },
     reading: { title: '읽기', subtitle: '옆 소리 없이도 정해집니다' },
     'sound-contrast': { title: '소리 구별', subtitle: '비슷한 소리를 가려냅니다' },
   },
   en: {
-    pause: { title: 'Pause', subtitle: 'The batchim stops once, then releases' },
-    carry: { title: 'Carry', subtitle: 'The batchim slides to the next spot' },
-    change: { title: 'Change', subtitle: 'It meets the next sound and shifts' },
-    'h-weaken': { title: 'Change', subtitle: 'It meets the next sound and shifts' },
+    pause: { title: 'Pause', subtitle: 'Air is briefly trapped, then bursts out — the next sound comes out strong.' },
+    carry: { title: 'Carry', subtitle: "The batchim carries into the next syllable. When a vowel follows, it fills the empty 'ㅇ' slot." },
+    change: { title: 'Change', subtitle: 'Two sounds meet and the sound changes.' },
+    'h-weaken': { title: 'Change', subtitle: 'Two sounds meet and the sound changes.' },
     reading: { title: 'Reading', subtitle: 'Decided on its own, no neighbor needed' },
     'sound-contrast': { title: 'Sound contrast', subtitle: 'Tell close sounds apart' },
   },
