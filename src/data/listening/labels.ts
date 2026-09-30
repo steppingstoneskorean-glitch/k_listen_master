@@ -17,7 +17,7 @@ const PHENO: Record<'ko' | 'en', Record<Phenomenon, Label>> = {
     pause: { title: '막힘', subtitle: '공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 세게 나요.' },
     carry: { title: '넘김', subtitle: "받침이 다음 소리로 이어져요. 받침 뒤에 모음이 오면, 빈 소리인 'ㅇ' 자리에 받침 소리가 가요." },
     change: { title: '바뀜', subtitle: '두 소리가 만나면서 소리가 달라져요.' },
-    'h-weaken': { title: '바뀜', subtitle: '두 소리가 만나면서 소리가 달라져요.' },
+    'h-weaken': { title: '넘김', subtitle: '받침은 넘어가는데, ㅎ만은 모음 앞에서 사라져요.' },
     reading: { title: '읽기', subtitle: '옆 소리 없이도 정해집니다' },
     'sound-contrast': { title: '소리 구별', subtitle: '비슷한 소리를 가려냅니다' },
   },
@@ -25,7 +25,7 @@ const PHENO: Record<'ko' | 'en', Record<Phenomenon, Label>> = {
     pause: { title: 'Pause', subtitle: 'Air is briefly trapped, then bursts out — the next sound comes out strong.' },
     carry: { title: 'Carry', subtitle: "The batchim carries into the next syllable. When a vowel follows, it fills the empty 'ㅇ' slot." },
     change: { title: 'Change', subtitle: 'Two sounds meet and the sound changes.' },
-    'h-weaken': { title: 'Change', subtitle: 'Two sounds meet and the sound changes.' },
+    'h-weaken': { title: 'Carry', subtitle: 'The batchim carries over — but ㅎ alone disappears before a vowel.' },
     reading: { title: 'Reading', subtitle: 'Decided on its own, no neighbor needed' },
     'sound-contrast': { title: 'Sound contrast', subtitle: 'Tell close sounds apart' },
   },
@@ -33,8 +33,8 @@ const PHENO: Record<'ko' | 'en', Record<Phenomenon, Label>> = {
 
 // change 세부(선택) — 화면엔 "바뀜 · 부드러워짐" 처럼 붙인다.
 const CHANGE_SUB: Record<'ko' | 'en', Record<ChangeType, string>> = {
-  ko: { soften: '부드러워짐', flow: '흐름', 'front-shift': '앞으로 옮김', breath: '거세짐' },
-  en: { soften: 'Soften', flow: 'Flow', 'front-shift': 'Front shift', breath: 'Breath' },
+  ko: { soften: '부드러워짐', flow: '흐름', 'flow-reverse': '콧소리로', 'front-shift': '앞으로 옮김', breath: '거세짐' },
+  en: { soften: 'Soften', flow: 'Flow', 'flow-reverse': 'Nasal', 'front-shift': 'Front shift', breath: 'Breath' },
 }
 
 function base(lang: Lang): 'ko' | 'en' {

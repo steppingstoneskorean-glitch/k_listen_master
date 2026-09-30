@@ -11,26 +11,29 @@
 
 /**
  * 듣기 현상 — 학습자용 1차 축 (층③ 연결 규칙 + 지각축).
- *   pause          책 PAUSE  · 경음화/미파 (제23·24·25·27항)
- *   carry          책 CARRY  · 연음 (제13·14·15항)
+ *   pause          책 PAUSE  · 경음화 6조항 (제23·24·25·26·27·28항). p.13 세 갈래:
+ *                    한 낱말 / 문법과 만남(제24·27) / 두 낱말이 붙음=사잇소리(제28, 발가락[발까락])
+ *   carry          책 CARRY  · 연음 (제13·14항 / 제15항=대표음 경유). 연음↔대표음후연음 통합 금지(꽃이≠꽃위, p.19) — rule r14/r15로 구분
  *   change         책 CHANGE · 동화·축약 (아래 ChangeType)
- *   h-weaken       ㅎ약화(탈락) 제12-4 · 좋아요[조아요] — '탈락'이라 change와 메커니즘이 달라 독립 현상
+ *   h-weaken       ㅎ탈락 제12항 · 좋아요[조아요] — 구조상 **Carry의 예외**(다른 받침은 넘어가는데 ㅎ만 사라짐). 표시=넘김(Carry)
  *   reading        읽기층(층②) · 옆 소리 없이 혼자 정해짐 (7종성/대표음·겹받침). 꽃[꼳]·값[갑]
  *   sound-contrast 지각축   · 최소대립쌍 (불/뿔/풀) — 기존 minimalPairs 시스템과 연동
  *
- * 화면 라벨(내부→표시): pause 막힘 · carry 넘김 · change/h-weaken 바뀜 · reading 읽기 (labels.ts).
+ * 화면 라벨(내부→표시): pause 막힘 · carry 넘김 · change 바뀜 · h-weaken 넘김(Carry 예외) · reading 읽기 (labels.ts).
  * casual 층(reduction·omission)은 Phase 1 범위 밖.
  */
 export type Phenomenon = 'pause' | 'carry' | 'change' | 'h-weaken' | 'reading' | 'sound-contrast'
 
 /**
- * CHANGE 하위 유형 — 책의 4 changes(동화·축약). ㅎ약화(탈락)는 별도 phenomenon 으로 분리됨.
- *   soften      비음화(장애음)  제18항   국물[궁물]·합니다[함니다]
- *   flow        유음화/ㄹ비음화 제20/19  신라[실라](ㄹ이김)·정리[정니](ㄹ물러섬)
- *   front-shift 구개음화        제17항   같이[가치]·굳이[구지]
- *   breath      격음화(자음축약) 제12항   좋다[조타]·축하[추카]
+ * CHANGE 하위 유형 — 책의 changes(동화·축약). ㅎ약화(탈락)는 별도 phenomenon(h-weaken=Carry 예외).
+ *   soften       비음화(장애음)  제18항   국물[궁물]·먹는[멍는]
+ *   flow         유음화          제20항   신라[실라]·난로[날로]·설날[설랄] (ㄹ이 이김)
+ *   flow-reverse ㄹ비음화        제19항   정리[정니]·종로[종노]·심리[심니] (ㄹ이 물러섬)
+ *                              ⚠ flow와 통합 금지 — 신라≠정리가 같은 값이 되면 안 됨(p.24 전체가 이 구별).
+ *   front-shift  구개음화        제17항   같이[가치]·굳이[구지]
+ *   breath       격음화(자음축약) 제12항   좋다[조타]·축하[추카]
  */
-export type ChangeType = 'soften' | 'flow' | 'front-shift' | 'breath'
+export type ChangeType = 'soften' | 'flow' | 'flow-reverse' | 'front-shift' | 'breath'
 
 /**
  * 규칙 식별용 **내부 불투명 코드** (rules.json 의 키). 예: 'r24'.

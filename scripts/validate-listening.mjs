@@ -23,7 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
 const PHENOMENA = ['pause', 'carry', 'change', 'h-weaken', 'reading', 'sound-contrast']
-const CHANGE_TYPES = ['soften', 'flow', 'front-shift', 'breath']
+const CHANGE_TYPES = ['soften', 'flow', 'flow-reverse', 'front-shift', 'breath']
 const LEVELS = ['intermediate', 'advanced']
 const SPEEDS = ['slow', 'normal', 'fast']
 const RULE_CODE_RE = /^r[0-9a-z_]+$/       // r24, r12h

@@ -206,5 +206,13 @@
   "note.contrast.joayo_jota": {
     "ko": "좋아요는 ㅎ 뒤가 모음이라 사라져 [조아요], 좋다는 ㅎ 뒤가 자음이라 거세져 [조타]예요.",
     "en": "In 좋아요 the ㅎ is before a vowel so it disappears → [조아요]; in 좋다 it's next to a consonant so it comes out harder → [조타]."
+  },
+  "note.item.balgarak": {
+    "ko": "'발'과 '가락' 두 낱말이 붙으면서, 공기가 잠깐 갇혔다 터져 나와 뒤 소리가 세게 나요. [발까락]",
+    "en": "As the two words 발 and 가락 join, the air is briefly trapped and bursts out, so the next sound comes out strong. → [발까락]"
+  },
+  "note.err.balgarak_none": {
+    "ko": "글자대로 [발가락]으로 듣기 쉽지만, 두 낱말이 붙어 뒤 소리가 세게 나 [발까락]이에요.",
+    "en": "Easy to hear [발가락] as spelled, but where the two words join the next sound comes out strong → [발까락]."
   }
 }
