@@ -14,10 +14,37 @@ type TKey = keyof typeof TRANSLATIONS
 const TRANSLATIONS = {
   // ── Start page ──
   'start.tagline': {
-    en: 'Stop feeling nervous. Speak like a local.',
-    ko: '긴장 말고, 현지인처럼 말하세요.',
-    es: 'Deja de sentirte nervioso. Habla como un local.',
-    ja: '緊張せず、ネイティブのように話しましょう。',
+    en: 'You studied Korean — so why can’t you catch real Korean?',
+    ko: '한국어를 공부했는데, 왜 실제 한국어는 안 들릴까요?',
+    es: 'Estudiaste coreano… ¿por qué no entiendes el coreano real?',
+    ja: '韓国語を勉強したのに、なぜ本物の韓国語は聞き取れない？',
+  },
+  'start.subtagline': {
+    en: 'Go beyond textbook Korean — start hearing the real thing.',
+    ko: '배운 한국어를 넘어, 실제 한국어를 들어보세요.',
+    es: 'Ve más allá del coreano de libro y empieza a oír el real.',
+    ja: '教科書の韓国語を超えて、本物の韓国語を聞いてみましょう。',
+  },
+  'start.benefit1.title': { en: 'Listen with K-content', ko: 'K-콘텐츠로 리스닝', es: 'Escucha con contenido K', ja: 'K-コンテンツでリスニング' },
+  'start.benefit1.desc': {
+    en: 'Train your ears with videos you love.',
+    ko: '좋아하는 영상으로 귀를 틔워요.',
+    es: 'Entrena el oído con vídeos que te gustan.',
+    ja: '好きな動画で耳を慣らそう。',
+  },
+  'start.benefit2.title': { en: 'Decode the sounds you miss', ko: '안 들리던 소리 디코딩', es: 'Decodifica los sonidos que no oyes', ja: '聞き取れなかった音をデコード' },
+  'start.benefit2.desc': {
+    en: 'Learn why real Korean shifts sound (신라 → [실라]).',
+    ko: '연음·음운변화를 “왜 그렇게 들리는지”까지 (신라→[실라]).',
+    es: 'Descubre por qué el coreano real cambia de sonido (신라 → [실라]).',
+    ja: '音の変化が「なぜそう聞こえるか」まで (신라→[실라])。',
+  },
+  'start.benefit3.title': { en: 'Review & track your growth', ko: '매일 복습·성장 기록', es: 'Repasa y mide tu progreso', ja: '毎日の復習と成長記録' },
+  'start.benefit3.desc': {
+    en: 'Missed sounds come back as spaced review.',
+    ko: '틀린 소리는 복습(SRS)으로 다시.',
+    es: 'Los sonidos fallados vuelven como repaso.',
+    ja: '間違えた音は復習で繰り返し。',
   },
   'start.login': { en: 'Log In', ko: '로그인', es: 'Iniciar Sesión', ja: 'ログイン' },
   'start.guest': { en: 'Play as Guest', ko: '게스트로 시작', es: 'Jugar como Invitado', ja: 'ゲストとしてプレイ' },

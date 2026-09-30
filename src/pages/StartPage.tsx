@@ -85,9 +85,19 @@ export default function StartPage() {
             {' '}
             <span className="text-white">Master</span>
           </h1>
-          <p className="text-gray-500 text-sm text-center leading-relaxed max-w-[260px]">
+          <p className="text-gray-100 text-base font-bold text-center leading-snug max-w-[300px]">
             {t('start.tagline')}
           </p>
+          <p className="text-gray-500 text-sm text-center leading-relaxed max-w-[280px]">
+            {t('start.subtagline')}
+          </p>
+        </div>
+
+        {/* 3혜택 — 로그인 전에 "무엇을 얻는지" 스캔 가능하게 */}
+        <div className="w-full flex flex-col gap-2.5">
+          <Benefit emoji="🎧" title={t('start.benefit1.title')} desc={t('start.benefit1.desc')} />
+          <Benefit emoji="👂" title={t('start.benefit2.title')} desc={t('start.benefit2.desc')} />
+          <Benefit emoji="📈" title={t('start.benefit3.title')} desc={t('start.benefit3.desc')} />
         </div>
 
         <div className="w-full flex flex-col gap-3">
@@ -127,6 +137,18 @@ export default function StartPage() {
             {t('cookie.privacy')}
           </Link>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function Benefit({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
+  return (
+    <div className="flex items-start gap-3 rounded-2xl border border-gray-800 bg-gray-900/50 px-4 py-3">
+      <span className="text-xl leading-none mt-0.5" aria-hidden="true">{emoji}</span>
+      <div className="flex flex-col">
+        <span className="text-sm font-bold text-gray-100">{title}</span>
+        <span className="text-xs text-gray-500 leading-snug">{desc}</span>
       </div>
     </div>
   )
