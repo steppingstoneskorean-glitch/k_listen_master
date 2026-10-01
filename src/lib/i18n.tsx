@@ -21,7 +21,7 @@ const TRANSLATIONS = {
   },
   'start.subtagline': {
     en: 'Go beyond textbook Korean — start hearing the real thing.',
-    ko: '교과서 한국어가 아닌,\n실제 한국어를 들으세요.',
+    ko: '교과서 한국어가 아닌, 실제 한국어를 들으세요.',
     es: 'Ve más allá del coreano de libro y empieza a oír el real.',
     ja: '教科書の韓国語を超えて、本物の韓国語を聞いてみましょう。',
   },

@@ -86,7 +86,7 @@ export default function StartPage() {
           <p className="text-gray-100 text-base font-bold text-center leading-snug break-keep whitespace-pre-line max-w-[300px]">
             {t('start.tagline')}
           </p>
-          <p className="text-gray-500 text-sm text-center leading-relaxed break-keep whitespace-pre-line max-w-[280px]">
+          <p className="text-gray-500 text-xs text-center leading-relaxed break-keep">
             {t('start.subtagline')}
           </p>
         </div>
