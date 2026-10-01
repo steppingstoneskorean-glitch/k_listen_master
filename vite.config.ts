@@ -14,7 +14,7 @@ export default defineConfig({
       manifest: {
         name: 'K-Listen',
         short_name: 'K-Listen',
-        description: 'K-Listen by Step Korean — Stop feeling nervous. Speak like a local.',
+        description: 'K-Listen by Step Korean — Hear real Korean, not textbook Korean.',
         theme_color: '#10b981',
         background_color: '#e9fbf2',
         display: 'standalone',
