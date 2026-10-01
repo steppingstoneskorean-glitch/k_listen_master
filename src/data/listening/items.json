@@ -491,23 +491,5 @@
         "editorNote": "축하(id 10)와 같은 격음화 — ㅂ+ㅎ → ㅍ. 전이 훈련용."
       }
     ]
-  },
-  {
-    "id": 28,
-    "level": "advanced",
-    "audioUrl": "",
-    "speed": "normal",
-    "transcript": "발가락",
-    "chunks": ["발", "가락"],
-    "annotations": [
-      {
-        "phenomenon": "pause",
-        "rule": "r28",
-        "span": [0, 3],
-        "surface": "발까락",
-        "note": "note.item.balgarak",
-        "editorNote": "제28항 사잇소리 — 두 낱말(발+가락)이 붙으며 경음화(p.13 셋째 갈래)."
-      }
-    ]
   }
 ]
