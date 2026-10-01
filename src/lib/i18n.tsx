@@ -21,7 +21,7 @@ const TRANSLATIONS = {
   },
   'start.subtagline': {
     en: 'Go beyond textbook Korean — start hearing the real thing.',
-    ko: '배운 한국어를 넘어, 실제 한국어를 들어보세요.',
+    ko: '배운 한국어를 넘어,\n실제 한국어를 들어보세요.',
     es: 'Ve más allá del coreano de libro y empieza a oír el real.',
     ja: '教科書の韓国語を超えて、本物の韓国語を聞いてみましょう。',
   },
@@ -35,7 +35,7 @@ const TRANSLATIONS = {
   'start.benefit2.title': { en: 'Decode the sounds you miss', ko: '안 들리던 소리 디코딩', es: 'Decodifica los sonidos que no oyes', ja: '聞き取れなかった音をデコード' },
   'start.benefit2.desc': {
     en: 'Learn why real Korean shifts sound (신라 → [실라]).',
-    ko: '연음·음운변화를 “왜 그렇게 들리는지”까지 (신라→[실라]).',
+    ko: "연음·음운변화를 '왜 그렇게 들리는지'까지 (신라→[실라]).",
     es: 'Descubre por qué el coreano real cambia de sonido (신라 → [실라]).',
     ja: '音の変化が「なぜそう聞こえるか」まで (신라→[실라])。',
   },

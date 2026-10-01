@@ -85,10 +85,10 @@ export default function StartPage() {
             {' '}
             <span className="text-white">Master</span>
           </h1>
-          <p className="text-gray-100 text-base font-bold text-center leading-snug max-w-[300px]">
+          <p className="text-gray-100 text-base font-bold text-center leading-snug break-keep max-w-[300px]">
             {t('start.tagline')}
           </p>
-          <p className="text-gray-500 text-sm text-center leading-relaxed max-w-[280px]">
+          <p className="text-gray-500 text-sm text-center leading-relaxed break-keep whitespace-pre-line max-w-[280px]">
             {t('start.subtagline')}
           </p>
         </div>
@@ -147,8 +147,8 @@ function Benefit({ emoji, title, desc }: { emoji: string; title: string; desc: s
     <div className="flex items-start gap-3 rounded-2xl border border-gray-800 bg-gray-900/50 px-4 py-3">
       <span className="text-xl leading-none mt-0.5" aria-hidden="true">{emoji}</span>
       <div className="flex flex-col">
-        <span className="text-sm font-bold text-gray-100">{title}</span>
-        <span className="text-xs text-gray-500 leading-snug">{desc}</span>
+        <span className="text-sm font-bold text-gray-100 break-keep">{title}</span>
+        <span className="text-xs text-gray-500 leading-snug break-keep">{desc}</span>
       </div>
     </div>
   )
