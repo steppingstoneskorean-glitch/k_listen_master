@@ -392,10 +392,10 @@
         "changeType": "soften",
         "direction": "regressive",
         "rule": "r18",
-        "span": [0, 2],
-        "surface": "임니",
+        "span": [0, 3],
+        "surface": "임니다",
         "note": "note.item.imnida",
-        "editorNote": "ㅂ+ㄴ → ㅁ 비음화(역행). span 은 '입니'(받침 ㅂ이 바뀌는 구간)."
+        "editorNote": "ㅂ+ㄴ → ㅁ 비음화(역행). span=전체 단어, surface=[임니다]."
       }
     ]
   },
