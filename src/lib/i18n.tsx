@@ -34,10 +34,10 @@ const TRANSLATIONS = {
   },
   'start.benefit2.title': { en: 'Decode the sounds you miss', ko: '안 들리던 소리 디코딩', es: 'Decodifica los sonidos que no oyes', ja: '聞き取れなかった音をデコード' },
   'start.benefit2.desc': {
-    en: "Hear Korean that sounds different from how it's spelled (신라 → [실라]).",
+    en: "Hear Korean words pronounced differently from how they're spelled (신라 → [실라]).",
     ko: '글자와 다르게 발음되는 한국어를 들어보세요 (신라→[실라]).',
-    es: 'Escucha el coreano que suena distinto de como se escribe (신라 → [실라]).',
-    ja: '文字と違って発音される韓国語を聞いてみよう (신라→[실라])。',
+    es: 'Escucha palabras coreanas que se pronuncian distinto de cómo se escriben (신라 → [실라]).',
+    ja: '書かれている通りには発音されない韓国語を聞いてみよう (신라→[실라])。',
   },
   'start.benefit3.title': { en: 'Review & track your growth', ko: '매일 복습·성장 기록', es: 'Repasa y mide tu progreso', ja: '毎日の復習と成長記録' },
   'start.benefit3.desc': {
