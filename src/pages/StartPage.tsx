@@ -141,12 +141,19 @@ export default function StartPage() {
 }
 
 function Benefit({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
+  // 설명 끝의 "(…)" 예시는 한 덩어리로 유지 — 2줄이 되면 괄호 전체가 다음 줄로 함께 내려간다.
+  const m = desc.match(/^(.*?)\s*(\([^)]*\)\s*[.。]?)\s*$/)
+  const main = m ? m[1] : desc
+  const paren = m ? m[2] : null
   return (
     <div className="flex items-start gap-3 rounded-2xl border border-gray-800 bg-gray-900/50 px-4 py-3">
       <span className="text-xl leading-none mt-0.5" aria-hidden="true">{emoji}</span>
       <div className="flex flex-col">
         <span className="text-sm font-bold text-gray-100 break-keep">{title}</span>
-        <span className="text-xs text-gray-500 leading-snug break-keep">{desc}</span>
+        <span className="text-xs text-gray-500 leading-snug break-keep">
+          {main}
+          {paren && <> <span className="whitespace-nowrap">{paren}</span></>}
+        </span>
       </div>
     </div>
   )

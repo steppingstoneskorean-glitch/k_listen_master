@@ -22,7 +22,7 @@ const TRANSLATIONS = {
   'start.subtagline': {
     en: 'Hear real Korean, not textbook Korean.',
     ko: '교과서 한국어가 아닌, 실제 한국어를 들으세요.',
-    es: 'Ve más allá del coreano de libro y empieza a oír el real.',
+    es: 'Oye el coreano real, no el de los libros.',
     ja: '教科書じゃない、本物の韓国語を。',
   },
   'start.benefit1.title': { en: 'Listen with K-content', ko: 'K-콘텐츠로 리스닝', es: 'Escucha con contenido K', ja: 'K-コンテンツでリスニング' },
@@ -34,10 +34,10 @@ const TRANSLATIONS = {
   },
   'start.benefit2.title': { en: 'Decode the sounds you miss', ko: '안 들리던 소리 디코딩', es: 'Decodifica los sonidos que no oyes', ja: '聞き取れなかった音をデコード' },
   'start.benefit2.desc': {
-    en: 'Learn why real Korean shifts sound (신라 → [실라]).',
+    en: "Hear Korean that sounds different from how it's spelled (신라 → [실라]).",
     ko: '글자와 다르게 발음되는 한국어를 들어보세요 (신라→[실라]).',
-    es: 'Descubre por qué el coreano real cambia de sonido (신라 → [실라]).',
-    ja: '音の変化が「なぜそう聞こえるか」まで (신라→[실라])。',
+    es: 'Escucha el coreano que suena distinto de como se escribe (신라 → [실라]).',
+    ja: '文字と違って発音される韓国語を聞いてみよう (신라→[실라])。',
   },
   'start.benefit3.title': { en: 'Review & track your growth', ko: '매일 복습·성장 기록', es: 'Repasa y mide tu progreso', ja: '毎日の復習と成長記録' },
   'start.benefit3.desc': {
