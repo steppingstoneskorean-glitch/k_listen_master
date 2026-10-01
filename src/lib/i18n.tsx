@@ -56,6 +56,37 @@ const TRANSLATIONS = {
   'bg.gray': { en: 'Gray', ko: '그레이', es: 'Gris', ja: 'グレー' },
   'bg.dark': { en: 'Dark', ko: '다크', es: 'Oscuro', ja: 'ダーク' },
 
+  // ── Listening hub (듣기 탭) ──
+  'nav.listen': { en: 'Listen', ko: '듣기', es: 'Escuchar', ja: 'リスニング' },
+  'listen.hubTitle': { en: 'Listening training', ko: '듣기 훈련', es: 'Entrenamiento auditivo', ja: 'リスニング練習' },
+  'listen.hubSubtitle': {
+    en: 'Train the real Korean sounds that differ from the spelling.',
+    ko: '글자와 다르게 들리는 진짜 한국어 소리를 훈련하세요.',
+    es: 'Entrena los sonidos reales del coreano que se alejan de la escritura.',
+    ja: '表記と違って聞こえる本物の韓国語の音を練習しましょう。',
+  },
+  'listen.notice.title': { en: 'Hear the sound', ko: '소리 듣기', es: 'Escucha el sonido', ja: '音を聞く' },
+  'listen.notice.desc': {
+    en: 'Spelling vs real sound — notice the true pronunciation.',
+    ko: '글자 vs 실제 소리 — 진짜 발음을 알아차리기.',
+    es: 'Escritura vs sonido real: nota la pronunciación verdadera.',
+    ja: '表記と実際の音 — 本当の発音に気づく。',
+  },
+  'listen.decode.title': { en: 'Decode dictation', ko: '받아쓰기 디코드', es: 'Dictado decodificado', ja: 'ディクテーション' },
+  'listen.decode.desc': {
+    en: 'Fill the blank, then see why you missed it.',
+    ko: '듣고 빈칸 채우기 + 왜 안 들렸는지.',
+    es: 'Completa el hueco y descubre por qué fallaste.',
+    ja: '空欄を埋めて、なぜ聞き取れなかったかを確認。',
+  },
+  'listen.contrast.title': { en: 'Tell sounds apart', ko: '소리 구별', es: 'Distingue sonidos', ja: '音の聞き分け' },
+  'listen.contrast.desc': {
+    en: 'Discriminate two similar sounds.',
+    ko: '비슷한 두 소리를 가려듣기.',
+    es: 'Distingue dos sonidos parecidos.',
+    ja: '似た二つの音を聞き分ける。',
+  },
+
   'start.login': { en: 'Log In', ko: '로그인', es: 'Iniciar Sesión', ja: 'ログイン' },
   'start.guest': { en: 'Play as Guest', ko: '게스트로 시작', es: 'Jugar como Invitado', ja: 'ゲストとしてプレイ' },
 

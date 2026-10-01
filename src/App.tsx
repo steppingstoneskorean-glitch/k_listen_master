@@ -28,6 +28,7 @@ import QuizStudioPage from '@/pages/QuizStudioPage'
 import QuizBuilderPage from '@/pages/QuizBuilderPage'
 import ProfilePage from '@/pages/ProfilePage'
 import DecodeLabPage from '@/pages/DecodeLabPage'
+import ListenHubPage from '@/pages/ListenHubPage'
 import ContrastLabPage from '@/pages/ContrastLabPage'
 import SoundNoticePage from '@/pages/SoundNoticePage'
 
@@ -76,6 +77,7 @@ export default function App() {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/home" element={<Navigate to="/" replace />} />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/listen" element={<ListenHubPage />} />
                   <Route path="/review" element={<ReviewPage />} />
                   <Route path="/errors" element={<Navigate to="/review" replace />} />
                   <Route path="/materials" element={<MaterialsPage />} />
