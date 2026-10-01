@@ -20,7 +20,7 @@
     "en": "After ㅇ, the ㄹ turns into ㄴ — here the ㄹ gives way. So 정리 sounds like [정니]."
   },
   "note.item.nallo": {
-    "ko": "받침 ㄴ이 ㄹ을 만나 ㄹ로 바뀌어요 — 신라와 똑같이 ㄹ이 이겨요. [날로]",
+    "ko": "받침 ㄴ이 ㄹ을 만나 ㄹ로 바뀌어요 — '신라'와 똑같이 ㄹ이 이겨요. [날로]",
     "en": "ㄴ before ㄹ becomes ㄹ — the ㄹ wins, just like 신라. → [날로]"
   },
   "note.item.seollal": {
@@ -28,11 +28,11 @@
     "en": "Here the ㄹ comes first; the following ㄴ also becomes ㄹ — opposite order, but the ㄹ still wins. → [설랄]"
   },
   "note.item.jongno": {
-    "ko": "ㅇ 뒤의 ㄹ은 ㄴ으로 바뀌어요 — 정리와 똑같이 ㄹ이 물러나요. [종노]",
+    "ko": "ㅇ 뒤의 ㄹ은 ㄴ으로 바뀌어요 — '정리'와 똑같이 ㄹ이 물러나요. [종노]",
     "en": "After ㅇ, ㄹ becomes ㄴ — the ㄹ gives way, just like 정리. → [종노]"
   },
   "note.item.simni": {
-    "ko": "ㅁ 뒤의 ㄹ도 ㄴ으로 바뀌어요 — 방아쇠만 다르고 결과는 정리와 같아요. [심니]",
+    "ko": "ㅁ 뒤의 ㄹ도 ㄴ으로 바뀌어요 — 방아쇠만 다르고 결과는 '정리'와 같아요. [심니]",
     "en": "After ㅁ, ㄹ also becomes ㄴ — a different trigger, same result as 정리. → [심니]"
   },
   "q.flow.direction": {
@@ -40,11 +40,11 @@
     "en": "Is there an ㄴ next to the ㄹ, or an ㅁ/ㅇ? (With ㄴ the ㄹ wins; with ㅁ/ㅇ the ㄹ gives way.)"
   },
   "note.contrast.silla_jeongni": {
-    "ko": "신라는 ㄴ+ㄹ이라 ㄹ이 이겨 [실라], 정리는 ㅇ+ㄹ이라 ㄹ이 물러나 [정니]예요.",
+    "ko": "'신라'는 ㄴ+ㄹ이라 ㄹ이 이겨 [실라], '정리'는 ㅇ+ㄹ이라 ㄹ이 물러나 [정니]예요.",
     "en": "신라 is ㄴ+ㄹ, so the ㄹ wins → [실라]; 정리 is ㅇ+ㄹ, so the ㄹ gives way → [정니]."
   },
   "note.contrast.seollal_jongno": {
-    "ko": "설날도 ㄹ이 이겨 [설랄], 종로는 ㄹ이 물러나 [종노] — 같은 판단이 새 단어에도 통해요.",
+    "ko": "'설날'도 ㄹ이 이겨 [설랄], '종로'는 ㄹ이 물러나 [종노] — 같은 판단이 새 단어에도 통해요.",
     "en": "설날 also has the ㄹ winning → [설랄], while 종로 has it giving way → [종노]. The same judgment transfers to new words."
   },
   "note.item.gamda": {
@@ -56,47 +56,47 @@
     "en": "After a ㄱ/ㄷ/ㅂ batchim the air is briefly trapped and bursts out, so the next sound comes out strong. → [학꾜]"
   },
   "note.item.gukbap": {
-    "ko": "받침 ㄱ 뒤라 공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 세게 나요 — 학교와 같은 경우. [국빱]",
+    "ko": "받침 ㄱ 뒤라 공기가 잠깐 갇혔다 터져 나오면서 뒤 소리가 세게 나요 — '학교'와 같은 경우. [국빱]",
     "en": "After the ㄱ batchim the air is briefly trapped and bursts out, so the next sound comes out strong, just like 학교. → [국빱]"
   },
   "note.item.kkochi": {
-    "ko": "뒤의 '이'가 의미가 있는 단어가 아니라, 앞말에 붙는 말이라 받침 ㅊ이 그대로 다음 소리로 이어져요. [꼬치]",
-    "en": "'이' isn't a word on its own — it attaches to the word before it, so the ㅊ batchim carries straight into the next sound. → [꼬치]"
+    "ko": "뒤의 '이'는 앞말에 붙어 쓰는 말이라 받침 ㅊ이 그대로 다음 소리로 이어져요. [꼬치]",
+    "en": "'이' is a word that attaches to the word before it, so the ㅊ batchim carries straight into the next sound. → [꼬치]"
   },
   "note.item.kkoch_wi": {
-    "ko": "뒤의 '위'는 혼자서도 쓸 수 있는, 의미가 있는 말이라 받침이 먼저 [ㄷ] 소리로 바뀐 뒤 다음 소리로 이어져요. [꼬뒤]",
-    "en": "'위' is a word that can stand on its own, so the batchim first shifts to a [ㄷ] sound, then carries into the next sound. → [꼬뒤]"
+    "ko": "뒤의 '위'는 그 자체로 의미가 있는 말이라 받침이 먼저 [ㄷ] 소리로 바뀐 뒤 다음 소리로 이어져요. [꼬뒤]",
+    "en": "'위' is a word with its own meaning, so the batchim first shifts to a [ㄷ] sound, then carries into the next sound. → [꼬뒤]"
   },
   "note.item.oseul": {
-    "ko": "뒤의 '을'은 혼자 쓸 수 없는, 앞말에 붙는 말이라 받침 ㅅ이 그대로 다음 소리로 이어져요 — 꽃이와 같아요. [오슬]",
-    "en": "'을' attaches to the word before it, so the ㅅ batchim carries straight over, like 꽃이. → [오슬]"
+    "ko": "뒤의 '을'은 앞말에 붙어 쓰는 말이라 받침 ㅅ이 그대로 다음 소리로 이어져요. [오슬]",
+    "en": "'을' is a word that attaches to the word before it, so the ㅅ batchim carries straight into the next sound. → [오슬]"
   },
   "note.item.osan": {
-    "ko": "뒤의 '안'은 혼자서도 쓸 수 있는, 의미가 있는 말이라 받침이 먼저 [ㄷ] 소리로 바뀐 뒤 이어져요 — 꽃 위와 같아요. [오단]",
-    "en": "'안' is a word that can stand on its own, so the batchim first shifts to a [ㄷ] sound, then carries over, like 꽃 위. → [오단]"
+    "ko": "뒤의 '안'은 그 자체로 의미가 있는 말이라 받침이 먼저 [ㄷ] 소리로 바뀐 뒤 다음 소리로 이어져요. [오단]",
+    "en": "'안' is a word with its own meaning, so the batchim first shifts to a [ㄷ] sound, then carries into the next sound. → [오단]"
   },
   "q.carry.target": {
-    "ko": "뒤에 오는 말이 혼자서도 쓸 수 있는, 의미가 있는 말인가요, 아니면 앞말에 붙여 쓰는 말인가요? (혼자서도 쓸 수 있는 말이면 받침이 먼저 [ㄷ] 소리로 바뀐 뒤 이어져요.)",
-    "en": "Does what follows stand on its own as a meaningful word, or attach to the word before it? (If it can stand on its own, the batchim first shifts to a [ㄷ] sound, then carries over.)"
+    "ko": "뒤에 오는 말이 그 자체로 의미가 있나요, 아니면 앞말에 붙어 쓰이나요?",
+    "en": "Does the word that follows have its own meaning, or does it attach to the word before it?"
   },
   "note.contrast.gamda_gamgi": {
     "ko": "감다는 동작 말이라 [감따]로 세지지만, 감기는 명사라 그대로 [감기]예요.",
     "en": "감다 is an action word so its sound comes out strong → [감따], but 감기 is a noun and stays [감기]."
   },
   "note.contrast.kkochi_kkochwi": {
-    "ko": "꽃이는 뒤가 앞말에 붙는 말이라 그대로 넘어가 [꼬치], 꽃 위는 혼자 쓸 수 있는 말이라 받침이 [ㄷ] 소리로 바뀐 뒤 이어져 [꼬뒤]예요.",
-    "en": "꽃이 carries straight because what follows attaches to the word before it → [꼬치]; 꽃 위's batchim first shifts to a [ㄷ] sound because 위 can stand on its own → [꼬뒤]."
+    "ko": "'꽃이'는 뒤가 앞말에 붙어 쓰는 말이라 그대로 넘어가 [꼬치], '꽃 위'는 그 자체로 의미가 있는 말이라 받침이 [ㄷ] 소리로 바뀐 뒤 이어져 [꼬뒤]예요.",
+    "en": "꽃이 carries straight because what follows attaches to the word before it → [꼬치]; 꽃 위's batchim first shifts to a [ㄷ] sound because 위 has its own meaning → [꼬뒤]."
   },
   "note.contrast.oseul_osan": {
-    "ko": "옷을도 앞말에 붙는 말 앞이라 [오슬], 옷 안은 혼자 쓸 수 있는 말 앞이라 [오단] — 같은 판단이 새 단어에도 통해요.",
-    "en": "옷을 is before a word that attaches to it, so [오슬]; 옷 안 is before a word that stands on its own, so [오단]. The same judgment transfers to new words."
+    "ko": "'옷을'도 앞말에 붙어 쓰는 말 앞이라 [오슬], '옷 안'은 그 자체로 의미가 있는 말 앞이라 [오단] — 같은 판단이 새 단어에도 통해요.",
+    "en": "옷을 is before a word that attaches to it, so [오슬]; 옷 안 is before a word with its own meaning, so [오단]. The same judgment transfers to new words."
   },
   "note.item.gukmul": {
     "ko": "받침 ㄱ이 뒤의 콧소리 ㅁ을 만나 콧소리 ㅇ으로 바뀌어요. [궁물]",
     "en": "The ㄱ batchim meets the nasal ㅁ and turns into the nasal ㅇ. → [궁물]"
   },
   "note.item.meokneun": {
-    "ko": "받침 ㄱ이 뒤의 콧소리 ㄴ을 만나 콧소리 ㅇ으로 바뀌어요 — 국물과 같아요. [멍는]",
+    "ko": "받침 ㄱ이 뒤의 콧소리 ㄴ을 만나 콧소리 ㅇ으로 바뀌어요 — '국물'과 같아요. [멍는]",
     "en": "The ㄱ batchim meets the nasal ㄴ and becomes the nasal ㅇ, like 국물. → [멍는]"
   },
   "note.item.imnida": {
@@ -112,7 +112,7 @@
     "en": "The ㅌ batchim meets '이' and shifts forward to ㅊ. → [가치]"
   },
   "note.item.guji": {
-    "ko": "받침 ㄷ이 '이'를 만나 앞쪽 소리 ㅈ으로 바뀌어요 — 같이와 같아요. [구지]",
+    "ko": "받침 ㄷ이 '이'를 만나 앞쪽 소리 ㅈ으로 바뀌어요 — '같이'와 같아요. [구지]",
     "en": "The ㄷ batchim meets '이' and shifts forward to ㅈ, like 같이. → [구지]"
   },
   "note.item.gata": {
@@ -132,7 +132,7 @@
     "en": "ㅎ meets the following consonant ㄷ and comes out with a puff of breath, harder. → [조타]"
   },
   "note.item.iphak": {
-    "ko": "받침 ㅂ이 ㅎ과 만나 숨이 섞이며 거세게 나요 — 축하와 같아요. [이팍]",
+    "ko": "받침 ㅂ이 ㅎ과 만나 숨이 섞이며 거세게 나요 — '축하'와 같아요. [이팍]",
     "en": "The ㅂ batchim meets ㅎ and comes out with a puff of breath, harder, like 축하. → [이팍]"
   },
   "q.biumhwa.trigger": {
@@ -148,11 +148,11 @@
     "en": "Does the ㅎ sit next to a vowel or a consonant? (Before a vowel it disappears; next to a consonant it blends into a harder sound.)"
   },
   "note.contrast.gukmul_guki": {
-    "ko": "국물은 뒤가 콧소리라 받침이 바뀌어 [궁물], 국이는 뒤가 모음이라 그대로 넘어가 [구기]예요.",
+    "ko": "'국물'은 뒤가 콧소리라 받침이 바뀌어 [궁물], '국이'는 뒤가 모음이라 그대로 넘어가 [구기]예요.",
     "en": "국물 has a nasal after it, so the batchim changes → [궁물]; 국이 has a vowel, so it just carries → [구기]."
   },
   "note.contrast.gachi_gata": {
-    "ko": "같이는 '이' 앞이라 [가치]로 바뀌지만, 같아는 '아' 앞이라 그대로 [가타]로 넘어가요.",
+    "ko": "'같이'는 '이' 앞이라 [가치]로 바뀌지만, '같아'는 '아' 앞이라 그대로 [가타]로 넘어가요.",
     "en": "같이 shifts to [가치] before '이'; 같아 just carries to [가타] before '아'."
   },
   "note.contrast.joayo_jota": {
@@ -160,15 +160,15 @@
     "en": "In 좋아요 the ㅎ is before a vowel so it disappears → [조아요]; in 좋다 it's next to a consonant so it comes out harder → [조타]."
   },
   "q.assim.direction": {
-    "ko": "바뀌는 소리가 앞에 있나요, 뒤에 있나요? 뒤 소리 때문에 앞이 바뀌기도 하고(국물→궁물), 앞 소리 때문에 뒤가 바뀌기도 해요(정리→정니).",
+    "ko": "바뀌는 소리가 앞에 있나요, 뒤에 있나요? 뒤 소리 때문에 앞이 바뀌기도 하고('국물'→궁물), 앞 소리 때문에 뒤가 바뀌기도 해요('정리'→정니).",
     "en": "Which sound changes — the front one or the back one? Sometimes the back sound changes the front (국물→궁물); sometimes the front changes the back (정리→정니)."
   },
   "note.contrast.gukmul_jeongni": {
-    "ko": "국물은 뒤 ㅁ이 앞 ㄱ을 바꿔 [궁물](뒤→앞), 정리는 앞 ㅇ이 뒤 ㄹ을 바꿔 [정니](앞→뒤) — 둘 다 콧소리로 바뀌지만 방향이 반대예요.",
+    "ko": "'국물'은 뒤 ㅁ이 앞 ㄱ을 바꿔 [궁물](뒤→앞), '정리'는 앞 ㅇ이 뒤 ㄹ을 바꿔 [정니](앞→뒤) — 둘 다 콧소리로 바뀌지만 방향이 반대예요.",
     "en": "In 국물 the back ㅁ changes the front ㄱ → [궁물] (back→front); in 정리 the front ㅇ changes the back ㄹ → [정니] (front→back). Both go nasal, opposite directions."
   },
   "note.contrast.silla_seollal": {
-    "ko": "신라는 뒤 ㄹ이 앞 ㄴ을 바꿔 [실라](뒤→앞), 설날은 앞 ㄹ이 뒤 ㄴ을 바꿔 [설랄](앞→뒤) — 둘 다 ㄹ로 이어지지만 방향이 반대예요.",
+    "ko": "'신라'는 뒤 ㄹ이 앞 ㄴ을 바꿔 [실라](뒤→앞), '설날'은 앞 ㄹ이 뒤 ㄴ을 바꿔 [설랄](앞→뒤) — 둘 다 ㄹ로 이어지지만 방향이 반대예요.",
     "en": "In 신라 the back ㄹ changes the front ㄴ → [실라] (back→front); in 설날 the front ㄹ changes the back ㄴ → [설랄] (front→back). Both become ㄹㄹ, opposite directions."
   }
 }
