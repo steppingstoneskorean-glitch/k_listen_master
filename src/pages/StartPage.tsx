@@ -85,7 +85,7 @@ export default function StartPage() {
             {' '}
             <span className="text-white">Master</span>
           </h1>
-          <p className="text-gray-100 text-base font-bold text-center leading-snug break-keep max-w-[300px]">
+          <p className="text-gray-100 text-base font-bold text-center leading-snug break-keep whitespace-pre-line max-w-[300px]">
             {t('start.tagline')}
           </p>
           <p className="text-gray-500 text-sm text-center leading-relaxed break-keep whitespace-pre-line max-w-[280px]">
