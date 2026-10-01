@@ -46,6 +46,16 @@ const TRANSLATIONS = {
     es: 'Los sonidos fallados vuelven como repaso.',
     ja: '間違えた音は復習で繰り返し。',
   },
+  // ── Background color / theme (Profile) ──
+  'profile.bgColor': { en: 'Background color', ko: '배경 색상', es: 'Color de fondo', ja: '背景の色' },
+  'bg.default': { en: 'White', ko: '화이트', es: 'Blanco', ja: 'ホワイト' },
+  'bg.cream': { en: 'Cream', ko: '크림', es: 'Crema', ja: 'クリーム' },
+  'bg.mint': { en: 'Mint', ko: '민트', es: 'Menta', ja: 'ミント' },
+  'bg.sky': { en: 'Sky', ko: '하늘', es: 'Cielo', ja: 'スカイ' },
+  'bg.lavender': { en: 'Lavender', ko: '라벤더', es: 'Lavanda', ja: 'ラベンダー' },
+  'bg.gray': { en: 'Gray', ko: '그레이', es: 'Gris', ja: 'グレー' },
+  'bg.dark': { en: 'Dark', ko: '다크', es: 'Oscuro', ja: 'ダーク' },
+
   'start.login': { en: 'Log In', ko: '로그인', es: 'Iniciar Sesión', ja: 'ログイン' },
   'start.guest': { en: 'Play as Guest', ko: '게스트로 시작', es: 'Jugar como Invitado', ja: 'ゲストとしてプレイ' },
 

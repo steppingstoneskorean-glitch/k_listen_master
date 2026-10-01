@@ -8,7 +8,7 @@ import BottomNav from './BottomNav'
 //   · 기존 다크 Footer/긴 상단 nav 는 제거하고 링크는 프로필 탭으로 이관.
 export default function Layout() {
   return (
-    <div className="app-shell flex min-h-screen flex-col bg-white text-slate-900">
+    <div className="app-shell flex min-h-screen flex-col text-slate-900">
       <InstallBanner />
       <Header />
       <main className="flex-1">

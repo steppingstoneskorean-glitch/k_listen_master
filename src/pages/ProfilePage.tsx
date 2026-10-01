@@ -12,6 +12,7 @@ import { useUserProfile, type GoalPreset } from '@/lib/userProfile'
 import ReminderSettings from '@/components/ReminderSettings'
 import NicknameModal from '@/components/NicknameModal'
 import AccountDeleteModal from '@/components/AccountDeleteModal'
+import { BG_THEMES, getBgTheme, setBgTheme, type BgThemeId } from '@/lib/bgTheme'
 
 const PAYHIP_URL = import.meta.env.VITE_PAYHIP_URL ?? 'https://payhip.com/StepKorean'
 const YOUTUBE_URL = 'https://www.youtube.com/@steppingstones.Korean'
@@ -58,6 +59,9 @@ export default function ProfilePage() {
   const { progress } = useGamification()
   const { nickname, saveNickname, goal, saveGoal } = useUserProfile()
   const navigate = useNavigate()
+  const [showBg, setShowBg] = useState(false)
+  const [bgId, setBgId] = useState<BgThemeId>(() => getBgTheme())
+  const tr = t as (k: string) => string // bgTheme 라벨 키(동적) 해석용
 
   const [showReminder, setShowReminder] = useState(false)
   const [showNickname, setShowNickname] = useState(false)
@@ -211,6 +215,27 @@ export default function ProfilePage() {
               right={<span className="max-w-[8rem] truncate text-xs font-bold text-slate-400">{nickname ?? '—'}</span>} />
             <Row icon="🔔" label={t('profile.reminder')} onClick={() => setShowReminder(true)}
               right={<span className={`text-xs font-bold ${progress.reminderEnabled ? 'text-emerald-500' : 'text-slate-300'}`}>{progress.reminderEnabled ? 'ON' : 'OFF'}</span>} />
+            <Row icon="🎨" label={t('profile.bgColor')} onClick={() => setShowBg(s => !s)}
+              right={<span className="h-4 w-4 rounded-full border border-slate-300" style={{ background: BG_THEMES.find(b => b.id === bgId)?.swatch }} />} />
+            {showBg && (
+              <div className="bg-slate-50 px-3 py-3">
+                <div className="grid grid-cols-4 gap-2">
+                  {BG_THEMES.map(b => (
+                    <button
+                      key={b.id}
+                      type="button"
+                      onClick={() => { setBgTheme(b.id); setBgId(b.id) }}
+                      className={`flex flex-col items-center gap-1 rounded-xl border p-2 transition-colors ${
+                        b.id === bgId ? 'border-indigo-400 ring-2 ring-indigo-200' : 'border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      <span className="h-7 w-7 rounded-full border border-slate-300 shadow-inner" style={{ background: b.swatch }} />
+                      <span className="text-[10px] font-semibold text-slate-600">{tr(b.labelKey)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <Row icon="🌐" label={t('profile.language')} onClick={() => setShowLang(s => !s)}
               right={<span className="text-xs font-bold text-slate-400">{currentLang?.flag} {currentLang?.label}</span>} />
             {showLang && (

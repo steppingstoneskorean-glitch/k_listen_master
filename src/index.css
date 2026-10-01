@@ -14,7 +14,44 @@ html, body, #root {
 .app-shell {
   --bottom-nav-h: 4rem;
   padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+  background: var(--app-bg, #ffffff);
 }
+
+/* 배경색 선택: 앱 셸 밖(overscroll 영역 등)도 같은 색으로 */
+body { background: var(--app-bg, #ffffff); }
+
+/* ── 다크 모드 스킨 ───────────────────────────────────────────────────────────
+   앱 본체는 라이트 색이 하드코딩돼 있어, 다크 선택 시 공통 라이트 유틸 클래스를
+   .app-shell 내부에 한해 다크로 리맵한다(전체화면 다크 페이지는 .app-shell 밖이라 무관). */
+[data-theme="dark"] .app-shell { color: #e5e7eb; }
+[data-theme="dark"] .app-shell .bg-white { background-color: #171e2a !important; }
+[data-theme="dark"] .app-shell .bg-slate-50,
+[data-theme="dark"] .app-shell .bg-slate-100,
+[data-theme="dark"] .app-shell .bg-gray-50,
+[data-theme="dark"] .app-shell .bg-gray-100 { background-color: #1c2432 !important; }
+[data-theme="dark"] .app-shell .bg-slate-200,
+[data-theme="dark"] .app-shell .bg-gray-200 { background-color: #2a3444 !important; }
+[data-theme="dark"] .app-shell .text-slate-900,
+[data-theme="dark"] .app-shell .text-slate-800,
+[data-theme="dark"] .app-shell .text-slate-700,
+[data-theme="dark"] .app-shell .text-gray-900,
+[data-theme="dark"] .app-shell .text-gray-800,
+[data-theme="dark"] .app-shell .text-gray-700 { color: #e5e7eb !important; }
+[data-theme="dark"] .app-shell .text-slate-600,
+[data-theme="dark"] .app-shell .text-slate-500,
+[data-theme="dark"] .app-shell .text-gray-600,
+[data-theme="dark"] .app-shell .text-gray-500 { color: #b6c2d2 !important; }
+[data-theme="dark"] .app-shell .text-slate-400,
+[data-theme="dark"] .app-shell .text-slate-300,
+[data-theme="dark"] .app-shell .text-gray-400,
+[data-theme="dark"] .app-shell .text-gray-300 { color: #8a97a8 !important; }
+[data-theme="dark"] .app-shell .border-slate-100,
+[data-theme="dark"] .app-shell .border-slate-200,
+[data-theme="dark"] .app-shell .border-slate-300,
+[data-theme="dark"] .app-shell .border-gray-100,
+[data-theme="dark"] .app-shell .border-gray-200 { border-color: #2c3647 !important; }
+[data-theme="dark"] .app-shell .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+[data-theme="dark"] .app-shell .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: #2c3647 !important; }
 
 /* ── Landing page motion ── */
 @keyframes hero-fade-up {
