@@ -15,10 +15,9 @@ export default function Header() {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-lg items-center justify-between gap-3 px-4 py-2.5">
         <Link to="/" className="flex min-w-0 items-center gap-2">
-          <img src={logoImg} alt="K-Listen Master" className="h-7 w-auto shrink-0 rounded-lg object-contain" />
+          <img src={logoImg} alt="K-Listen" className="h-7 w-auto shrink-0 rounded-lg object-contain" />
           <span className="truncate text-base font-black">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">K-Listen</span>
-            <span className="text-slate-900"> Master</span>
           </span>
         </Link>
 

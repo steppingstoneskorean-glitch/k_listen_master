@@ -11,9 +11,9 @@ export default function AboutPage() {
       </div>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-bold text-white">What is K-Listen Master?</h2>
+        <h2 className="text-lg font-bold text-white">What is K-Listen?</h2>
         <p className="text-sm leading-relaxed text-gray-400">
-          K-Listen Master is a free Korean listening practice service built around real K-pop live
+          K-Listen is a free Korean listening practice service built around real K-pop live
           videos and carefully recorded native audio. Instead of textbook dialogues, you train your
           ears on the Korean that idols and native speakers actually use — fast, natural, and full of
           the grammar and expressions you will hear in real life.

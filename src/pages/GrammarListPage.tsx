@@ -34,9 +34,9 @@ export default function GrammarListPage() {
   const [filter, setFilter] = useState<LevelFilter>('all')
 
   useEffect(() => {
-    document.title = 'Korean Grammar & Expressions from K-pop Lives | K-Listen Master'
+    document.title = 'Korean Grammar & Expressions from K-pop Lives | K-Listen'
     return () => {
-      document.title = 'K-Listen Master | Learn Korean with K-Pop — Free Listening Game'
+      document.title = 'K-Listen | Learn Korean with K-Pop — Free Listening Game'
     }
   }, [])
 

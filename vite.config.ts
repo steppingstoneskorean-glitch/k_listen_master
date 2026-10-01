@@ -12,9 +12,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
-        name: 'K-Listen Master',
+        name: 'K-Listen',
         short_name: 'K-Listen',
-        description: 'K-Listen Master by Step Korean — Stop feeling nervous. Speak like a local.',
+        description: 'K-Listen by Step Korean — Stop feeling nervous. Speak like a local.',
         theme_color: '#10b981',
         background_color: '#e9fbf2',
         display: 'standalone',

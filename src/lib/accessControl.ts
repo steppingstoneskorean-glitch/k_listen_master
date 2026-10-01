@@ -1,6 +1,6 @@
 // src/lib/accessControl.ts
 // ─────────────────────────────────────────────────────────────────────────────
-// K-Listen Master — 사용자 등급(tier) 기반 K-Artist Live 영상 접근 제어
+// K-Listen — 사용자 등급(tier) 기반 K-Artist Live 영상 접근 제어
 //
 //   · users/{uid} 문서 스키마: tier, lastUnlockedDate('YYYY-MM-DD', KST), unlockedVideoId
 //   · tier 는 클라이언트가 절대 쓰지 않는다 — 문서에 없으면 'BETA_FREE' 로 취급한다.

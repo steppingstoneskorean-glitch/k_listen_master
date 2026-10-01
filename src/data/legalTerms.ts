@@ -6,7 +6,7 @@ export const TERMS: Record<LegalLang, LegalDoc> = {
   ko: {
     title: '이용약관 (Terms of Service)',
     convenience: '본 문서의 정본(正本)은 한국어이며, 영어·일본어·스페인어 번역은 이해를 돕기 위한 참고용입니다. 해석상 차이가 있을 경우 한국어본이 우선합니다.',
-    intro: "본 약관은 Step Korean(이하 '회사')이 제공하는 K-Listen Master 및 관련 서비스(이하 '서비스')의 이용 조건을 규정합니다.",
+    intro: "본 약관은 Step Korean(이하 '회사')이 제공하는 K-Listen 및 관련 서비스(이하 '서비스')의 이용 조건을 규정합니다.",
     sections: [
       {
         title: '제1조 (목적 및 서비스의 내용)',
@@ -87,7 +87,7 @@ export const TERMS: Record<LegalLang, LegalDoc> = {
   en: {
     title: 'Terms of Service',
     convenience: 'This English text is a convenience translation. The authoritative version of these Terms is the Korean version; in the event of any discrepancy, the Korean version prevails.',
-    intro: "These Terms govern the use of K-Listen Master and related services (the “Service”) provided by Step Korean (the “Company”).",
+    intro: "These Terms govern the use of K-Listen and related services (the “Service”) provided by Step Korean (the “Company”).",
     sections: [
       {
         title: 'Article 1 (Purpose and Scope of Service)',
@@ -168,7 +168,7 @@ export const TERMS: Record<LegalLang, LegalDoc> = {
   ja: {
     title: '利用規約 (Terms of Service)',
     convenience: 'この日本語テキストは便宜上の翻訳です。本規約の正本は韓国語版であり、相違がある場合は韓国語版が優先します。',
-    intro: 'この規約は、Step Korean（以下「当社」）が提供する K-Listen Master および関連サービス（以下「本サービス」）の利用条件を定めます。',
+    intro: 'この規約は、Step Korean（以下「当社」）が提供する K-Listen および関連サービス（以下「本サービス」）の利用条件を定めます。',
     sections: [
       {
         title: '第1条（目的およびサービスの内容）',
@@ -249,7 +249,7 @@ export const TERMS: Record<LegalLang, LegalDoc> = {
   es: {
     title: 'Términos de servicio',
     convenience: 'Este texto en español es una traducción de cortesía. La versión vinculante de estos Términos es la versión en coreano; en caso de discrepancia, prevalecerá la versión en coreano.',
-    intro: 'Estos Términos regulan las condiciones de uso de K-Listen Master y los servicios relacionados (el «Servicio») proporcionados por Step Korean (la «Empresa»).',
+    intro: 'Estos Términos regulan las condiciones de uso de K-Listen y los servicios relacionados (el «Servicio») proporcionados por Step Korean (la «Empresa»).',
     sections: [
       {
         title: 'Artículo 1 (Objeto y contenido del Servicio)',

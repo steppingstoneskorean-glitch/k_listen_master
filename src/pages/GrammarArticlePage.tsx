@@ -41,12 +41,12 @@ export default function GrammarArticlePage() {
 
   useEffect(() => {
     if (!article) return
-    document.title = `${article.title} | K-Listen Master`
+    document.title = `${article.title} | K-Listen`
     const meta = document.querySelector('meta[name="description"]')
     const original = meta?.getAttribute('content') ?? ''
     meta?.setAttribute('content', article.summary)
     return () => {
-      document.title = 'K-Listen Master | Learn Korean with K-Pop — Free Listening Game'
+      document.title = 'K-Listen | Learn Korean with K-Pop — Free Listening Game'
       meta?.setAttribute('content', original)
     }
   }, [article])
