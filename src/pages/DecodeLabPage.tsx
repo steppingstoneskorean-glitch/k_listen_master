@@ -46,6 +46,18 @@ function speak(text: string, rate = 1) {
   }
 }
 
+// 녹음 오디오(audioUrl) 우선 재생, 없거나 실패하면 TTS 폴백. rate 는 녹음에도 적용(천천히).
+function play(item: DictationItem, fallbackText: string, rate = 1) {
+  if (item.audioUrl) {
+    const a = new Audio(item.audioUrl)
+    a.playbackRate = rate
+    a.onerror = () => speak(fallbackText, rate)
+    a.play().catch(() => speak(fallbackText, rate))
+  } else {
+    speak(fallbackText, rate)
+  }
+}
+
 function buildSession(): ItemBlank[] {
   const weakness = getPhenomenonWeakness()
   return pickItems(REAL_ITEMS, SESSION_SIZE).map((it) => generateItemBlank(it, { weakness }))
@@ -71,19 +83,19 @@ function Cloze({ text }: { text: string }) {
 }
 
 // ── 오디오(데모 TTS) 버튼 ─────────────────────────────────────────────────────
-function PlayRow({ spoken }: { spoken: string }) {
+function PlayRow({ item, spoken }: { item: DictationItem; spoken: string }) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => speak(spoken, 1)}
+          onClick={() => play(item, spoken, 1)}
           className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition"
           aria-label="다시 듣기"
         >
           <svg className="w-7 h-7 ml-1 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
         </button>
         <button
-          onClick={() => speak(spoken, 0.6)}
+          onClick={() => play(item, spoken, 0.6)}
           className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition"
         >
           🐢 천천히
@@ -112,7 +124,7 @@ export default function DecodeLabPage() {
   // 문항 진입 시 자동 재생 + 포커스
   useEffect(() => {
     if (done || !current) return
-    const timer = setTimeout(() => speak(spoken, 1), 350)
+    const timer = setTimeout(() => play(current.item, spoken, 1), 350)
     inputRef.current?.focus()
     return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -217,7 +229,7 @@ export default function DecodeLabPage() {
       <div className="flex-1 max-w-lg mx-auto w-full px-4 py-8 flex flex-col gap-6">
         <p className="text-center text-gray-500 text-xs">듣고 빈칸에 들어갈 말을 입력하세요</p>
 
-        <PlayRow spoken={spoken} />
+        <PlayRow item={current.item} spoken={spoken} />
 
         <div className="rounded-2xl bg-gray-900/70 border border-gray-700/60 px-5 py-6">
           <Cloze text={current.displayText} />
@@ -277,8 +289,8 @@ export default function DecodeLabPage() {
             </div>
 
             <div className="flex items-center justify-center gap-3">
-              <button onClick={() => speak(spoken, 1)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🔊 다시</button>
-              <button onClick={() => speak(spoken, 0.6)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🐢 천천히</button>
+              <button onClick={() => play(current.item, spoken, 1)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🔊 다시</button>
+              <button onClick={() => play(current.item, spoken, 0.6)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🐢 천천히</button>
             </div>
 
             <button onClick={next} className="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition">

@@ -21,6 +21,7 @@ function speak(text: string, rate = 1) {
 function play(item: DictationItem, surface: string, rate = 1) {
   if (item.audioUrl) {
     const a = new Audio(item.audioUrl)
+    a.playbackRate = rate
     a.onerror = () => speak(surface, rate)
     a.play().catch(() => speak(surface, rate))
   } else speak(surface, rate)

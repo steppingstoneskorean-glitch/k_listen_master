@@ -2,7 +2,7 @@
   {
     "id": 1,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/1.wav",
     "speed": "normal",
     "transcript": "신고",
     "chunks": ["신고"],
@@ -20,7 +20,7 @@
   {
     "id": 2,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/2.wav",
     "speed": "normal",
     "transcript": "신문",
     "chunks": ["신문"],
@@ -29,7 +29,7 @@
   {
     "id": 3,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/3.wav",
     "speed": "normal",
     "transcript": "꽃이",
     "chunks": ["꽃이"],
@@ -47,7 +47,7 @@
   {
     "id": 4,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/4.wav",
     "speed": "normal",
     "transcript": "꽃 위",
     "chunks": ["꽃", "위"],
@@ -66,7 +66,7 @@
   {
     "id": 5,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/5.wav",
     "speed": "normal",
     "transcript": "신라",
     "chunks": ["신라"],
@@ -86,7 +86,7 @@
   {
     "id": 6,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/6.wav",
     "speed": "normal",
     "transcript": "정리",
     "chunks": ["정리"],
@@ -106,7 +106,7 @@
   {
     "id": 7,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/7.wav",
     "speed": "normal",
     "transcript": "국물",
     "chunks": ["국물"],
@@ -126,7 +126,7 @@
   {
     "id": 8,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/8.wav",
     "speed": "normal",
     "transcript": "같이",
     "chunks": ["같이"],
@@ -145,7 +145,7 @@
   {
     "id": 9,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/9.wav",
     "speed": "normal",
     "transcript": "좋아요",
     "chunks": ["좋아요"],
@@ -163,7 +163,7 @@
   {
     "id": 10,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/10.wav",
     "speed": "normal",
     "transcript": "축하",
     "chunks": ["축하"],
@@ -182,7 +182,7 @@
   {
     "id": 11,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/11.wav",
     "speed": "normal",
     "transcript": "난로",
     "chunks": ["난로"],
@@ -202,7 +202,7 @@
   {
     "id": 12,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/12.wav",
     "speed": "normal",
     "transcript": "설날",
     "chunks": ["설날"],
@@ -222,7 +222,7 @@
   {
     "id": 13,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/13.wav",
     "speed": "normal",
     "transcript": "종로",
     "chunks": ["종로"],
@@ -242,7 +242,7 @@
   {
     "id": 14,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/14.wav",
     "speed": "normal",
     "transcript": "심리",
     "chunks": ["심리"],
@@ -262,7 +262,7 @@
   {
     "id": 15,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/15.wav",
     "speed": "normal",
     "transcript": "감다",
     "chunks": ["감다"],
@@ -280,7 +280,7 @@
   {
     "id": 16,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/16.wav",
     "speed": "normal",
     "transcript": "감기",
     "chunks": ["감기"],
@@ -289,7 +289,7 @@
   {
     "id": 17,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/17.wav",
     "speed": "normal",
     "transcript": "학교",
     "chunks": ["학교"],
@@ -307,7 +307,7 @@
   {
     "id": 18,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/18.wav",
     "speed": "normal",
     "transcript": "국밥",
     "chunks": ["국밥"],
@@ -325,7 +325,7 @@
   {
     "id": 19,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/19.wav",
     "speed": "normal",
     "transcript": "옷을",
     "chunks": ["옷을"],
@@ -343,7 +343,7 @@
   {
     "id": 20,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/20.wav",
     "speed": "normal",
     "transcript": "옷 안",
     "chunks": ["옷", "안"],
@@ -362,7 +362,7 @@
   {
     "id": 21,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/21.wav",
     "speed": "normal",
     "transcript": "먹는",
     "chunks": ["먹는"],
@@ -382,7 +382,7 @@
   {
     "id": 22,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/22.wav",
     "speed": "normal",
     "transcript": "입니다",
     "chunks": ["입니다"],
@@ -402,7 +402,7 @@
   {
     "id": 23,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/23.wav",
     "speed": "normal",
     "transcript": "국이",
     "chunks": ["국이"],
@@ -420,7 +420,7 @@
   {
     "id": 24,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/24.wav",
     "speed": "normal",
     "transcript": "굳이",
     "chunks": ["굳이"],
@@ -439,7 +439,7 @@
   {
     "id": 25,
     "level": "advanced",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/25.wav",
     "speed": "normal",
     "transcript": "같아",
     "chunks": ["같아"],
@@ -457,7 +457,7 @@
   {
     "id": 26,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/26.wav",
     "speed": "normal",
     "transcript": "좋다",
     "chunks": ["좋다"],
@@ -476,7 +476,7 @@
   {
     "id": 27,
     "level": "intermediate",
-    "audioUrl": "",
+    "audioUrl": "/audio/listen/27.wav",
     "speed": "normal",
     "transcript": "입학",
     "chunks": ["입학"],
