@@ -8,7 +8,7 @@
     "en": "In an action word like 신고, after the ㄴ batchim the air is briefly trapped and then bursts out, so the next sound comes out strong. → [신꼬]"
   },
   "note.contrast.singo_sinmun": {
-    "ko": "신고에서는 뒤 소리가 더 세게 나지만, 신문에서는 소리가 바뀌지 않아요.",
+    "ko": "'신고'에서는 뒤 소리가 더 세게 나지만, '신문'에서는 소리가 바뀌지 않아요.",
     "en": "In 신고 the next sound comes out strong, but in 신문 it stays the same."
   },
   "note.item.silla": {
@@ -80,7 +80,7 @@
     "en": "Does the word that follows have its own meaning, or does it attach to the word before it?"
   },
   "note.contrast.gamda_gamgi": {
-    "ko": "감다는 동작 말이라 [감따]로 세지지만, 감기는 명사라 그대로 [감기]예요.",
+    "ko": "'감다'는 동작 말이라 [감따]로 세지지만, '감기'는 명사라 그대로 [감기]예요.",
     "en": "감다 is an action word so its sound comes out strong → [감따], but 감기 is a noun and stays [감기]."
   },
   "note.contrast.kkochi_kkochwi": {
@@ -156,7 +156,7 @@
     "en": "같이 shifts to [가치] before '이'; 같아 just carries to [가타] before '아'."
   },
   "note.contrast.joayo_jota": {
-    "ko": "좋아요는 ㅎ 뒤가 모음이라 사라져 [조아요], 좋다는 ㅎ 뒤가 자음이라 거세져 [조타]예요.",
+    "ko": "'좋아요'는 ㅎ 뒤가 모음이라 사라져 [조아요], '좋다'는 ㅎ 뒤가 자음이라 거세져 [조타]예요.",
     "en": "In 좋아요 the ㅎ is before a vowel so it disappears → [조아요]; in 좋다 it's next to a consonant so it comes out harder → [조타]."
   },
   "q.assim.direction": {
