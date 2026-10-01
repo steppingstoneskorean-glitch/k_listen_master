@@ -7,7 +7,7 @@ import { useLang } from '@/lib/i18n'
 
 type Tab = {
   to: string
-  key: 'home' | 'game' | 'listen' | 'review' | 'profile'
+  key: 'home' | 'game' | 'review' | 'profile'
   label: string
   icon: (active: boolean) => React.ReactNode
   match: (path: string) => boolean
@@ -39,13 +39,6 @@ export default function BottomNav() {
       label: t('nav.game'),
       match: p => p.startsWith('/games') || p.startsWith('/game') || p.startsWith('/dictation') || p.startsWith('/shadowing') || p.startsWith('/kpop-quiz'),
       icon: () => <Icon><rect x="3" y="6" width="18" height="12" rx="3" /><path d="M8 12h3M9.5 10.5v3" /><circle cx="16" cy="11" r="1" /><circle cx="18" cy="14" r="1" /></Icon>,
-    },
-    {
-      to: '/listen',
-      key: 'listen',
-      label: t('nav.listen'),
-      match: p => p.startsWith('/listen') || p.startsWith('/notice') || p.startsWith('/decode') || p.startsWith('/contrast'),
-      icon: () => <Icon><path d="M4 10v4" /><path d="M8 6v12" /><path d="M12 9v6" /><path d="M16 4v16" /><path d="M20 10v4" /></Icon>,
     },
     {
       to: '/review',
