@@ -6,6 +6,7 @@ import {
   orderBy,
 } from 'firebase/firestore'
 import { db as _db, auth } from './firebase'
+import { trackEvent } from './analytics'
 
 export interface LeaderboardEntry {
   id?: string
@@ -34,6 +35,7 @@ export async function submitScore(
       uid,
       timestamp: Date.now(),
     })
+    trackEvent('leaderboard_submit', { board: 'game' })
   } catch (err) {
     console.warn('Failed to submit score:', err)
   }
@@ -97,6 +99,7 @@ export async function submitIntermediateScore(
       uid,
       timestamp: Date.now(),
     })
+    trackEvent('leaderboard_submit', { board: 'intermediate' })
   } catch (err) {
     console.warn('Failed to submit intermediate score:', err)
   }
@@ -155,6 +158,7 @@ export async function submitDictationScore(
       uid,
       timestamp: Date.now(),
     })
+    trackEvent('leaderboard_submit', { board: collectionName })
   } catch (err) {
     console.warn(`Failed to submit score to ${collectionName}:`, err)
   }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { trackEvent } from '@/lib/analytics'
 import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { SOUND_ITEMS } from '@/data/listening/mockSounds'
@@ -47,6 +48,7 @@ function buildSession(n = 6): Round[] {
 }
 
 export default function SoundNoticePage() {
+  useEffect(() => { trackEvent('notice_session') }, [])
   const { lang } = useLang()
   const { recordListeningRep } = useGamification()
   const [rounds, setRounds] = useState<Round[]>(() => buildSession())

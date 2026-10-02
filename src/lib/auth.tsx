@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth'
 import { doc, deleteDoc } from 'firebase/firestore'
 import { auth, db } from './firebase'
+import { trackEvent } from './analytics'
 
 interface AuthCtx {
   user: User | null
@@ -43,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const provider = new GoogleAuthProvider()
     provider.setCustomParameters({ prompt: 'select_account' })
     const cred = await signInWithPopup(auth, provider)
+    trackEvent('login', { method: 'google' })
     return { email: cred.user.email, uid: cred.user.uid }
   }
 
@@ -52,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     provider.addScope('email')
     provider.addScope('name')
     const cred = await signInWithPopup(auth, provider)
+    trackEvent('login', { method: 'apple' })
     return { email: cred.user.email, uid: cred.user.uid }
   }
 

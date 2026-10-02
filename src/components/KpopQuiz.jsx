@@ -19,6 +19,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from 'react';
+import { trackEvent } from '@/lib/analytics';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
@@ -173,6 +174,7 @@ const liftBtn =
   'transform-gpu translate-y-0 hover:-translate-y-1 active:translate-y-0';
 
 export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp }) {
+  useEffect(() => { trackEvent('quiz_session') }, []);
   // 관리자 전용 이메일: 이 계정으로 로그인했을 때만 Admin UI 렌더링
   const ADMIN_EMAIL = 'steppingstoneskorean@gmail.com';
 
@@ -1293,6 +1295,8 @@ function ReviewModal({ status, quiz, answer, correctText, isLast, fromReview, li
   const explanationText = pickExplanation(quiz.explanation, lang);
   // explanation 이 비어 있으면 해설 영역 자체를 렌더링하지 않음 (조건부 숨김)
   const hasExplanation = Boolean(explanationText && explanationText.trim());
+  // 해설(문법·표현)이 실제로 노출될 때 1회 집계 — 프리미엄 후보 가치 측정용
+  useEffect(() => { if (hasExplanation) trackEvent('explanation_view'); }, [hasExplanation]);
 
   return (
     <div

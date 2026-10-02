@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { trackEvent } from '@/lib/analytics'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import {
@@ -568,6 +569,7 @@ function GroupedKStarsCard({
 }
 
 export default function ReviewPage() {
+  useEffect(() => { trackEvent('review_session') }, [])
   const { t, lang } = useLang()
   const [searchParams, setSearchParams] = useSearchParams()
   const [records, setRecords] = useState<ErrorRecord[]>([])

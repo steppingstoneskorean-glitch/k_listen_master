@@ -9,6 +9,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { auth } from './firebase'
+import { trackEvent } from './analytics'
 
 export interface WordScore {
   word: string
@@ -48,6 +49,7 @@ async function getAuth(): Promise<Auth> {
   const user = auth?.currentUser
   if (user) {
     const idToken = await user.getIdToken()
+    trackEvent('speech_token_request') // 비용(Azure) 발생 지점 카운트
     const r = await fetch('/api/speech-token', {
       method: 'POST',
       headers: { authorization: `Bearer ${idToken}` },

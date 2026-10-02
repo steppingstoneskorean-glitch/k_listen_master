@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { trackEvent } from '@/lib/analytics'
 import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { generateItemBlank, pickItems, type ItemBlank } from '@/data/listening/blank'
@@ -107,6 +108,7 @@ function PlayRow({ item, spoken }: { item: DictationItem; spoken: string }) {
 }
 
 export default function DecodeLabPage() {
+  useEffect(() => { trackEvent('decode_session') }, [])
   const { lang } = useLang()
   const { recordListeningRep } = useGamification()
   const [blanks, setBlanks] = useState<ItemBlank[]>(() => buildSession())

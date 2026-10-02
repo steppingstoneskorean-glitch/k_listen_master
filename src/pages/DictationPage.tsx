@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { trackEvent } from '@/lib/analytics'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import { useAuth } from '@/lib/auth'
@@ -707,6 +708,7 @@ function ResultScreen({
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 export default function DictationPage() {
+  useEffect(() => { trackEvent('dictation_session') }, [])
   const [params] = useSearchParams()
   const mode = params.get('mode') === 'advanced' ? 'advanced' : 'intermediate'
   const { user, isGuest } = useAuth()

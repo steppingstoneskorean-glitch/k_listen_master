@@ -33,3 +33,17 @@ export function loadAnalytics(): void {
   gtag('js', new Date())
   gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true })
 }
+
+/**
+ * 커스텀 이벤트 전송 — **동의로 GA가 로드된 경우에만** 작동(window.gtag 존재 시).
+ * 미동의 상태에선 조용히 무시되어 개인정보/동의 원칙을 지킨다. 분석은 부가 기능이라 실패해도
+ * 앱 흐름에 영향 주지 않는다(try/catch). 기능 사용량·재방문 분석(프리미엄 판단)용.
+ */
+export function trackEvent(name: string, params?: Record<string, unknown>): void {
+  try {
+    if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
+    window.gtag('event', name, params ?? {})
+  } catch {
+    /* 무시 */
+  }
+}

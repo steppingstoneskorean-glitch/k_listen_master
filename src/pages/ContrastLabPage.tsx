@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { trackEvent } from '@/lib/analytics'
 import { Link } from 'react-router-dom'
 import { useLang } from '@/lib/i18n'
 import ITEMS from '@/data/listening/items.json'
@@ -57,6 +58,7 @@ function play(item: DictationItem, surface: string, rate = 1) {
 }
 
 export default function ContrastLabPage() {
+  useEffect(() => { trackEvent('contrast_session') }, [])
   const { lang } = useLang()
   const [rounds, setRounds] = useState<Round[]>(() => buildSession())
   const [idx, setIdx] = useState(0)
