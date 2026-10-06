@@ -131,14 +131,16 @@ export async function translateExplanation(en, apiKey) {
 /**
  * 문서 배열(published/draft)의 항목들을 훑어 ja/es 누락 해설을 채운다.
  * 같은 영어 원문은 한 번만 번역해 캐시로 재사용(문서 간 중복 절감).
- * 반환: { changed: boolean, filled: number, failed: number }
+ * deadline(ms epoch) 을 넘기면 새 번역을 시작하지 않고 멈춘다(timedOut: true).
+ * 반환: { changed: boolean, filled: number, failed: number, timedOut: boolean }
  * onLog(msg) 로 진행 로그를 흘려보낸다(선택).
  */
-export async function fillMissingTranslations(items, apiKey, { cache = new Map(), max = Infinity, onLog } = {}) {
-  let filled = 0, failed = 0, changed = false
+export async function fillMissingTranslations(items, apiKey, { cache = new Map(), max = Infinity, deadline = Infinity, onLog } = {}) {
+  let filled = 0, failed = 0, changed = false, timedOut = false
   for (const it of items) {
     if (!it || !needsTranslation(it.explanation)) continue
     if (filled >= max) break
+    if (Date.now() > deadline) { timedOut = true; break }
     const en = enOf(it.explanation)
     let tr = cache.get(en)
     if (!tr) {
@@ -160,5 +162,5 @@ export async function fillMissingTranslations(items, apiKey, { cache = new Map()
     }
     if (touched) { it.explanation = obj; filled++; changed = true; onLog?.(`✓ ${Object.keys(tr).join('+')} — ${en.slice(0, 30).replace(/\n/g, ' ')}…`) }
   }
-  return { changed, filled, failed }
+  return { changed, filled, failed, timedOut }
 }

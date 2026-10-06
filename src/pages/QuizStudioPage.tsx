@@ -155,7 +155,7 @@ export default function QuizStudioPage() {
   const [defaultSpeed, setDefaultSpeed] = useState(0.75) // 영상 기본 재생 속도 — 전체 문항 일괄 적용
   const [publishedCount, setPublishedCount] = useState<number | null>(null)
 
-  const [busy, setBusy] = useState<'' | 'generate' | 'save' | 'publish' | 'unpublish'>('')
+  const [busy, setBusy] = useState<'' | 'generate' | 'save' | 'publish' | 'translate' | 'unpublish'>('')
   const [notice, setNotice] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
   const [previewSrc, setPreviewSrc] = useState('')
 
@@ -273,6 +273,39 @@ export default function QuizStudioPage() {
     return c
   }, [items])
 
+  // ── 배포 직후 해설 ja/es 번역 (api/translate-explanations, 이 영상만) ──────────
+  //   서버가 60초 상한 때문에 끊어서 처리하면(budgetHit) 몇 번 이어서 호출한다.
+  //   번역 결과는 Firestore 에 저장되므로, 끝나면 초안을 다시 불러와 편집 상태에 반영
+  //   (안 그러면 다음 저장 때 en 원문만 있는 상태로 덮어써 번역이 지워진다).
+  const translateExplanations = useCallback(async (): Promise<string> => {
+    if (!user || !videoId) return ''
+    const idToken = await user.getIdToken()
+    let filled = 0
+    let failed = 0
+    let remaining = 0
+    for (let round = 0; round < 4; round++) {
+      const r = await fetch('/api/translate-explanations', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${idToken}` },
+        body: JSON.stringify({ videoId }),
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = await r.json().catch(() => ({}))
+      if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`)
+      filled += data.filled || 0
+      failed = data.failed || 0
+      remaining = data.remaining || 0
+      // 다 끝났거나, 시간 초과가 아닌데 남은 것(가드 탈락 등)은 재시도해도 같은 결과
+      if (!remaining || !data.budgetHit) break
+    }
+    const draft = await loadDraft(videoId)
+    if (draft && draft.length) setItems(draft)
+    if (!filled && !remaining) return ''
+    return remaining
+      ? ` · 해설 번역 ${filled}개 완료, ${remaining}개 남음(다음 배포 때 재시도)`
+      : ` · 해설 ja/es 번역 ${filled}개 완료${failed ? ` (실패 ${failed})` : ''}`
+  }, [user, videoId])
+
   // ── 저장 / 배포 / 배포취소 (모드 단위 병합) ─────────────────────────────────
   const persist = useCallback(
     async (mode: 'save' | 'publish' | 'unpublish') => {
@@ -297,7 +330,15 @@ export default function QuizStudioPage() {
           await saveModeItems(videoId, presentModes, normalizedItems, mode === 'publish', modeStars)
           if (mode === 'publish') {
             setPublishedCount(items.length)
-            say('ok', `🎉 배포 완료! /kpop-quiz/${videoId} 에서 ${presentModes.join('/')} 모드가 보입니다.`)
+            const done = `🎉 배포 완료! /kpop-quiz/${videoId} 에서 ${presentModes.join('/')} 모드가 보입니다.`
+            // 배포 자체는 끝났으므로 번역 실패는 배포 실패로 취급하지 않는다
+            setBusy('translate')
+            setNotice({ kind: 'ok', text: done + ' 해설 일본어·스페인어 번역 중…' })
+            try {
+              say('ok', done + (await translateExplanations()))
+            } catch (e) {
+              say('err', `${done} 단, 해설 번역 실패: ${e instanceof Error ? e.message : String(e)}`)
+            }
           } else {
             say('ok', '초안이 저장되었습니다 (학습자에게는 아직 비공개).')
           }
@@ -308,7 +349,7 @@ export default function QuizStudioPage() {
         setBusy('')
       }
     },
-    [videoId, items, problems, modeStars],
+    [videoId, items, problems, modeStars, translateExplanations],
   )
 
   if (!isAdmin) {
@@ -754,7 +795,7 @@ export default function QuizStudioPage() {
                 disabled={busy !== '' || problems.length > 0 || items.length === 0}
                 className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-emerald-700 disabled:opacity-40"
               >
-                {busy === 'publish' ? '배포 중…' : '🚀 배포 (학습자에게 공개)'}
+                {busy === 'publish' ? '배포 중…' : busy === 'translate' ? '해설 번역 중…' :'🚀 배포 (학습자에게 공개)'}
               </button>
               {publishedCount !== null && publishedCount > 0 && (
                 <button

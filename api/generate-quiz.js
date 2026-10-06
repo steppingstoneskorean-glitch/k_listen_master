@@ -17,7 +17,7 @@
 //   필요한 Vercel 환경 변수:
 //     NVIDIA_API_KEY     — https://build.nvidia.com 에서 발급 (OpenAI SDK 호환 NIM 엔드포인트)
 //     FIREBASE_API_KEY   — Firebase Web API 키 (VITE_FIREBASE_API_KEY 와 동일 값)
-//     ADMIN_EMAIL        — (선택) 관리자 이메일. 기본값 아래 상수
+//     ADMIN_EMAIL        — (선택) 관리자 이메일. 기본값은 api/_lib/verifyAdmin.mjs
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const config = { maxDuration: 300 }
@@ -27,7 +27,7 @@ const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1'
 // 현재 제공되는 지시형 Nemotron 모델로 교체. NVIDIA_QUIZ_MODEL 로 오버라이드 가능.
 const NVIDIA_MODEL = process.env.NVIDIA_QUIZ_MODEL || 'nvidia/nemotron-3-super-120b-a12b'
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'steppingstoneskorean@gmail.com'
+import { verifyAdmin } from './_lib/verifyAdmin.mjs'
 
 // ── NVIDIA Master System Prompt ──────────────────────────────────────────────
 // "detailed thinking off": Nemotron 계열 모델의 reasoning 모드를 끄는 관례적 지시문 —
@@ -97,25 +97,6 @@ Respond with ONLY one JSON object — no markdown fences, no commentary — of t
   ]
 }
 Every "options" array MUST contain exactly 4 entries with exactly one "isCorrect": true.`
-
-// ── Firebase ID 토큰 검증 (identitytoolkit lookup — 관리자 이메일 확인) ──────
-async function verifyAdmin(idToken) {
-  const key = process.env.FIREBASE_API_KEY
-  if (!key) throw new Error('FIREBASE_API_KEY env var is not set on Vercel')
-  const r = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${key}`,
-    {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ idToken }),
-    },
-  )
-  if (!r.ok) return null
-  const data = await r.json()
-  const user = data.users && data.users[0]
-  if (!user || user.email !== ADMIN_EMAIL) return null
-  return user.email
-}
 
 // ── B 모드: 청크를 원문 순서로 정렬/검증 ─────────────────────────────────────
 // 모델이 순서를 섞어 보내도 targetSentence 를 앞에서부터 걸어가며 재정렬한다.
@@ -245,7 +226,7 @@ function stripThinking(raw) {
 }
 
 // explanation 다국어(ja/es)는 이 파이프라인에서 처리하지 않는다 —
-// 배포 후 크론(api/translate-explanations)이 한글 보존 가드와 함께 채운다.
+// 배포 시 스튜디오가 호출하는 api/translate-explanations 가 한글 보존 가드와 함께 채운다.
 // 여기서 두 번째 LLM 번역 호출을 없애 Hobby 60초 상한 초과(504)를 방지한다.
 
 export default async function handler(req, res) {
@@ -365,7 +346,7 @@ export default async function handler(req, res) {
     }
 
     // 5) explanation 다국어는 여기서 처리하지 않는다(en 원문만 반환).
-    //    · 배포 후 크론(api/translate-explanations)이 ja/es 를 자동 채운다 —
+    //    · 배포 시 스튜디오가 호출하는 api/translate-explanations 가 ja/es 를 자동 채운다 —
     //      이쪽 경로는 한국어(한글) 보존 가드가 있어 예문 훼손 위험이 없고,
     //      두 번째 느린 LLM 호출을 없애 생성이 Hobby 60초 상한 안에서 끝난다.
     return res.status(200).json({ quizzes, generated, model: NVIDIA_MODEL })
