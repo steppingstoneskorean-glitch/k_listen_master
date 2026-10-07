@@ -1,0 +1,37 @@
+{
+  "slug": "2026-10-07-spelled-vs-heard",
+  "status": "draft",
+  "theme": "Spelling vs. real sound (Pause / Carry / Change)",
+  "threads": [
+    {
+      "key": "quiz",
+      "text": "Quick Korean ear test 👂\n\nHow do Koreans actually say 국물 (soup broth)?\n\nA) 국물\nB) 궁물\nC) 국믈\n\nDrop your answer before reading the replies 👇",
+      "replies": []
+    },
+    {
+      "key": "insight",
+      "text": "You learned 입니다 letter by letter.\n\nBut no Korean says ip-ni-da.\nThey say [임니다] — the ㅂ melts into ㅁ before ㄴ.\n\nThat's why you can read Korean perfectly and still miss it in a K-drama.\n\nWhich word surprised you the first time you heard it spoken?",
+      "replies": []
+    },
+    {
+      "key": "app",
+      "text": "Most Korean learners don't have a vocabulary problem.\nThey have a listening gap: spelling ≠ sound.\n\nSo we built K-Listen around one loop:\nhear it → notice what you heard → hear it again → then the why.\n\nNo rules to memorize first. Just your ear.\n\nWhat's the hardest part of Korean listening for you?",
+      "image": "app-reveal.png",
+      "replies": ["Free on Google Play: https://play.google.com/store/apps/details?id=com.stepkorean.klistenmaster"]
+    }
+  ],
+  "instagram": {
+    "type": "carousel",
+    "caption": "You can read these 5 Korean words… but you probably hear them wrong 👂\n\nKorean isn't pronounced letter by letter. When sounds meet, they pause, carry over, or change — and that's exactly why K-dramas feel too fast.\n\nWhich one surprised you most? Tell me in the comments 👇\nSave this for your next listening session 📌\n\nTrain your ear with K-Listen — free on Google Play (link in bio).\n\n#learnkorean #studykorean #koreanlanguage #koreanlistening #koreanpronunciation",
+    "slides": [
+      { "type": "hook", "kicker": "Korean listening", "title": "You can <em>read</em> it.<br>But can you <em>hear</em> it?", "sub": "5 Korean words that don't sound like they're spelled" },
+      { "type": "word", "written": "입니다", "heard": "임니다", "meaning": "\"it is / I am\"", "badge": "change", "why": "ㅂ meets ㄴ and melts into a nasal ㅁ." },
+      { "type": "word", "written": "같이", "heard": "가치", "meaning": "\"together\"", "badge": "change", "why": "ㅌ meets 이 and shifts forward to ㅊ." },
+      { "type": "word", "written": "좋아요", "heard": "조아요", "meaning": "\"good / I like it\"", "badge": "carry", "why": "ㅎ fades away before a vowel." },
+      { "type": "word", "written": "축하", "heard": "추카", "meaning": "\"congrats\"", "badge": "change", "why": "ㄱ meets ㅎ and comes out with a puff of breath." },
+      { "type": "word", "written": "신라", "heard": "실라", "meaning": "\"Silla\" (ancient kingdom)", "badge": "change", "why": "ㄴ meets ㄹ — and the ㄹ wins." },
+      { "type": "shot", "image": "marketing/posts/2026-10-07-spelled-vs-heard/app-reveal.png", "title": "Hear it. Notice it. Then the why.", "sub": "K-Listen plays real Korean, asks what you heard, then shows written vs. heard." },
+      { "type": "cta", "title": "Stop reading Korean.<br>Start <em>hearing</em> it.", "sub": "Save this 📌 and try K-Listen free", "button": "Google Play · link in bio" }
+    ]
+  }
+}
