@@ -106,5 +106,19 @@
         "button": "Google Play · link in bio"
       }
     ]
+  },
+  "published": {
+    "threads": {
+      "quiz": {
+        "id": "18627098827034044",
+        "replyIds": [],
+        "at": "2026-10-07T13:45:56.092Z"
+      }
+    },
+    "instagram": {
+      "id": "18015304781751122",
+      "permalink": "https://www.instagram.com/p/DeMgAu1Hxr4/",
+      "at": "2026-10-07T13:47:21.678Z"
+    }
   }
 }
