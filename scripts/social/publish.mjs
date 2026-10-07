@@ -2,6 +2,7 @@
 //
 //   node scripts/social/publish.mjs check                      토큰·계정 확인 (읽기 전용)
 //   node scripts/social/publish.mjs refresh                    두 토큰 갱신 → .env.local 갱신
+//   node scripts/social/publish.mjs due [--dry-run]            승인된 초안의 schedule 중 시각이 지난 슬롯 게시
 //   node scripts/social/publish.mjs publish <post-dir> [--only threads|instagram] [--dry-run]
 //   node scripts/social/publish.mjs insights <post-dir>        게시물 반응 지표 → post.json 에 기록
 //
@@ -120,21 +121,26 @@ async function refresh() {
   console.log('Instagram token refreshed, expires in', Math.round(i.expires_in / 86400), 'days');
 }
 
-async function publish(dir, { only, dryRun }) {
+// 게시 단위: "threads:<key>" 또는 "instagram". 미지정이면 전부.
+const allItems = post => [...(post.threads ?? []).map(t => `threads:${t.key}`), ...(post.instagram ? ['instagram'] : [])];
+
+async function publish(dir, { only, dryRun, items }) {
   const post = readPost(dir);
   if (post.status !== 'approved') throw new Error(`post.json status is "${post.status}" — publish only after owner approval`);
   post.published ??= {};
-  const doThreads = only !== 'instagram', doIg = only !== 'threads';
+  items ??= allItems(post).filter(i => !only || i.startsWith(only));
+  const threadsToDo = (post.threads ?? []).filter(t => items.includes(`threads:${t.key}`));
+  const doIg = items.includes('instagram');
 
   const igUrls = (post.instagram?.slides ?? []).map((_, i) => mediaUrl(post, `slide-${String(i + 1).padStart(2, '0')}.jpg`));
-  const thUrls = (post.threads ?? []).filter(t => t.image).map(t => mediaUrl(post, t.image));
+  const thUrls = threadsToDo.filter(t => t.image).map(t => mediaUrl(post, t.image));
   const vidUrls = post.instagram?.type === 'reel' ? [mediaUrl(post, post.instagram.video)] : [];
-  await assertReachable([...(doThreads ? thUrls : []), ...(doIg ? (vidUrls.length ? vidUrls : igUrls) : [])]);
-  if (dryRun) { console.log('dry-run ok: all media reachable, status approved'); return; }
+  await assertReachable([...thUrls, ...(doIg ? (vidUrls.length ? vidUrls : igUrls) : [])]);
+  if (dryRun) { console.log('dry-run ok: media reachable, status approved →', items.join(', ')); return; }
 
-  if (doThreads) {
+  if (threadsToDo.length) {
     post.published.threads ??= {};
-    for (const t of post.threads ?? []) {
+    for (const t of threadsToDo) {
       if (post.published.threads[t.key]) { console.log('skip threads', t.key, '(already published)'); continue; }
       const id = await th.post({ text: t.text, imageUrl: t.image && mediaUrl(post, t.image) });
       const replyIds = [];
@@ -154,9 +160,31 @@ async function publish(dir, { only, dryRun }) {
     writePost(dir, post);
     console.log('Instagram published', id, permalink);
   }
-  if ((!doThreads || Object.keys(post.published.threads ?? {}).length === (post.threads ?? []).length)
-    && (!doIg || !post.instagram || post.published.instagram)) post.status = 'published';
+  const done = allItems(post).every(i => i === 'instagram' ? post.published.instagram : post.published.threads?.[i.slice(8)]);
+  if (done) post.status = 'published';
   writePost(dir, post);
+}
+
+// 승인된 초안들의 schedule 중 시각이 지난 슬롯을 게시한다 (예약 작업이 호출).
+// post.json: "schedule": [{ "at": "2026-10-08T22:00:00+09:00", "items": ["threads:quiz", "instagram"] }, ...]
+async function due({ dryRun }) {
+  const root = path.join('marketing', 'posts');
+  let n = 0;
+  for (const slug of fs.readdirSync(root).sort()) {
+    const dir = path.join(root, slug);
+    if (!fs.existsSync(path.join(dir, 'post.json'))) continue;
+    const post = readPost(dir);
+    if (post.status !== 'approved') continue;
+    for (const slot of post.schedule ?? []) {
+      if (new Date(slot.at) > new Date()) continue;
+      const pending = slot.items.filter(i => i === 'instagram' ? !post.published?.instagram : !post.published?.threads?.[i.slice(8)]);
+      if (!pending.length) continue;
+      console.log(`due: ${slug} @ ${slot.at} → ${pending.join(', ')}`);
+      await publish(dir, { dryRun, items: pending });
+      n++;
+    }
+  }
+  if (!n) console.log('due: nothing to publish');
 }
 
 async function insights(dir) {
@@ -183,7 +211,8 @@ try {
   else if (cmd === 'refresh') await refresh();
   else if (cmd === 'publish' && dir) await publish(dir, opt);
   else if (cmd === 'insights' && dir) await insights(dir);
-  else { console.error('usage: publish.mjs check | refresh | publish <post-dir> [--only threads|instagram] [--dry-run] | insights <post-dir>'); process.exit(1); }
+  else if (cmd === 'due') await due({ dryRun: [dir, ...rest].includes('--dry-run') });
+  else { console.error('usage: publish.mjs check | refresh | due [--dry-run] | publish <post-dir> [--only threads|instagram] [--dry-run] | insights <post-dir>'); process.exit(1); }
 } catch (e) {
   console.error('ERROR', redact(e.message));
   process.exit(1);

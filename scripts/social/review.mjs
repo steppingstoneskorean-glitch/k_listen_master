@@ -21,7 +21,12 @@ const threads = (post.threads ?? []).map((t, i) => `
     ${(t.replies ?? []).map(r => `<div class="reply">↳ 내 댓글: ${esc(r)}</div>`).join('')}
   </div>`).join('');
 
-const slides = (post.instagram?.slides ?? []).map((_, i) =>
+const label = i => i === 'instagram' ? 'Instagram 캐러셀' : `Threads · ${i.slice(8)}`;
+const fmt = at => new Date(at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' });
+const schedule = (post.schedule ?? []).map(s =>
+  `<tr><td>${esc(fmt(s.at))}</td><td>${s.items.map(i => esc(label(i))).join(' + ')}</td></tr>`).join('');
+
+const slides =(post.instagram?.slides ?? []).map((_, i) =>
   `<img class="slide" src="${data(path.join(pub, `slide-${String(i + 1).padStart(2, '0')}.jpg`))}">`).join('');
 
 const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -39,10 +44,12 @@ h1{font-size:22px;margin:0 0 4px} h2{font-size:18px;margin:32px 0 12px}
 .reply{margin-top:10px;padding-left:12px;border-left:3px solid var(--line);color:var(--mut);font-size:14px;word-break:break-all}
 .timg{margin-top:12px;max-width:260px;border-radius:10px;display:block}
 .slides{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+table{border-collapse:collapse;font-size:15px} td{padding:6px 16px 6px 0}
 .slide{width:300px;flex:none;border-radius:10px;scroll-snap-align:start}
 </style></head><body><main>
 <h1>SNS 초안 검토</h1>
 <div class="mut">${esc(post.slug)} · 주제: ${esc(post.theme)} · 상태: ${esc(post.status)}</div>
+${schedule ? `<h2>게시 일정 (한국 시간)</h2><div class="card"><table>${schedule}</table></div>` : ''}
 <h2>Threads (${(post.threads ?? []).length}개)</h2>${threads}
 <h2>Instagram ${esc(post.instagram?.type ?? '')}</h2>
 <div class="slides">${slides}</div>
