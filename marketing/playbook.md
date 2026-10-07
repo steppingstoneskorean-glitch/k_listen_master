@@ -1,7 +1,7 @@
 # SNS Playbook — K-Listen Master (Threads + Instagram)
 
 Target: English-speaking Korean learners (global). Visuals: real app screenshots + text overlay.
-Cadence: 1 draft set every 2 days → owner review → publish via Meta API.
+Cadence: 1 slot per day at 22:00 KST (Threads daily, Instagram every other day). Drafts every 2 days → owner review → scheduled publish via Meta API.
 Research date: 2026-10-06 (refresh monthly; update with our own insights data).
 
 ## Threads
