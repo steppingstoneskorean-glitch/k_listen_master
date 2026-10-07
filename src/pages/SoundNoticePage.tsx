@@ -19,13 +19,15 @@ function speak(text: string, rate = 1) {
     window.speechSynthesis.cancel(); window.speechSynthesis.speak(u)
   } catch { /* 무시 */ }
 }
-function play(item: DictationItem, surface: string, rate = 1) {
+// onTts: 녹음 없이 TTS 로 재생했을 때 알림(안내 문구 표시용)
+function play(item: DictationItem, surface: string, rate = 1, onTts?: () => void) {
+  const tts = () => { onTts?.(); speak(surface, rate) }
   if (item.audioUrl) {
     const a = new Audio(item.audioUrl)
     a.playbackRate = rate
-    a.onerror = () => speak(surface, rate)
-    a.play().catch(() => speak(surface, rate))
-  } else speak(surface, rate)
+    a.onerror = tts
+    a.play().catch(tts)
+  } else tts()
 }
 
 interface Round { item: DictationItem; surface: string; options: string[]; answerIdx: number }
@@ -49,20 +51,23 @@ function buildSession(n = 6): Round[] {
 
 export default function SoundNoticePage() {
   useEffect(() => { trackEvent('notice_session') }, [])
-  const { lang } = useLang()
+  const { lang, t } = useLang()
   const { recordListeningRep } = useGamification()
   const [rounds, setRounds] = useState<Round[]>(() => buildSession())
   const [idx, setIdx] = useState(0)
   const [chosen, setChosen] = useState<number | null>(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
+  const [usedTts, setUsedTts] = useState(false)
 
   const round = rounds[idx]
+  const playRound = (rate: number) => { if (round) play(round.item, round.surface, rate, () => setUsedTts(true)) }
 
   useEffect(() => {
     if (done || !round) return
-    const t = setTimeout(() => play(round.item, round.surface, 1), 350)
-    return () => clearTimeout(t)
+    setUsedTts(false)
+    const timer = setTimeout(() => playRound(1), 350)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idx, done])
 
@@ -99,25 +104,25 @@ export default function SoundNoticePage() {
         <div className="max-w-lg mx-auto px-4 py-10 flex flex-col gap-6">
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="text-6xl">{correctCount >= rounds.length - 1 ? '🎧' : '👂'}</div>
-            <h2 className="text-2xl font-black">오늘의 소리 듣기 완료</h2>
-            <p className="text-gray-400">{correctCount}/{rounds.length} 소리를 제대로 들었어요</p>
+            <h2 className="text-2xl font-black">{t('notice.doneTitle')}</h2>
+            <p className="text-gray-400">{t('notice.doneScore').replace('{c}', String(correctCount)).replace('{n}', String(rounds.length))}</p>
           </div>
           {weakness.length > 0 && (
             <div className="rounded-2xl bg-gray-900 border border-gray-800 p-5">
-              <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mb-3">👂 자주 놓친 소리</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mb-3">{t('notice.missedTitle')}</p>
               <ul className="flex flex-col gap-2">
                 {weakness.map(([p, n]) => (
                   <li key={p} className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-gray-200">{phenomenonLabel(p, undefined, lang).title}</span>
-                    <span className="text-xs text-gray-400">{n}회</span>
+                    <span className="text-xs text-gray-400">{t('notice.times').replace('{n}', String(n))}</span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
           <div className="flex gap-3">
-            <button onClick={restart} className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 font-black hover:opacity-90 transition">다시 듣기</button>
-            <Link to="/" className="px-6 py-4 rounded-2xl bg-gray-800 border border-gray-700 text-gray-300 font-medium hover:bg-gray-700 transition flex items-center">홈</Link>
+            <button onClick={restart} className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 font-black hover:opacity-90 transition">{t('notice.restart')}</button>
+            <Link to="/" className="px-6 py-4 rounded-2xl bg-gray-800 border border-gray-700 text-gray-300 font-medium hover:bg-gray-700 transition flex items-center">{t('lab.home')}</Link>
           </div>
         </div>
       </div>
@@ -132,7 +137,7 @@ export default function SoundNoticePage() {
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
       <header className="sticky top-0 z-10 bg-gray-950/95 backdrop-blur border-b border-gray-800/60">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">🎧 소리 듣기</span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">🎧 {t('listen.notice.title')}</span>
           <span className="text-gray-600 text-xs">{idx + 1} / {rounds.length}</span>
           <Link to="/" className="text-gray-500 hover:text-white text-sm">✕</Link>
         </div>
@@ -145,17 +150,17 @@ export default function SoundNoticePage() {
         {/* 재생 */}
         <div className="flex flex-col items-center gap-2">
           <div className="flex items-center gap-3">
-            <button onClick={() => play(round.item, round.surface, 1)}
-              className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition" aria-label="다시 듣기">
+            <button onClick={() => playRound(1)}
+              className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition" aria-label={t('lab.replayAria')}>
               <svg className="w-7 h-7 ml-1 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
             </button>
-            <button onClick={() => play(round.item, round.surface, 0.6)}
-              className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🐢 천천히</button>
+            <button onClick={() => playRound(0.6)}
+              className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">{t('lab.slow')}</button>
           </div>
-          <span className="text-[10px] text-gray-600">데모 음성(TTS) · 실제 콘텐츠는 녹음 오디오</span>
+          {usedTts && <span className="text-[10px] text-gray-600">{t('lab.ttsNote')}</span>}
         </div>
 
-        <p className="text-center text-gray-200 text-base font-semibold">어떻게 들렸나요?</p>
+        <p className="text-center text-gray-200 text-base font-semibold">{t('notice.question')}</p>
 
         {/* 보기: 표기 vs 실제 소리 */}
         <div className="flex flex-col gap-3">
@@ -170,7 +175,7 @@ export default function SoundNoticePage() {
               <button key={i} onClick={() => pick(i)} disabled={revealed}
                 className={`w-full px-5 py-4 rounded-2xl border-2 text-center transition ${cls}`}>
                 <span className="text-2xl font-black">{opt}</span>
-                {revealed && isAnswer && <span className="ml-2 text-green-400">✓ 실제 소리</span>}
+                {revealed && isAnswer && <span className="ml-2 text-green-400">{t('notice.realSound')}</span>}
                 {revealed && isChosen && !isAnswer && <span className="ml-2 text-red-400">✗</span>}
               </button>
             )
@@ -182,12 +187,12 @@ export default function SoundNoticePage() {
           <div className="flex flex-col gap-4">
             <div className={`rounded-2xl border px-5 py-4 text-center ${chosen === round.answerIdx ? 'border-green-500/40 bg-green-500/5' : 'border-red-500/40 bg-red-500/5'}`}>
               <p className={`font-black text-lg ${chosen === round.answerIdx ? 'text-green-400' : 'text-red-400'}`}>
-                {chosen === round.answerIdx ? '잘 들었어요! 🎧' : '다시 들어볼까요'}
+                {chosen === round.answerIdx ? t('notice.good') : t('notice.tryAgain')}
               </p>
               <p className="mt-2 text-sm text-gray-300">
-                <span className="text-gray-500">이렇게 써요 </span>
+                <span className="text-gray-500">{t('notice.written')} </span>
                 <span className="font-bold text-gray-100">{round.item.transcript}</span>
-                <span className="text-gray-500"> · 이렇게 들려요 </span>
+                <span className="text-gray-500"> · {t('notice.heard')} </span>
                 <span className="font-bold text-green-300">{round.surface}</span>
               </p>
             </div>
@@ -204,12 +209,12 @@ export default function SoundNoticePage() {
             )}
 
             <div className="flex items-center justify-center gap-3">
-              <button onClick={() => play(round.item, round.surface, 1)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🔊 다시</button>
-              <button onClick={() => play(round.item, round.surface, 0.6)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🐢 천천히</button>
+              <button onClick={() => playRound(1)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">{t('lab.replay')}</button>
+              <button onClick={() => playRound(0.6)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">{t('lab.slow')}</button>
             </div>
 
             <button onClick={next} className="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition">
-              {idx + 1 >= rounds.length ? '결과 보기' : '다음'}
+              {idx + 1 >= rounds.length ? t('lab.seeResults') : t('lab.next')}
             </button>
           </div>
         )}

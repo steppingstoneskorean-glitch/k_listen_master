@@ -48,14 +48,16 @@ function speak(text: string, rate = 1) {
 }
 
 // 녹음 오디오(audioUrl) 우선 재생, 없거나 실패하면 TTS 폴백. rate 는 녹음에도 적용(천천히).
-function play(item: DictationItem, fallbackText: string, rate = 1) {
+// onTts: 녹음 없이 TTS 로 재생했을 때 알림(안내 문구 표시용)
+function play(item: DictationItem, fallbackText: string, rate = 1, onTts?: () => void) {
+  const tts = () => { onTts?.(); speak(fallbackText, rate) }
   if (item.audioUrl) {
     const a = new Audio(item.audioUrl)
     a.playbackRate = rate
-    a.onerror = () => speak(fallbackText, rate)
-    a.play().catch(() => speak(fallbackText, rate))
+    a.onerror = tts
+    a.play().catch(tts)
   } else {
-    speak(fallbackText, rate)
+    tts()
   }
 }
 
@@ -83,33 +85,34 @@ function Cloze({ text }: { text: string }) {
   )
 }
 
-// ── 오디오(데모 TTS) 버튼 ─────────────────────────────────────────────────────
-function PlayRow({ item, spoken }: { item: DictationItem; spoken: string }) {
+// ── 재생 버튼 ────────────────────────────────────────────────────────────────
+function PlayRow({ onPlay, usedTts }: { onPlay: (rate: number) => void; usedTts: boolean }) {
+  const { t } = useLang()
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => play(item, spoken, 1)}
+          onClick={() => onPlay(1)}
           className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition"
-          aria-label="다시 듣기"
+          aria-label={t('lab.replayAria')}
         >
           <svg className="w-7 h-7 ml-1 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
         </button>
         <button
-          onClick={() => play(item, spoken, 0.6)}
+          onClick={() => onPlay(0.6)}
           className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition"
         >
-          🐢 천천히
+          {t('lab.slow')}
         </button>
       </div>
-      <span className="text-[10px] text-gray-600">데모 음성(브라우저 TTS) · 실제 콘텐츠는 녹음 오디오</span>
+      {usedTts && <span className="text-[10px] text-gray-600">{t('lab.ttsNote')}</span>}
     </div>
   )
 }
 
 export default function DecodeLabPage() {
   useEffect(() => { trackEvent('decode_session') }, [])
-  const { lang } = useLang()
+  const { lang, t } = useLang()
   const { recordListeningRep } = useGamification()
   const [blanks, setBlanks] = useState<ItemBlank[]>(() => buildSession())
   const [idx, setIdx] = useState(0)
@@ -118,15 +121,18 @@ export default function DecodeLabPage() {
   const [lastCorrect, setLastCorrect] = useState(false)
   const [results, setResults] = useState<Result[]>([])
   const [done, setDone] = useState(false)
+  const [usedTts, setUsedTts] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const current = blanks[idx]
   const spoken = current ? spokenForm(current.item) : ''
+  const playCurrent = (rate: number) => { if (current) play(current.item, spoken, rate, () => setUsedTts(true)) }
 
   // 문항 진입 시 자동 재생 + 포커스
   useEffect(() => {
     if (done || !current) return
-    const timer = setTimeout(() => play(current.item, spoken, 1), 350)
+    setUsedTts(false)
+    const timer = setTimeout(() => playCurrent(1), 350)
     inputRef.current?.focus()
     return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,14 +179,14 @@ export default function DecodeLabPage() {
         <div className="max-w-lg mx-auto px-4 py-10 flex flex-col gap-6">
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="text-6xl">{correctCount >= 4 ? '🎧' : '💪'}</div>
-            <h2 className="text-2xl font-black">오늘의 리스닝 완료</h2>
-            <p className="text-gray-400">실제 한국어 {correctCount}/{results.length} 문장을 알아들었어요</p>
+            <h2 className="text-2xl font-black">{t('decode.doneTitle')}</h2>
+            <p className="text-gray-400">{t('decode.doneScore').replace('{c}', String(correctCount)).replace('{n}', String(results.length))}</p>
           </div>
 
           <div className="rounded-2xl bg-gray-900 border border-gray-800 p-5">
-            <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mb-3">👂 당신의 약점 (누적)</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mb-3">{t('decode.weakTitle')}</p>
             {weakness.length === 0 ? (
-              <p className="text-gray-500 text-sm">아직 약점 데이터가 없어요. 몇 번 더 훈련하면 여기에 현상별로 쌓여요.</p>
+              <p className="text-gray-500 text-sm">{t('decode.weakEmpty')}</p>
             ) : (
               <ul className="flex flex-col gap-2">
                 {weakness.map(([p, n]) => {
@@ -188,21 +194,21 @@ export default function DecodeLabPage() {
                   return (
                     <li key={p} className="flex items-center justify-between">
                       <span className="text-sm font-semibold text-gray-200">{label.title}</span>
-                      <span className="text-xs text-gray-400">{n}회 놓침</span>
+                      <span className="text-xs text-gray-400">{t('decode.missed').replace('{n}', String(n))}</span>
                     </li>
                   )
                 })}
               </ul>
             )}
-            <p className="text-[11px] text-gray-600 mt-3">약점이 높은 현상은 다음 세션에서 더 자주 나와요.</p>
+            <p className="text-[11px] text-gray-600 mt-3">{t('decode.weakHint')}</p>
           </div>
 
           <div className="flex gap-3">
             <button onClick={restart} className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 font-black hover:opacity-90 transition">
-              다시 훈련
+              {t('decode.restart')}
             </button>
             <Link to="/" className="px-6 py-4 rounded-2xl bg-gray-800 border border-gray-700 text-gray-300 font-medium hover:bg-gray-700 transition flex items-center">
-              홈
+              {t('lab.home')}
             </Link>
           </div>
         </div>
@@ -218,7 +224,7 @@ export default function DecodeLabPage() {
       <header className="sticky top-0 z-10 bg-gray-950/95 backdrop-blur border-b border-gray-800/60">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
           <span className="text-xs font-bold px-2 py-0.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
-            🎧 DECODE LAB
+            🎧 {t('listen.decode.title')}
           </span>
           <span className="text-gray-600 text-xs">{idx + 1} / {blanks.length}</span>
           <Link to="/" className="text-gray-500 hover:text-white text-sm">✕</Link>
@@ -229,9 +235,9 @@ export default function DecodeLabPage() {
       </header>
 
       <div className="flex-1 max-w-lg mx-auto w-full px-4 py-8 flex flex-col gap-6">
-        <p className="text-center text-gray-500 text-xs">듣고 빈칸에 들어갈 말을 입력하세요</p>
+        <p className="text-center text-gray-500 text-xs">{t('decode.instruction')}</p>
 
-        <PlayRow item={current.item} spoken={spoken} />
+        <PlayRow onPlay={playCurrent} usedTts={usedTts} />
 
         <div className="rounded-2xl bg-gray-900/70 border border-gray-700/60 px-5 py-6">
           <Cloze text={current.displayText} />
@@ -244,7 +250,7 @@ export default function DecodeLabPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') submit() }}
-              placeholder="입력…"
+              placeholder={t('decode.placeholder')}
               autoComplete="off"
               className="w-full px-5 py-4 rounded-2xl border-2 border-gray-700 bg-gray-900/80 text-white text-xl font-bold text-center tracking-wider outline-none focus:border-blue-500 transition"
             />
@@ -253,7 +259,7 @@ export default function DecodeLabPage() {
               disabled={!input.trim()}
               className="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 transition"
             >
-              확인
+              {t('decode.check')}
             </button>
           </div>
         )}
@@ -263,7 +269,7 @@ export default function DecodeLabPage() {
             {/* 정오 배너 */}
             <div className={`rounded-2xl border px-5 py-4 ${lastCorrect ? 'border-green-500/40 bg-green-500/5' : 'border-red-500/40 bg-red-500/5'}`}>
               <p className={`font-black text-lg ${lastCorrect ? 'text-green-400' : 'text-red-400'}`}>
-                {lastCorrect ? '정답! 🎉' : '아깝네요'}
+                {lastCorrect ? t('lab.correct') : t('lab.almost')}
               </p>
 
               {/* Why didn't I hear it? */}
@@ -284,19 +290,19 @@ export default function DecodeLabPage() {
               )}
               {!lastCorrect && (
                 <p className="mt-2 text-xs text-center">
-                  <span className="text-gray-500">입력: </span>
-                  <span className="text-red-300">{results[results.length - 1] && input ? input : '(미입력)'}</span>
+                  <span className="text-gray-500">{t('decode.yourAnswer')}</span>
+                  <span className="text-red-300">{results[results.length - 1] && input ? input : t('decode.noAnswer')}</span>
                 </p>
               )}
             </div>
 
             <div className="flex items-center justify-center gap-3">
-              <button onClick={() => play(current.item, spoken, 1)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🔊 다시</button>
-              <button onClick={() => play(current.item, spoken, 0.6)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🐢 천천히</button>
+              <button onClick={() => playCurrent(1)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">{t('lab.replay')}</button>
+              <button onClick={() => playCurrent(0.6)} className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">{t('lab.slow')}</button>
             </div>
 
             <button onClick={next} className="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition">
-              {idx + 1 >= blanks.length ? '결과 보기' : '다음'}
+              {idx + 1 >= blanks.length ? t('lab.seeResults') : t('lab.next')}
             </button>
           </div>
         )}

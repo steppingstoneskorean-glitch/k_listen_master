@@ -48,33 +48,38 @@ function speak(text: string, rate = 1) {
     window.speechSynthesis.cancel(); window.speechSynthesis.speak(u)
   } catch { /* TTS 미지원 무시 */ }
 }
-function play(item: DictationItem, surface: string, rate = 1) {
+// onTts: 녹음 없이 TTS 로 재생했을 때 알림(안내 문구 표시용)
+function play(item: DictationItem, surface: string, rate = 1, onTts?: () => void) {
+  const tts = () => { onTts?.(); speak(surface, rate) }
   if (item.audioUrl) {
     const a = new Audio(item.audioUrl)
     a.playbackRate = rate
-    a.onerror = () => speak(surface, rate)
-    a.play().catch(() => speak(surface, rate))
-  } else speak(surface, rate)
+    a.onerror = tts
+    a.play().catch(tts)
+  } else tts()
 }
 
 export default function ContrastLabPage() {
   useEffect(() => { trackEvent('contrast_session') }, [])
-  const { lang } = useLang()
+  const { lang, t } = useLang()
   const [rounds, setRounds] = useState<Round[]>(() => buildSession())
   const [idx, setIdx] = useState(0)
   const [chosen, setChosen] = useState<number | null>(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [wrongQs, setWrongQs] = useState<string[]>([])
   const [done, setDone] = useState(false)
+  const [usedTts, setUsedTts] = useState(false)
 
   const round = rounds[idx]
   const target = round?.members[round.targetIdx]
+  const playTarget = (rate: number) => { if (target) play(target.item, target.surface, rate, () => setUsedTts(true)) }
 
   // 라운드 진입 시 타깃 소리 자동 재생
   useEffect(() => {
     if (done || !round) return
-    const t = setTimeout(() => play(target.item, target.surface, 1), 350)
-    return () => clearTimeout(t)
+    setUsedTts(false)
+    const timer = setTimeout(() => playTarget(1), 350)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idx, done])
 
@@ -117,20 +122,20 @@ export default function ContrastLabPage() {
         <div className="max-w-lg mx-auto px-4 py-10 flex flex-col gap-6">
           <div className="flex flex-col items-center gap-3 text-center">
             <div className="text-6xl">{correctCount >= rounds.length - 1 ? '👂' : '🔁'}</div>
-            <h2 className="text-2xl font-black">변별 완료</h2>
-            <p className="text-gray-400">{correctCount}/{rounds.length} 정확히 구별했어요</p>
+            <h2 className="text-2xl font-black">{t('contrast.doneTitle')}</h2>
+            <p className="text-gray-400">{t('contrast.doneScore').replace('{c}', String(correctCount)).replace('{n}', String(rounds.length))}</p>
           </div>
           {wrongQs.length > 0 && (
             <div className="rounded-2xl bg-gray-900 border border-gray-800 p-5">
-              <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mb-3">다시 볼 판단</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-indigo-400/80 mb-3">{t('contrast.reviewTitle')}</p>
               <ul className="flex flex-col gap-1.5 text-sm text-gray-200 list-disc pl-5">
                 {wrongQs.map((q, i) => <li key={i}>{q}</li>)}
               </ul>
             </div>
           )}
           <div className="flex gap-3">
-            <button onClick={restart} className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 font-black hover:opacity-90 transition">다시</button>
-            <Link to="/" className="px-6 py-4 rounded-2xl bg-gray-800 border border-gray-700 text-gray-300 font-medium hover:bg-gray-700 transition flex items-center">홈</Link>
+            <button onClick={restart} className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 font-black hover:opacity-90 transition">{t('lab.again')}</button>
+            <Link to="/" className="px-6 py-4 rounded-2xl bg-gray-800 border border-gray-700 text-gray-300 font-medium hover:bg-gray-700 transition flex items-center">{t('lab.home')}</Link>
           </div>
         </div>
       </div>
@@ -144,7 +149,7 @@ export default function ContrastLabPage() {
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
       <header className="sticky top-0 z-10 bg-gray-950/95 backdrop-blur border-b border-gray-800/60">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">🎧 소리 구별</span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">🎧 {t('listen.contrast.title')}</span>
           <span className="text-gray-600 text-xs">{idx + 1} / {rounds.length}</span>
           <Link to="/" className="text-gray-500 hover:text-white text-sm">✕</Link>
         </div>
@@ -157,19 +162,19 @@ export default function ContrastLabPage() {
         {/* 재생 */}
         <div className="flex flex-col items-center gap-2">
           <div className="flex items-center gap-3">
-            <button onClick={() => play(target.item, target.surface, 1)}
-              className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition" aria-label="다시 듣기">
+            <button onClick={() => playTarget(1)}
+              className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition" aria-label={t('lab.replayAria')}>
               <svg className="w-7 h-7 ml-1 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
             </button>
-            <button onClick={() => play(target.item, target.surface, 0.6)}
-              className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">🐢 천천히</button>
+            <button onClick={() => playTarget(0.6)}
+              className="h-10 px-4 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-sm font-bold hover:border-gray-500 transition">{t('lab.slow')}</button>
           </div>
-          <span className="text-[10px] text-gray-600">데모 음성(TTS) · 실제 콘텐츠는 녹음 오디오</span>
+          {usedTts && <span className="text-[10px] text-gray-600">{t('lab.ttsNote')}</span>}
         </div>
 
         {/* 판별 질문 */}
         <p className="text-center text-gray-300 text-sm font-semibold px-4">{resolveString(round.set.question, lang)}</p>
-        <p className="text-center text-gray-600 text-xs -mt-4">방금 들은 소리는 어느 쪽인가요?</p>
+        <p className="text-center text-gray-600 text-xs -mt-4">{t('contrast.prompt')}</p>
 
         {/* 선택지 */}
         <div className="flex flex-col gap-3">
@@ -201,14 +206,14 @@ export default function ContrastLabPage() {
           <div className="flex flex-col gap-4">
             <div className={`rounded-2xl border px-5 py-4 ${chosen === round.targetIdx ? 'border-green-500/40 bg-green-500/5' : 'border-red-500/40 bg-red-500/5'}`}>
               <p className={`font-black text-lg ${chosen === round.targetIdx ? 'text-green-400' : 'text-red-400'}`}>
-                {chosen === round.targetIdx ? '정답! 🎉' : '아깝네요'}
+                {chosen === round.targetIdx ? t('lab.correct') : t('lab.almost')}
               </p>
               {round.set.note && (
                 <p className="mt-2 text-sm text-gray-300 leading-relaxed">{resolveString(round.set.note, lang)}</p>
               )}
             </div>
             <button onClick={next} className="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 transition">
-              {idx + 1 >= rounds.length ? '결과 보기' : '다음'}
+              {idx + 1 >= rounds.length ? t('lab.seeResults') : t('lab.next')}
             </button>
           </div>
         )}
