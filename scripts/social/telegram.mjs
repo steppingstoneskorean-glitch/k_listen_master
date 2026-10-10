@@ -20,7 +20,7 @@ function setEnv(key, value) {
   fs.writeFileSync(ENV_FILE, re.test(src) ? src.replace(re, `${key}=${value}`) : `${src.trimEnd()}\n${key}=${value}\n`);
 }
 const env = loadEnv();
-const TOKEN = env.TELEGRAM_BOT_TOKEN;
+const TOKEN = env.TELEGRAM_BOT_TOKEN?.replace(/\s/g, ''); // 폰→PC 복사 시 끼는 공백 제거
 if (!TOKEN) { console.error('ERROR .env.local 에 TELEGRAM_BOT_TOKEN 이 없습니다'); process.exit(1); }
 const API = `https://api.telegram.org/bot${TOKEN}`;
 const redact = s => String(s).split(TOKEN).join('<token>');
