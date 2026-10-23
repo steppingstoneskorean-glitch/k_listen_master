@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FAF9F6">
+<title>Audio · Korean Pronunciation — Stepping Stones Korean</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+:root{--bg:#FAF9F6;--fg:#1A1A1A;--mut:#8A8A80;--line:#E2E0D8;--card:#fff;
+--p0:#8A8A80;--p1:#C97A32;--p2:#5C8A45;--p3:#3E7E9B;--p4:#7A6A9A;--warn:#B8873A}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg);
+font-family:Pretendard,'Noto Sans KR',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{padding-bottom:104px}
+header{position:sticky;top:0;z-index:20;background:rgba(250,249,246,.96);
+backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 16px 10px}
+h1{font-size:16px;font-weight:600;margin:0;letter-spacing:-.01em}
+.sub{font-size:12px;color:var(--mut);margin-top:2px}
+.jump{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px;scrollbar-width:none}
+.jump::-webkit-scrollbar{display:none}
+.jump a{flex:none;font-size:12px;padding:6px 11px;border:1px solid var(--line);
+border-radius:999px;color:var(--mut);text-decoration:none;background:var(--card)}
+main{padding:8px 12px 0;max-width:640px;margin:0 auto}
+section{margin-top:18px;scroll-margin-top:118px}
+.ph{display:flex;align-items:baseline;gap:9px;padding:0 4px 7px}
+.pn{font-size:13px;font-weight:600;padding:2px 8px;border-radius:6px;color:#fff}
+.pt{font-size:14px;font-weight:500}
+.pk{font-size:12px;color:var(--mut)}
+ul{list-style:none;margin:0;padding:0;background:var(--card);
+border:1px solid var(--line);border-radius:14px;overflow:hidden}
+li{display:flex;align-items:center;gap:12px;padding:13px 14px;min-height:56px;
+border-top:1px solid var(--line);cursor:pointer}
+li:first-child{border-top:none}
+li:active{background:#F2F0EA}
+li.on{background:#F2F0EA}
+.ic{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid currentColor;
+display:flex;align-items:center;justify-content:center;font-size:11px}
+.tx{flex:1;min-width:0}
+.t1{font-size:16px;line-height:1.35}
+.t2{font-size:12px;color:var(--mut);margin-top:1px}
+.badge{flex:none;font-size:10px;color:var(--warn);border:1px solid var(--warn);
+border-radius:5px;padding:1px 5px}
+footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(250,249,246,.97);
+backdrop-filter:blur(10px);border-top:1px solid var(--line);
+padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+.now{display:flex;align-items:center;gap:11px}
+.big{flex:none;width:46px;height:46px;border-radius:50%;background:var(--fg);color:var(--bg);
+border:none;font-size:16px;display:flex;align-items:center;justify-content:center}
+.meta{flex:1;min-width:0}
+.m1{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m2{font-size:11px;color:var(--mut)}
+.tog{display:flex;gap:6px}
+.tog button{font-size:12px;padding:8px 11px;border:1px solid var(--line);background:var(--card);
+border-radius:9px;color:var(--mut);font-family:inherit;min-height:38px}
+.tog button.act{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.note{font-size:12px;color:var(--mut);text-align:center;padding:22px 16px 8px;line-height:1.6}
+</style></head><body>
+
+<header>
+  <h1>Korean Pronunciation · Audio</h1>
+  <div class="sub">Pause · Carry · Change — 187 clips, by page</div>
+  <nav class="jump" id="jump"></nav>
+</header>
+
+<main id="app"></main>
+
+<div class="note">Slow first, then natural speed.<br>Tap a line to replay it as many times as you like.<br><br>© Stepping Stones Korean</div>
+
+<footer>
+  <div class="now">
+    <button class="big" id="pp" aria-label="Play or pause">▶</button>
+    <div class="meta"><div class="m1" id="m1">Tap any line to start</div><div class="m2" id="m2">—</div></div>
+    <div class="tog">
+      <button id="sp">1.0×</button>
+      <button id="rp">↻</button>
+    </div>
+  </div>
+</footer>
+
+<audio id="au" preload="none"></audio>
+
+<script>
+const P={0:'--p0',1:'--p1',2:'--p2',3:'--p3',4:'--p4'};
+const D=[
+ [4,0,'Why Korean isn\'t read as written','패러다임 전환',['진우 [지누]','국물 [궁물]','학교 [학꾜]','한국어 [한구거]']],
+ [5,0,'Three kinds of sound','소리의 세 가지 성질',['악 앋 압','안 암 앙','알','암 / 압 — nose test','악 → 알 — hold test','압 암 — lips','악 앙 — back of tongue']],
+ [6,0,'Feel it','느껴보기',['악','앋','압','안','암','앙','알']],
+ [7,0,'The 7 final sounds','받침 대표음 7가지',['책','산','옷','물','밤','밥','강','꽃 → 꽃이 ⚠','옷 → 옷이 ⚠','앞 → 앞으로 ⚠']],
+ [8,0,'The two faces of ㅎ','ㅎ의 두 얼굴',['좋아요 [조아요]','놓아요 [노아요]','좋다 [조타]','좋고 [조코]','많아요 [마나요]','싫어요 [시러요]']],
+ [9,1,'PAUSE — the principle','원리 + 대비 청취',['학교 (no pause) ↔ 학:교 ⚠','학교에 가요 [학꾜에가요]','학 — hold','교 — release']],
+ [10,1,'Say 학, stop, start 교','조음 3단계',['학','(0.1s)','교']],
+ [11,1,'Practice','연습 10',['학생','약국','책상','갑자기','옆집','식당','꽃집','국밥','학기','늦게']],
+ [12,1,'신고 · 할 수','일어나는 자리',['신고 [신꼬]','앉고 [안꼬]','감고 [감꼬]','할 수 [할쑤]','할 거예요 [할꺼예요]','갈 데 [갈떼]']],
+ [13,1,'When it does NOT happen','⚠ 부정 예시',['신고 ↔ 신문 ⚠','안고 ↔ 안개 ⚠','감고 ↔ 감기 ⚠','신고 ↔ 알고 ⚠','알고','살고','물건','불고기']],
+ [14,2,'CARRY — the principle','원리 + 대비 청취',['한국어 [한구거]','[할아버지] ↔ [하라버지] ⚠','할아버지 — slow','할아버지 — natural','한 구 거','ㅇ = empty lane']],
+ [15,2,'할아버지 in four steps','단계 연습',['하','라','버지','하라버지']],
+ [16,2,'Practice','연습 11',['음악','단어','월요일','걸어요','먹어요','입어요','발음','옷을','앞에','잊어요','십일']],
+ [17,2,'꽃이 [꼬치]','대표음으로 넘기기',['꽃','꽃이','옷이','밭이']],
+ [18,2,'Double carry','이중 Carry',['밥을','먹어요','밥을 먹어요','이름이 뭐예요']],
+ [19,2,'When Carry stops halfway','⚠ 부정 예시',['꽃이 ↔ 꽃 위 ⚠','옷이 ↔ 옷 안 ⚠','밭이 ↔ 밭 아래 ⚠','꼬뒤','오단','바다래']],
+ [20,3,'The four changes','CHANGE 개관',['국물 [궁물]','연락 [열락]','같이 [가치]','좋다 [조타]']],
+ [21,3,'① Soften — the principle','국물 [궁물]',['국물 — slow','국물 — natural','국 → 궁']],
+ [22,3,'① Soften — practice','연습 10',['한국말','작년','닫는다','앞문','십만','학년','먹는다','있는','감사합니다','못 만나요']],
+ [23,3,'② ㄹ Flow — the principle','연락 [열락]',['연락 — slow','연락 — natural','연 → 열']],
+ [24,3,'② ㄹ Flow — practice','연습 10 + ⚠',['신라','난로','설날','물냉면','한라산','편리','실내','진리','원래','일 년','신라 ↔ 정리 ⚠','난로 ↔ 대통령 ⚠','설날 ↔ 심리 ⚠','독립 · 협력 ⚠']],
+ [25,3,'③ Front Shift — the principle','같이 [가치]',['같이 — slow','같이 — natural','가티 ↔ 가치 ⚠']],
+ [26,3,'③ Front Shift — practice','연습 9 + ⚠',['굳이','해돋이','끝이','밑이','밭이','맏이','닫히다','붙이다','미닫이','같이 ↔ 잔디 ⚠','굳이 ↔ 마디 ⚠','끝이 ↔ 느티나무 ⚠']],
+ [27,3,'④ Breath Boost — the principle','좋다 [조타]',['좋다 — slow','좋다 — natural','ㅎ + ㄷ → ㅌ']],
+ [28,3,'④ Breath Boost — practice','연습 10',['좋고','좋지','어떻게','축하','입학','놓고','백화점','급하다','각하','잡히다']],
+ [29,3,'Putting it together','종합연습 20',['1–20 · words','1–20 · answers','편리 ↔ 정리 ⚠','밭이 ↔ 잔디 ⚠','앞문 · 독립 · 있는']],
+ [30,4,'Two letters, one sound','겹받침 원리',['넋','닭','값','삶']],
+ [31,4,'The front eight','앞을 읽는 것',['넋 · 몫 · 앉다 · 않다','여덟 · 넓다 · 외곬 · 핥다','싫다 · 값 · 없다']],
+ [32,4,'The back three','뒤를 읽는 것',['닭 · 읽다 · 맑다','삶 · 젊다 · 읊다','않아 · 싫어 ↔ 않다 · 싫다 ⚠']],
+ [33,4,'Exceptions','예외 · 모음이 올 때',['넓다 → 밟다 ⚠','읽다 → 읽고 ⚠','넋이 · 앉아 · 값이 · 읽어 · 삶이 · 핥아','answers 1–10']],
+ [35,0,'Final review','30문항',['1–30 · words']],
+ [36,0,'Final review — answers','정답',['1–30 · answers','몇 월 · 없어요 · 없는']],
+ [39,0,'The 10 simple vowels','단모음',['이 에 애 / 위 외','으 어 아 / 우 오','어 ↔ 오 ⚠','으 ↔ 우 ⚠','개 · 게']],
+ [40,0,'The 11 combined vowels','이중모음',['야구 여자 요리 유리','과일 원 왜 웨','왜 · 외 · 웨 ⚠','워 ↔ 어 ⚠','왜 ↔ 애 ⚠','의사 회의 나의','practice 8']]
+];
+const app=document.getElementById('app'),jump=document.getElementById('jump'),au=document.getElementById('au');
+let cur=null,rep=false;
+const pad=n=>String(n).padStart(2,'0');
+D.forEach(([pg,part,title,kr,clips])=>{
+  const c=`var(${P[part]})`;
+  const s=document.createElement('section');s.id='p'+pg;
+  s.innerHTML=`<div class="ph"><span class="pn" style="background:${c}">p.${pg}</span>
+    <span class="pt">${title}</span><span class="pk">${kr}</span></div>`;
+  const ul=document.createElement('ul');
+  clips.forEach((lab,i)=>{
+    const warn=lab.includes('⚠');
+    const li=document.createElement('li');
+    li.dataset.src=`clips/p${pad(pg)}-${pad(i+1)}.mp3`;
+    li.dataset.title=lab.replace('⚠','').trim();
+    li.dataset.page=`p.${pg} · ${title}`;
+    li.innerHTML=`<span class="ic" style="color:${c}">▶</span>
+      <span class="tx"><span class="t1">${lab.replace('⚠','')}</span>
+      <span class="t2">track ${pad(i+1)}</span></span>
+      ${warn?'<span class="badge">비교</span>':''}`;
+    ul.appendChild(li);
+  });
+  s.appendChild(ul);app.appendChild(s);
+  const a=document.createElement('a');a.href='#p'+pg;a.textContent='p.'+pg;jump.appendChild(a);
+});
+function play(li){
+  if(cur)cur.classList.remove('on'),cur.querySelector('.ic').textContent='▶';
+  cur=li;li.classList.add('on');li.querySelector('.ic').textContent='❚❚';
+  au.src=li.dataset.src;au.playbackRate=parseFloat(sp.dataset.v||1);
+  au.play().catch(()=>{m1.textContent='Audio file not found yet';});
+  m1.textContent=li.dataset.title;m2.textContent=li.dataset.page;pp.textContent='❚❚';
+}
+app.addEventListener('click',e=>{const li=e.target.closest('li');if(li)play(li);});
+const pp=document.getElementById('pp'),m1=document.getElementById('m1'),m2=document.getElementById('m2'),
+      sp=document.getElementById('sp'),rp=document.getElementById('rp');
+pp.onclick=()=>{if(!cur)return;au.paused?au.play():au.pause();};
+au.onplay=()=>{pp.textContent='❚❚';if(cur)cur.querySelector('.ic').textContent='❚❚';};
+au.onpause=()=>{pp.textContent='▶';if(cur)cur.querySelector('.ic').textContent='▶';};
+au.onended=()=>{if(rep){au.currentTime=0;au.play();}else{pp.textContent='▶';if(cur)cur.querySelector('.ic').textContent='▶';}};
+const speeds=[1,0.75,0.6];let si=0;
+sp.onclick=()=>{si=(si+1)%speeds.length;sp.dataset.v=speeds[si];sp.textContent=speeds[si].toFixed(2).replace(/0$/,'')+'×';
+  sp.classList.toggle('act',speeds[si]!==1);au.playbackRate=speeds[si];};
+rp.onclick=()=>{rep=!rep;rp.classList.toggle('act',rep);};
+if(location.hash)setTimeout(()=>document.querySelector(location.hash)?.scrollIntoView(),80);
+</script>
+</body></html>

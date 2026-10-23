@@ -1,0 +1,268 @@
+# book1 오디오 클립 예상 파일명 — 총 196개
+# 생성: 2026-09-04T05:41:22.590Z
+# 위치: public/book1/clips/  (플레이어에서 /book1/clips/pXX-YY.mp3 로 서빙)
+# 형식:  파일경로 <TAB> 해당 클립 라벨
+
+# p.4  Why Korean isn't read as written  (패러다임 전환)  — 4 clips
+clips/p04-01.mp3	진우 [지누]
+clips/p04-02.mp3	국물 [궁물]
+clips/p04-03.mp3	학교 [학꾜]
+clips/p04-04.mp3	한국어 [한구거]
+
+# p.5  Three kinds of sound  (소리의 세 가지 성질)  — 7 clips
+clips/p05-01.mp3	악 앋 압
+clips/p05-02.mp3	안 암 앙
+clips/p05-03.mp3	알
+clips/p05-04.mp3	암 / 압 — nose test
+clips/p05-05.mp3	악 → 알 — hold test
+clips/p05-06.mp3	압 암 — lips
+clips/p05-07.mp3	악 앙 — back of tongue
+
+# p.6  Feel it  (느껴보기)  — 7 clips
+clips/p06-01.mp3	악
+clips/p06-02.mp3	앋
+clips/p06-03.mp3	압
+clips/p06-04.mp3	안
+clips/p06-05.mp3	암
+clips/p06-06.mp3	앙
+clips/p06-07.mp3	알
+
+# p.7  The 7 final sounds  (받침 대표음 7가지)  — 10 clips
+clips/p07-01.mp3	책
+clips/p07-02.mp3	산
+clips/p07-03.mp3	옷
+clips/p07-04.mp3	물
+clips/p07-05.mp3	밤
+clips/p07-06.mp3	밥
+clips/p07-07.mp3	강
+clips/p07-08.mp3	꽃 → 꽃이
+clips/p07-09.mp3	옷 → 옷이
+clips/p07-10.mp3	앞 → 앞으로
+
+# p.8  The two faces of ㅎ  (ㅎ의 두 얼굴)  — 6 clips
+clips/p08-01.mp3	좋아요 [조아요]
+clips/p08-02.mp3	놓아요 [노아요]
+clips/p08-03.mp3	좋다 [조타]
+clips/p08-04.mp3	좋고 [조코]
+clips/p08-05.mp3	많아요 [마나요]
+clips/p08-06.mp3	싫어요 [시러요]
+
+# p.9  PAUSE — the principle  (원리 + 대비 청취)  — 4 clips
+clips/p09-01.mp3	학교 (no pause) ↔ 학:교
+clips/p09-02.mp3	학교에 가요 [학꾜에가요]
+clips/p09-03.mp3	학 — hold
+clips/p09-04.mp3	교 — release
+
+# p.10  Say 학, stop, start 교  (조음 3단계)  — 3 clips
+clips/p10-01.mp3	학
+clips/p10-02.mp3	(0.1s)
+clips/p10-03.mp3	교
+
+# p.11  Practice  (연습 10)  — 10 clips
+clips/p11-01.mp3	학생
+clips/p11-02.mp3	약국
+clips/p11-03.mp3	책상
+clips/p11-04.mp3	갑자기
+clips/p11-05.mp3	옆집
+clips/p11-06.mp3	식당
+clips/p11-07.mp3	꽃집
+clips/p11-08.mp3	국밥
+clips/p11-09.mp3	학기
+clips/p11-10.mp3	늦게
+
+# p.12  신고 · 할 수  (일어나는 자리)  — 6 clips
+clips/p12-01.mp3	신고 [신꼬]
+clips/p12-02.mp3	앉고 [안꼬]
+clips/p12-03.mp3	감고 [감꼬]
+clips/p12-04.mp3	할 수 [할쑤]
+clips/p12-05.mp3	할 거예요 [할꺼예요]
+clips/p12-06.mp3	갈 데 [갈떼]
+
+# p.13  When it does NOT happen  (⚠ 부정 예시)  — 8 clips
+clips/p13-01.mp3	신고 ↔ 신문
+clips/p13-02.mp3	안고 ↔ 안개
+clips/p13-03.mp3	감고 ↔ 감기
+clips/p13-04.mp3	신고 ↔ 알고
+clips/p13-05.mp3	알고
+clips/p13-06.mp3	살고
+clips/p13-07.mp3	물건
+clips/p13-08.mp3	불고기
+
+# p.14  CARRY — the principle  (원리 + 대비 청취)  — 6 clips
+clips/p14-01.mp3	한국어 [한구거]
+clips/p14-02.mp3	[할아버지] ↔ [하라버지]
+clips/p14-03.mp3	할아버지 — slow
+clips/p14-04.mp3	할아버지 — natural
+clips/p14-05.mp3	한 구 거
+clips/p14-06.mp3	ㅇ = empty lane
+
+# p.15  할아버지 in four steps  (단계 연습)  — 4 clips
+clips/p15-01.mp3	하
+clips/p15-02.mp3	라
+clips/p15-03.mp3	버지
+clips/p15-04.mp3	하라버지
+
+# p.16  Practice  (연습 11)  — 11 clips
+clips/p16-01.mp3	음악
+clips/p16-02.mp3	단어
+clips/p16-03.mp3	월요일
+clips/p16-04.mp3	걸어요
+clips/p16-05.mp3	먹어요
+clips/p16-06.mp3	입어요
+clips/p16-07.mp3	발음
+clips/p16-08.mp3	옷을
+clips/p16-09.mp3	앞에
+clips/p16-10.mp3	잊어요
+clips/p16-11.mp3	십일
+
+# p.17  꽃이 [꼬치]  (대표음으로 넘기기)  — 4 clips
+clips/p17-01.mp3	꽃
+clips/p17-02.mp3	꽃이
+clips/p17-03.mp3	옷이
+clips/p17-04.mp3	밭이
+
+# p.18  Double carry  (이중 Carry)  — 4 clips
+clips/p18-01.mp3	밥을
+clips/p18-02.mp3	먹어요
+clips/p18-03.mp3	밥을 먹어요
+clips/p18-04.mp3	이름이 뭐예요
+
+# p.19  When Carry stops halfway  (⚠ 부정 예시)  — 6 clips
+clips/p19-01.mp3	꽃이 ↔ 꽃 위
+clips/p19-02.mp3	옷이 ↔ 옷 안
+clips/p19-03.mp3	밭이 ↔ 밭 아래
+clips/p19-04.mp3	꼬뒤
+clips/p19-05.mp3	오단
+clips/p19-06.mp3	바다래
+
+# p.20  The four changes  (CHANGE 개관)  — 4 clips
+clips/p20-01.mp3	국물 [궁물]
+clips/p20-02.mp3	연락 [열락]
+clips/p20-03.mp3	같이 [가치]
+clips/p20-04.mp3	좋다 [조타]
+
+# p.21  ① Soften — the principle  (국물 [궁물])  — 3 clips
+clips/p21-01.mp3	국물 — slow
+clips/p21-02.mp3	국물 — natural
+clips/p21-03.mp3	국 → 궁
+
+# p.22  ① Soften — practice  (연습 10)  — 10 clips
+clips/p22-01.mp3	한국말
+clips/p22-02.mp3	작년
+clips/p22-03.mp3	닫는다
+clips/p22-04.mp3	앞문
+clips/p22-05.mp3	십만
+clips/p22-06.mp3	학년
+clips/p22-07.mp3	먹는다
+clips/p22-08.mp3	있는
+clips/p22-09.mp3	감사합니다
+clips/p22-10.mp3	못 만나요
+
+# p.23  ② ㄹ Flow — the principle  (연락 [열락])  — 3 clips
+clips/p23-01.mp3	연락 — slow
+clips/p23-02.mp3	연락 — natural
+clips/p23-03.mp3	연 → 열
+
+# p.24  ② ㄹ Flow — practice  (연습 10 + ⚠)  — 14 clips
+clips/p24-01.mp3	신라
+clips/p24-02.mp3	난로
+clips/p24-03.mp3	설날
+clips/p24-04.mp3	물냉면
+clips/p24-05.mp3	한라산
+clips/p24-06.mp3	편리
+clips/p24-07.mp3	실내
+clips/p24-08.mp3	진리
+clips/p24-09.mp3	원래
+clips/p24-10.mp3	일 년
+clips/p24-11.mp3	신라 ↔ 정리
+clips/p24-12.mp3	난로 ↔ 대통령
+clips/p24-13.mp3	설날 ↔ 심리
+clips/p24-14.mp3	독립 · 협력
+
+# p.25  ③ Front Shift — the principle  (같이 [가치])  — 3 clips
+clips/p25-01.mp3	같이 — slow
+clips/p25-02.mp3	같이 — natural
+clips/p25-03.mp3	가티 ↔ 가치
+
+# p.26  ③ Front Shift — practice  (연습 9 + ⚠)  — 12 clips
+clips/p26-01.mp3	굳이
+clips/p26-02.mp3	해돋이
+clips/p26-03.mp3	끝이
+clips/p26-04.mp3	밑이
+clips/p26-05.mp3	밭이
+clips/p26-06.mp3	맏이
+clips/p26-07.mp3	닫히다
+clips/p26-08.mp3	붙이다
+clips/p26-09.mp3	미닫이
+clips/p26-10.mp3	같이 ↔ 잔디
+clips/p26-11.mp3	굳이 ↔ 마디
+clips/p26-12.mp3	끝이 ↔ 느티나무
+
+# p.27  ④ Breath Boost — the principle  (좋다 [조타])  — 3 clips
+clips/p27-01.mp3	좋다 — slow
+clips/p27-02.mp3	좋다 — natural
+clips/p27-03.mp3	ㅎ + ㄷ → ㅌ
+
+# p.28  ④ Breath Boost — practice  (연습 10)  — 10 clips
+clips/p28-01.mp3	좋고
+clips/p28-02.mp3	좋지
+clips/p28-03.mp3	어떻게
+clips/p28-04.mp3	축하
+clips/p28-05.mp3	입학
+clips/p28-06.mp3	놓고
+clips/p28-07.mp3	백화점
+clips/p28-08.mp3	급하다
+clips/p28-09.mp3	각하
+clips/p28-10.mp3	잡히다
+
+# p.29  Putting it together  (종합연습 20)  — 5 clips
+clips/p29-01.mp3	1–20 · words
+clips/p29-02.mp3	1–20 · answers
+clips/p29-03.mp3	편리 ↔ 정리
+clips/p29-04.mp3	밭이 ↔ 잔디
+clips/p29-05.mp3	앞문 · 독립 · 있는
+
+# p.30  Two letters, one sound  (겹받침 원리)  — 4 clips
+clips/p30-01.mp3	넋
+clips/p30-02.mp3	닭
+clips/p30-03.mp3	값
+clips/p30-04.mp3	삶
+
+# p.31  The front eight  (앞을 읽는 것)  — 3 clips
+clips/p31-01.mp3	넋 · 몫 · 앉다 · 않다
+clips/p31-02.mp3	여덟 · 넓다 · 외곬 · 핥다
+clips/p31-03.mp3	싫다 · 값 · 없다
+
+# p.32  The back three  (뒤를 읽는 것)  — 3 clips
+clips/p32-01.mp3	닭 · 읽다 · 맑다
+clips/p32-02.mp3	삶 · 젊다 · 읊다
+clips/p32-03.mp3	않아 · 싫어 ↔ 않다 · 싫다
+
+# p.33  Exceptions  (예외 · 모음이 올 때)  — 4 clips
+clips/p33-01.mp3	넓다 → 밟다
+clips/p33-02.mp3	읽다 → 읽고
+clips/p33-03.mp3	넋이 · 앉아 · 값이 · 읽어 · 삶이 · 핥아
+clips/p33-04.mp3	answers 1–10
+
+# p.35  Final review  (30문항)  — 1 clips
+clips/p35-01.mp3	1–30 · words
+
+# p.36  Final review — answers  (정답)  — 2 clips
+clips/p36-01.mp3	1–30 · answers
+clips/p36-02.mp3	몇 월 · 없어요 · 없는
+
+# p.39  The 10 simple vowels  (단모음)  — 5 clips
+clips/p39-01.mp3	이 에 애 / 위 외
+clips/p39-02.mp3	으 어 아 / 우 오
+clips/p39-03.mp3	어 ↔ 오
+clips/p39-04.mp3	으 ↔ 우
+clips/p39-05.mp3	개 · 게
+
+# p.40  The 11 combined vowels  (이중모음)  — 7 clips
+clips/p40-01.mp3	야구 여자 요리 유리
+clips/p40-02.mp3	과일 원 왜 웨
+clips/p40-03.mp3	왜 · 외 · 웨
+clips/p40-04.mp3	워 ↔ 어
+clips/p40-05.mp3	왜 ↔ 애
+clips/p40-06.mp3	의사 회의 나의
+clips/p40-07.mp3	practice 8
