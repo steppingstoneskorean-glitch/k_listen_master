@@ -54,3 +54,12 @@ i18n-review/
 
 # Marketing consent export — contains personal data (emails), NEVER commit
 marketing-consent-*.csv
+
+# 인제스트 산출물(자막 .txt / 보존 오디오) — 운영 콘텐츠 초안, 커밋 불필요
+scripts/ingest-out/
+# 인제스트 큐(개인 작업 목록)는 템플릿만 커밋하고 실제 목록은 로컬 유지하고 싶다면 주석 해제
+# scripts/ingest-queue.txt
+
+# SNS drafts: local captures and base64 review pages
+marketing/_shots/
+marketing/posts/*/review.html

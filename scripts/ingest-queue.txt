@@ -1,0 +1,7 @@
+# K-Listen 인제스트 큐 — 한 줄에 유튜브 URL 하나
+# '#' 로 시작하는 줄과 빈 줄은 무시됩니다.
+# 실행:  node scripts/ingest.mjs   (또는  npm run ingest)
+#
+# 예시)
+# https://youtu.be/wu6bA3zK_us
+# https://www.youtube.com/watch?v=wu6bA3zK_us
