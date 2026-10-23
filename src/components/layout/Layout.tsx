@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom'
-import InstallBanner from '@/components/InstallBanner'
 import Header from './Header'
 import BottomNav from './BottomNav'
 
@@ -9,7 +8,6 @@ import BottomNav from './BottomNav'
 export default function Layout() {
   return (
     <div className="app-shell flex min-h-screen flex-col text-slate-900">
-      <InstallBanner />
       <Header />
       <main className="flex-1">
         <Outlet />
