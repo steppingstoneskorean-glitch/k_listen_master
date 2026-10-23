@@ -1,0 +1,57 @@
+{
+  "slug": "2026-10-12-hangul-cards-testers",
+  "status": "draft",
+  "brand": "Hangul Cards",
+  "schedule": [
+    { "at": "2026-10-12T22:00:00+09:00", "items": ["threads:recruit"] },
+    { "at": "2026-10-13T22:00:00+09:00", "items": ["instagram"] },
+    { "at": "2026-10-16T22:00:00+09:00", "items": ["threads:reminder"] }
+  ],
+  "theme": "Hangul Cards closed test — recruiting Android testers (DM Gmail used on Google Play)",
+  "threads": [
+    {
+      "key": "recruit",
+      "text": "Looking for Android testers 🙋\n\nI made Hangul Cards — a free app for people just starting to read Korean. Flip the cards, watch the letters snap into a real syllable, and hear it in two native voices.\n\nGoogle Play requires a closed test before launch. Want to join? DM me the Gmail address you use on Google Play and I'll add you and send the link.\n\nKeep it installed for 14 days and tell me honestly what's confusing 🙏",
+      "image": "cards-en.png",
+      "replies": []
+    },
+    {
+      "key": "reminder",
+      "text": "Still looking for a few more Android testers for Hangul Cards 🙏\n\n✔ Free, no sign-up, works offline\n✔ For absolute beginners (가 → 각 → 닭)\n✔ 14 days, Android only\n\nDM me the Gmail address you use on Google Play and I'll send you the invite.\n\nBeginners: what was the hardest part of learning Hangul?",
+      "image": "cards-dak.png",
+      "replies": []
+    }
+  ],
+  "instagram": {
+    "type": "carousel",
+    "caption": "Testers wanted 🙋 Help me launch Hangul Cards!\n\nIt's a free app for absolute beginners: flip the cards, watch the letters build a real Korean syllable, and hear it in two native voices. No sign-up, works offline, 11 languages.\n\nBefore it goes public, Google Play needs a closed test.\n👉 DM me the Gmail address you use on Google Play (Android only)\n👉 I'll add you and send the link\n👉 Keep it installed for 14 days and share your honest feedback\n\nKnow someone starting Korean? Tag them 👇\n\n#learnkorean #hangul #koreanalphabet #studykorean #koreanforbeginners",
+    "slides": [
+      {
+        "type": "hook",
+        "kicker": "Testers wanted 🙋",
+        "title": "Help me launch<br><em>Hangul Cards</em>",
+        "sub": "A free app for absolute beginners learning to read Korean"
+      },
+      {
+        "type": "shot",
+        "image": "marketing/posts/2026-10-12-hangul-cards-testers/cards-en.png",
+        "offsetY": 15,
+        "title": "Flip. Build. Hear it.",
+        "sub": "Consonant + vowel snap into a real syllable — read aloud in two native voices."
+      },
+      {
+        "type": "shot",
+        "image": "marketing/posts/2026-10-12-hangul-cards-testers/cards-dak.png",
+        "offsetY": 15,
+        "title": "From 가 all the way to 닭",
+        "sub": "No final → 1 final → 2 finals. Works offline, 11 languages."
+      },
+      {
+        "type": "cta",
+        "title": "DM me your<br><em>Gmail</em>",
+        "sub": "The one you use on Google Play (Android). Keep the app 14 days and tell me what you think.",
+        "button": "DM @steppingstoneskorean"
+      }
+    ]
+  }
+}

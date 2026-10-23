@@ -1,0 +1,66 @@
+{
+  "slug": "2026-10-11-klisten-launch",
+  "status": "draft",
+  "schedule": [
+    { "at": "2026-10-11T22:00:00+09:00", "items": ["threads:launch", "instagram"] },
+    { "at": "2026-10-15T22:00:00+09:00", "items": ["threads:feature"] }
+  ],
+  "theme": "K-Listen launch announcement (now on Google Play)",
+  "threads": [
+    {
+      "key": "launch",
+      "text": "K-Listen is now on Google Play 🎧\n\nI built it for one problem: you can read Korean, but real speech still sounds like one long blur.\n\nThe app plays real Korean, asks what you heard, then shows written vs. heard — and why it sounds that way.\n\nWhat's one Korean word you could never catch by ear?",
+      "image": "app-reveal.png",
+      "replies": [
+        "Free on Google Play: https://play.google.com/store/apps/details?id=com.stepkorean.klistenmaster"
+      ]
+    },
+    {
+      "key": "feature",
+      "text": "How one K-Listen round works:\n\n1. Play the clip (or slow it down 🐢)\n2. Pick what you heard: 옷 안 or 오단?\n3. See the real sound and the rule behind it\n\nNo grammar drills first. Just your ear, a few minutes a day.\n\nWhich one would you pick? 👇",
+      "image": "round-quiz.png",
+      "replies": [
+        "Answer: it's written 옷 안 but heard [오단] — the ㅅ closes into a ㄷ sound, then carries over to 안.",
+        "Try it free: https://play.google.com/store/apps/details?id=com.stepkorean.klistenmaster"
+      ]
+    }
+  ],
+  "instagram": {
+    "type": "carousel",
+    "caption": "K-Listen is live on Google Play 🎧\n\nYou can read Korean… but can you catch it at real speed? K-Listen trains your ear: listen, pick what you heard, then see written vs. heard — and the reason behind it.\n\nWhat's the hardest Korean word for you to catch by ear? Tell me below 👇\n\nFree on Google Play — link in bio.\n\n#learnkorean #studykorean #koreanlistening #koreanlanguage #kdrama",
+    "slides": [
+      {
+        "type": "hook",
+        "kicker": "Now on Google Play",
+        "title": "K-Listen is <em>live</em>.",
+        "sub": "A Korean listening app that trains your ear, not just your eyes"
+      },
+      {
+        "type": "shot",
+        "image": "marketing/posts/2026-10-11-klisten-launch/round-quiz.png",
+        "title": "1. Hear real Korean",
+        "sub": "Play it, slow it down, and pick what you actually heard."
+      },
+      {
+        "type": "shot",
+        "image": "marketing/posts/2026-10-11-klisten-launch/app-reveal.png",
+        "title": "2. Written vs. heard",
+        "sub": "종로 is written with ㄹ — but you hear [종노]. Now you know why."
+      },
+      {
+        "type": "word",
+        "written": "국물",
+        "heard": "궁물",
+        "meaning": "\"soup broth\"",
+        "badge": "change",
+        "why": "ㄱ meets ㅁ and turns into a nasal ㅇ."
+      },
+      {
+        "type": "cta",
+        "title": "Stop guessing.<br>Start <em>hearing</em> Korean.",
+        "sub": "Free on Android 📲",
+        "button": "Google Play · link in bio"
+      }
+    ]
+  }
+}

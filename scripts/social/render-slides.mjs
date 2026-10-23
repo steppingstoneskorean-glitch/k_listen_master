@@ -18,7 +18,7 @@ const BADGE = { pause: ['Pause', '#f59e0b'], carry: ['Carry', '#22d3ee'], change
 
 function body(s, i, n) {
   const pager = `<div class="pager">${i + 1} / ${n}</div>`;
-  const brand = `<div class="brand"><span class="dot"></span>K-Listen</div>`;
+  const brand = `<div class="brand"><span class="dot"></span>${esc(post.brand ?? 'K-Listen')}</div>`;
   if (s.type === 'hook') return `${brand}
     <div class="center"><div class="kicker">${esc(s.kicker)}</div><h1>${s.title}</h1><p class="sub">${esc(s.sub)}</p></div>
     <div class="swipe">Swipe →</div>`;
