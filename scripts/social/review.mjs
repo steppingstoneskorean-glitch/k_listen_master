@@ -19,6 +19,7 @@ const angle = a => a ? `<div class="angle">👤 ${esc(a.who)} · 🕒 ${esc(a.wh
 const threads = (post.threads ?? []).map((t, i) => `
   <div class="card">
     <div class="label">Threads ${i + 1} · ${esc(t.key)}</div>
+    ${angle(t.angle)}
     <div class="text">${esc(t.text)}</div>
     ${t.image ? `<img class="timg" src="${data(path.join(pub, t.image))}">` : ''}
     ${(t.replies ?? []).map(r => `<div class="reply">↳ 내 댓글: ${esc(r)}</div>`).join('')}
