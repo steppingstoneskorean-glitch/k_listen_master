@@ -1,0 +1,52 @@
+# SNS 업로드 패키지 텔레그램 전송 (PC가 꺼져 있어도 동작 — AI 없이 결정적 스크립트)
+# ─────────────────────────────────────────────────────────────────────────────
+#   · 매일 10:00 KST(01:00 UTC)에 승인된 초안에서 슬롯 하나를 골라 오너에게 텔레그램으로 보낸다.
+#   · 오너가 직접 업로드한다 (API 자동 게시 없음).
+#   · 보낸 기록(marketing/daily/<date>.md, handoffs.json)은 이 워크플로가 main 에 커밋한다.
+#   · 하루 한 번만 전송 — 같은 날 다시 돌아도 '오늘 전송 완료됨'으로 끝난다.
+#
+#   저장소 설정에서 등록 필요:
+#     Settings → Secrets and variables → Actions → Secrets
+#       - TELEGRAM_BOT_TOKEN : BotFather 토큰
+#       - TELEGRAM_CHAT_ID   : 오너 채팅 ID (.env.local 의 값과 동일)
+#
+#   ※ GitHub Actions 크론은 '베스트 에포트'라 수 분~수십 분 늦을 수 있다. 수동 실행으로 테스트 가능.
+name: SNS daily package
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # 10:00 KST
+  workflow_dispatch: {}
+
+concurrency:
+  group: sns-daily-package
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build and send today's package
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node scripts/social/daily-package.mjs
+
+      - name: Commit handoff record
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/daily
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "chore(social): $(TZ=Asia/Seoul date +%F) 업로드 패키지 전송 기록"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin main && exit 0; sleep 5; done
+          exit 1

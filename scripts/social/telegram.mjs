@@ -3,13 +3,15 @@
 //   node scripts/social/telegram.mjs chatid                     봇에게 보낸 메시지에서 chat id 확인 → TELEGRAM_CHAT_ID 로 저장
 //   node scripts/social/telegram.mjs send <daily.md> [media...] 패키지 전송: 설명 → 코드블록마다 따로(복사용) → 미디어(원본 화질 파일)
 //
-// .env.local: TELEGRAM_BOT_TOKEN=<BotFather 토큰>, TELEGRAM_CHAT_ID=<chatid 결과>
+// .env.local(또는 환경변수): TELEGRAM_BOT_TOKEN=<BotFather 토큰>, TELEGRAM_CHAT_ID=<chatid 결과>
 import fs from 'node:fs';
 import path from 'node:path';
 
 const ENV_FILE = '.env.local';
 
+// .env.local 이 있으면 그 값, 없으면(GitHub Actions 등) 프로세스 환경변수를 쓴다.
 function loadEnv() {
+  if (!fs.existsSync(ENV_FILE)) return { ...process.env };
   return Object.fromEntries(fs.readFileSync(ENV_FILE, 'utf8').split(/\r?\n/)
     .map(l => l.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/)).filter(Boolean)
     .map(m => [m[1], m[2].replace(/^["']|["']$/g, '')]));
