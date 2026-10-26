@@ -13,6 +13,9 @@ const data = f => {
   return `data:image/${ext};base64,${fs.readFileSync(f).toString('base64')}`;
 };
 
+// 기획 의도(playbook 의 who/when/after/hook) — 검토자가 "내 얘기네" 각도를 바로 확인
+const angle = a => a ? `<div class="angle">👤 ${esc(a.who)} · 🕒 ${esc(a.when)} · ✨ ${esc(a.after)}${a.hook ? ` · 🎣 ${esc(a.hook)}` : ''}</div>` : '';
+
 const threads = (post.threads ?? []).map((t, i) => `
   <div class="card">
     <div class="label">Threads ${i + 1} · ${esc(t.key)}</div>
@@ -42,6 +45,7 @@ h1{font-size:22px;margin:0 0 4px} h2{font-size:18px;margin:32px 0 12px}
 .label{font-size:12px;font-weight:700;color:var(--mut);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
 .text,.cap{white-space:pre-wrap;line-height:1.55;font-size:15px}
 .reply{margin-top:10px;padding-left:12px;border-left:3px solid var(--line);color:var(--mut);font-size:14px;word-break:break-all}
+.angle{font-size:13px;color:var(--mut);background:var(--bg);border-radius:8px;padding:6px 10px;margin-bottom:10px}
 .timg{margin-top:12px;max-width:260px;border-radius:10px;display:block}
 .slides{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
 table{border-collapse:collapse;font-size:15px} td{padding:6px 16px 6px 0}
@@ -52,6 +56,7 @@ table{border-collapse:collapse;font-size:15px} td{padding:6px 16px 6px 0}
 ${schedule ? `<h2>게시 일정 (한국 시간)</h2><div class="card"><table>${schedule}</table></div>` : ''}
 <h2>Threads (${(post.threads ?? []).length}개)</h2>${threads}
 <h2>Instagram ${esc(post.instagram?.type ?? '')}</h2>
+${angle(post.instagram?.angle)}
 <div class="slides">${slides}</div>
 <div class="card" style="margin-top:12px"><div class="label">캡션</div><div class="cap">${esc(post.instagram?.caption)}</div></div>
 </main></body></html>`;
