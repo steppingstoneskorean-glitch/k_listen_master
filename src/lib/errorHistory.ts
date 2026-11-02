@@ -7,7 +7,7 @@ export type MasteryStatus = 'needs_review' | 'improving' | 'watch'
 /** 오답이 발생한 게임. 기존(v1) 레코드에는 이 필드가 없으므로 없으면 'catch-the-sound' 로 본다. */
 export type ErrorSource = 'catch-the-sound' | 'k-stars' | 'shadowing' | 'listening'
 
-/** Listen to K-Stars 의 문제 유형 — B: 블록 배열, I: 의미 고르기, A: 받아쓰기 */
+/** Listen to K-Stars 의 모드 — B: 블록 배열, I: 쉬운 받아쓰기(2026-11 이전 문항은 의미 고르기), A: 받아쓰기 */
 export type QuizMode = 'A' | 'B' | 'I'
 
 export interface ErrorRecord {

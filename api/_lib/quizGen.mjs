@@ -25,11 +25,10 @@ You are a strict and expert Korean Language Curriculum Director for global K-pop
 - Split it into 3 to 4 "Meaningful Chunks".
 - Output the original sentence and its chunks.
 
-2. Intermediate Level (I) - Situational Comprehension:
-- Select a continuous dialogue block lasting about 20-30 seconds (roughly 4 to 8 lines).
-- Generate a "Situational Comprehension" question in Korean (e.g., "이 대화의 상황으로 가장 알맞은 것은?").
-- Create 1 correct option summarizing the core situation.
-- Create 3 highly plausible distractors by subtly twisting facts, mixing up past/present tenses, or misinterpreting keywords (e.g., saying they are dieting *now* instead of in the *past*).
+2. Intermediate Level (I) - Easy Dictation:
+- Select a short-to-medium everyday sentence (3 to 6 words) spoken clearly, with common vocabulary and basic grammar.
+- Blank out ONE short "Meaningful Chunk" (1 to 2 words) — e.g. a common verb/adjective with its ending (먹었어요, 좋아해요) or a frequent expression (진짜 맛있다). Avoid heavy liaisons or rare words; it must be easier to hear than the Advanced items.
+- Output the full sentence and the correct answer chunk for the blank. Do not reuse the same sentence as an Advanced item.
 
 3. Advanced Level (A) - Dictation:
 - Select a longer sentence (5+ words) with natural liaisons (연음) or not easy structures.
@@ -38,14 +37,13 @@ You are a strict and expert Korean Language Curriculum Director for global K-pop
 
 [App Integration Rules — REQUIRED for every item]
 - The transcript lines include timestamps. Every quiz item MUST include "startTime" and "endTime" in seconds, derived from those timestamps:
-  · Beginner/Advanced: startTime ≈ 0.3–0.5s before the line's timestamp; endTime = next caption timestamp or startTime + 3–5s (never longer than 8s).
-  · Intermediate: startTime/endTime must cover the WHOLE dialogue block (about 20–35 seconds).
+  · All levels: startTime ≈ 0.3–0.5s before the line's timestamp; endTime = next caption timestamp or startTime + 3–5s (never longer than 8s).
 - Beginner "chunks" MUST be listed in the ORIGINAL sentence order (the app jumbles them at runtime). Joining the chunks with single spaces must reproduce the target sentence exactly (same spelling; spacing may only differ at chunk boundaries).
-- Advanced "blankChunk" MUST be an exact substring of "fullSentence" (same spelling, same spacing) and must be a meaningful clause of 2+ words where possible.
-- Advanced items also need:
+- Intermediate/Advanced "blankChunk" MUST be an exact substring of "fullSentence" (same spelling, same spacing). Advanced blanks should be a meaningful clause of 2+ words where possible; Intermediate blanks stay short (1–2 words).
+- Intermediate/Advanced items also need:
   · "hint": a short phonetic or contextual nudge (5–15 words, in English) that helps recall WITHOUT quoting the answer.
-  · "explanation": a teaching-quality note written mainly in ENGLISH (Korean examples stay Korean). Start with a pattern formula line (e.g. "Verb + -(으)ㄹ게요 = I'll..."), then 1–3 sentences of nuance, then 1–3 short Korean examples. Use \\n for line breaks.
-- Beginner/Intermediate items may include a short optional "explanation" (English) — or an empty string.
+  · "explanation": a teaching-quality note written mainly in ENGLISH (Korean examples stay Korean). Start with a pattern formula line (e.g. "Verb + -(으)ㄹ게요 = I'll..."), then 1–3 sentences of nuance, then 1–3 short Korean examples. Use \\n for line breaks. Keep Intermediate explanations simpler (TOPIK 2–3 level).
+- Beginner items may include a short optional "explanation" (English) — or an empty string.
 - Fix obvious STT errors using context; transcribe in natural Korean orthography. Never invent sentences that are not in the transcript. Spread selections across the whole video.
 - Generate exactly the requested number of items per level (see the user message). If the transcript genuinely cannot support the requested count for a level, generate as many valid items as possible for that level.
 
@@ -60,14 +58,9 @@ Respond with ONLY one JSON object — no markdown fences, no commentary — of t
   ],
   "intermediate": [
     { "id": string, "startTime": number, "endTime": number,
-      "dialogueBlock": "자켓만 입어 봐. 너무 근데 옛날 또 옷들이... 등이 커진 거지.",
-      "question": "다음 대화의 상황으로 가장 알맞은 것은?",
-      "options": [
-        {"text": "예전에 다이어트하며 입었던 옷이 이제는 작아서 맞지 않는다.", "isCorrect": true},
-        {"text": "두 사람은 현재 새로운 작품을 위해 열심히 다이어트 중이다.", "isCorrect": false},
-        {"text": "남자가 여자에게 자신의 옛날 코트를 선물하려고 한다.", "isCorrect": false},
-        {"text": "캐나다 여행을 가기 위해 겨울 코트를 새로 사고 있다.", "isCorrect": false}
-      ],
+      "fullSentence": "이거 진짜 맛있어요",
+      "blankChunk": "맛있어요",
+      "hint": string,
       "explanation": string }
   ],
   "advanced": [
@@ -77,8 +70,7 @@ Respond with ONLY one JSON object — no markdown fences, no commentary — of t
       "hint": string,
       "explanation": string }
   ]
-}
-Every "options" array MUST contain exactly 4 entries with exactly one "isCorrect": true.`
+}`
 
 // ── B 모드: 청크를 원문 순서로 정렬/검증 ─────────────────────────────────────
 // 모델이 순서를 섞어 보내도 targetSentence 를 앞에서부터 걸어가며 재정렬한다.
@@ -149,50 +141,28 @@ function mapToQuizItems(parsed, videoId) {
     })
   }
 
-  // I — 상황 이해: options 4개 + 정답 1개 → options[]/correctIndex
-  for (const q of Array.isArray(parsed.intermediate) ? parsed.intermediate : []) {
-    if (!q || typeof q.dialogueBlock !== 'string' || !validTime(q)) continue
-    const opts = Array.isArray(q.options) ? q.options : []
-    if (opts.length !== 4) continue
-    const texts = opts.map((o) => (o && typeof o.text === 'string' ? o.text.trim() : ''))
-    if (texts.some((t) => !t)) continue
-    const correctIdx = opts.findIndex((o) => o && o.isCorrect === true)
-    if (correctIdx === -1 || opts.filter((o) => o && o.isCorrect === true).length !== 1) continue
-    generated.I += 1
-    items.push({
-      id: `${vid}_i${String(generated.I).padStart(2, '0')}`,
-      videoId,
-      mode: 'I',
-      startTime: Math.max(0, num(q.startTime)),
-      endTime: num(q.endTime),
-      fullSentence: q.dialogueBlock.trim(),
-      question: typeof q.question === 'string' && q.question.trim() ? q.question.trim() : '다음 대화의 상황으로 가장 알맞은 것은?',
-      options: texts,
-      correctIndex: correctIdx,
-      explanation: typeof q.explanation === 'string' ? q.explanation : '',
-      hasHardcodedSubs: true,
-    })
-  }
-
-  // A — 딕테이션: blankChunk 가 fullSentence 의 부분 문자열이어야 함
-  for (const q of Array.isArray(parsed.advanced) ? parsed.advanced : []) {
-    if (!q || typeof q.fullSentence !== 'string' || typeof q.blankChunk !== 'string' || !validTime(q)) continue
-    const fullSentence = q.fullSentence.trim()
-    const blankWord = q.blankChunk.trim()
-    if (!fullSentence || !blankWord || !fullSentence.includes(blankWord)) continue
-    generated.A += 1
-    items.push({
-      id: `${vid}_a${String(generated.A).padStart(2, '0')}`,
-      videoId,
-      mode: 'A',
-      startTime: Math.max(0, num(q.startTime)),
-      endTime: num(q.endTime),
-      fullSentence,
-      blankWord,
-      hint: typeof q.hint === 'string' ? q.hint : '',
-      explanation: typeof q.explanation === 'string' ? q.explanation : '',
-      hasHardcodedSubs: true,
-    })
+  // I(쉬운 빈칸) · A(딕테이션) — 같은 스키마: blankChunk 가 fullSentence 의 부분 문자열이어야 함
+  //   (2026-11 이전 I 는 상황 이해 4지선다였다 — 배포분은 그대로 두고 신규 생성만 딕테이션)
+  for (const [mode, list] of [['I', parsed.intermediate], ['A', parsed.advanced]]) {
+    for (const q of Array.isArray(list) ? list : []) {
+      if (!q || typeof q.fullSentence !== 'string' || typeof q.blankChunk !== 'string' || !validTime(q)) continue
+      const fullSentence = q.fullSentence.trim()
+      const blankWord = q.blankChunk.trim()
+      if (!fullSentence || !blankWord || !fullSentence.includes(blankWord)) continue
+      generated[mode] += 1
+      items.push({
+        id: `${vid}_${mode.toLowerCase()}${String(generated[mode]).padStart(2, '0')}`,
+        videoId,
+        mode,
+        startTime: Math.max(0, num(q.startTime)),
+        endTime: num(q.endTime),
+        fullSentence,
+        blankWord,
+        hint: typeof q.hint === 'string' ? q.hint : '',
+        explanation: typeof q.explanation === 'string' ? q.explanation : '',
+        hasHardcodedSubs: true,
+      })
+    }
   }
 
   return { items, generated }

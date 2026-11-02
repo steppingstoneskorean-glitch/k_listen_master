@@ -4,7 +4,8 @@
 //
 //   모드:
 //     · B (Beginner · 어순 맞히기)   : 절 단위 블록의 정답 순서 (blocks[])
-//     · I (Intermediate · 의미 이해) : 들은 문장 + 의미 보기 4개 + 정답 인덱스
+//     · I (Intermediate · 빈칸 받아쓰기) : A 와 같은 스키마, 더 짧고 쉬운 문장
+//         (2026-11 이전 문항은 상황 이해 4지선다 — 그대로 두고 기존 편집 폼으로 수정 가능)
 //     · A (Advanced · 빈칸 받아쓰기) : 전체 문장 + 빈칸 절 (기존) — AI 초안 생성 지원
 //
 //   흐름:
@@ -25,6 +26,7 @@ import {
   saveModeItems,
   unpublishModeItems,
   itemMode,
+  isChoiceItem,
   type QuizItem,
   type ModeStars,
 } from '@/lib/quizStore'
@@ -65,7 +67,7 @@ const MODES: {
   {
     key: 'I',
     label: 'Intermediate',
-    sub: '의미 이해하기',
+    sub: '빈칸 받아쓰기 (쉬움)',
     tabActive: 'border-blue-400 bg-blue-50',
     chipActive: 'border-blue-300 bg-blue-100 text-blue-700',
   },
@@ -91,9 +93,9 @@ function emptyItem(videoId: string, mode: GameMode, seq: number): QuizItem {
     hasHardcodedSubs: true,
     initialSpeed: 0.75,
   }
-  if (mode === 'A') return { ...base, blankWord: '', hint: '' }
   if (mode === 'B') return { ...base, blocks: [] }
-  return { ...base, options: ['', '', '', ''], correctIndex: 0 }
+  // A·I 모두 빈칸 받아쓰기 (I 4지선다는 신규 생성하지 않는다)
+  return { ...base, blankWord: '', hint: '' }
 }
 
 // 모드별 검증 — 문제 문자열 or null
@@ -125,16 +127,16 @@ function itemProblem(q: QuizItem, i: number): string | null {
   if (!normalizeExplanation(q.explanation).ok)
     return `${tag}: 해설 JSON 형식 오류 — 닫는 따옴표/쉼표/줄바꿈(\\n) 확인 (다국어는 한 줄 JSON으로)`
   const m = itemMode(q)
-  if (m === 'A') {
-    if (!q.fullSentence.trim()) return `${tag}(A): 전체 문장이 비어 있어요`
-    if (!q.blankWord || !q.blankWord.trim()) return `${tag}(A): 빈칸 단어가 비어 있어요`
-    if (!q.fullSentence.includes(q.blankWord)) return `${tag}(A): 빈칸이 전체 문장에 없어요 (띄어쓰기 확인)`
-  } else if (m === 'B') {
+  if (m === 'B') {
     if (!q.blocks || q.blocks.length < 2) return `${tag}(B): 블록이 2개 이상 필요해요 (문장 입력 후 절 묶기)`
-  } else if (m === 'I') {
+  } else if (isChoiceItem(q)) {
     if (!q.fullSentence.trim()) return `${tag}(I): 듣기 대상 문장이 비어 있어요`
-    if (!q.options || q.options.length !== 4 || q.options.some((o) => !o.trim()))
+    if (q.options!.length !== 4 || q.options!.some((o) => !o.trim()))
       return `${tag}(I): 의미 보기 4개를 모두 입력하세요`
+  } else {
+    if (!q.fullSentence.trim()) return `${tag}(${m}): 전체 문장이 비어 있어요`
+    if (!q.blankWord || !q.blankWord.trim()) return `${tag}(${m}): 빈칸 단어가 비어 있어요`
+    if (!q.fullSentence.includes(q.blankWord)) return `${tag}(${m}): 빈칸이 전체 문장에 없어요 (띄어쓰기 확인)`
   }
   return null
 }
@@ -150,7 +152,7 @@ export default function QuizStudioPage() {
 
   const [transcript, setTranscript] = useState('')
   // 레벨별 AI 생성 개수 (0 = 해당 레벨 건너뜀)
-  const [genCounts, setGenCounts] = useState<Record<GameMode, number>>({ B: 3, I: 2, A: 10 })
+  const [genCounts, setGenCounts] = useState<Record<GameMode, number>>({ B: 3, I: 5, A: 10 })
 
   const [items, setItems] = useState<QuizItem[]>([]) // 전 모드 문항
   const [activeMode, setActiveMode] = useState<GameMode>('A')
@@ -370,7 +372,7 @@ export default function QuizStudioPage() {
       <header className="mb-6">
         <h1 className="text-2xl font-black tracking-tight text-slate-900">🎛️ 퀴즈 스튜디오</h1>
         <p className="mt-1 text-sm text-slate-500">
-          한 영상에 <b>어순(B)·의미(I)·빈칸(A)</b> 세 가지 게임을 만들 수 있어요. 모드별로 만들고 함께 배포하세요.
+          한 영상에 <b>어순(B)·쉬운 빈칸(I)·빈칸(A)</b> 세 가지 게임을 만들 수 있어요. 모드별로 만들고 함께 배포하세요.
         </p>
       </header>
 
@@ -518,7 +520,7 @@ export default function QuizStudioPage() {
                 레벨별 생성 개수
                 {([
                   ['B', '어순', [0, 1, 2, 3, 4, 5, 8, 10]],
-                  ['I', '상황 이해', [0, 1, 2, 3, 4, 6]],
+                  ['I', '쉬운 빈칸', [0, 3, 5, 8, 10, 12]],
                   ['A', '빈칸', [0, 3, 5, 8, 10, 12, 15, 20]],
                 ] as [GameMode, string, number[]][]).map(([m, label, opts]) => (
                   <label key={m} className="mt-1.5 flex items-center gap-2">
@@ -582,7 +584,7 @@ export default function QuizStudioPage() {
 
             {shown.length === 0 && (
               <p className="mt-3 rounded-xl bg-slate-50 p-4 text-xs text-slate-400">
-                이 모드의 문항이 아직 없어요. &ldquo;+ 문항 추가&rdquo;{activeMode === 'A' ? ' 또는 AI 생성' : ''}으로 시작하세요.
+                이 모드의 문항이 아직 없어요. &ldquo;+ 문항 추가&rdquo; 또는 AI 생성으로 시작하세요.
               </p>
             )}
 
@@ -656,8 +658,8 @@ export default function QuizStudioPage() {
                     </label>
                   </div>
 
-                  {/* ── A: 빈칸 받아쓰기 ── */}
-                  {activeMode === 'A' && (
+                  {/* ── A·I: 빈칸 받아쓰기 ── */}
+                  {activeMode !== 'B' && !isChoiceItem(q) && (
                     <>
                       <label className="mt-2 block text-xs font-semibold text-slate-500">
                         전체 문장 (한국어 원문)
@@ -715,9 +717,12 @@ export default function QuizStudioPage() {
                     </>
                   )}
 
-                  {/* ── I: 의미 이해하기 (4지선다) ── */}
-                  {activeMode === 'I' && (
+                  {/* ── 레거시 I: 의미 이해하기 (4지선다 · 기존 배포분 편집용) ── */}
+                  {isChoiceItem(q) && (
                     <>
+                      <p className="mt-2 rounded-lg bg-slate-50 px-3 py-1.5 text-[11px] font-semibold text-slate-400">
+                        기존 4지선다 문항 (그대로 유지) — 새 중급 문항은 빈칸 받아쓰기로 만들어져요
+                      </p>
                       <label className="mt-2 block text-xs font-semibold text-slate-500">
                         듣기 대상 대화 블록 (한국어 원문 · 20~30초 분량)
                         <textarea

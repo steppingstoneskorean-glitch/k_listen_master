@@ -24,7 +24,7 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
 import { ARTISTS, LIVE_VIDEOS, MODE_ORDER } from '@/data/kArtistLive';
-import { loadPublishedQuizzes, loadModeStars } from '@/lib/quizStore';
+import { loadPublishedQuizzes, loadModeStars, isChoiceItem } from '@/lib/quizStore';
 import { mergeQuizzes } from '@/lib/quizResolve';
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes';
 import HangulKeyboard from '@/components/HangulKeyboard';
@@ -38,13 +38,17 @@ import { ModeChip } from '@/components/kartist/ui';
 // 레거시(mode 없음) 문항은 'A'(딕테이션)로 간주
 const modeOf = (q) => (q && q.mode) || 'A';
 
+// 문항의 '게임 형식' — 모드(난이도)와 별개.
+//   · order : B 블록 배열 / choice : 레거시 I 4지선다 / cloze : A·신규 I 빈칸 받아쓰기
+const kindOf = (q) => (modeOf(q) === 'B' ? 'order' : isChoiceItem(q) ? 'choice' : 'cloze');
+
 // 문항의 '정답 텍스트' — 오답노트(errorHistory)에 저장되는 word 와 동일 규칙으로 계산한다.
-//   · A: blankWord / I: 정답 보기 텍스트 / B: 블록을 공백으로 이어붙인 문장
+//   · cloze: blankWord / choice: 정답 보기 텍스트 / order: 블록을 공백으로 이어붙인 문장
 // 개인 복습에서 '틀린 문제만 다시 풀기'로 넘어올 때, 저장된 오답과 문항을 매칭하는 키로 쓴다.
 function correctTextOf(q) {
-  const m = modeOf(q);
-  if (m === 'B') return (q.blocks || []).join(' ');
-  if (m === 'I') return Array.isArray(q.options) ? (q.options[q.correctIndex] || '') : '';
+  const k = kindOf(q);
+  if (k === 'order') return (q.blocks || []).join(' ');
+  if (k === 'choice') return q.options[q.correctIndex] || '';
   return (q.blankWord || '').trim();
 }
 const reviewMatchKey = (mode, text) => `${mode}::${text}`;
@@ -536,13 +540,14 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const checkAnswer = useCallback(() => {
     if (!quiz) return;
     const m = modeOf(quiz);
+    const k = kindOf(quiz);
     let verdict;
-    // 오답노트(Review Errors)에 넘길 정답/내답 — 모드별로 형태가 다르다
+    // 오답노트(Review Errors)에 넘길 정답/내답 — 게임 형식별로 형태가 다르다
     let correctText = '';
     let userText = '';
     let options = [];
 
-    if (m === 'B') {
+    if (k === 'order') {
       // 블록 배열: 선택 순서가 원본(정답) 순서와 일치하면 정답
       const built = picked
         .map((i) => (shuffledBlocks && shuffledBlocks[i] ? shuffledBlocks[i].text : ''))
@@ -551,8 +556,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       userText = built;
       verdict = built === correctText ? 'correct' : 'wrong';
       if (verdict === 'correct') recordStudy(10);
-    } else if (m === 'I') {
-      // 의미 고르기: 선택 보기 == correctIndex
+    } else if (k === 'choice') {
+      // 의미 고르기(레거시 I): 선택 보기 == correctIndex
       options = Array.isArray(quiz.options) ? quiz.options : [];
       correctText = options[quiz.correctIndex] || '';
       userText = chosenIdx != null ? options[chosenIdx] || '' : '';
@@ -751,9 +756,9 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     );
   }
 
-  const currentMode = quiz ? modeOf(quiz) : null;
+  const currentKind = quiz ? kindOf(quiz) : null;
 
-  // A 모드: fullSentence 를 blankWord 기준으로 분해.
+  // 빈칸 받아쓰기(A·신규 I): fullSentence 를 blankWord 기준으로 분해.
   //   정답 단어가 문장에 두 번 이상 나오면(예: "자, 끝났어. 너는 이제 끝났어." → "끝났어")
   //   split 으로 모든 위치를 잘라 각 위치마다 빈칸(입력창)을 렌더한다.
   //   빈칸 사이 세그먼트가 (occurrences + 1)개 → 입력창은 (세그먼트 - 1)개.
@@ -769,18 +774,12 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     .map((i) => (shuffledBlocks && shuffledBlocks[i] ? shuffledBlocks[i].text : ''))
     .join(' ');
   const answerText =
-    currentMode === 'B'
+    currentKind === 'order'
       ? builtSentence
-      : currentMode === 'I'
-      ? (quiz && Array.isArray(quiz.options) && chosenIdx != null ? quiz.options[chosenIdx] : '')
+      : currentKind === 'choice'
+      ? (chosenIdx != null ? quiz.options[chosenIdx] : '')
       : answer;
-  const correctText = quiz
-    ? currentMode === 'B'
-      ? (quiz.blocks || []).join(' ')
-      : currentMode === 'I'
-      ? (Array.isArray(quiz.options) ? quiz.options[quiz.correctIndex] : '')
-      : quiz.blankWord || ''
-    : '';
+  const correctText = quiz ? correctTextOf(quiz) : '';
 
   // 모드 선택 카드에 표시할 정보 (문항 수 · 별점 · 클리어 여부)
   const videoProgress = routeVideoId ? getVideoProgress(routeVideoId) : { clearedModes: [], masteryAchieved: false };
@@ -962,7 +961,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           </div>
 
           {/* ── B 모드: 절 단위 블록 배열 ─────────────────────────────────── */}
-          {currentMode === 'B' && (
+          {currentKind === 'order' && (
             <section
               className={`mt-6 rounded-2xl border-2 bg-white p-5 shadow-sm transition-colors ${
                 status === 'correct'
@@ -1047,8 +1046,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             </section>
           )}
 
-          {/* ── I 모드: 의미 고르기 (4지선다) ─────────────────────────────── */}
-          {currentMode === 'I' && (
+          {/* ── 레거시 I: 의미 고르기 (4지선다) ────────────────────────────── */}
+          {currentKind === 'choice' && (
             <section
               className={`mt-6 rounded-2xl border-2 bg-white p-5 shadow-sm transition-colors ${
                 status === 'correct'
@@ -1119,8 +1118,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             </section>
           )}
 
-          {/* ── A 모드: Cloze 빈칸 뚫기 ───────────────────────────────────── */}
-          {currentMode === 'A' && (
+          {/* ── A·신규 I: Cloze 빈칸 뚫기 ──────────────────────────────────── */}
+          {currentKind === 'cloze' && (
           <section
             className={`mt-6 rounded-2xl border-2 bg-white p-5 shadow-sm transition-colors ${
               status === 'correct'

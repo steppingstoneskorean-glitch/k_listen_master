@@ -9,7 +9,8 @@
 // 멀티 모드(B/I/A) 스키마:
 //   · 각 QuizItem 은 mode 필드를 가진다 (없으면 레거시 → 'A' 로 간주)
 //   · B(Beginner)     : blocks[] — 관용구/절 단위 블록의 "정답 순서". 게임에서 섞어 출제
-//   · I(Intermediate) : options[4] + correctIndex — 들은 문장의 의미 고르기
+//   · I(Intermediate) : 2026-11 부터 A 와 같은 딕테이션 스키마(fullSentence + blankWord, 더 쉬운 문장)
+//                       기존 배포분은 options[4] + correctIndex(상황 이해 4지선다) 그대로 유지 — isChoiceItem 참고
 //   · A(Advanced)     : 기존 딕테이션 스키마 (fullSentence + blankWord)
 //   · 저장/배포는 모드 단위 병합(saveModeItems) — 다른 모드의 기존 문항을 보존한다
 // ─────────────────────────────────────────────────────────────────────────────
@@ -36,27 +37,35 @@ export interface QuizItem {
   mode?: GameMode
   /** 전체 문장 (B 는 blocks.join(' '), I 는 듣기 대상 문장) */
   fullSentence: string
-  /** A 전용: 빈칸으로 뚫을 절/어절 */
+  /** A·I(딕테이션): 빈칸으로 뚫을 절/어절 */
   blankWord?: string
   explanation?: string | Record<string, string>
-  /** A 전용: 정답을 직접 노출하지 않는 발음/문맥 힌트. 비어 있으면 힌트 버튼 숨김 */
+  /** A·I(딕테이션): 정답을 직접 노출하지 않는 발음/문맥 힌트. 비어 있으면 힌트 버튼 숨김 */
   hint?: string
   hasHardcodedSubs?: boolean
   /** 영상 자동 재생 속도. 미지정 시 1.0(기본 배속) */
   initialSpeed?: number
   /** B 전용: 절 단위 블록의 정답 순서 (게임에서 셔플되어 출제) */
   blocks?: string[]
-  /** I 전용: 의미 보기 4개 */
+  /** I(레거시 4지선다) 전용: 의미 보기 4개 */
   options?: string[]
-  /** I 전용: options 중 정답 인덱스 (0~3) */
+  /** I(레거시 4지선다) 전용: options 중 정답 인덱스 (0~3) */
   correctIndex?: number
-  /** I 전용: 상황 이해 질문 (예: "다음 대화의 상황으로 가장 알맞은 것은?") — 없으면 기본 안내문 사용 */
+  /** I(레거시 4지선다) 전용: 상황 이해 질문 — 없으면 기본 안내문 사용 */
   question?: string
 }
 
 /** 레거시(mode 없음) 문항을 'A' 로 정규화 */
 export function itemMode(q: QuizItem): GameMode {
   return q.mode ?? 'A'
+}
+
+/**
+ * 4지선다(상황 이해) 문항인가 — 2026-11 이전에 만든 I 문항만 해당.
+ * 새 I 문항은 options 없이 blankWord 를 가진 딕테이션이다.
+ */
+export function isChoiceItem(q: Pick<QuizItem, 'mode' | 'options'>): boolean {
+  return (q.mode ?? 'A') === 'I' && Array.isArray(q.options) && q.options.length > 0
 }
 
 const COLLECTION = 'kartistQuizzes'

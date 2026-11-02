@@ -23,10 +23,11 @@ const MAX_TRIES = 6
 
 // 제목의 레벨 표기 → 레벨별 문항 수. 영상 레벨에 맞는 모드를 많이 뽑는다.
 const COUNTS_BY_LEVEL = {
-  beginner: { B: 6, I: 3, A: 3 },
-  intermediate: { B: 3, I: 4, A: 6 },
+  // I 는 2026-11 부터 쉬운 빈칸 받아쓰기 — 4지선다보다 가벼워 조금 더 뽑는다
+  beginner: { B: 6, I: 4, A: 3 },
+  intermediate: { B: 3, I: 6, A: 6 },
   advanced: { B: 2, I: 4, A: 8 },
-  unknown: { B: 4, I: 3, A: 5 },
+  unknown: { B: 4, I: 4, A: 5 },
 }
 
 const argv = process.argv.slice(2)

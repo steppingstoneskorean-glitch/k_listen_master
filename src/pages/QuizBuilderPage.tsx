@@ -5,7 +5,7 @@
 //   Step 2  모드 토글: B/I/A 활성화 + 모드별 세부 난이도(1~3성) — 9-tier
 //   Step 3  모드별 동적 입력 폼
 //     [B] 문장 입력 → ClauseChunker 로 절 단위 블록 구성 (블록 순서 = 정답 순서)
-//     [I] 듣기 대상 문장 + 의미 보기 4개 + 정답 라디오
+//     [I] A 와 같은 빈칸 받아쓰기 (기존 4지선다 문항은 불러오면 보기 편집 폼으로 유지)
 //     [A] 별점 선택 + 문장 입력 → 절 블록을 클릭해 빈칸(blank) 지정 + 힌트
 //   출력: JSON(복사) + Firestore 저장(초안)/배포 — 모드 단위 병합이라 다른 모드 보존
 //   접근 제한: ADMIN_EMAIL 로그인 시에만 렌더링
@@ -14,7 +14,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '@/lib/auth'
 import { ARTISTS, MODE_ORDER, type GameMode } from '@/data/kArtistLive'
-import { loadDraft, saveModeItems, itemMode, type QuizItem } from '@/lib/quizStore'
+import { loadDraft, saveModeItems, itemMode, isChoiceItem, type QuizItem } from '@/lib/quizStore'
 import { ModeChip } from '@/components/kartist/ui'
 import ClauseChunker, { splitWords } from '@/components/admin/ClauseChunker'
 
@@ -38,13 +38,17 @@ interface ItemDraft {
   end: string
   sentence: string
   chunks: string[] // B/A: 절 블록
-  blank: string // A: 빈칸으로 지정된 절
-  hint: string // A
-  options: string[] // I: 보기 4개
-  correct: number // I: 정답 인덱스
+  blank: string // A·I: 빈칸으로 지정된 절
+  hint: string // A·I
+  choice: boolean // 레거시 I 4지선다 문항 (불러온 기존 문항만 true)
+  options: string[] // 레거시 I: 보기 4개
+  correct: number // 레거시 I: 정답 인덱스
   explanation: string
   subs: boolean // 하드코딩 자막 블라인드
 }
+
+// 빈칸 받아쓰기 폼을 쓰는 초안인가 (A, 그리고 4지선다가 아닌 I)
+const isCloze = (d: ItemDraft, mode: GameMode) => mode !== 'B' && !(mode === 'I' && d.choice)
 
 const emptyDraft = (): ItemDraft => ({
   start: '',
@@ -53,6 +57,7 @@ const emptyDraft = (): ItemDraft => ({
   chunks: [],
   blank: '',
   hint: '',
+  choice: false,
   options: ['', '', '', ''],
   correct: 0,
   explanation: '',
@@ -68,6 +73,7 @@ function itemToDraft(q: QuizItem): ItemDraft {
     chunks: Array.isArray(q.blocks) && q.blocks.length > 0 ? q.blocks : splitWords(q.fullSentence || ''),
     blank: q.blankWord || '',
     hint: q.hint || '',
+    choice: isChoiceItem(q),
     options:
       Array.isArray(q.options) && q.options.length === 4 ? [...q.options] : ['', '', '', ''],
     correct: typeof q.correctIndex === 'number' ? q.correctIndex : 0,
@@ -90,7 +96,7 @@ function draftToItem(d: ItemDraft, mode: GameMode, videoId: string, n: number): 
   if (mode === 'B') {
     return { ...base, fullSentence: d.chunks.join(' '), blocks: d.chunks }
   }
-  if (mode === 'I') {
+  if (!isCloze(d, mode)) {
     return { ...base, fullSentence: d.sentence, options: d.options, correctIndex: d.correct }
   }
   return { ...base, fullSentence: d.chunks.join(' ') || d.sentence, blankWord: d.blank, hint: d.hint }
@@ -105,7 +111,7 @@ function validateDraft(d: ItemDraft, mode: GameMode, idx: number): string[] {
   if (!(end > start)) problems.push(`${tag}: 종료 시간이 시작 시간보다 커야 함`)
   if (mode === 'B') {
     if (d.chunks.length < 2) problems.push(`${tag}: 블록이 2개 이상 필요 (문장 입력 후 절 묶기)`)
-  } else if (mode === 'I') {
+  } else if (!isCloze(d, mode)) {
     if (!d.sentence.trim()) problems.push(`${tag}: 듣기 대상 문장이 비어 있음`)
     if (d.options.some(o => !o.trim())) problems.push(`${tag}: 의미 보기 4개를 모두 입력`)
   } else {
@@ -119,7 +125,7 @@ function validateDraft(d: ItemDraft, mode: GameMode, idx: number): string[] {
 
 const MODE_LABEL: Record<GameMode, string> = {
   B: 'Beginner — 블록 배열 (절 순서 맞추기)',
-  I: 'Intermediate — 의미 고르기 (4지선다)',
+  I: 'Intermediate — 딕테이션 (쉬운 절 빈칸)',
   A: 'Advanced — 딕테이션 (절 빈칸)',
 }
 
@@ -379,8 +385,8 @@ export default function QuizBuilderPage() {
                 </label>
               </div>
 
-              {/* B / A: 문장 → 절 청킹 */}
-              {(m === 'B' || m === 'A') && (
+              {/* B / A·I: 문장 → 절 청킹 */}
+              {(m === 'B' || isCloze(d, m)) && (
                 <>
                   <label className="mt-3 block text-xs font-semibold text-slate-500">
                     전체 문장 (입력 후 아래에서 절 단위로 묶기)
@@ -403,15 +409,15 @@ export default function QuizBuilderPage() {
                       onChange={next => {
                         const patch: Partial<ItemDraft> = { chunks: next }
                         // 빈칸으로 지정했던 절이 사라졌으면 해제
-                        if (m === 'A' && d.blank && !next.includes(d.blank)) patch.blank = ''
+                        if (isCloze(d, m) && d.blank && !next.includes(d.blank)) patch.blank = ''
                         updateDraft(m, i, patch)
                       }}
-                      selectable={m === 'A'}
-                      selectedChunk={m === 'A' ? d.chunks.indexOf(d.blank) : null}
+                      selectable={isCloze(d, m)}
+                      selectedChunk={isCloze(d, m) ? d.chunks.indexOf(d.blank) : null}
                       onSelectChunk={idx => updateDraft(m, i, { blank: d.chunks[idx] })}
                     />
                   </div>
-                  {m === 'A' && (
+                  {isCloze(d, m) && (
                     <>
                       <p className="mt-2 text-xs font-semibold text-slate-600">
                         빈칸 절: {d.blank ? <mark className="rounded bg-indigo-100 px-1.5 py-0.5 font-bold text-indigo-700">{d.blank}</mark> : <span className="text-amber-600">블록을 클릭해 지정하세요</span>}
@@ -425,8 +431,8 @@ export default function QuizBuilderPage() {
                 </>
               )}
 
-              {/* I: 듣기 문장 + 의미 보기 4개 */}
-              {m === 'I' && (
+              {/* 레거시 I: 듣기 문장 + 의미 보기 4개 */}
+              {m === 'I' && d.choice && (
                 <>
                   <label className="mt-3 block text-xs font-semibold text-slate-500">
                     듣기 대상 문장 (한국어 원문)

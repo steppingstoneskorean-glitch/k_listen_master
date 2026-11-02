@@ -15,16 +15,15 @@ import { speakKorean, cancelSpeech } from '@/lib/speak'
 import { LIVE_VIDEOS, pickText } from '@/data/kArtistLive'
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes'
 import { mergeQuizzes } from '@/lib/quizResolve'
-import { loadPublishedQuizzes, itemMode, type QuizItem } from '@/lib/quizStore'
+import { loadPublishedQuizzes, itemMode, isChoiceItem, type QuizItem } from '@/lib/quizStore'
 
 // 오답 레코드(word)를 퀴즈 문항과 매칭해 '영상 내 시작시간(startTime)'을 얻기 위한 헬퍼.
-//   errorHistory.word 저장 규칙과 동일: A=blankWord, I=정답 보기, B=블록 이어붙인 문장.
-type QuizQ = { videoId?: string; mode?: string; startTime?: number; blocks?: string[]; options?: string[]; correctIndex?: number; blankWord?: string }
+//   errorHistory.word 저장 규칙과 동일: 받아쓰기(A·신규 I)=blankWord, 레거시 I=정답 보기, B=블록 이어붙인 문장.
+type QuizQ = { videoId?: string; mode?: QuizItem['mode']; startTime?: number; blocks?: string[]; options?: string[]; correctIndex?: number; blankWord?: string }
 const qMode = (q: QuizQ) => q?.mode || 'A'
 const qCorrectText = (q: QuizQ): string => {
-  const m = qMode(q)
-  if (m === 'B') return (q.blocks || []).join(' ')
-  if (m === 'I') return Array.isArray(q.options) ? (q.options[q.correctIndex ?? -1] || '') : ''
+  if (qMode(q) === 'B') return (q.blocks || []).join(' ')
+  if (isChoiceItem(q)) return q.options![q.correctIndex ?? -1] || ''
   return (q.blankWord || '').trim()
 }
 const QUIZZES = HARDCODED_QUIZZES as unknown as QuizQ[]
@@ -199,7 +198,10 @@ const SOURCE_STYLE: Record<ErrorSource, { label: string; cls: string }> = {
   'listening':       { label: '🎧 Listening', cls: 'bg-sky-50 text-sky-600 border-sky-200' },
 }
 
-const MODE_LABEL: Record<string, string> = { A: 'Dictation', B: 'Word Order', I: 'Meaning' }
+const MODE_LABEL: Record<string, string> = { A: 'Dictation', B: 'Word Order', I: 'Dictation' }
+// 레거시 I(4지선다) 오답은 보기(pair)가 함께 저장돼 있다 — 그 경우만 'Meaning'
+const modeLabel = (r: ErrorRecord) =>
+  r.quizMode === 'I' && r.pair?.length ? 'Meaning' : MODE_LABEL[r.quizMode ?? ''] ?? r.quizMode
 
 function timeSince(ts: number): string {
   const mins = Math.floor((Date.now() - ts) / 60000)
@@ -348,7 +350,7 @@ function ReviewSession({ cards, onDone }: { cards: ErrorRecord[]; onDone: () => 
           </span>
           {isKStars && card.quizMode && (
             <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-              {MODE_LABEL[card.quizMode] ?? card.quizMode}
+              {modeLabel(card)}
             </span>
           )}
         </div>
@@ -450,7 +452,7 @@ function ErrorCard({
         <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${sourceStyle.cls}`}>{source === 'catch-the-sound' ? `🎧 ${t('game.catchTheSound')}` : sourceStyle.label}</span>
         {isKStars && record.quizMode && (
           <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-            {MODE_LABEL[record.quizMode] ?? record.quizMode}
+            {modeLabel(record)}
           </span>
         )}
       </div>

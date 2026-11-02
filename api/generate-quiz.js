@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     const clamp = (v, max) => Math.min(Math.max(Number(v) || 0, 0), max)
     const want = {
       B: clamp(counts && counts.B, 10),
-      I: clamp(counts && counts.I, 6),
+      I: clamp(counts && counts.I, 12),
       A: clamp(counts ? counts.A : count || 0, 20),
     }
     if (want.B + want.I + want.A === 0) want.A = 10 // 아무 것도 지정 안 하면 기본 A 10개
