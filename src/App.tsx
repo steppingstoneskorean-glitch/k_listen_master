@@ -16,6 +16,7 @@ import DictationPage from '@/pages/DictationPage'
 import ShadowingPage from '@/pages/ShadowingPage'
 import ReviewPage from '@/pages/ReviewPage'
 import MaterialsPage from '@/pages/MaterialsPage'
+import MaterialViewerPage from '@/pages/MaterialViewerPage'
 import PrivacyPolicy from '@/pages/PrivacyPolicy'
 import AboutPage from '@/pages/AboutPage'
 import TermsPage from '@/pages/TermsPage'
@@ -81,6 +82,7 @@ export default function App() {
                   <Route path="/review" element={<ReviewPage />} />
                   <Route path="/errors" element={<Navigate to="/review" replace />} />
                   <Route path="/materials" element={<MaterialsPage />} />
+                  <Route path="/materials/:id" element={<MaterialViewerPage />} />
                   <Route path="/games" element={<GameHubPage />} />
                   <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
                   <Route path="/quiz-studio" element={<QuizStudioPage />} />

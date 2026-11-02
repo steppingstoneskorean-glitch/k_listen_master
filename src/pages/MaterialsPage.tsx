@@ -1,17 +1,18 @@
 // src/pages/MaterialsPage.tsx
 // 무료 자료 — 팟캐스트 에피소드별 워크시트·단어장 PDF (로그인 유저 전용, RequireAuth 뒤)
 //   · 목록은 Firestore materials (published) — AI 자료 담당(scripts/staff/materials.mjs)이 채운다
-//   · Firestore 규칙상 로그인 유저만 읽을 수 있어 다운로드 링크도 로그인 뒤에만 노출된다
+//   · ⭐ PDF 원본은 배포하지 않는다 — 페이지 이미지(pageUrls)를 MaterialViewerPage 에서 '보기'만
+//   · Firestore 규칙상 로그인 유저만 읽을 수 있어 이미지 링크도 로그인 뒤에만 노출된다
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useLang } from '@/lib/i18n'
-import { trackEvent } from '@/lib/analytics'
 
 type Level = 'beginner' | 'intermediate' | 'advanced' | 'all'
 type MaterialType = 'worksheet' | 'vocab' | 'other'
 
-interface Material {
+export interface Material {
   id: string
   level: Level
   type: MaterialType
@@ -20,7 +21,7 @@ interface Material {
   titleEn: string
   titleKo: string
   pages: number
-  url: string
+  pageUrls: string[]
 }
 
 const LEVEL_ORDER: Level[] = ['beginner', 'intermediate', 'advanced', 'all']
@@ -102,7 +103,8 @@ export default function MaterialsPage() {
             )}
             <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               {list.map(m => (
-                <li key={m.id} className="flex items-center gap-3 px-4 py-3.5">
+                <li key={m.id}>
+                  <Link to={`/materials/${m.id}`} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-slate-50">
                   <span className="text-xl" aria-hidden>{TYPE_ICON[m.type]}</span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-slate-800">{lang === 'ko' ? m.titleKo : m.titleEn}</p>
@@ -116,15 +118,10 @@ export default function MaterialsPage() {
                       </span>
                     </div>
                   </div>
-                  <a
-                    href={m.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackEvent('material_download', { material_id: m.id, level: m.level, type: m.type, episode: m.episode })}
-                    className="shrink-0 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:opacity-90"
-                  >
-                    {t('materials.download')}
-                  </a>
+                  <span className="shrink-0 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white">
+                    {t('materials.view')}
+                  </span>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -4,16 +4,21 @@
 // AI 직원 ② 자료 담당 — 워크시트·단어장 PDF → 앱 '무료 자료'
 //   1) assets/무료자료PDF/ 에 새로 들어온 *.pdf 를 찾는다 (이 폴더는 gitignore — 공개 저장소 커밋 금지)
 //   2) 앞쪽 페이지 텍스트 + 파일명으로 레벨·종류·에피소드를 분류 (NVIDIA LLM, 실패 시 파일명 규칙)
-//   3) Firebase Storage materials/<id>.pdf 업로드 → Firestore materials/<id> 등록 (즉시 공개)
-//      · Firestore 규칙상 materials 는 로그인 유저만 읽을 수 있다 → 다운로드 링크도 로그인 뒤에만 보인다
+//   3) ⭐ PDF 원본은 배포하지 않는다(오너 방침) — 페이지를 WebP 이미지로 구워
+//      Storage materials/<id>/p001.webp… 에 올리고 Firestore materials/<id> 등록 (즉시 공개)
+//      · 앱은 화면에서 '보기'만 제공한다 (다운로드 버튼 없음)
+//      · Firestore 규칙상 materials 는 로그인 유저만 읽을 수 있다 → 이미지 링크도 로그인 뒤에만 보인다
 //   4) 처리한 파일은 assets/무료자료PDF/_처리완료/ 로 옮기고 텔레그램으로 분류 결과 보고
 //
 //   실행: node scripts/staff/materials.mjs [--dry-run]
+//   필요: pip install pypdfium2 pillow  (페이지 렌더링 — render_pages.py)
 //   같은 내용의 PDF(해시 동일)는 다시 올리지 않는다.
 // ─────────────────────────────────────────────────────────────────────────────
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import crypto from 'node:crypto'
+import { spawnSync } from 'node:child_process'
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import { getStorage } from 'firebase-admin/storage'
 import { extractText, getDocumentProxy } from 'unpdf'
@@ -75,6 +80,15 @@ async function classify(fileName, pagesText) {
   }
 }
 
+// PDF → 페이지별 WebP (scripts/staff/render_pages.py, pypdfium2). python -I: 작업 폴더의 모듈을 읽지 않게 격리
+function renderPages(file, outDir) {
+  const r = spawnSync('python', ['-I', path.join(ROOT, 'scripts', 'staff', 'render_pages.py'), file, outDir], {
+    encoding: 'utf8',
+    timeout: 5 * 60_000,
+  })
+  if (r.status !== 0) throw new Error(`페이지 렌더링 실패 (pip install pypdfium2 pillow): ${(r.stderr || r.error?.message || '').trim().slice(-300)}`)
+}
+
 function moveToDone(file) {
   const month = new Date().toISOString().slice(0, 7)
   const dir = path.join(DONE_DIR, month)
@@ -134,30 +148,41 @@ async function main() {
       console.log(`   → ${LABEL[meta.level]} · ${LABEL[meta.type]}${meta.grade ? ` · ${meta.grade}급` : ''}${meta.episode ? ` · EP.${meta.episode}` : ''} · ${meta.titleKo}`)
 
       if (!dryRun) {
-        // 다운로드 토큰 URL — 링크 자체는 Firestore(로그인 유저 전용)에만 저장된다
-        const token = crypto.randomUUID()
-        const objectPath = `materials/${id}.pdf`
-        await bucket.file(objectPath).save(buf, {
-          resumable: false,
-          metadata: {
-            contentType: 'application/pdf',
-            contentDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(name)}`,
-            cacheControl: 'private, max-age=3600',
-            metadata: { firebaseStorageDownloadTokens: token },
-          },
-        })
-        const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(objectPath)}?alt=media&token=${token}`
-        await ref.set({
-          ...meta,
-          fileName: name,
-          pages: totalPages,
-          sizeBytes: buf.length,
-          storagePath: objectPath,
-          url,
-          published: true,
-          by: 'materials-clerk',
-          createdAt: FieldValue.serverTimestamp(),
-        })
+        // ⭐ PDF 원본은 올리지 않는다 — 페이지 이미지만 올려 앱에서 '보기'만 가능하게
+        const pagesDir = fs.mkdtempSync(path.join(os.tmpdir(), 'klisten-pages-'))
+        try {
+          renderPages(file, pagesDir)
+          const pageFiles = fs.readdirSync(pagesDir).filter((f) => f.endsWith('.webp')).sort()
+          if (!pageFiles.length) throw new Error('페이지 렌더링 결과가 비어 있음')
+          // 토큰 URL 은 Firestore(로그인 유저 전용)에만 저장된다
+          const token = crypto.randomUUID()
+          const pageUrls = []
+          for (const f of pageFiles) {
+            const objectPath = `materials/${id}/${f}`
+            await bucket.file(objectPath).save(fs.readFileSync(path.join(pagesDir, f)), {
+              resumable: false,
+              metadata: {
+                contentType: 'image/webp',
+                contentDisposition: 'inline',
+                cacheControl: 'private, max-age=86400',
+                metadata: { firebaseStorageDownloadTokens: token },
+              },
+            })
+            pageUrls.push(`https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(objectPath)}?alt=media&token=${token}`)
+          }
+          await ref.set({
+            ...meta,
+            fileName: name,
+            pages: pageUrls.length,
+            storagePrefix: `materials/${id}/`,
+            pageUrls,
+            published: true,
+            by: 'materials-clerk',
+            createdAt: FieldValue.serverTimestamp(),
+          })
+        } finally {
+          fs.rmSync(pagesDir, { recursive: true, force: true })
+        }
         moveToDone(file)
         delete state[name]
       }
