@@ -5,6 +5,9 @@ import { useAuth } from '@/lib/auth'
 import { getLevelPref } from '@/lib/todayPlan'
 import { recordMarketingConsent } from '@/lib/marketingConsent'
 import logoImg from '../../assets/images/logo.png'
+import wordGuessImg from '../../assets/images/단어 맞히기.png'
+import intermediateGameImg from '../../assets/images/Intermediate game.png'
+import advancedGameImg from '../../assets/images/Advanced game.png'
 
 function readSession(key: string): string | undefined {
   try { return sessionStorage.getItem(key) ?? undefined } catch { return undefined }
@@ -72,146 +75,112 @@ export default function StartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center px-4 py-8 relative overflow-hidden">
-      {/* Background glow */}
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col px-5 pb-8 relative overflow-hidden">
+      {/* Ambient gradient — 브랜드 컬러의 은은한 글로우 */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-indigo-600/10 blur-[120px]" />
+        <div className="absolute -top-20 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full bg-fuchsia-600/20 blur-[120px]" />
+        <div className="absolute top-44 left-1/2 -translate-x-1/2 h-[280px] w-[420px] rounded-full bg-indigo-600/20 blur-[130px]" />
       </div>
 
-      {/* Language switcher — top right */}
-      <div className="absolute top-5 right-5 z-10">
+      {/* Language switcher */}
+      <div className="absolute top-5 right-5 z-20">
         <LanguageSwitcher />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm flex flex-col items-center gap-8">
-        {/* Logo + Title */}
-        <div className="flex flex-col items-center gap-3">
-          <img src={logoImg} alt="K-Listen" className="h-14 w-auto rounded-2xl object-contain shadow-lg" />
-          <h1 className="text-3xl font-black tracking-tight text-center">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-fuchsia-400">K-Listen</span>
-          </h1>
-          <p className="text-gray-100 text-base font-bold text-center leading-snug break-keep whitespace-pre-line max-w-[300px]">
+      <div className="relative z-10 mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-center gap-7">
+        {/* K-content 히어로 — 실제 콘텐츠(앱 썸네일)를 기울인 카드로 앞세운다 */}
+        <div className="relative mt-16 flex items-end justify-center select-none">
+          <img
+            src={wordGuessImg} alt="" aria-hidden="true"
+            className="h-28 w-20 -mr-5 translate-y-2 rotate-[-9deg] rounded-2xl object-cover shadow-xl shadow-black/50 ring-1 ring-white/10 pointer-events-none"
+          />
+          <img
+            src={intermediateGameImg} alt="K-Listen"
+            className="relative z-10 h-36 w-28 rounded-2xl object-cover shadow-2xl shadow-black/60 ring-1 ring-white/15 pointer-events-none"
+          />
+          <img
+            src={advancedGameImg} alt="" aria-hidden="true"
+            className="h-28 w-20 -ml-5 translate-y-2 rotate-[9deg] rounded-2xl object-cover shadow-xl shadow-black/50 ring-1 ring-white/10 pointer-events-none"
+          />
+        </div>
+
+        {/* Brand + headline (텍스트 최소화) */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2">
+            <img src={logoImg} alt="" aria-hidden="true" className="h-6 w-6 rounded-lg object-contain" />
+            <span className="text-base font-black tracking-tight">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-fuchsia-300">K-Listen</span>
+            </span>
+          </div>
+          <h1 className="max-w-[300px] whitespace-pre-line text-balance break-keep text-center text-[22px] font-black leading-tight">
             {t('start.tagline')}
-          </p>
-          <p className="text-gray-500 text-xs text-center leading-relaxed break-keep">
+          </h1>
+          <p className="max-w-[280px] break-keep text-center text-xs leading-relaxed text-gray-400">
             {t('start.subtagline')}
           </p>
         </div>
 
-        {/* 3혜택 — 로그인 전에 "무엇을 얻는지" 스캔 가능하게 */}
-        <div className="w-full flex flex-col gap-2.5">
-          <Benefit emoji="🎧" title={t('start.benefit1.title')} desc={t('start.benefit1.desc')} />
-          <Benefit emoji="👂" title={t('start.benefit2.title')} desc={t('start.benefit2.desc')} />
-          <Benefit emoji="📈" title={t('start.benefit3.title')} desc={t('start.benefit3.desc')} />
-        </div>
-
-        <div className="w-full flex flex-col gap-3">
-          {/* 로그인 없이 체험 — 1차 CTA. 가치를 먼저 만지게 해 활성화를 끌어올린다. */}
+        {/* Actions */}
+        <div className="flex w-full flex-col gap-3">
+          {/* 1차 CTA — 로그인 없이 체험 */}
           <button
             type="button"
             onClick={handleGuest}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
+            className="group w-full rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 py-4 text-[15px] font-black text-white shadow-lg shadow-fuchsia-500/20 transition-all hover:opacity-95 active:scale-[0.98]"
           >
-            {t('start.guestBrowse')} →
+            {t('start.guestBrowse')}
+            <span className="ml-1.5 inline-block transition-transform group-hover:translate-x-0.5">→</span>
           </button>
-          <div className="flex items-center gap-3 py-0.5">
-            <div className="h-px flex-1 bg-gray-800" />
-            <span className="text-[11px] text-gray-600 whitespace-nowrap">{t('start.orSignIn')}</span>
-            <div className="h-px flex-1 bg-gray-800" />
+
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/10" />
+            <span className="whitespace-nowrap text-[11px] text-gray-500">{t('start.orSignIn')}</span>
+            <div className="h-px flex-1 bg-white/10" />
           </div>
 
-          {/* Marketing email opt-in (선택) */}
-          <label className="flex items-start gap-2 px-1 cursor-pointer select-none">
+          {/* 소셜 로그인 — 2열 컴팩트 */}
+          <div className="flex gap-2.5">
+            <button
+              type="button"
+              onClick={() => handleSocialSignIn('google')}
+              disabled={submitting}
+              aria-label={t('auth.continueWithGoogle')}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-bold text-gray-800 transition-all hover:bg-gray-100 active:scale-[0.98] disabled:opacity-40"
+            >
+              <GoogleIcon /> Google
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSocialSignIn('apple')}
+              disabled={submitting}
+              aria-label={t('auth.continueWithApple')}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 py-3 text-sm font-bold text-white transition-all hover:bg-white/15 active:scale-[0.98] disabled:opacity-40"
+            >
+              <AppleIcon /> Apple
+            </button>
+          </div>
+          {error && <p className="text-center text-xs text-red-400">{error}</p>}
+
+          {/* 마케팅 동의 (선택) — 사전 체크 안 함 */}
+          <label className="mt-0.5 flex cursor-pointer select-none items-start gap-2">
             <input
               type="checkbox"
               checked={marketingOptIn}
               onChange={e => setMarketingOptIn(e.target.checked)}
-              className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-600 bg-gray-800 accent-indigo-500"
+              className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-gray-600 bg-gray-800 accent-fuchsia-500"
             />
-            <span className="text-[11px] leading-snug text-gray-500">
-              {t('auth.marketingConsent')}
-            </span>
+            <span className="text-[11px] leading-snug text-gray-500">{t('auth.marketingConsent')}</span>
           </label>
-          <GoogleBtn
-            label={t('auth.continueWithGoogle')}
-            onClick={() => handleSocialSignIn('google')}
-            disabled={submitting}
-          />
-          <AppleBtn
-            label={t('auth.continueWithApple')}
-            onClick={() => handleSocialSignIn('apple')}
-            disabled={submitting}
-          />
-          {error && <p className="text-red-400 text-xs px-1 text-center">{error}</p>}
 
-          {/* 권한 안내 — 로그인의 실제 목적을 간단히 알려 불안을 줄인다 */}
-          <p className="text-[11px] leading-snug text-gray-500 text-center px-1 mt-1">
-            {t('login.trust.summary')}
-          </p>
-          {/* 로그인 전에도 방침을 확인할 수 있도록 작은 링크 제공 */}
-          <Link
-            to="/privacy"
-            className="text-[11px] text-gray-600 underline hover:text-gray-400 transition-colors text-center"
-          >
-            {t('cookie.privacy')}
-          </Link>
-          {/* 웹 폴백 — 설치 앱(TWA)에서 소셜 로그인이 막힐 때 브라우저 웹판으로 우회 */}
-          <a
-            href="https://k-listen-master.vercel.app"
-            className="text-[11px] text-gray-600 underline hover:text-gray-400 transition-colors text-center"
-          >
-            {t('start.webFallback')}
-          </a>
+          {/* 법적 링크 + 웹 폴백(설치앱 로그인 막힐 때 우회) — 한 줄로 */}
+          <div className="flex items-center justify-center gap-3 text-[11px] text-gray-600">
+            <Link to="/privacy" className="underline transition-colors hover:text-gray-400">{t('cookie.privacy')}</Link>
+            <span className="text-gray-700">·</span>
+            <a href="https://k-listen-master.vercel.app" className="underline transition-colors hover:text-gray-400">{t('start.webFallback')}</a>
+          </div>
         </div>
       </div>
     </div>
-  )
-}
-
-function Benefit({ emoji, title, desc }: { emoji: string; title: string; desc: string }) {
-  // 설명 끝의 "(…)" 예시는 한 덩어리로 유지 — 2줄이 되면 괄호 전체가 다음 줄로 함께 내려간다.
-  const m = desc.match(/^(.*?)\s*(\([^)]*\)\s*[.。]?)\s*$/)
-  const main = m ? m[1] : desc
-  const paren = m ? m[2] : null
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-gray-800 bg-gray-900/50 px-4 py-3">
-      <span className="text-xl leading-none mt-0.5" aria-hidden="true">{emoji}</span>
-      <div className="flex flex-col">
-        <span className="text-sm font-bold text-gray-100 break-keep">{title}</span>
-        <span className="text-xs text-gray-500 leading-snug break-keep">
-          {main}
-          {paren && <> <span className="whitespace-nowrap">{paren}</span></>}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-function GoogleBtn({ label, onClick, disabled }: { label: string; onClick: () => void; disabled?: boolean }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl border border-gray-600 bg-white text-gray-800 font-bold text-sm hover:bg-gray-50 active:scale-[0.98] disabled:opacity-40 transition-all shadow-sm"
-    >
-      <GoogleIcon />
-      {label}
-    </button>
-  )
-}
-
-function AppleBtn({ label, onClick, disabled }: { label: string; onClick: () => void; disabled?: boolean }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl border border-gray-600 bg-black text-white font-bold text-sm hover:bg-gray-900 active:scale-[0.98] disabled:opacity-40 transition-all shadow-sm"
-    >
-      <AppleIcon />
-      {label}
-    </button>
   )
 }
 
