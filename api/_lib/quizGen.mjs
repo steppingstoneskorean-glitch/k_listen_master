@@ -85,7 +85,13 @@ function orderChunks(sentence, chunks) {
   let rest = sentence.trim()
   while (rest.length > 0) {
     const idx = remaining.findIndex((c) => rest.startsWith(c))
-    if (idx === -1) return null
+    if (idx === -1) {
+      // 모델은 "여러분, … 가 보세요." 의 쉼표·마침표를 청크에서 자주 뺀다 — 문장 부호는 건너뛰고 계속 맞춘다
+      const punct = rest.match(/^[.,!?…~]+\s*/)
+      if (!punct) return null
+      rest = rest.slice(punct[0].length)
+      continue
+    }
     ordered.push(remaining[idx])
     rest = rest.slice(remaining[idx].length).trimStart()
     remaining.splice(idx, 1)
@@ -283,7 +289,13 @@ export async function generateQuiz({ videoId, transcript, want }) {
   } catch {
     throw new QuizGenError(502, 'AI 응답 JSON 파싱에 실패했습니다. 다시 시도해 주세요.')
   }
-  const { items: quizzes, generated } = mapToQuizItems(parsed, videoId)
+  const mapped = mapToQuizItems(parsed, videoId)
+
+  // 모델이 요청 개수를 무시하고 과생성하는 경우가 있다(초급 영상에 I 85·A 30 개 — 2026-11-02).
+  // 레벨별 요청 개수까지만 남긴다. id 는 레벨 안에서 순번이라 앞쪽을 자르면 번호가 그대로 이어진다.
+  const kept = { B: 0, I: 0, A: 0 }
+  const quizzes = mapped.items.filter((q) => (kept[q.mode] < want[q.mode] ? (kept[q.mode] += 1) : false))
+  const generated = kept
 
   if (quizzes.length === 0) {
     throw new QuizGenError(422, '유효한 퀴즈를 생성하지 못했습니다. 자막에 타임스탬프가 포함되어 있는지 확인해 주세요.')

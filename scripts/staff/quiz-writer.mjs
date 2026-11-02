@@ -10,6 +10,7 @@
 //   5) 텔레그램으로 검수 링크 보고
 //
 //   실행: node scripts/staff/quiz-writer.mjs [--dry-run] [--since-days 30] [--max 3] [VIDEOID...]
+//         --redo VIDEOID...  손대지 않은 미배포 AI 초안을 지금 규칙으로 다시 만든다
 //   자막은 업로드 직후엔 아직 없을 수 있다 → 다음 실행에서 재시도 (최대 MAX_TRIES 회).
 // ─────────────────────────────────────────────────────────────────────────────
 import fs from 'node:fs'
@@ -21,12 +22,14 @@ import { ROOT, APP_URL, loadEnv, initAdmin, report, readState, writeState } from
 const CHANNEL_ID = loadEnv().YT_CHANNEL_ID || 'UC5892rdOXctPFBwE3LLlqMg' // @steppingstones.Korean
 const MAX_TRIES = 6
 
-// 제목의 레벨 표기 → 레벨별 문항 수. 영상 레벨에 맞는 모드를 많이 뽑는다.
+// 제목의 레벨 표기 → 레벨별 문항 수.
+// ⭐ 오너 방침(2026-11-02): 그 급수의 영상은 그 급수 모드 문제만 만든다 (초급→B, 중급→I, 고급→A).
+//    레벨 표기가 없는 영상만 세 모드를 섞는다.
 const COUNTS_BY_LEVEL = {
-  // I 는 2026-11 부터 쉬운 빈칸 받아쓰기 — 4지선다보다 가벼워 조금 더 뽑는다
-  beginner: { B: 6, I: 4, A: 3 },
-  intermediate: { B: 3, I: 6, A: 6 },
-  advanced: { B: 2, I: 4, A: 8 },
+  beginner: { B: 8, I: 0, A: 0 },
+  // I 는 2026-11 부터 쉬운 빈칸 받아쓰기
+  intermediate: { B: 0, I: 8, A: 0 },
+  advanced: { B: 0, I: 0, A: 10 },
   unknown: { B: 4, I: 4, A: 5 },
 }
 
@@ -37,9 +40,20 @@ const flagValue = (name, fallback) => {
   return i === -1 ? fallback : argv[i + 1]
 }
 const dryRun = flag('--dry-run')
+const redo = flag('--redo')
+
+// 퀴즈 담당이 저장한 뒤 스튜디오에서 저장·배포된 적 없는 초안 — 같은 쓰기의 serverTimestamp 라 두 시각이 같다
+function isUntouchedAiDraft(d) {
+  return (
+    d.aiDraft?.by === 'quiz-writer' &&
+    !(d.published ?? []).length &&
+    d.updatedAt?.isEqual?.(d.aiDraft.generatedAt) === true
+  )
+}
 const sinceDays = Number(flagValue('--since-days', 30))
 const maxPerRun = Number(flagValue('--max', 3))
-const explicitIds = argv.filter((a, i) => /^[\w-]{11}$/.test(a) && !argv[i - 1]?.startsWith('--'))
+// 값을 받는 옵션(--since-days N, --max N) 뒤의 값만 제외 — --redo 같은 스위치 뒤 ID 는 그대로 ID
+const explicitIds = argv.filter((a, i) => /^[\w-]{11}$/.test(a) && !['--since-days', '--max'].includes(argv[i - 1]))
 
 function levelOf(title) {
   if (/beginner|초급/i.test(title)) return 'beginner'
@@ -131,11 +145,13 @@ async function main() {
   for (const v of videos) {
     if (attempts >= maxPerRun) break
     const s = state[v.videoId] ?? {}
-    if (s.status === 'done' || s.status === 'skipped' || (s.tries ?? 0) >= MAX_TRIES) continue
+    // 영상 ID 를 직접 지정하면(재작업) 작업 기록과 상관없이 다시 본다
+    if (!explicitIds.length && (s.status === 'done' || s.status === 'skipped' || (s.tries ?? 0) >= MAX_TRIES)) continue
 
     // 이미 초안/배포본이 있는 영상은 오너 작업물 — 덮어쓰지 않는다
+    // (--redo: 퀴즈 담당이 만든 뒤 아무도 손대지 않은 미배포 AI 초안만 새 규칙으로 다시 만든다)
     const snap = await db.collection('kartistQuizzes').doc(v.videoId).get()
-    if (snap.exists && ((snap.data().draft ?? []).length || (snap.data().published ?? []).length)) {
+    if (snap.exists && ((snap.data().draft ?? []).length || (snap.data().published ?? []).length) && !(redo && isUntouchedAiDraft(snap.data()))) {
       state[v.videoId] = { status: 'skipped', reason: 'existing-draft', title: v.title }
       continue
     }
