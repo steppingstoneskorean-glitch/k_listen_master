@@ -75,32 +75,32 @@ export default function StartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col px-5 pb-8 relative overflow-hidden">
-      {/* Ambient gradient — 브랜드 컬러의 은은한 글로우 */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-20 left-1/2 -translate-x-1/2 h-[360px] w-[520px] rounded-full bg-fuchsia-600/20 blur-[120px]" />
-        <div className="absolute top-44 left-1/2 -translate-x-1/2 h-[280px] w-[420px] rounded-full bg-indigo-600/20 blur-[130px]" />
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-fuchsia-50 px-5 pb-8 text-slate-900">
+      {/* Ambient glow — 밝은 배경 위 은은한 브랜드 컬러 번짐 */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-16 left-1/2 h-[320px] w-[480px] -translate-x-1/2 rounded-full bg-fuchsia-300/30 blur-[120px]" />
+        <div className="absolute top-44 left-1/2 h-[260px] w-[400px] -translate-x-1/2 rounded-full bg-indigo-300/30 blur-[130px]" />
       </div>
 
       {/* Language switcher */}
-      <div className="absolute top-5 right-5 z-20">
+      <div className="absolute right-5 top-5 z-20">
         <LanguageSwitcher />
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-center gap-7">
         {/* K-content 히어로 — 실제 콘텐츠(앱 썸네일)를 기울인 카드로 앞세운다 */}
-        <div className="relative mt-16 flex items-end justify-center select-none">
+        <div className="relative mt-16 flex select-none items-end justify-center">
           <img
             src={wordGuessImg} alt="" aria-hidden="true"
-            className="h-28 w-20 -mr-5 translate-y-2 rotate-[-9deg] rounded-2xl object-cover shadow-xl shadow-black/50 ring-1 ring-white/10 pointer-events-none"
+            className="pointer-events-none h-28 w-20 -mr-5 translate-y-2 rotate-[-9deg] rounded-2xl object-cover shadow-lg shadow-indigo-300/40 ring-1 ring-slate-900/10"
           />
           <img
             src={intermediateGameImg} alt="K-Listen"
-            className="relative z-10 h-36 w-28 rounded-2xl object-cover shadow-2xl shadow-black/60 ring-1 ring-white/15 pointer-events-none"
+            className="pointer-events-none relative z-10 h-36 w-28 rounded-2xl object-cover shadow-xl shadow-indigo-400/30 ring-1 ring-slate-900/10"
           />
           <img
             src={advancedGameImg} alt="" aria-hidden="true"
-            className="h-28 w-20 -ml-5 translate-y-2 rotate-[9deg] rounded-2xl object-cover shadow-xl shadow-black/50 ring-1 ring-white/10 pointer-events-none"
+            className="pointer-events-none h-28 w-20 -ml-5 translate-y-2 rotate-[9deg] rounded-2xl object-cover shadow-lg shadow-fuchsia-300/40 ring-1 ring-slate-900/10"
           />
         </div>
 
@@ -109,13 +109,13 @@ export default function StartPage() {
           <div className="flex items-center gap-2">
             <img src={logoImg} alt="" aria-hidden="true" className="h-6 w-6 rounded-lg object-contain" />
             <span className="text-base font-black tracking-tight">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-fuchsia-300">K-Listen</span>
+              <span className="bg-gradient-to-r from-indigo-500 to-fuchsia-500 bg-clip-text text-transparent">K-Listen</span>
             </span>
           </div>
-          <h1 className="max-w-[300px] whitespace-pre-line text-balance break-keep text-center text-[22px] font-black leading-tight">
+          <h1 className="max-w-[300px] whitespace-pre-line text-balance break-keep text-center text-[22px] font-black leading-tight text-slate-900">
             {t('start.tagline')}
           </h1>
-          <p className="max-w-[280px] break-keep text-center text-xs leading-relaxed text-gray-400">
+          <p className="max-w-[280px] break-keep text-center text-xs leading-relaxed text-slate-500">
             {t('start.subtagline')}
           </p>
         </div>
@@ -126,16 +126,16 @@ export default function StartPage() {
           <button
             type="button"
             onClick={handleGuest}
-            className="group w-full rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 py-4 text-[15px] font-black text-white shadow-lg shadow-fuchsia-500/20 transition-all hover:opacity-95 active:scale-[0.98]"
+            className="group w-full rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 py-4 text-[15px] font-black text-white shadow-lg shadow-fuchsia-500/25 transition-all hover:opacity-95 active:scale-[0.98]"
           >
             {t('start.guestBrowse')}
             <span className="ml-1.5 inline-block transition-transform group-hover:translate-x-0.5">→</span>
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-white/10" />
-            <span className="whitespace-nowrap text-[11px] text-gray-500">{t('start.orSignIn')}</span>
-            <div className="h-px flex-1 bg-white/10" />
+            <div className="h-px flex-1 bg-slate-200" />
+            <span className="whitespace-nowrap text-[11px] text-slate-400">{t('start.orSignIn')}</span>
+            <div className="h-px flex-1 bg-slate-200" />
           </div>
 
           {/* 소셜 로그인 — 2열 컴팩트 */}
@@ -145,7 +145,7 @@ export default function StartPage() {
               onClick={() => handleSocialSignIn('google')}
               disabled={submitting}
               aria-label={t('auth.continueWithGoogle')}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-bold text-gray-800 transition-all hover:bg-gray-100 active:scale-[0.98] disabled:opacity-40"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98] disabled:opacity-40"
             >
               <GoogleIcon /> Google
             </button>
@@ -154,12 +154,12 @@ export default function StartPage() {
               onClick={() => handleSocialSignIn('apple')}
               disabled={submitting}
               aria-label={t('auth.continueWithApple')}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 py-3 text-sm font-bold text-white transition-all hover:bg-white/15 active:scale-[0.98] disabled:opacity-40"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gray-900 py-3 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-800 active:scale-[0.98] disabled:opacity-40"
             >
               <AppleIcon /> Apple
             </button>
           </div>
-          {error && <p className="text-center text-xs text-red-400">{error}</p>}
+          {error && <p className="text-center text-xs text-red-500">{error}</p>}
 
           {/* 마케팅 동의 (선택) — 사전 체크 안 함 */}
           <label className="mt-0.5 flex cursor-pointer select-none items-start gap-2">
@@ -167,16 +167,16 @@ export default function StartPage() {
               type="checkbox"
               checked={marketingOptIn}
               onChange={e => setMarketingOptIn(e.target.checked)}
-              className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-gray-600 bg-gray-800 accent-fuchsia-500"
+              className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-slate-300 bg-white accent-fuchsia-500"
             />
-            <span className="text-[11px] leading-snug text-gray-500">{t('auth.marketingConsent')}</span>
+            <span className="text-[11px] leading-snug text-slate-500">{t('auth.marketingConsent')}</span>
           </label>
 
           {/* 법적 링크 + 웹 폴백(설치앱 로그인 막힐 때 우회) — 한 줄로 */}
-          <div className="flex items-center justify-center gap-3 text-[11px] text-gray-600">
-            <Link to="/privacy" className="underline transition-colors hover:text-gray-400">{t('cookie.privacy')}</Link>
-            <span className="text-gray-700">·</span>
-            <a href="https://k-listen-master.vercel.app" className="underline transition-colors hover:text-gray-400">{t('start.webFallback')}</a>
+          <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400">
+            <Link to="/privacy" className="underline transition-colors hover:text-slate-600">{t('cookie.privacy')}</Link>
+            <span className="text-slate-300">·</span>
+            <a href="https://k-listen-master.vercel.app" className="underline transition-colors hover:text-slate-600">{t('start.webFallback')}</a>
           </div>
         </div>
       </div>
