@@ -2,11 +2,11 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // 멀티 모드(B/I/A) 퀴즈 데이터 입력 대시보드 — 운영자 전용 CMS (/quiz-builder)
 //   Step 1  영상 메타데이터: URL(→videoId 자동 추출) · 아티스트 · 제목
-//   Step 2  모드 토글: B/I/A 활성화 + 모드별 세부 난이도(1~3성) — 9-tier
+//   Step 2  모드 토글: B/I/A 활성화
 //   Step 3  모드별 동적 입력 폼
 //     [B] 문장 입력 → ClauseChunker 로 절 단위 블록 구성 (블록 순서 = 정답 순서)
 //     [I] A 와 같은 빈칸 받아쓰기 (기존 4지선다 문항은 불러오면 보기 편집 폼으로 유지)
-//     [A] 별점 선택 + 문장 입력 → 절 블록을 클릭해 빈칸(blank) 지정 + 힌트
+//     [A] 문장 입력 → 절 블록을 클릭해 빈칸(blank) 지정 + 힌트
 //   출력: JSON(복사) + Firestore 저장(초안)/배포 — 모드 단위 병합이라 다른 모드 보존
 //   접근 제한: ADMIN_EMAIL 로그인 시에만 렌더링
 // ─────────────────────────────────────────────────────────────────────────────
@@ -143,9 +143,8 @@ export default function QuizBuilderPage() {
   const [titleEn, setTitleEn] = useState('')
   const [titleKo, setTitleKo] = useState('')
 
-  // Step 2 — 모드 토글 + 모드별 별점 (9-tier)
+  // Step 2 — 모드 토글
   const [enabled, setEnabled] = useState<Record<GameMode, boolean>>({ B: false, I: false, A: true })
-  const [modeStars, setModeStars] = useState<Record<GameMode, number>>({ B: 1, I: 2, A: 2 })
 
   // Step 3 — 모드별 문항 초안
   const [drafts, setDrafts] = useState<Record<GameMode, ItemDraft[]>>({ B: [], I: [], A: [] })
@@ -198,9 +197,9 @@ export default function QuizBuilderPage() {
   const availableModesSnippet = useMemo(
     () =>
       JSON.stringify(
-        enabledModes.map(m => ({ mode: m, stars: modeStars[m] })),
+        enabledModes.map(m => ({ mode: m })),
       ),
-    [enabledModes, modeStars],
+    [enabledModes],
   )
   const problems = useMemo(
     () => enabledModes.flatMap(m => drafts[m].flatMap((d, i) => validateDraft(d, m, i))),
@@ -299,9 +298,9 @@ export default function QuizBuilderPage() {
         </div>
       </section>
 
-      {/* ── Step 2: 모드 활성화 + 모드별 별점 (9-tier) ───────────────────── */}
+      {/* ── Step 2: 모드 활성화 ───────────────────────────────────────────── */}
       <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-sm font-black uppercase tracking-widest text-indigo-500">Step 2 · 모드 & 난이도</h2>
+        <h2 className="text-sm font-black uppercase tracking-widest text-indigo-500">Step 2 · 모드</h2>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {MODE_ORDER.map(m => (
             <div
@@ -321,20 +320,6 @@ export default function QuizBuilderPage() {
                 {MODE_LABEL[m].split(' — ')[0]}
               </label>
               <p className="mt-1 text-[11px] text-slate-500">{MODE_LABEL[m].split(' — ')[1]}</p>
-              {enabled[m] && (
-                <label className="mt-2 flex items-center gap-2 text-xs font-semibold text-slate-500">
-                  난이도
-                  <select
-                    className="rounded-lg border border-slate-300 px-2 py-1 text-sm"
-                    value={modeStars[m]}
-                    onChange={e => setModeStars(prev => ({ ...prev, [m]: Number(e.target.value) }))}
-                  >
-                    {[1, 2, 3].map(n => (
-                      <option key={n} value={n}>{'⭐'.repeat(n)} ({n})</option>
-                    ))}
-                  </select>
-                </label>
-              )}
             </div>
           ))}
         </div>

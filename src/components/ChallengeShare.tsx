@@ -25,6 +25,7 @@ export default function ChallengeShare({
   /** 아티스트명(K-Artist Live) 또는 레벨 타이틀(Dictation/Game) */
   label: string
   score: number
+  /** 난이도 별 개수 — 0 이면 별 표시·문구를 생략한다(K-Stars 영상 퀴즈) */
   stars: number
   gamePath: string // 예: '/game', '/dictation?mode=advanced'
   correctCount?: number
@@ -45,7 +46,7 @@ export default function ChallengeShare({
   const capturedBlobRef = useRef<Blob | null>(null)
 
   const url = buildShareUrl({ path: gamePath, score, stars, label, correctCount, total, thumbnailUrl })
-  const message = t('challenge.message')
+  const message = t(stars > 0 ? 'challenge.message' : 'challenge.messageNoStars')
     .replace('{score}', String(score))
     .replace('{name}', label)
     .replace('{stars}', String(stars))
@@ -155,9 +156,11 @@ export default function ChallengeShare({
               🎧
             </div>
           )}
-          <div className="absolute inset-x-0 bottom-0 bg-black/40 py-0.5 text-center text-[10px] leading-none text-white">
-            {'⭐'.repeat(Math.max(0, Math.min(5, stars)))}
-          </div>
+          {stars > 0 && (
+            <div className="absolute inset-x-0 bottom-0 bg-black/40 py-0.5 text-center text-[10px] leading-none text-white">
+              {'⭐'.repeat(Math.min(5, stars))}
+            </div>
+          )}
         </div>
 
         <div className="min-w-0 flex-1">

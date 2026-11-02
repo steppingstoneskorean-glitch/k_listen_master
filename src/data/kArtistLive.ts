@@ -4,8 +4,7 @@
 //   · title/desc 는 다국어 객체(Localized) — pickText 로 해석
 //   · answer(딕테이션 정답)는 학습 원문이므로 한국어 문자열로만 고정
 //   · plays(누적 도전 수) / addedAt(등록 순서) 는 Game Hub 정렬용 메타데이터
-//   · availableModes: 영상별 B/I/A 모드 + 모드별 세부 난이도(1~3성) — 9-tier 시스템
-//     (기존의 전역 stars 프로퍼티를 대체)
+//   · availableModes: 영상별 제공 모드 B/I/A (난이도 별은 2026-11 에 제거)
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { Lang } from '@/lib/i18n'
@@ -17,13 +16,12 @@ export function pickText(localized: Localized, lang: Lang): string {
   return localized[lang] ?? localized.en
 }
 
-/** 게임 모드: B(Beginner 블록 배열) / I(Intermediate 의미 고르기) / A(Advanced 딕테이션) */
+/** 게임 모드: B(Beginner 블록 배열) / I(Intermediate 쉬운 받아쓰기) / A(Advanced 원속도 받아쓰기) */
 export type GameMode = 'B' | 'I' | 'A'
 
-/** 모드별 세부 난이도 (1~3성) — 3모드 × 3성 = 9-tier */
+/** 영상이 제공하는 모드 (난이도 별은 2026-11 에 제거 — 레벨 자체가 난이도) */
 export interface ModeInfo {
   mode: GameMode
-  stars: 1 | 2 | 3
 }
 
 /** 배지 고정 표시 순서 */
@@ -68,7 +66,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
       ja: 'メンバーたちの癒やしの旅を楽しみながら韓国語を学ぼう。',
     },
     artist: 'BTS',
-    availableModes: [{ mode: 'A', stars: 2 }],
+    availableModes: [{ mode: 'A' }],
     url: '/kpop-quiz/wu6bA3zK_us',
     videoId: 'wu6bA3zK_us',
     plays: 1,
@@ -79,7 +77,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 2,
     title: { en: 'RunSeokJin Interview', ko: '런석진 인터뷰', es: 'Entrevista de RunSeokJin', ja: 'RunSeokJin インタビュー' },
     artist: 'BTS',
-    availableModes: [{ mode: 'A', stars: 1 }],
+    availableModes: [{ mode: 'A' }],
     url: '/kpop-quiz/ADw_zMarJdk',
     videoId: 'ADw_zMarJdk',
     plays: 0,
@@ -95,7 +93,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 3,
     title: { en: 'ATEEZ Unfiltered: Pre-Debut Hardships & Tour Secrets', ko: 'ATEEZ 필터 없는 토크: 데뷔 전 고충 & 투어 비밀', es: 'ATEEZ Revela: Secretos de su Pre-Debut y Gira Mundial', ja: 'ATEEZ激白、デビュー前の過酷な下積みと世界ツアーの裏話'},
     artist: 'Ateez',
-    availableModes: [{ mode: 'A', stars: 2 }],
+    availableModes: [{ mode: 'A' }],
     url: '/kpop-quiz/rBDBC82UmKo',
     videoId: 'rBDBC82UmKo',
     plays: 0,
@@ -111,7 +109,7 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 4,
     title: { en: "Busan's Prince I.N and his 7 chaotic hyungs", ko: '부산의 왕자 아이엔과 통제 불능 7명의 형들', es: 'El príncipe de Busan, I.N, y sus 7 caóticos hyungs', ja: '釜山の王子・アイエンと制御不能な7人の兄（ヒョン）たち' },
     artist: 'SKZ',
-    availableModes: [{ mode: 'A', stars: 2 }],
+    availableModes: [{ mode: 'A' }],
     url: '/kpop-quiz/wQvbvIJttDc',
     videoId: 'wQvbvIJttDc',
     plays: 0,
@@ -127,11 +125,10 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     id: 5,
     title: { en: 'Manager Kim Episodes 1–2 Summary', ko: '김부장 1~2화 정리', es: 'Resumen de los episodios 1 y 2 de Manager Kim', ja: '『部長K』第1～2話まとめ' },
     artist: 'K-Drama',
-    // 9-tier 예시: 모드별로 서로 다른 세부 난이도
     availableModes: [
-      { mode: 'B', stars: 2 },
-      { mode: 'I', stars: 3 },
-      { mode: 'A', stars: 1 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/7xNNgVxsvB8',
     videoId: '7xNNgVxsvB8',
@@ -144,9 +141,9 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     artist: 'K-Drama',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
-      { mode: 'B', stars: 2 },
-      { mode: 'I', stars: 2 },
-      { mode: 'A', stars: 2 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/tt6ZWE1aGJk',
     videoId: 'tt6ZWE1aGJk',
@@ -159,9 +156,9 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     artist: 'BTS',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
-      { mode: 'B', stars: 1 },
-      { mode: 'I', stars: 2 },
-      { mode: 'A', stars: 2 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/dHhBKHEIpQs',
     videoId: 'dHhBKHEIpQs',
@@ -185,9 +182,9 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     artist: 'K-Drama',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
-      { mode: 'B', stars: 2 },
-      { mode: 'I', stars: 2 },
-      { mode: 'A', stars: 2 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/yvSkqmgBC-g',
     videoId: 'yvSkqmgBC-g',
@@ -211,9 +208,9 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     artist: 'BTS',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
-      { mode: 'B', stars: 2 },
-      { mode: 'I', stars: 2 },
-      { mode: 'A', stars: 2 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/9D-8kb6RIK4',
     videoId: '9D-8kb6RIK4',
@@ -237,9 +234,9 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     artist: 'BIGBANG',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
-      { mode: 'B', stars: 2 },
-      { mode: 'I', stars: 2 },
-      { mode: 'A', stars: 2 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/MuWu6jD6l94',
     videoId: 'MuWu6jD6l94',
@@ -263,9 +260,9 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     artist: 'Blackpink',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
-      { mode: 'B', stars: 2 },
-      { mode: 'I', stars: 2 },
-      { mode: 'A', stars: 2 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/ql667WQxH_Q',
     videoId: 'ql667WQxH_Q',
@@ -289,9 +286,9 @@ export const LIVE_VIDEOS: LiveVideo[] = [
     artist: 'K-Drama',
     // 배포본(Firestore)에서 실제 제공 모드를 해석 — 여기 값은 폴백
     availableModes: [
-      { mode: 'B', stars: 2 },
-      { mode: 'I', stars: 2 },
-      { mode: 'A', stars: 2 },
+      { mode: 'B' },
+      { mode: 'I' },
+      { mode: 'A' },
     ],
     url: '/kpop-quiz/C-dJAFvMpzQ',
     videoId: 'C-dJAFvMpzQ',

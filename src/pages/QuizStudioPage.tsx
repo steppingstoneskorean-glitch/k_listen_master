@@ -22,13 +22,11 @@ import { useAuth } from '@/lib/auth'
 import {
   loadDraft,
   loadPublishedQuizzes,
-  loadModeStars,
   saveModeItems,
   unpublishModeItems,
   itemMode,
   isChoiceItem,
   type QuizItem,
-  type ModeStars,
 } from '@/lib/quizStore'
 import type { GameMode } from '@/data/kArtistLive'
 import ClauseChunker, { splitWords } from '@/components/admin/ClauseChunker'
@@ -91,7 +89,7 @@ function emptyItem(videoId: string, mode: GameMode, seq: number): QuizItem {
     fullSentence: '',
     explanation: '',
     hasHardcodedSubs: true,
-    initialSpeed: 0.75,
+    initialSpeed: mode === 'A' ? 1.0 : 0.75,
   }
   if (mode === 'B') return { ...base, blocks: [] }
   // A·I 모두 빈칸 받아쓰기 (I 4지선다는 신규 생성하지 않는다)
@@ -121,7 +119,11 @@ function normalizeExplanation(
   }
 }
 
-function itemProblem(q: QuizItem, i: number): string | null {
+// 빈칸 길이 규칙 비교용 키 — 불러온 시점과 같으면(기존 문항) 규칙을 소급 적용하지 않는다
+const blankKey = (q: QuizItem) => `${q.id}|${q.fullSentence}|${q.blankWord ?? ''}`
+const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length
+
+function itemProblem(q: QuizItem, i: number, legacy: Set<string>): string | null {
   const tag = `#${i + 1}`
   if (q.endTime <= q.startTime) return `${tag}: 종료 시간이 시작 시간보다 빨라요`
   if (!normalizeExplanation(q.explanation).ok)
@@ -137,6 +139,13 @@ function itemProblem(q: QuizItem, i: number): string | null {
     if (!q.fullSentence.trim()) return `${tag}(${m}): 전체 문장이 비어 있어요`
     if (!q.blankWord || !q.blankWord.trim()) return `${tag}(${m}): 빈칸 단어가 비어 있어요`
     if (!q.fullSentence.includes(q.blankWord)) return `${tag}(${m}): 빈칸이 전체 문장에 없어요 (띄어쓰기 확인)`
+    // 빈칸 길이 규칙 — 중급 1~2어절, 고급 2어절 이상. 기존(불러온 그대로의) 문항은 예외.
+    if (!legacy.has(blankKey(q))) {
+      if (q.blankWord.trim() === q.fullSentence.trim()) return `${tag}(${m}): 문장 전체를 빈칸으로 만들 수 없어요`
+      const n = wordCount(q.blankWord)
+      if (m === 'I' && n > 2) return `${tag}(I): 중급 빈칸은 1~2어절이어야 해요 (지금 ${n}어절)`
+      if (m === 'A' && n < 2) return `${tag}(A): 고급 빈칸은 2어절 이상이어야 해요 (띄어쓰기 기준)`
+    }
   }
   return null
 }
@@ -156,9 +165,11 @@ export default function QuizStudioPage() {
 
   const [items, setItems] = useState<QuizItem[]>([]) // 전 모드 문항
   const [activeMode, setActiveMode] = useState<GameMode>('A')
-  const [modeStars, setModeStars] = useState<ModeStars>({}) // 모드별 난이도(별점) — 카드 배지에 반영
-  const [defaultSpeed, setDefaultSpeed] = useState(0.75) // 영상 기본 재생 속도 — 전체 문항 일괄 적용
+  // 영상 기본 재생 속도 — B·I 문항에 일괄 적용 (A 는 항상 원속도 1.0)
+  const [defaultSpeed, setDefaultSpeed] = useState(0.75)
   const [publishedCount, setPublishedCount] = useState<number | null>(null)
+  // 불러온 시점의 빈칸 문항 키 — 빈칸 길이 규칙 도입 전 문항은 그대로 저장/배포할 수 있게 한다
+  const [legacyBlanks, setLegacyBlanks] = useState<Set<string>>(new Set())
 
   const [busy, setBusy] = useState<'' | 'generate' | 'save' | 'publish' | 'translate' | 'unpublish'>('')
   const [notice, setNotice] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
@@ -173,18 +184,19 @@ export default function QuizStudioPage() {
   useEffect(() => {
     if (!videoId || !isAdmin) return
     let cancelled = false
-    Promise.all([loadDraft(videoId), loadPublishedQuizzes(videoId), loadModeStars(videoId)])
-      .then(([draft, published, stars]) => {
+    Promise.all([loadDraft(videoId), loadPublishedQuizzes(videoId)])
+      .then(([draft, published]) => {
         if (cancelled) return
         // 초안이 있으면 초안, 없으면 배포본을 편집 시작점으로 사용 (다른 모드 유실 방지)
         const seed = draft && draft.length ? draft : published || []
         setItems(seed)
-        setModeStars(stars)
+        setLegacyBlanks(new Set([...seed, ...(published || [])].map(blankKey)))
         setPublishedCount(published ? published.length : 0)
-        // 속도 select 를 기존 문항의 대표 속도(최빈값)와 동기화
-        if (seed.length) {
+        // 속도 select 를 기존 B·I 문항의 대표 속도(최빈값)와 동기화
+        const nonA = seed.filter((q) => itemMode(q) !== 'A')
+        if (nonA.length) {
           const freq: Record<string, number> = {}
-          for (const q of seed) {
+          for (const q of nonA) {
             const s = String(q.initialSpeed ?? 0.75)
             freq[s] = (freq[s] || 0) + 1
           }
@@ -231,7 +243,7 @@ export default function QuizStudioPage() {
       const newItems: QuizItem[] = (data.quizzes as QuizItem[]).map((q) => ({
         ...q,
         mode: itemMode(q),
-        initialSpeed: q.initialSpeed ?? defaultSpeed,
+        initialSpeed: itemMode(q) === 'A' ? 1.0 : q.initialSpeed ?? defaultSpeed,
       }))
       const generatedModes = [...new Set(newItems.map(itemMode))]
       setItems((prev) => [...prev.filter((q) => !generatedModes.includes(itemMode(q))), ...newItems])
@@ -252,7 +264,8 @@ export default function QuizStudioPage() {
   const addItem = () =>
     setItems((prev) => {
       const seq = prev.filter((q) => itemMode(q) === activeMode).length + 1
-      return [...prev, { ...emptyItem(videoId, activeMode, seq), initialSpeed: defaultSpeed }]
+      const item = emptyItem(videoId, activeMode, seq)
+      return [...prev, activeMode === 'A' ? item : { ...item, initialSpeed: defaultSpeed }]
     })
 
   const previewSegment = (q: QuizItem) => {
@@ -265,8 +278,8 @@ export default function QuizStudioPage() {
 
   // 전체 검증 + 현재 모드 문항(원본 인덱스 유지)
   const problems = useMemo(
-    () => items.map((q, i) => itemProblem(q, i)).filter(Boolean) as string[],
-    [items],
+    () => items.map((q, i) => itemProblem(q, i, legacyBlanks)).filter(Boolean) as string[],
+    [items, legacyBlanks],
   )
   const shown = useMemo(
     () => items.map((q, i) => ({ q, i })).filter(({ q }) => itemMode(q) === activeMode),
@@ -332,7 +345,7 @@ export default function QuizStudioPage() {
             const r = normalizeExplanation(q.explanation)
             return r.ok ? { ...q, explanation: r.value } : q
           })
-          await saveModeItems(videoId, presentModes, normalizedItems, mode === 'publish', modeStars)
+          await saveModeItems(videoId, presentModes, normalizedItems, mode === 'publish')
           if (mode === 'publish') {
             setPublishedCount(items.length)
             const done = `🎉 배포 완료! /kpop-quiz/${videoId} 에서 ${presentModes.join('/')} 모드가 보입니다.`
@@ -354,7 +367,7 @@ export default function QuizStudioPage() {
         setBusy('')
       }
     },
-    [videoId, items, problems, modeStars, translateExplanations],
+    [videoId, items, problems, translateExplanations],
   )
 
   if (!isAdmin) {
@@ -413,58 +426,30 @@ export default function QuizStudioPage() {
 
       {videoId && (
         <>
-          {/* ── 영상 설정: 기본 재생 속도 + 레벨별 난이도(별) ── */}
+          {/* ── 영상 설정: 기본 재생 속도 (B·I 만 — A 는 항상 원속도) ── */}
           <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-indigo-500">영상 설정 · 속도 & 난이도</h2>
-            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {/* 기본 재생 속도 — 이 영상의 전체 문항에 일괄 적용 (문항별 개별 수정 가능) */}
-              <label className="text-xs font-semibold text-slate-500">
-                기본 재생 속도 (전체 문항에 즉시 적용 · 새 문항/AI 생성에도 사용)
-                <select
-                  className={`mt-1 ${field}`}
-                  value={defaultSpeed}
-                  onChange={(e) => {
-                    const v = Number(e.target.value)
-                    setDefaultSpeed(v)
-                    setItems((prev) => prev.map((q) => ({ ...q, initialSpeed: v })))
-                  }}
-                >
-                  {[0.5, 0.75, 1.0].map((rate) => (
-                    <option key={rate} value={rate}>
-                      {rate.toFixed(2)}배{rate === 0.75 ? ' (기본)' : ''}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              {/* 레벨별 별 개수 — 카드 썸네일 배지에 그대로 표시됨 */}
-              <div className="text-xs font-semibold text-slate-500">
-                레벨별 난이도 별 개수 (썸네일 배지에 표시)
-                <div className="mt-1 grid grid-cols-3 gap-2">
-                  {MODES.map((m) => (
-                    <label key={m.key} className="flex items-center gap-1.5">
-                      <span
-                        className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[10px] font-black ${m.chipActive}`}
-                      >
-                        {m.key}
-                      </span>
-                      <select
-                        className={field}
-                        value={modeStars[m.key] ?? 1}
-                        onChange={(e) =>
-                          setModeStars((prev) => ({ ...prev, [m.key]: Number(e.target.value) }))
-                        }
-                      >
-                        {[1, 2, 3].map((n) => (
-                          <option key={n} value={n}>
-                            {'⭐'.repeat(n)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <h2 className="text-sm font-bold uppercase tracking-wide text-indigo-500">영상 설정 · 재생 속도</h2>
+            <label className="mt-3 block max-w-sm text-xs font-semibold text-slate-500">
+              B·I 기본 재생 속도 (B·I 문항에 즉시 적용 · 새 문항/AI 생성에도 사용)
+              <select
+                className={`mt-1 ${field}`}
+                value={defaultSpeed}
+                onChange={(e) => {
+                  const v = Number(e.target.value)
+                  setDefaultSpeed(v)
+                  setItems((prev) => prev.map((q) => (itemMode(q) === 'A' ? q : { ...q, initialSpeed: v })))
+                }}
+              >
+                {[0.5, 0.75, 1.0].map((rate) => (
+                  <option key={rate} value={rate}>
+                    {rate.toFixed(2)}배{rate === 0.75 ? ' (기본)' : ''}
+                  </option>
+                ))}
+              </select>
+              <span className="mt-1 block text-[11px] font-medium text-slate-400">
+                고급(A)은 항상 원속도(1.0배)로 시작해요. 학습자가 직접 낮출 수는 있어요.
+              </span>
+            </label>
           </section>
 
           {/* ── STEP 2: 모드 선택 탭 ── */}
@@ -635,17 +620,21 @@ export default function QuizStudioPage() {
                     </label>
                     <label className="text-xs font-semibold text-slate-500">
                       재생 속도
-                      <select
-                        className={`mt-1 ${field}`}
-                        value={q.initialSpeed ?? 0.75}
-                        onChange={(e) => update(i, { initialSpeed: Number(e.target.value) })}
-                      >
-                        {[0.5, 0.75, 1.0].map((rate) => (
-                          <option key={rate} value={rate}>
-                            {rate.toFixed(2)}배{rate === 0.75 ? ' (기본)' : ''}
-                          </option>
-                        ))}
-                      </select>
+                      {activeMode === 'A' ? (
+                        <p className={`mt-1 ${field} bg-slate-50 text-slate-400`}>1.00배 (고정)</p>
+                      ) : (
+                        <select
+                          className={`mt-1 ${field}`}
+                          value={q.initialSpeed ?? 0.75}
+                          onChange={(e) => update(i, { initialSpeed: Number(e.target.value) })}
+                        >
+                          {[0.5, 0.75, 1.0].map((rate) => (
+                            <option key={rate} value={rate}>
+                              {rate.toFixed(2)}배{rate === 0.75 ? ' (기본)' : ''}
+                            </option>
+                          ))}
+                        </select>
+                      )}
                     </label>
                     <label className="col-span-2 flex items-end gap-2 pb-2 text-xs font-semibold text-slate-500">
                       <input
@@ -671,7 +660,7 @@ export default function QuizStudioPage() {
                         />
                       </label>
                       <label className="mt-2 block text-xs font-semibold text-slate-500">
-                        빈칸 절/단어 (전체 문장 안의 글자·띄어쓰기와 정확히 일치)
+                        빈칸 ({activeMode === 'I' ? '중급: 1~2어절' : '고급: 2어절 이상'} · 전체 문장 안의 글자·띄어쓰기와 정확히 일치)
                         <input
                           translate="no"
                           className={`mt-1 notranslate ${field} ${
@@ -682,7 +671,7 @@ export default function QuizStudioPage() {
                         />
                       </label>
                       <label className="mt-2 block text-xs font-semibold text-slate-500">
-                        힌트 (선택)
+                        힌트 (선택 · {activeMode === 'I' ? '정답 초성은 자동으로 보여줘요' : '학습자가 열면 정답이어도 🔺 감점'})
                         <textarea
                           rows={2}
                           className={`mt-1 ${field}`}

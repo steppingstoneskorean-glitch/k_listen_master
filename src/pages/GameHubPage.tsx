@@ -27,7 +27,7 @@ interface HubItem {
   title: string // 현재 언어로 해석된 문자열
   desc?: string
   artist: string // 'BTS'... 또는 STEP_ARTIST
-  modes: ModeInfo[] // B/I/A + 모드별 1~3성 (9-tier)
+  modes: ModeInfo[] // 제공 모드 B/I/A
   url: string // 빈 문자열이면 Coming Soon
   videoId?: string
   emoji?: string // 퀴즈 카드용 (썸네일 대체)
@@ -57,9 +57,9 @@ const STEP_QUIZZES: {
   plays: number
   addedAt: number
 }[] = [
-  { key: 'q1', titleKey: 'home.level1.title', descKey: 'home.level1.desc', emoji: '🎯', imageSrc: wordGuessImg, modes: [{ mode: 'B', stars: 1 }], url: '/game', plays: 2100, addedAt: 9 },
-  { key: 'q2', titleKey: 'home.level2.title', descKey: 'home.level2.desc', emoji: '🗣️', imageSrc: intermediateGameImg, modes: [{ mode: 'I', stars: 2 }], url: '/dictation?mode=intermediate', plays: 1450, addedAt: 8 },
-  { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', imageSrc: advancedGameImg, modes: [{ mode: 'A', stars: 3 }], url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
+  { key: 'q1', titleKey: 'home.level1.title', descKey: 'home.level1.desc', emoji: '🎯', imageSrc: wordGuessImg, modes: [{ mode: 'B' }], url: '/game', plays: 2100, addedAt: 9 },
+  { key: 'q2', titleKey: 'home.level2.title', descKey: 'home.level2.desc', emoji: '🗣️', imageSrc: intermediateGameImg, modes: [{ mode: 'I' }], url: '/dictation?mode=intermediate', plays: 1450, addedAt: 8 },
+  { key: 'q3', titleKey: 'home.level3.title', descKey: 'home.level3.desc', emoji: '🎙️', imageSrc: advancedGameImg, modes: [{ mode: 'A' }], url: '/dictation?mode=advanced', plays: 980, addedAt: 7 },
 ]
 
 function buildItems(t: ReturnType<typeof useLang>['t'], lang: Lang, liveVideos: LiveVideo[]): HubItem[] {

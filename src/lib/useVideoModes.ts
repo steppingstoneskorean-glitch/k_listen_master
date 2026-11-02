@@ -30,7 +30,7 @@ export function useVideoModes() {
     (videoId: string | undefined, fallback: ModeInfo[]): ModeInfo[] => {
       if (!videoId) return fallback
       const entry = meta?.[videoId]
-      return resolveModeInfos(videoId, entry?.published ?? null, entry?.modeStars, fallback)
+      return resolveModeInfos(videoId, entry?.published ?? null, fallback)
     },
     [meta],
   )

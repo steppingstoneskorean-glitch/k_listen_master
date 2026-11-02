@@ -27,7 +27,7 @@ export function ModeChip({ mode }: { mode: GameMode }) {
 }
 
 /**
- * [B ⭐⭐] [I ⭐⭐⭐] [A ⭐] — 고정 3칸 가로 배지 행.
+ * [B] [I] [A] — 고정 3칸 가로 배지 행 (난이도 별은 표시하지 않는다).
  * availableModes 에 없는 모드는 회색 저투명 상태로 렌더링.
  */
 export function ModeBadges({ modes, className = '' }: { modes: ModeInfo[]; className?: string }) {
@@ -38,13 +38,12 @@ export function ModeBadges({ modes, className = '' }: { modes: ModeInfo[]; class
         return (
           <span
             key={m}
-            aria-label={info ? `${m} ${info.stars} stars` : `${m} unavailable`}
+            aria-label={info ? m : `${m} unavailable`}
             className={`inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-md border px-1.5 py-0.5 text-[10px] font-black leading-none ${
               info ? MODE_BADGE_STYLE[m] : 'border-slate-200 bg-slate-100 text-slate-400 opacity-50'
             }`}
           >
             {m}
-            {info && <span className="text-[8px] tracking-tighter">{'⭐'.repeat(info.stars)}</span>}
           </span>
         )
       })}
@@ -163,7 +162,7 @@ export function VideoCard({
   title: string
   desc?: string
   artist: string
-  /** B/I/A 모드 + 모드별 1~3성 (없는 모드는 회색 배지) */
+  /** 제공 모드 B/I/A (없는 모드는 회색 배지) */
   modes: ModeInfo[]
   /** 이 영상의 모든 제공 모드를 클리어 → 썸네일 위 빛나는 왕관 */
   mastered?: boolean

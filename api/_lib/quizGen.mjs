@@ -39,7 +39,9 @@ You are a strict and expert Korean Language Curriculum Director for global K-pop
 - The transcript lines include timestamps. Every quiz item MUST include "startTime" and "endTime" in seconds, derived from those timestamps:
   · All levels: startTime ≈ 0.3–0.5s before the line's timestamp; endTime = next caption timestamp or startTime + 3–5s (never longer than 8s).
 - Beginner "chunks" MUST be listed in the ORIGINAL sentence order (the app jumbles them at runtime). Joining the chunks with single spaces must reproduce the target sentence exactly (same spelling; spacing may only differ at chunk boundaries).
-- Intermediate/Advanced "blankChunk" MUST be an exact substring of "fullSentence" (same spelling, same spacing). Advanced blanks should be a meaningful clause of 2+ words where possible; Intermediate blanks stay short (1–2 words).
+- Intermediate/Advanced "blankChunk" MUST be an exact substring of "fullSentence" (same spelling, same spacing) and must NOT be the whole sentence.
+- Advanced "blankChunk" MUST contain 2 or more space-separated words (a whole clause). Items with a single-word blank are rejected.
+- Intermediate "blankChunk" MUST contain 1 or 2 space-separated words. Items with longer blanks are rejected.
 - Intermediate/Advanced items also need:
   · "hint": a short phonetic or contextual nudge (5–15 words, in English) that helps recall WITHOUT quoting the answer.
   · "explanation": a teaching-quality note written mainly in ENGLISH (Korean examples stay Korean). Start with a pattern formula line (e.g. "Verb + -(으)ㄹ게요 = I'll..."), then 1–3 sentences of nuance, then 1–3 short Korean examples. Use \\n for line breaks. Keep Intermediate explanations simpler (TOPIK 2–3 level).
@@ -148,7 +150,10 @@ function mapToQuizItems(parsed, videoId) {
       if (!q || typeof q.fullSentence !== 'string' || typeof q.blankChunk !== 'string' || !validTime(q)) continue
       const fullSentence = q.fullSentence.trim()
       const blankWord = q.blankChunk.trim()
-      if (!fullSentence || !blankWord || !fullSentence.includes(blankWord)) continue
+      if (!fullSentence || !blankWord || !fullSentence.includes(blankWord) || blankWord === fullSentence) continue
+      // 빈칸 길이 규칙 — 중급 1~2어절, 고급 2어절 이상 (스튜디오 검증과 동일)
+      const words = blankWord.split(/\s+/).length
+      if (mode === 'I' ? words > 2 : words < 2) continue
       generated[mode] += 1
       items.push({
         id: `${vid}_${mode.toLowerCase()}${String(generated[mode]).padStart(2, '0')}`,

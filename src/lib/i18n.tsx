@@ -474,6 +474,16 @@ const TRANSLATIONS = {
   'guest.continueBtn': { en: 'Continue as Guest', ko: '게스트로 계속', es: 'Continuar como Invitado', ja: 'ゲストとして続ける' },
   'guest.score': { en: 'Your Score', ko: '내 점수', es: 'Tu Puntuación', ja: 'あなたのスコア' },
 
+  // ── Start gate (오디오 해제 탭) ──
+  'game.startTitle': { en: 'Ready to listen?', ko: '들을 준비 됐나요?', es: '¿Listo para escuchar?', ja: '聞く準備はいい？' },
+  'game.startHint': {
+    en: 'Tap to start — make sure your sound is on 🔊',
+    ko: '탭하면 시작해요 — 소리를 켜 주세요 🔊',
+    es: 'Toca para empezar — activa el sonido 🔊',
+    ja: 'タップで開始 — 音をオンにしてね 🔊',
+  },
+  'game.startBtn': { en: 'Tap to start', ko: '탭해서 시작', es: 'Toca para empezar', ja: 'タップで開始' },
+
   // ── Game / Result ──
   'game.levelFmt': { en: 'Level {n}', ko: '레벨 {n}', es: 'Nivel {n}', ja: 'レベル {n}' },
   'game.restart': { en: '🔄 Restart', ko: '🔄 다시 시작', es: '🔄 Reiniciar', ja: '🔄 もう一度' },
@@ -1010,10 +1020,10 @@ const TRANSLATIONS = {
     ja: '好きなアーティストのリアルな会話でリスニング力を鍛えよう',
   },
   'kartist.legend': {
-    en: '🅑 Beginner (word order) · 🅘 Intermediate (meaning) · 🅐 Advanced (dictation) — ⭐ shows difficulty (1–3)',
-    ko: '🅑 초급(어순 맞히기) · 🅘 중급(의미 이해) · 🅐 고급(받아쓰기) — ⭐ 는 난이도(1~3)를 뜻해요',
-    es: '🅑 Principiante (orden) · 🅘 Intermedio (significado) · 🅐 Avanzado (dictado) — ⭐ indica la dificultad (1–3)',
-    ja: '🅑 初級（語順）· 🅘 中級（意味）· 🅐 上級（書き取り）— ⭐ は難易度（1〜3）です',
+    en: '🅑 Beginner (word order) · 🅘 Intermediate (easy dictation) · 🅐 Advanced (dictation at native speed)',
+    ko: '🅑 초급(어순 맞히기) · 🅘 중급(쉬운 받아쓰기) · 🅐 고급(원속도 받아쓰기)',
+    es: '🅑 Principiante (orden) · 🅘 Intermedio (dictado fácil) · 🅐 Avanzado (dictado a velocidad nativa)',
+    ja: '🅑 初級（語順）· 🅘 中級（やさしい書き取り）· 🅐 上級（ネイティブ速度の書き取り）',
   },
   'kartist.filterArtist': { en: 'By Artist', ko: 'Artist별', es: 'Por artista', ja: 'アーティスト別' },
   'kartist.filterLevel': { en: 'By Level', ko: '레벨별', es: 'Por nivel', ja: 'レベル別' },
@@ -1104,6 +1114,12 @@ const TRANSLATIONS = {
     es: '📣 Envía un reto a un amigo',
     ja: '📣 友達に挑戦状を送る',
   },
+  'challenge.messageNoStars': {
+    en: '🎵 Challenge Arrived! I just scored {score} pts on the {name} Quiz! Can you beat my score? Try now 🎧',
+    ko: '🎵 도전장 도착! 내가 {name} 퀴즈에서 {score}점을 받았어! 나를 이길 수 있을까? 지금 도전해봐 🎧',
+    es: '🎵 ¡Reto recibido! Conseguí {score} pts en el quiz de {name}. ¿Puedes superarme? ¡Inténtalo ahora! 🎧',
+    ja: '🎵 挑戦状が届いた！{name}クイズで{score}点を獲得したよ！私に勝てるかな？今すぐ挑戦してみて🎧',
+  },
   'challenge.message': {
     en: '🎵 Challenge Arrived! I just scored {score} pts on the {name} Quiz ({stars} Stars Level)! Can you beat my score? Try now 🎧',
     ko: '🎵 도전장 도착! 내가 {name} 퀴즈에서 {score}점을 받았어 (난이도 별 {stars}개)! 나를 이길 수 있을까? 지금 도전해봐 🎧',
@@ -1168,6 +1184,34 @@ const TRANSLATIONS = {
   'kpop.reset': { en: '↺ Reset', ko: '↺ 다시', es: '↺ Reiniciar', ja: '↺ やり直す' },
   'kpop.hint': { en: '💡 Hint', ko: '💡 힌트', es: '💡 Pista', ja: '💡 ヒント' },
   'kpop.hintHide': { en: '💡 Hide hint', ko: '💡 힌트 숨기기', es: '💡 Ocultar pista', ja: '💡 ヒントを隠す' },
+  // 고급(A) 힌트 버튼 — 열면 정답이어도 🔺(감점)
+  'kpop.hintCost': { en: '💡 Hint (correct → 🔺)', ko: '💡 힌트 (정답이어도 🔺)', es: '💡 Pista (acierto → 🔺)', ja: '💡 ヒント（正解でも🔺）' },
+  // 중급(I) 받아쓰기 — 정답 초성 기본 제공
+  'kpop.initials': { en: 'Initial consonants', ko: '초성', es: 'Consonantes iniciales', ja: '初声' },
+  'kpop.practiceNote': {
+    en: 'Practice try — your score counts only your first answer',
+    ko: '연습 중이에요 — 점수는 첫 번째 답만 반영돼요',
+    es: 'Intento de práctica: la puntuación solo cuenta tu primera respuesta',
+    ja: '練習中です — スコアは最初の解答のみ反映されます',
+  },
+  'kpop.hintedMsg': {
+    en: '🔺 Correct, but you used a hint. +5 pts',
+    ko: '🔺 정답이지만 힌트를 사용했어요. +5점',
+    es: '🔺 Correcto, pero usaste una pista. +5 pts',
+    ja: '🔺 正解ですが、ヒントを使いました。+5点',
+  },
+  'kpop.reviewHinted': {
+    en: 'Correct — with a hint',
+    ko: '정답! (힌트 사용)',
+    es: '¡Correcto! (con pista)',
+    ja: '正解！（ヒント使用）',
+  },
+  'kpop.hintedBox': {
+    en: '🔺 You got it with a hint, so it counts as 🔺. Try the next one without a hint for full points! (+5 pts)',
+    ko: '🔺 힌트를 보고 맞혀서 🔺로 처리돼요. 다음 문장은 힌트 없이 도전해 만점을 노려 보세요! (+5점)',
+    es: '🔺 Acertaste con una pista, así que cuenta como 🔺. ¡Intenta la siguiente sin pista para la puntuación completa! (+5 pts)',
+    ja: '🔺 ヒントを見て正解したので🔺になります。次はヒントなしで満点を狙いましょう！（+5点）',
+  },
   'kpop.correctMsg': { en: 'Correct! +10 pts 🎉', ko: '정답! +10점 🎉', es: '¡Correcto! +10 pts 🎉', ja: '正解！+10点 🎉' },
   'kpop.partialMsg': {
     en: '🔺 The letters are right — check your spacing! +5 pts',

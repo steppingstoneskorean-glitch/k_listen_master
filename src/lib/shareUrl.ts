@@ -22,7 +22,7 @@ export function buildShareUrl(meta: ShareMeta): string {
   const [pathname, existingQuery] = meta.path.split('?')
   const params = new URLSearchParams(existingQuery)
   params.set('score', String(meta.score))
-  params.set('stars', String(meta.stars))
+  if (meta.stars > 0) params.set('stars', String(meta.stars))
   params.set('label', meta.label)
   if (meta.correctCount !== undefined) params.set('correct', String(meta.correctCount))
   if (meta.total !== undefined) params.set('total', String(meta.total))

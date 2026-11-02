@@ -24,7 +24,7 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
 import { ARTISTS, LIVE_VIDEOS, MODE_ORDER } from '@/data/kArtistLive';
-import { loadPublishedQuizzes, loadModeStars, isChoiceItem } from '@/lib/quizStore';
+import { loadPublishedQuizzes, isChoiceItem } from '@/lib/quizStore';
 import { mergeQuizzes } from '@/lib/quizResolve';
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes';
 import HangulKeyboard from '@/components/HangulKeyboard';
@@ -52,6 +52,15 @@ function correctTextOf(q) {
   return (q.blankWord || '').trim();
 }
 const reviewMatchKey = (mode, text) => `${mode}::${text}`;
+
+// 한글 초성 추출 (중급 받아쓰기 기본 힌트) — 한글 음절 외 문자(공백·문장부호·영문)는 그대로 둔다
+const CHOSEONG = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+function initialsOf(text) {
+  return Array.from(text || '', (ch) => {
+    const code = ch.charCodeAt(0) - 0xac00;
+    return code >= 0 && code < 11172 ? CHOSEONG[Math.floor(code / 588)] : ch;
+  }).join('');
+}
 
 // B 모드용 셔플 (Fisher–Yates)
 function shuffleArr(arr) {
@@ -227,7 +236,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const [results, setResults] = useState([]); // index별 'correct'|'partial'|'wrong'
   const [phase, setPhase] = useState('quiz'); // 'quiz' | 'done'
   const [mastery, setMastery] = useState(false); // 이번 세션에서 마스터리 달성 여부
-  const [modeStars, setModeStars] = useState(null); // Firestore 운영자 설정 별점
   const [remoteChecked, setRemoteChecked] = useState(false); // 배포본 조회 완료 여부 (로딩/CS 구분)
 
   // 복습 모드: 이 영상에서 예전에 틀린 (모드, 정답텍스트) 조합 집합.
@@ -317,9 +325,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       })
       .catch(() => { /* 오프라인/규칙 오류 시 하드코딩 fallback 유지 */ })
       .finally(() => { if (!cancelled) setRemoteChecked(true); });
-    loadModeStars(routeVideoId)
-      .then((ms) => { if (!cancelled) setModeStars(ms); })
-      .catch(() => { /* 별점 미설정 시 코드 기본값 사용 */ });
     return () => { cancelled = true; };
   }, [routeVideoId]);
 
@@ -336,6 +341,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     setStatus('idle');
     setShowReview(false);
     setHintShown(false);
+    setHintUsed(false);
     setPicked([]);
     setChosenIdx(null);
   }, []);
@@ -354,6 +360,10 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const [status, setStatus] = useState('idle'); // 'idle' | 'correct' | 'partial' | 'wrong'
   const [showReview, setShowReview] = useState(false); // 발음 포인트 복습 창
   const [hintShown, setHintShown] = useState(false); // 힌트 공개 여부 (모든 유저에게 제공)
+  // 이 문항에서 힌트를 한 번이라도 열었는지 — '↺ 다시'로 지워지지 않는다(고급 감점 회피 방지)
+  const [hintUsed, setHintUsed] = useState(false);
+  const [isPractice, setIsPractice] = useState(false); // 마지막 채점이 재시도(점수 미반영)였는지
+  const [partialReason, setPartialReason] = useState(null); // 🔺 사유: 'spacing' | 'hint'
   // B 모드: 셔플된 블록 중 선택한 인덱스 순서 / I 모드: 선택한 보기 인덱스
   const [picked, setPicked] = useState([]);
   const [chosenIdx, setChosenIdx] = useState(null);
@@ -474,9 +484,10 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   // 문항별 자동 배속: 새 문항으로 넘어가면 저장된 initialSpeed 로 재설정
   // (미지정 시 K-Artist Live 기본값 0.75 — 원어민 속도가 빨라 학습자 배려)
+  // 고급(A)은 저장값과 무관하게 원속도(1.0)로 시작 — 학습자가 직접 낮출 수는 있다.
   useEffect(() => {
     if (!quiz) return;
-    setSpeed(quiz.initialSpeed || 0.75);
+    setSpeed(modeOf(quiz) === 'A' ? 1.0 : quiz.initialSpeed || 0.75);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quizKey]);
 
@@ -535,13 +546,18 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   }, []);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // 3) Cloze 채점: 정답(O) / 세모(🔺 띄어쓰기만 오류) / 오답(X)
+  // 3) Cloze 채점: 정답(O) / 세모(🔺 띄어쓰기만 오류 · 고급 힌트 사용) / 오답(X)
+  //    점수(results·학습 점수·오답노트)는 문항당 첫 시도만 반영한다.
+  //    오답 후 해설 창에서 정답을 본 뒤 다시 입력해 점수를 올리는 것을 막기 위함 —
+  //    재시도는 연습으로만 허용한다.
   // ─────────────────────────────────────────────────────────────────────────
   const checkAnswer = useCallback(() => {
     if (!quiz) return;
     const m = modeOf(quiz);
     const k = kindOf(quiz);
+    const firstAttempt = results[index] == null;
     let verdict;
+    let reason = null; // partial 사유: 'spacing' | 'hint'
     // 오답노트(Review Errors)에 넘길 정답/내답 — 게임 형식별로 형태가 다르다
     let correctText = '';
     let userText = '';
@@ -555,14 +571,12 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       correctText = (quiz.blocks || []).join(' ');
       userText = built;
       verdict = built === correctText ? 'correct' : 'wrong';
-      if (verdict === 'correct') recordStudy(10);
     } else if (k === 'choice') {
       // 의미 고르기(레거시 I): 선택 보기 == correctIndex
       options = Array.isArray(quiz.options) ? quiz.options : [];
       correctText = options[quiz.correctIndex] || '';
       userText = chosenIdx != null ? options[chosenIdx] || '' : '';
       verdict = chosenIdx === quiz.correctIndex ? 'correct' : 'wrong';
-      if (verdict === 'correct') recordStudy(10);
     } else {
       const raw = answer.trim();
       const target = (quiz.blankWord || '').trim();
@@ -573,18 +587,32 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
       if (raw === target) {
         verdict = 'correct';
-        recordStudy(10);
       } else if (stripSpaces(raw) === stripSpaces(target)) {
         verdict = 'partial'; // 🔺 중간 점수
-        recordStudy(5);
+        reason = 'spacing';
       } else {
         verdict = 'wrong';
       }
+      // 고급(A): 힌트를 열어 본 문항은 정답이어도 🔺 로 감점
+      if (verdict === 'correct' && m === 'A' && hintUsed) {
+        verdict = 'partial';
+        reason = 'hint';
+      }
     }
+
+    setStatus(verdict);
+    setPartialReason(reason);
+    setIsPractice(!firstAttempt);
+    // 제출 후 '발음 포인트 복습' 창 오픈 (다음 문장으로 넘어가는 관문)
+    setShowReview(true);
+    if (!firstAttempt) return; // 재시도(연습)는 점수·오답노트에 반영하지 않는다
+
+    if (verdict === 'correct') recordStudy(10);
+    else if (verdict === 'partial') recordStudy(5);
 
     // ── 오답노트 자동 업로드 ────────────────────────────────────────────────
     // Catch the Sound 와 동일하게 localStorage 오답노트에 쌓아 Review Errors 에 노출한다.
-    // 🔺(partial, 띄어쓰기만 오류)는 부분 점수를 받은 문항이라 오답으로 올리지 않는다.
+    // 🔺(partial)는 부분 점수를 받은 문항이라 오답으로 올리지 않는다.
     const errMeta = {
       source: 'k-stars',
       videoId: quiz.videoId || routeVideoId || '',
@@ -598,16 +626,13 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       recordCorrect(correctText, errMeta);
     }
 
-    setStatus(verdict);
-    // 현재 문장의 결과 기록 (재시도 시 최신 판정으로 덮어씀)
+    // 현재 문장의 결과 기록 — 첫 시도 판정으로 확정
     setResults((prev) => {
       const copy = [...prev];
       copy[index] = verdict;
       return copy;
     });
-    // 제출 후 '발음 포인트 복습' 창 오픈 (다음 문장으로 넘어가는 관문)
-    setShowReview(true);
-  }, [answer, quiz, picked, chosenIdx, shuffledBlocks, recordStudy, index, routeVideoId]);
+  }, [answer, quiz, picked, chosenIdx, shuffledBlocks, recordStudy, index, routeVideoId, results, hintUsed]);
 
   const resetAttempt = useCallback(() => {
     setAnswer('');
@@ -621,6 +646,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   // 퀴즈가 바뀌면(다음 문장/운영자 미리보기) 시도 상태 초기화
   useEffect(() => {
     resetAttempt();
+    setHintUsed(false);
+    setIsPractice(false);
   }, [quizKey, resetAttempt]);
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -674,6 +701,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     setPhase('quiz');
     setMastery(false);
     resetAttempt();
+    setHintUsed(false);
     const p = playerRef.current;
     if (p && p.seekTo && list[0]) {
       p.seekTo(list[0].startTime, true);
@@ -780,18 +808,11 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       ? (chosenIdx != null ? quiz.options[chosenIdx] : '')
       : answer;
   const correctText = quiz ? correctTextOf(quiz) : '';
+  // 재시도(연습) 채점은 점수가 오르지 않으므로 '+10점' 문구를 빼고 보여준다
+  const correctMsg = isPractice ? t('kpop.reviewCorrect') : t('kpop.correctMsg');
 
-  // 모드 선택 카드에 표시할 정보 (문항 수 · 별점 · 클리어 여부)
+  // 모드 선택 카드에 표시할 정보 (문항 수 · 클리어 여부)
   const videoProgress = routeVideoId ? getVideoProgress(routeVideoId) : { clearedModes: [], masteryAchieved: false };
-  // 별점: Firestore modeStars(운영자 설정) > 코드 availableModes > 기본 1
-  const declaredStars = (m) => {
-    const fromDoc = modeStars && modeStars[m];
-    if (fromDoc) return fromDoc;
-    const info = currentVideo && currentVideo.availableModes
-      ? currentVideo.availableModes.find((x) => x.mode === m)
-      : null;
-    return info ? info.stars : 1;
-  };
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 text-slate-800">
@@ -884,7 +905,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {MODE_ORDER.map((m) => {
               const has = modeMap[m].length > 0;
-              const stars = declaredStars(m);
               const cleared = videoProgress.clearedModes.includes(m);
               const name =
                 m === 'B' ? t('mode.beginner') : m === 'I' ? t('mode.intermediate') : t('mode.advanced');
@@ -902,7 +922,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                 >
                   <ModeChip mode={m} />
                   <span className="text-sm font-extrabold text-slate-900">{name}</span>
-                  {stars > 0 && <span className="text-xs">{'⭐'.repeat(stars)}</span>}
                   <span className="text-[11px] font-semibold text-slate-400">
                     {has
                       ? t('mode.questionsFmt').replace('{n}', String(modeMap[m].length))
@@ -1037,7 +1056,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                   {t('kpop.reset')}
                 </button>
                 {status === 'correct' && (
-                  <span className="kq-pop text-sm font-bold text-emerald-600">{t('kpop.correctMsg')}</span>
+                  <span className="kq-pop text-sm font-bold text-emerald-600">{correctMsg}</span>
                 )}
                 {status === 'wrong' && (
                   <span className="kq-pop text-sm font-bold text-red-500">{t('kpop.wrongMsg')}</span>
@@ -1109,7 +1128,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
                   {t('kpop.reset')}
                 </button>
                 {status === 'correct' && (
-                  <span className="kq-pop text-sm font-bold text-emerald-600">{t('kpop.correctMsg')}</span>
+                  <span className="kq-pop text-sm font-bold text-emerald-600">{correctMsg}</span>
                 )}
                 {status === 'wrong' && (
                   <span className="kq-pop text-sm font-bold text-red-500">{t('kpop.wrongMsg')}</span>
@@ -1168,6 +1187,16 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               ))}
             </div>
 
+            {/* 중급(I): 정답 초성을 기본 제공 (감점 없음) */}
+            {activeMode === 'I' && quiz.blankWord && (
+              <p className="mt-2 text-sm font-semibold text-slate-500">
+                {t('kpop.initials')}:{' '}
+                <span translate="no" className="notranslate font-black tracking-widest text-indigo-600">
+                  {initialsOf(quiz.blankWord)}
+                </span>
+              </p>
+            )}
+
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <button
                 onClick={checkAnswer}
@@ -1191,20 +1220,25 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               </button>
               {quiz.hint && quiz.hint.trim() && (
                 <button
-                  onClick={() => setHintShown((v) => !v)}
+                  onClick={() => {
+                    if (!hintShown) setHintUsed(true);
+                    setHintShown((v) => !v);
+                  }}
                   className={`${liftBtn} rounded-xl bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 shadow hover:bg-amber-100`}
                 >
-                  {hintShown ? t('kpop.hintHide') : t('kpop.hint')}
+                  {hintShown ? t('kpop.hintHide') : activeMode === 'A' ? t('kpop.hintCost') : t('kpop.hint')}
                 </button>
               )}
               {status === 'correct' && (
                 <span className="kq-pop text-sm font-bold text-emerald-600">
-                  {t('kpop.correctMsg')}
+                  {correctMsg}
                 </span>
               )}
               {status === 'partial' && (
                 <span className="kq-pop text-sm font-bold text-amber-600">
-                  {t('kpop.partialMsg')}
+                  {isPractice
+                    ? t(partialReason === 'hint' ? 'kpop.reviewHinted' : 'kpop.reviewPartial')
+                    : t(partialReason === 'hint' ? 'kpop.hintedMsg' : 'kpop.partialMsg')}
                 </span>
               )}
               {status === 'wrong' && (
@@ -1230,6 +1264,11 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             />
           </section>
           )}
+
+          {/* 이미 채점된 문항을 다시 푸는 중 — 점수는 첫 시도로 확정 */}
+          {quiz && results[index] != null && (isPractice || status === 'idle') && (
+            <p className="mt-2 text-center text-xs font-semibold text-slate-400">{t('kpop.practiceNote')}</p>
+          )}
         </>
       )}
 
@@ -1244,7 +1283,6 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           isLoggedIn={isLoggedIn}
           shareText={shareText}
           artist={artistName}
-          stars={activeMode ? declaredStars(activeMode) : 0}
           streak={stats.streak}
           mastery={mastery}
           onChangeMode={availableGameModes.length > 1 ? changeMode : null}
@@ -1263,6 +1301,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       {showReview && phase === 'quiz' && quiz && (
         <ReviewModal
           status={status}
+          partialReason={partialReason}
           quiz={quiz}
           answer={answerText}
           correctText={correctText}
@@ -1284,7 +1323,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 // ─────────────────────────────────────────────────────────────────────────────
 // 발음 포인트 복습 창: 채점 결과 + 해설 + '다음 문장 듣기' 흐름 제어
 // ─────────────────────────────────────────────────────────────────────────────
-function ReviewModal({ status, quiz, answer, correctText, isLast, fromReview, liftBtn, onReplay, onNext, onClose }) {
+function ReviewModal({ status, partialReason, quiz, answer, correctText, isLast, fromReview, liftBtn, onReplay, onNext, onClose }) {
   const { t, lang } = useLang();
   const isCorrect = status === 'correct';
   const isPartial = status === 'partial';
@@ -1315,7 +1354,7 @@ function ReviewModal({ status, quiz, answer, correctText, isLast, fromReview, li
             {isCorrect
               ? t('kpop.reviewCorrect')
               : isPartial
-              ? t('kpop.reviewPartial')
+              ? t(partialReason === 'hint' ? 'kpop.reviewHinted' : 'kpop.reviewPartial')
               : t('kpop.reviewWrong')}
           </h3>
         </div>
@@ -1368,7 +1407,7 @@ function ReviewModal({ status, quiz, answer, correctText, isLast, fromReview, li
         {isPartial && (
           <div className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-4">
             <p className="text-sm font-semibold leading-relaxed text-amber-800">
-              {t('kpop.partialBox')}
+              {t(partialReason === 'hint' ? 'kpop.hintedBox' : 'kpop.partialBox')}
             </p>
           </div>
         )}
@@ -1441,7 +1480,7 @@ function loadImage(src) {
   });
 }
 
-async function createResultCardBlob({ artist, stars, percent, correctCount, total, results, streak, videoId }) {
+async function createResultCardBlob({ artist, percent, correctCount, total, results, streak, videoId }) {
   const W = 1080;
   const H = 1080;
   const canvas = document.createElement('canvas');
@@ -1512,12 +1551,8 @@ async function createResultCardBlob({ artist, stars, percent, correctCount, tota
   ctx.fillText('🎤 K-LISTEN MASTER', cx, brandY);
 
   // 아티스트 뱃지 (폭은 글자 길이에 맞춰 자동)
-  // 난이도 별점을 아티스트명 옆에 표시 (⭐ 컬러 이모지라 뱃지 색과 무관하게 노란색으로 렌더링)
   ctx.font = `800 ${compact ? 28 : 38}px system-ui, sans-serif`;
-  const starIcons = '⭐'.repeat(Math.max(0, Math.min(5, Number(stars) || 0)));
-  const badgeText = starIcons
-    ? `${String(artist).toUpperCase()}  ${starIcons}`
-    : String(artist).toUpperCase();
+  const badgeText = String(artist).toUpperCase();
   const badgeW = ctx.measureText(badgeText).width + (compact ? 70 : 90);
   const badgeTop = brandY + (compact ? 18 : 45);
   const badgeH = compact ? 52 : 72;
@@ -1569,7 +1604,6 @@ function FinalResult({
   isLoggedIn,
   shareText,
   artist,
-  stars,
   streak,
   mastery,
   onChangeMode,
@@ -1624,14 +1658,14 @@ function FinalResult({
       <ChallengeShare
         label={artist}
         score={percent}
-        stars={stars}
+        stars={0}
         gamePath={`/kpop-quiz/${videoId || ''}`}
         correctCount={correctCount}
         total={total}
         thumbnailUrl={videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : undefined}
         variant="light"
         captureImage={() =>
-          createResultCardBlob({ artist, stars, percent, correctCount, total, results, streak, videoId }).catch(() => null)
+          createResultCardBlob({ artist, percent, correctCount, total, results, streak, videoId }).catch(() => null)
         }
       />
 
