@@ -257,7 +257,7 @@ export default function ProfilePage() {
 
           {/* 더보기 */}
           <Section title={t('profile.sectionMore')}>
-            <Row icon="📘" label={t('nav.grammar')} to="/grammar" />
+            {/* 문법 해설 입구는 2026-11 오너 요청으로 숨김 — /grammar 페이지·데이터는 보관(삭제 금지) */}
             <Row icon="📂" label={t('nav.freeMaterials')} to="/materials" />
             <Row icon="🎓" label={t('nav.lessonsGuide')} href={PAYHIP_URL} />
             <Row icon="▶️" label={t('profile.youtube')} href={YOUTUBE_URL} />
