@@ -24,6 +24,11 @@ service cloud.firestore {
         && request.resource.data.score <= 100000;
       allow update, delete: if false;
     }
+    // 무료 자료(PDF 메타·다운로드 링크) — 로그인 유저만 공개본을 읽는다. 쓰기는 Admin SDK(AI 자료 담당) 전용
+    match /materials/{materialId} {
+      allow read: if request.auth != null && resource.data.published == true;
+      allow write: if false;
+    }
     // 유저 프로필: 본인만 읽기/쓰기. tier 는 요금제 필드라 클라이언트가 절대
     // 설정/변경할 수 없다 — 지금은 부여 경로 자체가 없고, 나중에 신뢰된
     // 백엔드(서버리스 함수 등)에서만 문서를 직접 써서 부여할 것이다.

@@ -656,12 +656,22 @@ const TRANSLATIONS = {
   // ── Materials ──
   'materials.title': { en: 'Free Materials', ko: '무료 자료', es: 'Materiales Gratuitos', ja: '無料教材' },
   'materials.desc': {
-    en: 'View-only access to curated Korean learning materials.',
-    ko: '엄선된 한국어 학습 자료를 무료로 보실 수 있습니다.',
-    es: 'Acceso de solo lectura a materiales de aprendizaje de coreano.',
-    ja: '厳選された韓国語学習教材の閲覧専用アクセス。',
+    en: 'Worksheets and word lists for every podcast episode — free to download.',
+    ko: '팟캐스트 에피소드별 워크시트와 단어장을 무료로 내려받으세요.',
+    es: 'Hojas de ejercicios y listas de vocabulario de cada episodio del pódcast, gratis.',
+    ja: 'ポッドキャスト各エピソードのワークシートと単語帳を無料でダウンロード。',
   },
-  'materials.open': { en: 'Open in Notion', ko: 'Notion에서 열기', es: 'Abrir en Notion', ja: 'Notionで開く' },
+  'materials.all': { en: 'All', ko: '전체', es: 'Todos', ja: 'すべて' },
+  'materials.beginner': { en: 'Beginner', ko: '초급', es: 'Principiante', ja: '初級' },
+  'materials.intermediate': { en: 'Intermediate', ko: '중급', es: 'Intermedio', ja: '中級' },
+  'materials.advanced': { en: 'Advanced', ko: '고급', es: 'Avanzado', ja: '上級' },
+  'materials.worksheet': { en: 'Worksheet', ko: '워크시트', es: 'Ejercicios', ja: 'ワークシート' },
+  'materials.vocab': { en: 'Word list', ko: '단어장', es: 'Vocabulario', ja: '単語帳' },
+  'materials.other': { en: 'Material', ko: '자료', es: 'Material', ja: '教材' },
+  'materials.pages': { en: 'pages', ko: '쪽', es: 'págs.', ja: 'ページ' },
+  'materials.download': { en: 'Download', ko: '다운로드', es: 'Descargar', ja: 'ダウンロード' },
+  'materials.episode': { en: 'Episode', ko: '에피소드', es: 'Episodio', ja: 'エピソード' },
+  'materials.loadError': { en: 'Could not load materials. Please try again.', ko: '자료를 불러오지 못했어요. 다시 시도해 주세요.', es: 'No se pudieron cargar los materiales. Inténtalo de nuevo.', ja: '教材を読み込めませんでした。もう一度お試しください。' },
   'materials.comingSoon': { en: 'Coming soon.', ko: '준비 중입니다.', es: 'Próximamente.', ja: '準備中です。' },
 
   // ── Landing (CRO redesign) ──

@@ -16,6 +16,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/lib/auth'
 import {
   loadDraft,
@@ -142,7 +143,9 @@ export default function QuizStudioPage() {
   const { user } = useAuth()
   const isAdmin = Boolean(user && user.email === ADMIN_EMAIL)
 
-  const [videoUrl, setVideoUrl] = useState('')
+  // ?v=<videoId> — AI 퀴즈 담당이 텔레그램으로 보낸 검수 링크로 바로 열기
+  const [searchParams] = useSearchParams()
+  const [videoUrl, setVideoUrl] = useState(() => searchParams.get('v') ?? '')
   const videoId = useMemo(() => extractVideoId(videoUrl), [videoUrl])
 
   const [transcript, setTranscript] = useState('')

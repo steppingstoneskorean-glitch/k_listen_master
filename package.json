@@ -14,7 +14,11 @@
     "i18n:expl-export": "node scripts/explanations-i18n.cjs export",
     "i18n:expl-import": "node scripts/explanations-i18n.cjs import",
     "consent:export": "node scripts/export-marketing-consent.cjs",
-    "ingest": "node scripts/ingest.mjs"
+    "ingest": "node scripts/ingest.mjs",
+    "staff": "node scripts/staff/run.mjs",
+    "staff:quiz": "node scripts/staff/quiz-writer.mjs",
+    "staff:materials": "node scripts/staff/materials.mjs",
+    "staff:weekly": "node scripts/staff/weekly-report.mjs"
   },
   "dependencies": {
     "firebase": "^12.15.0",
@@ -40,6 +44,7 @@
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
+    "unpdf": "^1.1.0",
     "vite": "^8.0.16",
     "vite-plugin-pwa": "^1.3.0"
   }

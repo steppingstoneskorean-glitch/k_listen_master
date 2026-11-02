@@ -67,7 +67,6 @@ export default function ProfilePage() {
   const [showNickname, setShowNickname] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
   const [showLang, setShowLang] = useState(false)
-  const [showComingSoon, setShowComingSoon] = useState(false)
   const [aiConsent, setAiConsent] = useState(hasShadowConsent())
   const [level, setLevelState] = useState<LevelKey | null>(() => getLevelPref()?.level ?? null)
   const [showLevel, setShowLevel] = useState(false)
@@ -118,16 +117,6 @@ export default function ProfilePage() {
         />
       )}
       {showDelete && <AccountDeleteModal onClose={() => setShowDelete(false)} />}
-      {showComingSoon && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" onClick={() => setShowComingSoon(false)}>
-          <div className="w-full max-w-xs rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-2xl" onClick={e => e.stopPropagation()}>
-            <p className="text-lg font-bold text-slate-900">{t('materials.comingSoon')}</p>
-            <button type="button" onClick={() => setShowComingSoon(false)} className="mt-5 w-full rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:opacity-90">
-              {t('common.ok')}
-            </button>
-          </div>
-        </div>
-      )}
 
       <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-indigo-50">
         <section className="mx-auto w-full max-w-lg px-4 pt-5">
@@ -269,7 +258,7 @@ export default function ProfilePage() {
           {/* 더보기 */}
           <Section title={t('profile.sectionMore')}>
             <Row icon="📘" label={t('nav.grammar')} to="/grammar" />
-            <Row icon="📂" label={t('nav.freeMaterials')} onClick={() => setShowComingSoon(true)} />
+            <Row icon="📂" label={t('nav.freeMaterials')} to="/materials" />
             <Row icon="🎓" label={t('nav.lessonsGuide')} href={PAYHIP_URL} />
             <Row icon="▶️" label={t('profile.youtube')} href={YOUTUBE_URL} />
           </Section>
