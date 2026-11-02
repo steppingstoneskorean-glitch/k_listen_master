@@ -19,6 +19,8 @@ import { wordMeaning } from '@/data/wordMeanings'
 import { usePwaInstall } from '@/lib/pwaInstall'
 import { isInstallModalHidden } from '@/lib/installPrompts'
 import { markStepDone } from '@/lib/todayPlan'
+import { trackEvent } from '@/lib/analytics'
+import { setGuestPending } from '@/lib/guestProgress'
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -242,6 +244,7 @@ function GamePlayScreen({
   onCorrect,
   onWrong,
   onScorePenalty,
+  onFirstAudio,
 }: {
   level: number
   lives: number
@@ -249,6 +252,7 @@ function GamePlayScreen({
   onCorrect: (pts: number) => void
   onWrong: (data: WrongAnswerData) => void
   onScorePenalty: (pts: number) => void
+  onFirstAudio: (status: 'played' | 'blocked') => void
 }) {
   const { t, lang } = useLang()
   const levelData = GAME_LEVELS[level]
@@ -285,6 +289,7 @@ function GamePlayScreen({
     audio.onended = () => {
       setIsPlaying(false)
       setHasPlayed(true)
+      onFirstAudio('played')
       const start = Date.now()
       setTimerStart(start)
       setPotentialPts(BASE_POINTS)
@@ -295,9 +300,9 @@ function GamePlayScreen({
         if (pts <= 0 && tickRef.current) clearInterval(tickRef.current)
       }, 200)
     }
-    audio.onerror = () => { setIsPlaying(false); setNeedsTap(true) }
-    audio.play().catch(() => { setIsPlaying(false); setNeedsTap(true) })
-  }, [])
+    audio.onerror = () => { setIsPlaying(false); setNeedsTap(true); onFirstAudio('blocked') }
+    audio.play().catch(() => { setIsPlaying(false); setNeedsTap(true); onFirstAudio('blocked') })
+  }, [onFirstAudio])
 
   useEffect(() => {
     if (pairs.length === 0 || pairIdx >= pairs.length) return
@@ -638,9 +643,32 @@ function ResultScreen({
   )
 }
 
+// ── Start Gate ────────────────────────────────────────────────────────────
+// 오디오 해제용 탭 게이트. 모바일/TWA 자동재생 차단으로 듣기 게임이 "고장난 것처럼"
+// 보이는 것을 막는다 — 사용자가 한 번 탭하면 이후 오디오 자동재생이 정상 동작한다.
+
+function StartGate({ onStart }: { onStart: () => void }) {
+  const { t } = useLang()
+  return (
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center gap-8 px-6">
+      <div className="text-7xl" aria-hidden="true">🎧</div>
+      <div className="text-center">
+        <h2 className="text-2xl font-black break-keep">{t('game.startTitle')}</h2>
+        <p className="text-gray-400 mt-2 text-sm break-keep max-w-xs">{t('game.startHint')}</p>
+      </div>
+      <button
+        onClick={onStart}
+        className="w-full max-w-xs py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-lg hover:opacity-90 active:scale-[0.98] transition-all"
+      >
+        {t('game.startBtn')}
+      </button>
+    </div>
+  )
+}
+
 // ── Main GamePage ───────────────────────────────────────────────────────────
 
-type Screen = 'playing' | 'level-clear' | 'review' | 'result'
+type Screen = 'start' | 'playing' | 'level-clear' | 'review' | 'result'
 
 export default function GamePage() {
   const { user, isGuest } = useAuth()
@@ -656,7 +684,9 @@ export default function GamePage() {
     return n >= 1 && n <= 4 ? (n as 1 | 2 | 3 | 4) : 1
   })()
 
-  const [screen, setScreen] = useState<Screen>('playing')
+  // 첫 화면은 'start' 게이트 — 모바일/TWA 는 사용자 제스처 전 오디오 자동재생을 막으므로,
+  // 탭 한 번으로 오디오를 '해제'한 뒤 플레이로 넘어가야 듣기 게임이 "고장난 것처럼" 보이지 않는다.
+  const [screen, setScreen] = useState<Screen>('start')
   const [level, setLevel] = useState<1 | 2 | 3 | 4>(startLevel)
   const [lives, setLives] = useState(MAX_LIVES)
   const [totalScore, setTotalScore] = useState(0)
@@ -666,6 +696,21 @@ export default function GamePage() {
   const [levelWrongAnswers, setLevelWrongAnswers] = useState<WrongAnswerData[]>([])
   const [showNicknameModal, setShowNicknameModal] = useState(false)
   const [pendingResult, setPendingResult] = useState<{ result: 'win' | 'lose'; highestLevel: number } | null>(null)
+
+  // ── 퍼널 측정 ──────────────────────────────────────────────────────────────
+  //   그동안 이 게임엔 시작·완료 이벤트가 전혀 없어, GA의 "완료 0"이 진짜 이탈인지
+  //   미측정인지 구분할 수 없었다. 아래로 활성화 깔때기를 가시화한다.
+  //   · game_start        : 게임 진입(= '열기' 다음 단계)
+  //   · game_first_audio  : 첫 오디오가 실제로 났는지(played) / 막혔는지(blocked) — 모바일 자동재생 가설 검증
+  //   · game_complete     : 승패 무관 1판 완료 — leaderboard_submit 과 달리 게스트 포함 "모두" 집계
+  useEffect(() => { trackEvent('game_start', { level: startLevel }) }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const audioReportedRef = useRef(false)
+  const reportFirstAudio = useCallback((status: 'played' | 'blocked') => {
+    if (audioReportedRef.current) return
+    audioReportedRef.current = true
+    trackEvent('game_first_audio', { status })
+  }, [])
 
   const handleCorrect = useCallback((pts: number) => {
     setTotalScore(prev => prev + pts)
@@ -705,6 +750,10 @@ export default function GamePage() {
       setGameResult(result)
       // 오늘의 계획 '게임' 단계 완료 — 최종 클리어(win)든 하트 소진 게임오버(lose)든 모두 완료로 본다.
       markStepDone('game')
+      // 활성화 핵심 지표: 게스트 포함 모든 1판 완료를 집계(leaderboard_submit 은 로그인+비게스트만).
+      trackEvent('game_complete', { result, level, score: totalScore })
+      // 게스트 완료는 로그인 시 '오늘 완료'로 소급 반영되도록 플래그를 남긴다.
+      if (isGuest || !user) setGuestPending()
       const highestLevel = level
       if (!isGuest && user) {
         if (!nickname) {
@@ -741,6 +790,8 @@ export default function GamePage() {
   const handleNextLevel = useCallback(() => {
     setLevel(prev => (prev < 4 ? ((prev + 1) as 1 | 2 | 3 | 4) : prev))
     setLevelWrongAnswers([])
+    // 하트는 레벨마다 리셋 — 3목숨을 4레벨 내내 공유하면 초보가 첫 판을 거의 못 끝낸다(중도 '탈락').
+    setLives(MAX_LIVES)
     setScreen('playing')
   }, [])
 
@@ -754,11 +805,16 @@ export default function GamePage() {
     setMyEntry(undefined)
     setShowNicknameModal(false)
     setPendingResult(null)
+    // 재시작도 1판으로 집계 — 첫 오디오 리포트 플래그를 리셋하고 다시 시작 이벤트를 찍는다.
+    audioReportedRef.current = false
+    trackEvent('game_start', { level: startLevel, restart: true })
+    // 오디오는 이미 해제됐으므로 start 게이트를 건너뛰고 바로 플레이.
     setScreen('playing')
   }, [startLevel])
 
   return (
     <>
+      {screen === 'start' && <StartGate onStart={() => setScreen('playing')} />}
       {screen === 'playing' && (
         <GamePlayWithExhaust
           level={level}
@@ -768,6 +824,7 @@ export default function GamePage() {
           onWrong={handleWrong}
           onScorePenalty={handleScorePenalty}
           onPairsExhausted={handlePairsExhausted}
+          onFirstAudio={reportFirstAudio}
         />
       )}
       {screen === 'level-clear' && (
@@ -817,6 +874,7 @@ function GamePlayWithExhaust({
   onWrong,
   onScorePenalty,
   onPairsExhausted,
+  onFirstAudio,
 }: {
   level: number
   lives: number
@@ -825,6 +883,7 @@ function GamePlayWithExhaust({
   onWrong: (data: WrongAnswerData) => void
   onScorePenalty: (pts: number) => void
   onPairsExhausted: () => void
+  onFirstAudio: (status: 'played' | 'blocked') => void
 }) {
   const levelData = GAME_LEVELS[level]
   const totalPairs = LEVEL_PAIR_COUNTS[level] ?? levelData.pairs.length
@@ -877,6 +936,7 @@ function GamePlayWithExhaust({
       onCorrect={handleCorrect}
       onWrong={handleWrong}
       onScorePenalty={onScorePenalty}
+      onFirstAudio={onFirstAudio}
     />
   )
 }

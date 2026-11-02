@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import {
   User,
   onAuthStateChanged,
@@ -29,7 +29,17 @@ const AuthContext = createContext<AuthCtx>(null!)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const [isGuest, setIsGuest] = useState(false)
+  // 게스트(로그인 없이 체험) 상태 — 세션 동안 유지해 새로고침/직접 URL 진입에도 체험이 끊기지 않게 한다.
+  const [isGuest, setIsGuestState] = useState<boolean>(() => {
+    try { return sessionStorage.getItem('klisten_guest') === '1' } catch { return false }
+  })
+  const setIsGuest = useCallback((v: boolean) => {
+    try {
+      if (v) sessionStorage.setItem('klisten_guest', '1')
+      else sessionStorage.removeItem('klisten_guest')
+    } catch { /* 무시 */ }
+    setIsGuestState(v)
+  }, [])
 
   useEffect(() => {
     if (!auth) { setLoading(false); return }

@@ -38,7 +38,7 @@ export default function GuestPromptModal({ score, level, onClose }: Props) {
         {/* Buttons */}
         <div className="flex flex-col gap-2.5">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/login')}
             className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-sm hover:opacity-90 active:scale-[0.98] transition-all"
           >
             {t('guest.loginBtn')}

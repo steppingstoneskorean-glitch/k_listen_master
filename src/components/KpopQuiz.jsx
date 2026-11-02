@@ -33,6 +33,7 @@ import { recordError, recordCorrect, getErrors, getSource } from '@/lib/errorHis
 import { gradeReview, reviewKey } from '@/lib/review';
 import { useGamification } from '@/lib/gamification';
 import { markStepDone } from '@/lib/todayPlan';
+import { setGuestPending } from '@/lib/guestProgress';
 import { ModeChip } from '@/components/kartist/ui';
 
 // 레거시(mode 없음) 문항은 'A'(딕테이션)로 간주
@@ -740,6 +741,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
     if (phase !== 'done' || !routeVideoId || !activeMode || list.length === 0) return;
     void markVideoCompleted(); // 하루 학습량(Completed) 카운트 — 점수와 무관하게 세션 완료 시 1회
     markStepDone('video'); // 오늘의 계획 '영상 1개' 단계 완료 — 실제 K-Stars 영상 퀴즈 완료 시에만
+    if (!isLoggedIn) setGuestPending(); // 게스트 완료 → 로그인 시 '오늘 완료'로 소급 반영
     const correct = results.filter((r) => r === 'correct').length;
     if (correct / list.length < 0.6) return; // 클리어 기준: 정답률 60% 이상
     // 마스터리 기준 = 이 영상에 실제로 존재하는 모드 전부 (배포본 ∪ 하드코딩)

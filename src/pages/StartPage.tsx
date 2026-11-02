@@ -12,7 +12,7 @@ function readSession(key: string): string | undefined {
 
 export default function StartPage() {
   const { t } = useLang()
-  const { signInWithGoogle, signInWithApple, user, loading } = useAuth()
+  const { signInWithGoogle, signInWithApple, setIsGuest, user, loading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -32,6 +32,13 @@ export default function StartPage() {
     try { sessionStorage.removeItem('pendingLoginFrom') } catch { /* 무시 */ }
     navigate(dest, { replace: true })
     return null
+  }
+
+  // 로그인 없이 먼저 체험 — K-content 허브로 보낸다. 거기서 1개 플레이 → 완료 후 로그인 유도.
+  // (게스트 완료는 로그인 시 '오늘 완료'로 소급 반영됨 — guestProgress)
+  const handleGuest = () => {
+    setIsGuest(true)
+    navigate('/games')
   }
 
   const handleSocialSignIn = async (provider: 'google' | 'apple') => {
@@ -99,6 +106,20 @@ export default function StartPage() {
         </div>
 
         <div className="w-full flex flex-col gap-3">
+          {/* 로그인 없이 체험 — 1차 CTA. 가치를 먼저 만지게 해 활성화를 끌어올린다. */}
+          <button
+            type="button"
+            onClick={handleGuest}
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-black text-sm hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
+          >
+            {t('start.guestBrowse')} →
+          </button>
+          <div className="flex items-center gap-3 py-0.5">
+            <div className="h-px flex-1 bg-gray-800" />
+            <span className="text-[11px] text-gray-600 whitespace-nowrap">{t('start.orSignIn')}</span>
+            <div className="h-px flex-1 bg-gray-800" />
+          </div>
+
           {/* Marketing email opt-in (선택) */}
           <label className="flex items-start gap-2 px-1 cursor-pointer select-none">
             <input
@@ -134,6 +155,13 @@ export default function StartPage() {
           >
             {t('cookie.privacy')}
           </Link>
+          {/* 웹 폴백 — 설치 앱(TWA)에서 소셜 로그인이 막힐 때 브라우저 웹판으로 우회 */}
+          <a
+            href="https://k-listen-master.vercel.app"
+            className="text-[11px] text-gray-600 underline hover:text-gray-400 transition-colors text-center"
+          >
+            {t('start.webFallback')}
+          </a>
         </div>
       </div>
     </div>

@@ -484,6 +484,16 @@ const TRANSLATIONS = {
   },
   'game.startBtn': { en: 'Tap to start', ko: '탭해서 시작', es: 'Toca para empezar', ja: 'タップで開始' },
 
+  // ── Guest entry (로그인 없이 체험) ──
+  'start.guestBrowse': { en: 'Try it — no login', ko: '로그인 없이 체험하기', es: 'Pruébalo — sin iniciar sesión', ja: 'ログインなしで体験' },
+  'start.orSignIn': { en: 'or sign in to save your progress', ko: '또는 로그인하고 기록 저장', es: 'o inicia sesión para guardar tu progreso', ja: 'またはログインして記録を保存' },
+  'start.webFallback': {
+    en: 'Trouble signing in? Open the web version',
+    ko: '로그인이 안 되나요? 웹에서 이용하기',
+    es: '¿Problemas para iniciar sesión? Abre la versión web',
+    ja: 'ログインできない？ ウェブ版を開く',
+  },
+
   // ── Game / Result ──
   'game.levelFmt': { en: 'Level {n}', ko: '레벨 {n}', es: 'Nivel {n}', ja: 'レベル {n}' },
   'game.restart': { en: '🔄 Restart', ko: '🔄 다시 시작', es: '🔄 Reiniciar', ja: '🔄 もう一度' },

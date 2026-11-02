@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback, ReactNode 
 import { doc, onSnapshot, runTransaction, setDoc } from 'firebase/firestore'
 import { db } from './firebase'
 import { useAuth } from './auth'
+import { consumeGuestPending } from './guestProgress'
 
 export interface UserProgress {
   lastLoginDate: string
@@ -206,6 +207,13 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       console.warn('Failed to record video completion:', err)
     }
   }, [user])
+
+  // 게스트 → 로그인 소급 반영: 비로그인 상태에서 1판 완료(guestProgress 플래그)했다면,
+  // 로그인 직후 '오늘 완료' 1회를 계정에 반영해 대시보드가 "방금 한 것"을 0으로 보여주지 않게 한다.
+  useEffect(() => {
+    if (!db || !user) return
+    if (consumeGuestPending()) void markVideoCompleted()
+  }, [user, markVideoCompleted])
 
   const setDailyGoal = useCallback(async (n: number) => {
     if (!db || !user) return

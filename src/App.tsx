@@ -63,10 +63,20 @@ export default function App() {
                 <Route path="/grammar/:slug" element={<GrammarArticlePage />} />
               </Route>
 
+              {/* 체험(게스트 허용) — 로그인 또는 게스트.
+                  K-content 맛보기 경로만 열어, 비로그인 유저가 먼저 가치를 경험하게 한다.
+                  (여기서 1판 완료 → 로그인 시 '오늘 완료'로 소급 반영: guestProgress) */}
+              <Route element={<RequireAuth allowGuest />}>
+                <Route path="/game" element={<GamePage />} />
+                <Route element={<Layout />}>
+                  <Route path="/games" element={<GameHubPage />} />
+                  <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
+                </Route>
+              </Route>
+
               {/* Protected — 로그인 필수 */}
               <Route element={<RequireAuth />}>
                 {/* Full-screen pages (no header/footer) */}
-                <Route path="/game" element={<GamePage />} />
                 <Route path="/dictation" element={<DictationPage />} />
                 <Route path="/shadowing" element={<ShadowingPage />} />
                 <Route path="/decode" element={<DecodeLabPage />} />
@@ -83,8 +93,6 @@ export default function App() {
                   <Route path="/errors" element={<Navigate to="/review" replace />} />
                   <Route path="/materials" element={<MaterialsPage />} />
                   <Route path="/materials/:id" element={<MaterialViewerPage />} />
-                  <Route path="/games" element={<GameHubPage />} />
-                  <Route path="/kpop-quiz/:videoId" element={<KpopQuiz />} />
                   <Route path="/quiz-studio" element={<QuizStudioPage />} />
                   <Route path="/quiz-builder" element={<QuizBuilderPage />} />
                   <Route path="*" element={<NotFoundPage />} />
