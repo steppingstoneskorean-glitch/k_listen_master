@@ -196,7 +196,8 @@ async function main() {
         `• ${v.title}\n  B ${v.generated.B} · I ${v.generated.I} · A ${v.generated.A}\n  검수: ${APP_URL}/quiz-studio?v=${v.videoId}`,
     )
     const text =
-      `🧩 퀴즈 담당 — 새 영상 초안 ${done.length}개 준비했어요${dryRun ? ' (테스트, 저장 안 함)' : ''}\n\n${lines.join('\n\n')}\n\n초안만 저장했어요. 스튜디오에서 검수하고 배포해 주세요.`
+      `🧩 퀴즈 담당 — 새 영상 초안 ${done.length}개 준비했어요${dryRun ? ' (테스트, 저장 안 함)' : ''}\n\n${lines.join('\n\n')}\n\n초안만 저장했어요. 스튜디오에서 검수하고 배포해 주세요.
+🎧 화면 자막이 있는 영상이라면 최종본 영상 파일을 assets/팟캐스트영상 에 넣어 주세요 — 음성만 뽑아 라디오로 연결해요. 배포는 음원 연결 뒤에 해 주세요.`
     if (dryRun) console.log(text)
     else await report(text)
   } else {

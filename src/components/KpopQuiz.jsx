@@ -24,7 +24,8 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth';
 import { useLang } from '@/lib/i18n';
 import { ARTISTS, LIVE_VIDEOS, MODE_ORDER } from '@/data/kArtistLive';
-import { loadPublishedQuizzes, isChoiceItem } from '@/lib/quizStore';
+import { loadPublishedQuizzes, loadQuizAudioUrl, isChoiceItem } from '@/lib/quizStore';
+import { AudioSegmentPlayer } from '@/lib/audioSegmentPlayer';
 import { mergeQuizzes } from '@/lib/quizResolve';
 import { HARDCODED_QUIZZES } from '@/data/hardcodedQuizzes';
 import HangulKeyboard from '@/components/HangulKeyboard';
@@ -355,6 +356,20 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   const [isLooping, setIsLooping] = useState(true);
   const [speed, setSpeed] = useState(0.75);
 
+  // ── 라디오 모드: 화면 자막이 박힌 팟캐스트 영상은 영상 대신 오너 음원만 재생 ─────
+  //   audio === undefined: 확인 중(플레이어 생성 보류) / null: 영상 재생 / string: 라디오
+  const [radio, setRadio] = useState({ videoId: null, url: undefined });
+  const [radioPlaying, setRadioPlaying] = useState(false);
+  useEffect(() => {
+    if (!routeVideoId) return;
+    let cancelled = false;
+    loadQuizAudioUrl(routeVideoId)
+      .catch(() => null)
+      .then((url) => { if (!cancelled) setRadio({ videoId: routeVideoId, url }); });
+    return () => { cancelled = true; };
+  }, [routeVideoId]);
+  const audioUrl = !routeVideoId ? null : radio.videoId === routeVideoId ? radio.url : undefined;
+
   // ── Cloze / 채점 state ─────────────────────────────────────────────────────
   const [answer, setAnswer] = useState('');
   const [kbOpen, setKbOpen] = useState(false); // 온스크린 한글 키보드 (기본 닫힘)
@@ -404,9 +419,20 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
 
   useEffect(() => {
     if (!playerVideoId || !hasAnyItems) return; // host div 가 아직 없음 (로딩/Coming Soon 화면)
+    if (audioUrl === undefined) return; // 라디오 음원 여부 확인 전 — 영상 플레이어를 먼저 띄우지 않는다
     let cancelled = false;
 
-    loadYouTubeApi().then((YT) => {
+    if (audioUrl) {
+      // 라디오 모드: 영상 없이 음원만 (구간 반복·배속은 같은 메서드로 동작)
+      playerRef.current = new AudioSegmentPlayer(audioUrl, {
+        onReady: () => {
+          if (cancelled) return;
+          setPlayerReady(true);
+          playerRef.current.seekTo(playerStartTime);
+        },
+        onPlayingChange: (playing) => { if (!cancelled) setRadioPlaying(playing); },
+      });
+    } else loadYouTubeApi().then((YT) => {
       if (cancelled || !playerHostRef.current) return;
 
       playerRef.current = new YT.Player(playerHostRef.current, {
@@ -439,10 +465,11 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       }
       playerRef.current = null;
       setPlayerReady(false);
+      setRadioPlaying(false);
     };
-    // videoId 가 바뀌거나(다른 영상) 문항이 처음 도착하면 플레이어 (재)생성
+    // videoId 가 바뀌거나(다른 영상) 문항이 처음 도착하거나 라디오 음원이 확인되면 플레이어 (재)생성
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playerVideoId, hasAnyItems]);
+  }, [playerVideoId, hasAnyItems, audioUrl]);
 
   // 모드가 선택되고(activeMode 확정) 플레이어가 준비되면 첫 구간부터 자동 재생.
   //   · 모드 선택 화면(activeMode=null)에서는 재생하지 않는다 → 선택 전 자동재생 방지
@@ -865,6 +892,46 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
       {/* ── 유튜브 플레이어 ─────────────────────────────────────────────────
           · 모드(레벨) 선택 전과 done 단계에서는 CSS 로 숨김만 한다 (파괴하지 않음)
           → 레벨 선택 화면에서는 영상이 보이지 않고, 선택 직후 즉시 나타나 재생된다 */}
+      {audioUrl ? (
+        // ── 라디오 모드: 화면 자막이 박힌 팟캐스트 — 영상 없이 음성만 ──────────────
+        <section
+          className={`overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 shadow-lg ${
+            phase === 'done' || !activeMode ? 'hidden' : ''
+          }`}
+        >
+          <div className="flex flex-col items-center gap-4 px-6 py-8 text-white">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">🎧 {t('kpop.radioLabel')}</p>
+            <div className="flex h-10 items-end gap-1" aria-hidden>
+              {[0.5, 0.9, 0.65, 1, 0.75, 0.55, 0.85].map((h, i) => (
+                <span
+                  key={i}
+                  className={`w-1.5 rounded-full bg-white/80 ${radioPlaying ? 'animate-pulse' : ''}`}
+                  style={{ height: `${(radioPlaying ? h : 0.2) * 100}%`, animationDelay: `${i * 120}ms`, transition: 'height 300ms' }}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              disabled={!playerReady}
+              onClick={() => {
+                const p = playerRef.current;
+                if (!p || !quiz) return;
+                if (radioPlaying) return p.pauseVideo();
+                const now = p.getCurrentTime();
+                if (now < quiz.startTime || now >= quiz.endTime) p.seekTo(quiz.startTime);
+                p.playVideo();
+              }}
+              aria-label={radioPlaying ? t('kpop.radioPause') : t('kpop.radioPlay')}
+              className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-indigo-700 shadow-xl transition-transform active:scale-95 disabled:opacity-50"
+            >
+              {radioPlaying ? '❚❚' : '▶'}
+            </button>
+            <p className="text-sm font-semibold text-white/80">
+              {playerReady ? t('kpop.radioHint') : t('kpop.loadingPlayer')}
+            </p>
+          </div>
+        </section>
+      ) : (
       <section
         className={`overflow-hidden rounded-2xl bg-black shadow-lg ${
           phase === 'done' || !activeMode ? 'hidden' : ''
@@ -894,6 +961,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           )}
         </div>
       </section>
+      )}
 
       {/* ── 모드 선택 화면 (B/I/A 중 2개 이상 제공 시) ─────────────────────── */}
       {!activeMode && (
@@ -1291,6 +1359,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
           liftBtn={liftBtn}
           onRestart={restartAll}
           videoId={routeVideoId || quiz?.videoId}
+          isPodcast={Boolean(audioUrl)}
         />
       )}
 
@@ -1612,6 +1681,7 @@ function FinalResult({
   liftBtn,
   onRestart,
   videoId,
+  isPodcast,
 }) {
   const { t, lang } = useLang();
 
@@ -1655,6 +1725,25 @@ function FinalResult({
           )}
         </div>
       </section>
+
+      {/* 라디오 모드(팟캐스트) — 퀴즈는 음성만 들었으니 전체 에피소드는 YouTube 채널로 보낸다
+          (앱 안 음원 재생은 YouTube 조회수에 잡히지 않음 → 채널 유입·구독으로 연결) */}
+      {isPodcast && videoId && (
+        <a
+          href={`https://youtu.be/${videoId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackEvent('podcast_youtube_click', { video_id: videoId })}
+          className={`${liftBtn} flex items-center gap-3 rounded-2xl border border-red-100 bg-white p-4 shadow-sm hover:bg-red-50`}
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-600 text-lg text-white">▶</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold text-slate-900">{t('kpop.watchFullEpisode')}</span>
+            <span className="block text-xs text-slate-500">{t('kpop.watchFullEpisodeSub')}</span>
+          </span>
+          <span className="text-slate-300">↗</span>
+        </a>
+      )}
 
       {/* 성적 기반 바이럴 공유 — 결과 포토카드를 자동 생성해 도전장 문구와 함께 한 번에 공유 */}
       <ChallengeShare

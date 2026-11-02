@@ -81,6 +81,17 @@ export async function loadPublishedQuizzes(videoId: string): Promise<QuizItem[] 
   return Array.isArray(published) && published.length > 0 ? (published as QuizItem[]) : null
 }
 
+/**
+ * 라디오 모드 음원 — 화면 자막이 박힌 팟캐스트 영상은 AI 퀴즈 담당이 오너의 영상 파일에서
+ * 음성만 뽑아 audioUrl 로 올린다. 있으면 학습자 화면은 영상 대신 이 음원만 재생한다.
+ */
+export async function loadQuizAudioUrl(videoId: string): Promise<string | null> {
+  if (!db) return null
+  const snap = await getDoc(quizDoc(videoId))
+  const url = snap.exists() ? snap.data().audioUrl : null
+  return typeof url === 'string' && url ? url : null
+}
+
 /** 운영자용: 저장된 초안 불러오기 (전 모드) */
 export async function loadDraft(videoId: string): Promise<QuizItem[] | null> {
   if (!db) return null

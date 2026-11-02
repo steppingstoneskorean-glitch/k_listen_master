@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // AI 직원 출근부 — Windows 작업 스케줄러가 매시간(+로그온 시) 실행한다 (register-task.ps1)
 //   ① 퀴즈 담당   quiz-writer.mjs   — 새 유튜브 영상 → 퀴즈 스튜디오 초안
+//                 podcast-audio.mjs — assets/팟캐스트영상 → 라디오 음원 (퀴즈에서 영상 대신 음성만)
 //   ② 자료 담당   materials.mjs     — assets/무료자료PDF → 앱 무료 자료
 //   ③ 분석 담당   weekly-report.mjs — 월요일 09:00 KST 이후 그 주 첫 실행에 1회
 //
@@ -42,6 +43,7 @@ function reportWeek() {
 }
 
 work('quiz-writer.mjs')
+work('podcast-audio.mjs')
 work('materials.mjs')
 
 const state = readState('run')
