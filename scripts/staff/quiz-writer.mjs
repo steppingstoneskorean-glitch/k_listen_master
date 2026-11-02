@@ -55,13 +55,35 @@ async function fetchChannelVideos() {
     const res = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`).catch(() => null)
     if (res?.ok) xml = await res.text()
   }
-  if (xml === null) return null
+  if (xml === null) return fetchChannelVideosYtDlp()
   return [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(([, e]) => ({
     videoId: e.match(/<yt:videoId>([^<]+)/)?.[1],
     title: decodeXml(e.match(/<title>([^<]*)/)?.[1] ?? ''),
     published: e.match(/<published>([^<]+)/)?.[1],
     isShort: /\/shorts\//.test(e),
   }))
+}
+
+// RSS 예비 경로 — yt-dlp 로 '동영상' 탭 최신 5개 (업로드 날짜 포함, ~10초). 실패하면 null.
+function fetchChannelVideosYtDlp() {
+  const r = spawnSync(
+    'yt-dlp',
+    ['--skip-download', '--no-warnings', '--playlist-end', '5', '--print', '%(id)s\t%(upload_date)s\t%(title)s',
+      `https://www.youtube.com/channel/${CHANNEL_ID}/videos`],
+    { encoding: 'utf8', env: { ...process.env, PYTHONIOENCODING: 'utf-8' }, timeout: 120_000 },
+  )
+  if (r.status !== 0) return null
+  const videos = r.stdout
+    .split(/\r?\n/)
+    .map((l) => l.split('\t'))
+    .filter(([id, date]) => /^[\w-]{11}$/.test(id) && /^\d{8}$/.test(date))
+    .map(([videoId, d, ...title]) => ({
+      videoId,
+      title: title.join('\t'),
+      published: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T00:00:00Z`,
+      isShort: false, // '동영상' 탭에는 쇼츠가 없다
+    }))
+  return videos.length ? videos : null
 }
 
 function decodeXml(s) {
