@@ -927,9 +927,9 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
             >
               {radioPlaying ? '❚❚' : '▶'}
             </button>
-            <p className="text-sm font-semibold text-white/80">
-              {playerReady ? t('kpop.radioHint') : t('kpop.loadingPlayer')}
-            </p>
+            {!playerReady && (
+              <p className="text-sm font-semibold text-white/80">{t('kpop.loadingPlayer')}</p>
+            )}
           </div>
         </section>
       ) : (
