@@ -52,6 +52,13 @@ if (!slots.length) {
 } else {
   const { post, at, items } = slots[0];
   lines.push(`# ${today} 직접 업로드용`, '', `출처: ${post.slug} (예정일 ${fmtDay(at)}) · 권장 게시 시각: 오늘 22:00`, '');
+  // 마케팅 OS 소재(C01…)면 소재 ID 와 플랫폼별 UTM 링크를 같이 안내 — 성과 기록(content_log)의 키
+  if (post.creative?.id) {
+    lines.push(`소재: ${post.creative.name ?? post.creative.id}${post.creative.persona ? ` · 페르소나 ${post.creative.persona}` : ''}${post.creative.angle ? ` · ${post.creative.angle}` : ''}`, '');
+    for (const [platform, url] of Object.entries(post.links ?? {})) {
+      lines.push(`링크 (${platform} 프로필·스토리 스티커용):`, block(url), '');
+    }
+  }
   for (const item of items) {
     if (item === 'instagram') {
       const ins = post.instagram;

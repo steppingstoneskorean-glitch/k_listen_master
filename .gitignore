@@ -19,7 +19,8 @@ dist-ssr/
 .vscode/*
 !.vscode/extensions.json
 .idea
-.claude/
+.claude/*
+!.claude/commands/
 *.suo
 *.ntvs*
 *.njsproj
@@ -68,3 +69,13 @@ marketing/posts/*/review.html
 assets/무료자료PDF/
 scripts/staff/.state/
 assets/팟캐스트영상/
+
+# 마케팅 OS 내부 자료 — 공개 저장소에 올리지 않는다 (PC 에만 보관)
+#   고객 원문(VOC)·후기 기록·성과 숫자·매일 리포트·기간 리뷰·경쟁사 광고 수집본
+marketing/os/03_customer/voc_bank.md
+marketing/os/03_customer/reviews.md
+marketing/os/02_competitor/ad_swipe/
+marketing/os/10_daily/*
+!marketing/os/10_daily/README.md
+marketing/os/11_dashboard/*.csv
+marketing/os/12_period/review_2*.md
