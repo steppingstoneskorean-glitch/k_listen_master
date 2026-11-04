@@ -167,6 +167,8 @@ export default function QuizStudioPage() {
   const [genCounts, setGenCounts] = useState<Record<GameMode, number>>({ B: 20, I: 20, A: 20 })
 
   const [items, setItems] = useState<QuizItem[]>([]) // 전 모드 문항
+  // Step 3 일괄 선택 — items 의 인덱스. 문항이 지워지거나 통째로 바뀌면 인덱스가 밀리므로 그때마다 비운다
+  const [selected, setSelected] = useState<Set<number>>(new Set())
   const [activeMode, setActiveMode] = useState<GameMode>('A')
   // 영상 기본 재생 속도 — B·I 문항에 일괄 적용 (A 는 항상 원속도 1.0)
   const [defaultSpeed, setDefaultSpeed] = useState(0.75)
@@ -193,6 +195,7 @@ export default function QuizStudioPage() {
         // 초안이 있으면 초안, 없으면 배포본을 편집 시작점으로 사용 (다른 모드 유실 방지)
         const seed = draft && draft.length ? draft : published || []
         setItems(seed)
+        setSelected(new Set())
         setLegacyBlanks(new Set([...seed, ...(published || [])].map(blankKey)))
         setPublishedCount(published ? published.length : 0)
         // 속도 select 를 기존 B·I 문항의 대표 속도(최빈값)와 동기화
@@ -250,6 +253,7 @@ export default function QuizStudioPage() {
       }))
       const generatedModes = [...new Set(newItems.map(itemMode))]
       setItems((prev) => [...prev.filter((q) => !generatedModes.includes(itemMode(q))), ...newItems])
+      setSelected(new Set())
       setActiveMode(generatedModes[0] ?? 'A')
       const g = data.generated || {}
       // 레벨별로 따로 생성하므로 일부 레벨만 실패할 수 있다 — 실패한 레벨은 기존 문항이 그대로 남는다
@@ -267,7 +271,10 @@ export default function QuizStudioPage() {
   // ── 문항 편집 헬퍼 (flat index 기준) ─────────────────────────────────────────
   const update = (i: number, patch: Partial<QuizItem>) =>
     setItems((prev) => prev.map((q, j) => (j === i ? { ...q, ...patch } : q)))
-  const remove = (i: number) => setItems((prev) => prev.filter((_, j) => j !== i))
+  const remove = (i: number) => {
+    setItems((prev) => prev.filter((_, j) => j !== i))
+    setSelected(new Set())
+  }
   const addItem = () =>
     setItems((prev) => {
       const seq = prev.filter((q) => itemMode(q) === activeMode).length + 1
@@ -298,6 +305,34 @@ export default function QuizStudioPage() {
     return c
   }, [items])
 
+  // ── 일괄 선택/삭제 (현재 모드 문항만 대상) ─────────────────────────────────
+  //   AI 가 레벨당 20개씩 만들어 두면, 마음에 안 드는 것을 한 번에 지우거나 고른 것만 남긴다
+  const shownSelected = shown.filter(({ i }) => selected.has(i))
+  const allShownSelected = shown.length > 0 && shownSelected.length === shown.length
+  const toggleSelect = (i: number) =>
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(i)) next.delete(i)
+      else next.add(i)
+      return next
+    })
+  const toggleSelectAll = () => setSelected(allShownSelected ? new Set() : new Set(shown.map(({ i }) => i)))
+  const removeIndices = (drop: number[], question: string) => {
+    if (!drop.length || !window.confirm(question)) return
+    const set = new Set(drop)
+    setItems((prev) => prev.filter((_, j) => !set.has(j)))
+    setSelected(new Set())
+  }
+  const deleteSelected = () =>
+    removeIndices(
+      shownSelected.map(({ i }) => i),
+      `선택한 ${shownSelected.length}개 문항을 지울까요? (저장 전까지는 학습자에게 영향 없음)`,
+    )
+  const keepSelectedOnly = () => {
+    const drop = shown.filter(({ i }) => !selected.has(i)).map(({ i }) => i)
+    removeIndices(drop, `선택하지 않은 ${drop.length}개를 지우고 ${shownSelected.length}개만 남길까요?`)
+  }
+
   // ── 배포 직후 해설 ja/es 번역 (api/translate-explanations, 이 영상만) ──────────
   //   서버가 60초 상한 때문에 끊어서 처리하면(budgetHit) 몇 번 이어서 호출한다.
   //   번역 결과는 Firestore 에 저장되므로, 끝나면 초안을 다시 불러와 편집 상태에 반영
@@ -324,7 +359,10 @@ export default function QuizStudioPage() {
       if (!remaining || !data.budgetHit) break
     }
     const draft = await loadDraft(videoId)
-    if (draft && draft.length) setItems(draft)
+    if (draft && draft.length) {
+      setItems(draft)
+      setSelected(new Set())
+    }
     if (!filled && !remaining) return ''
     return remaining
       ? ` · 해설 번역 ${filled}개 완료, ${remaining}개 남음(다음 배포 때 재시도)`
@@ -468,7 +506,10 @@ export default function QuizStudioPage() {
                 return (
                   <button
                     key={m.key}
-                    onClick={() => setActiveMode(m.key)}
+                    onClick={() => {
+                      setActiveMode(m.key)
+                      setSelected(new Set())
+                    }}
                     className={`rounded-xl border-2 p-3 text-left transition-all ${
                       active ? m.tabActive : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
@@ -574,6 +615,35 @@ export default function QuizStudioPage() {
               </button>
             </div>
 
+            {shown.length > 0 && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
+                <label className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={allShownSelected}
+                    onChange={toggleSelectAll}
+                    className="h-4 w-4 rounded border-slate-300 accent-indigo-600"
+                  />
+                  전체 선택
+                </label>
+                <span className="text-slate-400">{shownSelected.length}개 선택됨</span>
+                <button
+                  onClick={deleteSelected}
+                  disabled={shownSelected.length === 0}
+                  className="ml-auto rounded-lg bg-red-50 px-3 py-1 text-red-500 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  🗑 선택 삭제
+                </button>
+                <button
+                  onClick={keepSelectedOnly}
+                  disabled={shownSelected.length === 0 || allShownSelected}
+                  className="rounded-lg bg-indigo-50 px-3 py-1 text-indigo-600 hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  ✔ 선택한 것만 남기기
+                </button>
+              </div>
+            )}
+
             {shown.length === 0 && (
               <p className="mt-3 rounded-xl bg-slate-50 p-4 text-xs text-slate-400">
                 이 모드의 문항이 아직 없어요. &ldquo;+ 문항 추가&rdquo; 또는 AI 생성으로 시작하세요.
@@ -582,11 +652,22 @@ export default function QuizStudioPage() {
 
             <ul className="mt-3 space-y-4">
               {shown.map(({ q, i }) => (
-                <li key={q.id || i} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <li
+                  key={q.id || i}
+                  className={`rounded-2xl border bg-white p-4 shadow-sm ${
+                    selected.has(i) ? 'border-indigo-400 ring-2 ring-indigo-100' : 'border-slate-200'
+                  }`}
+                >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-slate-400">
+                    <label className="flex cursor-pointer items-center gap-2 text-xs font-black text-slate-400">
+                      <input
+                        type="checkbox"
+                        checked={selected.has(i)}
+                        onChange={() => toggleSelect(i)}
+                        className="h-4 w-4 rounded border-slate-300 accent-indigo-600"
+                      />
                       <span className="font-mono">{q.id}</span>
-                    </span>
+                    </label>
                     <div className="flex gap-2">
                       <button
                         onClick={() => previewSegment(q)}
