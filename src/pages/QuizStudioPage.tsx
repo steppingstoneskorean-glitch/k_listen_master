@@ -121,6 +121,8 @@ function normalizeExplanation(
 
 // 빈칸 길이 규칙 비교용 키 — 불러온 시점과 같으면(기존 문항) 규칙을 소급 적용하지 않는다
 const blankKey = (q: QuizItem) => `${q.id}|${q.fullSentence}|${q.blankWord ?? ''}`
+// 공백·문장부호를 뺀 글자 — '안녕하세요.' 에 [안녕하세요] 처럼 사실상 문장 전체인 빈칸을 잡는다
+const bare = (s: string) => s.replace(/[\s.,!?~…'"“”‘’·]/g, '')
 const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length
 
 function itemProblem(q: QuizItem, i: number, legacy: Set<string>): string | null {
@@ -141,7 +143,7 @@ function itemProblem(q: QuizItem, i: number, legacy: Set<string>): string | null
     if (!q.fullSentence.includes(q.blankWord)) return `${tag}(${m}): 빈칸이 전체 문장에 없어요 (띄어쓰기 확인)`
     // 빈칸 길이 규칙 — 중급 1~2어절, 고급 2어절 이상. 기존(불러온 그대로의) 문항은 예외.
     if (!legacy.has(blankKey(q))) {
-      if (q.blankWord.trim() === q.fullSentence.trim()) return `${tag}(${m}): 문장 전체를 빈칸으로 만들 수 없어요`
+      if (bare(q.blankWord) === bare(q.fullSentence)) return `${tag}(${m}): 문장 전체를 빈칸으로 만들 수 없어요`
       const n = wordCount(q.blankWord)
       if (m === 'I' && n > 2) return `${tag}(I): 중급 빈칸은 1~2어절이어야 해요 (지금 ${n}어절)`
       if (m === 'A' && n < 2) return `${tag}(A): 고급 빈칸은 2어절 이상이어야 해요 (띄어쓰기 기준)`
@@ -161,7 +163,8 @@ export default function QuizStudioPage() {
 
   const [transcript, setTranscript] = useState('')
   // 레벨별 AI 생성 개수 (0 = 해당 레벨 건너뜀)
-  const [genCounts, setGenCounts] = useState<Record<GameMode, number>>({ B: 3, I: 5, A: 10 })
+  // 넉넉히 뽑아 놓고 마음에 드는 문항만 남기도록 레벨당 20개가 기본 (필요 없는 레벨은 0)
+  const [genCounts, setGenCounts] = useState<Record<GameMode, number>>({ B: 20, I: 20, A: 20 })
 
   const [items, setItems] = useState<QuizItem[]>([]) // 전 모드 문항
   const [activeMode, setActiveMode] = useState<GameMode>('A')
@@ -249,7 +252,11 @@ export default function QuizStudioPage() {
       setItems((prev) => [...prev.filter((q) => !generatedModes.includes(itemMode(q))), ...newItems])
       setActiveMode(generatedModes[0] ?? 'A')
       const g = data.generated || {}
-      say('ok', `AI 초안 생성 완료 — B ${g.B ?? 0}개 · I ${g.I ?? 0}개 · A ${g.A ?? 0}개. 검수 후 저장/배포하세요.`)
+      // 레벨별로 따로 생성하므로 일부 레벨만 실패할 수 있다 — 실패한 레벨은 기존 문항이 그대로 남는다
+      const failed = Object.entries((data.failed || {}) as Record<string, string>)
+      const done = `AI 초안 생성 완료 — B ${g.B ?? 0}개 · I ${g.I ?? 0}개 · A ${g.A ?? 0}개. 마음에 드는 문항만 남기고 저장/배포하세요.`
+      if (failed.length) say('err', `${done} 단, ${failed.map(([lv, msg]) => `${lv} 실패(${msg})`).join(' · ')}`)
+      else say('ok', done)
     } catch (e) {
       say('err', e instanceof Error ? e.message : String(e))
     } finally {
@@ -504,9 +511,9 @@ export default function QuizStudioPage() {
               <div className="text-xs font-semibold text-slate-500">
                 레벨별 생성 개수
                 {([
-                  ['B', '어순', [0, 1, 2, 3, 4, 5, 8, 10]],
-                  ['I', '쉬운 빈칸', [0, 3, 5, 8, 10, 12]],
-                  ['A', '빈칸', [0, 3, 5, 8, 10, 12, 15, 20]],
+                  ['B', '어순', [0, 5, 10, 15, 20, 25]],
+                  ['I', '쉬운 빈칸', [0, 5, 10, 15, 20, 25]],
+                  ['A', '빈칸', [0, 5, 10, 15, 20, 25]],
                 ] as [GameMode, string, number[]][]).map(([m, label, opts]) => (
                   <label key={m} className="mt-1.5 flex items-center gap-2">
                     <span className="w-16 shrink-0">{m} · {label}</span>
@@ -531,7 +538,7 @@ export default function QuizStudioPage() {
                   }
                   className="mt-2 w-full rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  {busy === 'generate' ? '⏳ AI가 3레벨 퀴즈를 만드는 중… (최대 2~3분)' : '✨ AI 생성'}
+                  {busy === 'generate' ? '⏳ AI가 레벨별로 퀴즈를 만드는 중… (보통 1분, 최대 4분)' : '✨ AI 생성'}
                 </button>
               </div>
             </div>

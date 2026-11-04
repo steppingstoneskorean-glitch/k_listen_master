@@ -11,7 +11,7 @@
 //     counts?: { B?: number, I?: number, A?: number },  // 레벨별 생성 개수 (0 = 건너뜀)
 //     count?: number,                        // (레거시) A 개수만 지정하던 이전 클라이언트 호환
 //   }
-//   Returns: { quizzes: QuizItem[], generated: {B,I,A}, model }
+//   Returns: { quizzes: QuizItem[], generated: {B,I,A}, failed: {레벨: 오류}, model }
 //            — QuizItem 은 앱의 B/I/A 멀티 모드 스키마(mode/blocks/options/blankWord)로 매핑됨
 //
 //   필요한 Vercel 환경 변수:
@@ -47,20 +47,21 @@ export default async function handler(req, res) {
     }
     const clamp = (v, max) => Math.min(Math.max(Number(v) || 0, 0), max)
     const want = {
-      B: clamp(counts && counts.B, 10),
-      I: clamp(counts && counts.I, 12),
-      A: clamp(counts ? counts.A : count || 0, 20),
+      // 레벨마다 따로 생성(api/_lib/quizGen.mjs)하므로 레벨당 25개까지 — 스튜디오 기본 20개
+      B: clamp(counts && counts.B, 25),
+      I: clamp(counts && counts.I, 25),
+      A: clamp(counts ? counts.A : count || 0, 25),
     }
     if (want.B + want.I + want.A === 0) want.A = 10 // 아무 것도 지정 안 하면 기본 A 10개
 
     // 3) NVIDIA 호출 + 서버측 검증 → 앱 B/I/A 스키마 (api/_lib/quizGen.mjs)
-    const { quizzes, generated, model } = await generateQuiz({ videoId, transcript, want })
+    const { quizzes, generated, failed, model } = await generateQuiz({ videoId, transcript, want })
 
     // 4) explanation 다국어는 여기서 처리하지 않는다(en 원문만 반환).
     //    · 배포 시 스튜디오가 호출하는 api/translate-explanations 가 ja/es 를 자동 채운다 —
     //      이쪽 경로는 한국어(한글) 보존 가드가 있어 예문 훼손 위험이 없고,
     //      두 번째 느린 LLM 호출을 없애 생성이 Hobby 60초 상한 안에서 끝난다.
-    return res.status(200).json({ quizzes, generated, model })
+    return res.status(200).json({ quizzes, generated, failed, model })
   } catch (err) {
     console.error('[generate-quiz]', err)
     if (err instanceof QuizGenError) return res.status(err.httpStatus).json({ error: err.message })

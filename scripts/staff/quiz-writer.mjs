@@ -25,12 +25,13 @@ const MAX_TRIES = 6
 // 제목의 레벨 표기 → 레벨별 문항 수.
 // ⭐ 오너 방침(2026-11-02): 그 급수의 영상은 그 급수 모드 문제만 만든다 (초급→B, 중급→I, 고급→A).
 //    레벨 표기가 없는 영상만 세 모드를 섞는다.
+// ⭐ 오너 방침(2026-11-04): 마음에 안 드는 문항이 많아 넉넉히 레벨당 20개씩 뽑는다 — 스튜디오에서 골라 남긴다.
 const COUNTS_BY_LEVEL = {
-  beginner: { B: 8, I: 0, A: 0 },
+  beginner: { B: 20, I: 0, A: 0 },
   // I 는 2026-11 부터 쉬운 빈칸 받아쓰기
-  intermediate: { B: 0, I: 8, A: 0 },
-  advanced: { B: 0, I: 0, A: 10 },
-  unknown: { B: 4, I: 4, A: 5 },
+  intermediate: { B: 0, I: 20, A: 0 },
+  advanced: { B: 0, I: 0, A: 20 },
+  unknown: { B: 20, I: 20, A: 20 },
 }
 
 const argv = process.argv.slice(2)
@@ -168,8 +169,9 @@ async function main() {
     const level = levelOf(v.title)
     attempts += 1
     try {
-      const { quizzes, generated, model } = await generateQuiz({ videoId: v.videoId, transcript, want: COUNTS_BY_LEVEL[level] })
+      const { quizzes, generated, failed, model } = await generateQuiz({ videoId: v.videoId, transcript, want: COUNTS_BY_LEVEL[level] })
       console.log(`   ✔ 초안 B${generated.B} I${generated.I} A${generated.A}`)
+      for (const [lv, msg] of Object.entries(failed)) console.log(`   ⚠️ ${lv} 생성 실패: ${msg}`)
       if (!dryRun) {
         await db.collection('kartistQuizzes').doc(v.videoId).set(
           {
