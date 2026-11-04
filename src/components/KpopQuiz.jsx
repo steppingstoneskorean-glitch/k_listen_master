@@ -75,6 +75,7 @@ function shuffleArr(arr) {
 }
 import ChallengeShare from '@/components/ChallengeShare';
 import SupportCard from '@/components/SupportCard';
+import NextStepCard from '@/components/NextStepCard';
 
 // 운영자 아티스트 태깅 옵션 ('__all__' 제외 — 필터 시스템과 동일 소스)
 const ARTIST_OPTIONS = ARTISTS.filter((a) => a !== '__all__');
@@ -1815,6 +1816,7 @@ function FinalResult({
       )}
 
       {/* 후원 — 공유/로그인 CTA 를 가리지 않도록 항상 맨 아래 */}
+      <NextStepCard from={isPodcast ? 'podcast_quiz' : 'kstars_quiz'} variant="light" />
       <SupportCard variant="light" />
     </div>
   );

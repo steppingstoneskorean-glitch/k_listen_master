@@ -26,6 +26,27 @@ export function setConsent(choice: ConsentChoice): void {
   }
 }
 
+// 광고 측정(Meta 픽셀) 동의 — 분석(GA) 동의와 목적이 달라 따로 저장한다.
+//   null = 아직 안 물어봄 → 픽셀을 쓸 수 있는 상태(pixelAvailable)면 배너를 다시 띄워 묻는다.
+const MARKETING_KEY = 'cookie_consent_marketing'
+
+export function getMarketingConsent(): ConsentChoice | null {
+  try {
+    const v = localStorage.getItem(MARKETING_KEY)
+    return v === 'granted' || v === 'denied' ? v : null
+  } catch {
+    return null
+  }
+}
+
+export function setMarketingConsent(choice: ConsentChoice): void {
+  try {
+    localStorage.setItem(MARKETING_KEY, choice)
+  } catch {
+    /* 무시 — 이번 세션 동안만 유효 */
+  }
+}
+
 /** 푸터 등에서 호출 — 동의 배너를 다시 열어 사용자가 선택을 바꿀 수 있게 한다. */
 export function openCookieSettings(): void {
   window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))

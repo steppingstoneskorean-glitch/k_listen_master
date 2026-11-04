@@ -53,6 +53,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', '회원 인증, 데이터베이스 저장·운영, 서비스 호스팅, 웹 이용 통계 분석', '제1조의 로그인 식별 정보, 닉네임, 점수·학습 기록, 쿠키 기반 서비스 이용 기록', '미국'],
               ['Apple Inc.', '애플 계정 소셜 로그인 인증', '이메일 주소, 이름', '미국'],
               ['Microsoft Corporation (Azure AI Speech)', 'AI 발음 채점(발음 평가) — 이용자가 별도로 동의한 경우에만', '섀도잉 발화 음성(실시간 처리되며 Azure에 저장되지 않음)', '미국'],
+              ['Meta Platforms, Inc. (Meta 픽셀)', '홍보 게시물·광고 성과 측정, 향후 광고 대상 구성 — 광고 측정에 별도로 동의한 경우에만', '쿠키 식별자, 방문 페이지, 게임 시작·수업 버튼 클릭 이벤트, 기기·브라우저 정보, IP 주소', '미국'],
             ],
           } },
           { note: '이전 일시 및 방법: 서비스 이용 시점에 정보통신망을 통해 수시로 이전됩니다. 보유·이용 기간: 제5조에 따른 회원 탈퇴 또는 삭제 요청 시까지(단, AI 발음 채점을 위한 음성은 Azure에서 저장하지 않고 채점 후 즉시 폐기됩니다). 이용자는 개인정보의 국외 이전을 거부할 수 있으며, AI 발음 채점 동의는 사용하지 않거나 언제든 철회할 수 있습니다. 국외 이전을 거부하는 경우 로그인 기반 기능(점수 저장, 리더보드 등)의 이용이 제한될 수 있습니다.' },
@@ -64,6 +65,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { ul: [
             '본 웹사이트는 서비스 이용 현황 분석을 위해 구글 애널리틱스(Google Analytics)를 사용합니다. 구글 애널리틱스는 쿠키를 통해 방문 페이지, 이용 시간, 기기·브라우저 정보 등을 수집하며, 이 정보는 통계적 분석 목적으로만 사용되고(IP 주소는 익명화 처리됩니다) 개인을 식별하는 데 사용되지 않습니다. 수집된 정보는 Google LLC(미국)의 서버에서 처리됩니다.',
             "분석 쿠키는 최초 방문 시 표시되는 쿠키 동의 배너에서 이용자가 **'동의'를 선택한 경우에만** 로드·작동합니다. 동의 전에는 어떠한 분석 스크립트도 실행되지 않으며, 이용자는 화면 하단 푸터의 '쿠키 설정(Cookie Settings)'을 통해 언제든지 동의를 철회하거나 변경할 수 있습니다.",
+            "광고 성과 측정(Meta 픽셀): 이용자가 쿠키 배너에서 **'모두 동의'를 선택한 경우에만** Meta Platforms, Inc.(미국)의 Meta 픽셀이 작동합니다. 수집하는 행태정보는 방문 페이지, 게임 시작·1:1 수업 안내 버튼 클릭 이벤트, 쿠키 식별자, 기기·브라우저 정보이며, 홍보 게시물·광고의 성과 측정과 향후 광고 대상 구성 목적으로만 이용합니다. 이름·이메일 등 직접 식별 정보는 Meta에 보내지 않습니다. 쿠키(_fbp)는 최대 90일간 보관되고, Meta가 받은 정보는 Meta의 데이터 정책에 따라 처리됩니다. 이용자는 '쿠키 설정'에서 '거부' 또는 '분석만 동의'를 선택해 언제든 철회할 수 있으며, 철회하면 즉시 전송이 중단됩니다.",
             '현재 본 웹사이트는 광고를 게재하고 있지 않습니다. 향후 구글 애드센스(Google AdSense) 등 제3자 광고를 도입할 경우, 구글 등 제3자 파트너가 쿠키를 사용하여 이용자의 본 사이트 및 타 사이트 방문 기록을 기반으로 맞춤형 광고를 제공할 수 있으며, 광고 도입 시 본 방침을 통해 사전에 안내합니다.',
             `이용자는 [구글 광고 설정](${AD_SETTINGS}) 페이지에서 맞춤형 광고 게재를 차단할 수 있으며, 웹 브라우저의 설정을 통해 쿠키 저장을 거부하거나 삭제할 수 있습니다. 다만 쿠키 저장을 거부할 경우 일부 서비스 이용에 어려움이 있을 수 있습니다.`,
           ] },
@@ -110,7 +112,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: '시행일',
-    effectiveDate: '2026-08-19',
+    effectiveDate: '2026-11-11',
     footer: '본 방침은 관련 법령 및 서비스 변경에 따라 개정될 수 있습니다.',
   },
 
@@ -162,6 +164,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', 'User authentication, database storage & operation, hosting, web usage analytics', 'The login identifiers, nickname, score/learning records, and cookie-based usage records in Article 1', 'USA'],
               ['Apple Inc.', 'Apple account social login authentication', 'Email address, name', 'USA'],
               ['Microsoft Corporation (Azure AI Speech)', 'AI pronunciation scoring (assessment) — only if you separately consent', 'Shadowing spoken audio (processed in real time; not stored by Azure)', 'USA'],
+              ['Meta Platforms, Inc. (Meta Pixel)', 'Measuring post and ad performance, building future ad audiences — only if you separately agree to ad measurement', 'Cookie identifier, pages visited, game-start and class-button click events, device/browser details, IP address', 'USA'],
             ],
           } },
           { note: 'Timing and method of transfer: transferred from time to time via the network at the point of Service use. Retention/use period: until account withdrawal or a deletion request under Article 5 (audio for AI pronunciation scoring is not stored by Azure and is discarded immediately after scoring). You may refuse the overseas transfer of your personal data, and you may decline or withdraw consent to AI pronunciation scoring at any time; if you refuse the overseas transfer, login-based features (score saving, leaderboard, etc.) may be restricted.' },
@@ -173,6 +176,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { ul: [
             'This website uses Google Analytics to analyze Service usage. Google Analytics collects, via cookies, information such as pages visited, time spent, and device/browser details; this information is used only for statistical analysis (IP addresses are anonymized) and is not used to identify individuals. The collected information is processed on Google LLC (USA) servers.',
             "Analytics cookies load and operate **only if you select “Agree”** on the cookie consent banner shown on your first visit. No analytics script runs before consent, and you may withdraw or change consent at any time via “Cookie Settings” in the footer at the bottom of the screen.",
+            'Ad measurement (Meta Pixel): Meta Platforms, Inc.’s (USA) Meta Pixel operates only if you select “Accept all” on the cookie banner. It collects behavioral information — pages visited, game-start and 1:1-class-button click events, a cookie identifier, and device/browser details — used solely to measure how our posts and ads perform and to build future ad audiences. We do not send Meta information that directly identifies you, such as your name or email. The cookie (_fbp) is kept for up to 90 days, and Meta processes the information it receives under its own data policy. You may withdraw at any time by choosing “Decline” or “Analytics only” in Cookie Settings; sending stops immediately.',
             'This website currently displays no advertising. If third-party advertising such as Google AdSense is introduced in the future, third-party partners such as Google may use cookies to provide personalized ads based on your visits to this and other sites; we will give prior notice through this Policy when advertising is introduced.',
             `You can block personalized ads on the [Google Ads Settings](${AD_SETTINGS}) page, and you can refuse or delete cookies via your web browser settings. However, refusing cookies may cause some difficulty using parts of the Service.`,
           ] },
@@ -219,7 +223,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: 'Effective date',
-    effectiveDate: '2026-08-19',
+    effectiveDate: '2026-11-11',
     footer: 'This Policy may be revised in line with applicable laws and changes to the Service.',
   },
 
@@ -271,6 +275,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', '会員認証、データベースの保存・運用、サービスホスティング、ウェブ利用統計分析', '第1条のログイン識別情報、ニックネーム、スコア・学習記録、クッキーに基づく利用記録', '米国'],
               ['Apple Inc.', 'Apple アカウントのソーシャルログイン認証', 'メールアドレス、氏名', '米国'],
               ['Microsoft Corporation (Azure AI Speech)', 'AI発音採点（発音評価）— 利用者が別途同意した場合のみ', 'シャドーイングの発話音声（リアルタイム処理され、Azureに保存されません）', '米国'],
+              ['Meta Platforms, Inc.（Meta ピクセル）', 'SNS 投稿・広告の成果測定、将来の広告対象の構成 — 広告測定に別途同意した場合のみ', 'クッキー識別子、訪問ページ、ゲーム開始・授業ボタンのクリックイベント、端末・ブラウザ情報、IP アドレス', '米国'],
             ],
           } },
           { note: '移転の日時および方法：サービス利用時点で情報通信網を通じて随時移転されます。保有・利用期間：第5条に基づく退会または削除請求時まで（ただしAI発音採点のための音声はAzureに保存されず、採点後直ちに破棄されます）。利用者は個人情報の国外移転を拒否でき、AI発音採点の同意も利用しないか、いつでも撤回できます。国外移転を拒否する場合、ログインに基づく機能（スコア保存、リーダーボード等）の利用が制限されることがあります。' },
@@ -282,6 +287,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { ul: [
             '本ウェブサイトは、サービス利用状況の分析のため Google アナリティクス（Google Analytics）を使用します。Google アナリティクスはクッキーを通じて、訪問ページ、利用時間、端末・ブラウザ情報等を収集しますが、この情報は統計的分析目的のみに使用され（IP アドレスは匿名化処理されます）、個人の識別には使用されません。収集された情報は Google LLC（米国）のサーバーで処理されます。',
             '分析クッキーは、初回訪問時に表示されるクッキー同意バナーで利用者が **「同意」を選択した場合にのみ** 読み込み・動作します。同意前はいかなる分析スクリプトも実行されず、利用者は画面下部フッターの「クッキー設定（Cookie Settings）」からいつでも同意を撤回・変更できます。',
+            '広告成果の測定（Meta ピクセル）：クッキーバナーで利用者が「すべて同意」を選択した場合にのみ、Meta Platforms, Inc.（米国）の Meta ピクセルが作動します。収集する行動情報は、訪問ページ、ゲーム開始・1:1 授業案内ボタンのクリックイベント、クッキー識別子、端末・ブラウザ情報であり、SNS 投稿・広告の成果測定と将来の広告対象の構成の目的にのみ利用します。氏名・メールアドレス等の直接識別情報は Meta に送信しません。クッキー（_fbp）は最長 90 日間保存され、Meta が受け取った情報は Meta のデータポリシーに従って処理されます。利用者は「クッキー設定」で「拒否する」または「分析のみ」を選択していつでも撤回でき、撤回すると直ちに送信が停止します。',
             '現在、本ウェブサイトは広告を掲載していません。今後 Google AdSense 等の第三者広告を導入する場合、Google 等の第三者パートナーがクッキーを使用し、本サイトおよび他サイトの閲覧履歴に基づくパーソナライズ広告を提供することがあります。広告導入時には本方針を通じて事前に案内します。',
             `利用者は [Google 広告設定](${AD_SETTINGS}) ページでパーソナライズ広告の表示をブロックでき、ウェブブラウザの設定でクッキーの保存を拒否・削除できます。ただしクッキーの保存を拒否した場合、一部サービスの利用に支障が生じることがあります。`,
           ] },
@@ -328,7 +334,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: '施行日',
-    effectiveDate: '2026-08-19',
+    effectiveDate: '2026-11-11',
     footer: '本方針は関連法令およびサービスの変更に応じて改定されることがあります。',
   },
 
@@ -380,6 +386,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
               ['Google LLC (Firebase / Google Cloud / Google Analytics)', 'Autenticación de usuarios, almacenamiento y operación de la base de datos, alojamiento, analítica web', 'Los identificadores de inicio de sesión, el apodo, los registros de puntuación/aprendizaje y los registros de uso basados en cookies del Artículo 1', 'EE. UU.'],
               ['Apple Inc.', 'Autenticación de inicio de sesión social con cuenta de Apple', 'Dirección de correo, nombre', 'EE. UU.'],
               ['Microsoft Corporation (Azure AI Speech)', 'Puntuación de pronunciación con IA (evaluación) — solo si consientes por separado', 'Voz del shadowing (procesada en tiempo real; Azure no la almacena)', 'EE. UU.'],
+              ['Meta Platforms, Inc. (Meta Pixel)', 'Medición del rendimiento de publicaciones y anuncios, creación de futuras audiencias publicitarias — solo si aceptas por separado la medición publicitaria', 'Identificador de cookie, páginas visitadas, eventos de inicio de juego y de clic en el botón de clase, datos del dispositivo/navegador, dirección IP', 'EE. UU.'],
             ],
           } },
           { note: 'Momento y método de la transferencia: se transfiere de forma periódica a través de la red en el momento del uso del Servicio. Periodo de conservación/uso: hasta la baja o una solicitud de eliminación conforme al Artículo 5 (el audio para la puntuación de pronunciación con IA no lo almacena Azure y se descarta inmediatamente tras la evaluación). Puedes rechazar la transferencia internacional de tus datos, y puedes no usar o retirar el consentimiento a la puntuación con IA en cualquier momento; si rechazas la transferencia internacional, las funciones basadas en inicio de sesión (guardado de puntuaciones, clasificación, etc.) pueden quedar restringidas.' },
@@ -391,6 +398,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
           { ul: [
             'Este sitio web usa Google Analytics para analizar el uso del Servicio. Google Analytics recopila, mediante cookies, información como las páginas visitadas, el tiempo de uso y datos del dispositivo/navegador; esta información se usa solo con fines de análisis estadístico (las direcciones IP se anonimizan) y no se usa para identificar a personas. La información recopilada se procesa en servidores de Google LLC (EE. UU.).',
             'Las cookies de analítica se cargan y funcionan **solo si seleccionas «Aceptar»** en el banner de consentimiento de cookies que se muestra en tu primera visita. No se ejecuta ningún script de analítica antes del consentimiento, y puedes retirar o cambiar el consentimiento en cualquier momento mediante «Configuración de cookies» en el pie de página.',
+            'Medición publicitaria (Meta Pixel): el Meta Pixel de Meta Platforms, Inc. (EE. UU.) solo funciona si eliges «Aceptar todo» en el banner de cookies. Recopila información de comportamiento — páginas visitadas, eventos de inicio de juego y de clic en el botón de clase 1:1, el identificador de cookie y datos del dispositivo/navegador — y se usa únicamente para medir el rendimiento de nuestras publicaciones y anuncios y para crear futuras audiencias publicitarias. No enviamos a Meta datos que te identifiquen directamente, como tu nombre o correo. La cookie (_fbp) se conserva hasta 90 días y Meta trata la información recibida según su propia política de datos. Puedes retirarlo en cualquier momento eligiendo «Rechazar» o «Solo analítica» en «Configuración de cookies»; el envío se detiene de inmediato.',
             'Actualmente este sitio web no muestra publicidad. Si en el futuro se introduce publicidad de terceros, como Google AdSense, socios externos como Google podrán usar cookies para ofrecer anuncios personalizados según tus visitas a este y otros sitios; avisaremos con antelación mediante esta Política cuando se introduzca la publicidad.',
             `Puedes bloquear los anuncios personalizados en la página de [Configuración de anuncios de Google](${AD_SETTINGS}), y puedes rechazar o eliminar las cookies mediante la configuración de tu navegador. No obstante, rechazar las cookies puede dificultar el uso de algunas partes del Servicio.`,
           ] },
@@ -437,7 +445,7 @@ export const PRIVACY: Record<LegalLang, LegalDoc> = {
       },
     ],
     effectiveLabel: 'Fecha de entrada en vigor',
-    effectiveDate: '2026-08-19',
+    effectiveDate: '2026-11-11',
     footer: 'Esta Política puede revisarse conforme a la legislación aplicable y a los cambios del Servicio.',
   },
 }

@@ -25,6 +25,7 @@ import NicknameModal from '@/components/NicknameModal'
 import Leaderboard from '@/components/Leaderboard'
 import ChallengeShare from '@/components/ChallengeShare'
 import SupportCard from '@/components/SupportCard'
+import NextStepCard from '@/components/NextStepCard'
 import ResultCard from '@/components/ResultCard'
 import { Stars } from '@/components/kartist/ui'
 import { LEVEL_STARS } from '@/data/gameLevels'
@@ -698,6 +699,7 @@ function ResultScreen({
           </div>
 
           {/* 후원 — 공유/로그인 CTA 를 가리지 않도록 항상 맨 아래 */}
+          <NextStepCard from={isAdv ? 'dictation_advanced' : 'dictation_intermediate'} />
           <SupportCard />
         </div>
       </div>

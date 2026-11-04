@@ -4,6 +4,8 @@
 //     자동 로드하지 않고 CookieConsent 배너에서 동의를 받은 뒤에만 이 함수를 부른다.
 //   · anonymize_ip 로 IP 를 익명화한다.
 
+import { trackPixel } from '@/lib/metaPixel'
+
 declare global {
   interface Window {
     dataLayer: unknown[]
@@ -34,12 +36,17 @@ export function loadAnalytics(): void {
   gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true })
 }
 
+// 각 게임의 시작 이벤트 (GamePage · DictationPage · KpopQuiz)
+const PLAY_EVENTS = new Set(['game_start', 'dictation_session', 'quiz_session'])
+
 /**
  * 커스텀 이벤트 전송 — **동의로 GA가 로드된 경우에만** 작동(window.gtag 존재 시).
  * 미동의 상태에선 조용히 무시되어 개인정보/동의 원칙을 지킨다. 분석은 부가 기능이라 실패해도
  * 앱 흐름에 영향 주지 않는다(try/catch). 기능 사용량·재방문 분석(프리미엄 판단)용.
  */
 export function trackEvent(name: string, params?: Record<string, unknown>): void {
+  // 게임 시작 → Meta 픽셀 PlayGame (마케팅 OS 09_tracking). 광고 측정 동의 전엔 no-op
+  if (PLAY_EVENTS.has(name)) trackPixel('PlayGame', { game: name, ...(params ?? {}) })
   try {
     if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
     window.gtag('event', name, params ?? {})

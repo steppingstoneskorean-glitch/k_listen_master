@@ -97,7 +97,15 @@ const TRANSLATIONS = {
     es: 'Usamos cookies de Google Analytics para entender el uso y mejorar el servicio. El análisis solo se activa si aceptas.',
     ja: 'サービス改善のための利用状況分析（Google アナリティクス）にクッキーを使用します。同意された場合のみ分析が有効になります。',
   },
+  'cookie.messageWithAds': {
+    en: 'We use cookies for usage analytics (Google Analytics) and, if you allow it, to measure how our posts and ads perform (Meta Pixel). Nothing runs until you choose.',
+    ko: '이용 통계 분석(구글 애널리틱스)과, 허용하신 경우 홍보 게시물·광고 성과 측정(Meta 픽셀)에 쿠키를 사용합니다. 선택하기 전에는 아무것도 작동하지 않습니다.',
+    es: 'Usamos cookies para analítica de uso (Google Analytics) y, si lo permites, para medir el rendimiento de nuestras publicaciones y anuncios (Meta Pixel). Nada se activa hasta que elijas.',
+    ja: '利用状況の分析（Google アナリティクス）と、許可された場合は投稿・広告の成果測定（Meta ピクセル）にクッキーを使用します。選択するまで何も作動しません。',
+  },
   'cookie.accept': { en: 'Accept', ko: '동의', es: 'Aceptar', ja: '同意する' },
+  'cookie.acceptAll': { en: 'Accept all', ko: '모두 동의', es: 'Aceptar todo', ja: 'すべて同意' },
+  'cookie.analyticsOnly': { en: 'Analytics only', ko: '분석만 동의', es: 'Solo analítica', ja: '分析のみ' },
   'cookie.decline': { en: 'Decline', ko: '거부', es: 'Rechazar', ja: '拒否する' },
   'cookie.settings': { en: 'Cookie Settings', ko: '쿠키 설정', es: 'Configuración de cookies', ja: 'クッキー設定' },
   'cookie.privacy': { en: 'Privacy Policy', ko: '개인정보처리방침', es: 'Política de privacidad', ja: 'プライバシーポリシー' },
@@ -311,6 +319,19 @@ const TRANSLATIONS = {
     ja: 'ゲーム記録は保存されず、後で誤答を確認することはできません。',
   },
   // ── Support (Ko-fi) ──
+  'nextStep.kicker': { en: 'Next step', ko: '다음 계단', es: 'Siguiente paso', ja: '次のステップ' },
+  'nextStep.title': {
+    en: 'Now say it out loud — 1:1 speaking class',
+    ko: '이제 입으로 말해 볼 차례 — 1:1 말하기 수업',
+    es: 'Ahora dilo en voz alta: clase de conversación 1:1',
+    ja: '次は声に出す番 — 1:1 スピーキング授業',
+  },
+  'nextStep.sub': {
+    en: 'With a certified Korean tutor · from $8',
+    ko: '공인 한국어 튜터와 함께 · $8부터',
+    es: 'Con una persona tutora certificada de coreano · desde $8',
+    ja: '公認韓国語チューターと · $8から',
+  },
   'support.cta': {
     en: 'Enjoying the quiz? Help me make more quizzes with a coffee! ☕',
     ko: '퀴즈가 즐거우셨나요? 커피 한 잔으로 더 많은 퀴즈를 만들 수 있어요! ☕',
