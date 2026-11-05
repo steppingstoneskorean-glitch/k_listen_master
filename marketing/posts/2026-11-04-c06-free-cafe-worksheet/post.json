@@ -1,0 +1,64 @@
+{
+  "slug": "2026-11-04-c06-free-cafe-worksheet",
+  "status": "approved",
+  "design": "stepkorean",
+  "level": "ㄱㄴㄷ",
+  "logo": "circle",
+  "creative": {
+    "id": "C06",
+    "name": "C06_C_무료워크시트_img_v1",
+    "persona": "C",
+    "angle": "무료 워크시트 (리드 마그넷)",
+    "format": "image"
+  },
+  "links": {
+    "ig": "https://payhip.com/StepKorean?utm_source=ig&utm_medium=organic&utm_campaign=2611_drop1&utm_content=C06_v1",
+    "tiktok": "https://payhip.com/StepKorean?utm_source=tiktok&utm_medium=organic&utm_campaign=2611_drop1&utm_content=C06_v1",
+    "threads": "https://payhip.com/StepKorean?utm_source=threads&utm_medium=organic&utm_campaign=2611_drop1&utm_content=C06_v1"
+  },
+  "schedule": [
+    {
+      "at": "2026-11-08T22:00:00+09:00",
+      "items": [
+        "instagram"
+      ]
+    }
+  ],
+  "theme": "Free café worksheets by level — one real phrase per step (ㄱ·ㄴ·ㄷ)",
+  "threads": [],
+  "instagram": {
+    "type": "carousel",
+    "angle": {
+      "who": "Learner who studies with free materials and isn't sure of their level (persona C)",
+      "when": "Saving study material for an upcoming trip, scrolling past café content",
+      "after": "Picks their level and grabs the matching free worksheet",
+      "hook": "Question opener — 'what level are you?' self-check"
+    },
+    "caption": "What level is your café Korean? ☕\n\nㄱ Beginner — \"아이스 아메리카노 하나 주세요\" (One iced Americano, please.)\nㄴ Intermediate — \"카페에 가면 콘센트부터 찾더라고요\" (At a café, people look for an outlet first.)\nㄷ Advanced — \"자리를 맡아 두다\" (to save a seat)\n\nSame topic, three steps. Each level has a free worksheet + a 50-word list, and a podcast episode to listen along.\n\nWhich one are you? Comment ㄱ, ㄴ or ㄷ 👇\nFree worksheet — link in bio.\n\n#learnkorean #koreanworksheet #studykorean #koreanforbeginners #koreancafe",
+    "slides": [
+      {
+        "type": "ladder",
+        "title": "<strong>Free</strong> café Korean,<br>by level",
+        "steps": [
+          {
+            "level": "ㄱ",
+            "title": "아이스 아메리카노 하나 주세요",
+            "en": "One iced Americano, please."
+          },
+          {
+            "level": "ㄴ",
+            "title": "카페에 가면 콘센트부터 찾더라고요",
+            "en": "At a café, people look for an outlet first."
+          },
+          {
+            "level": "ㄷ",
+            "title": "자리를 맡아 두다",
+            "en": "to save a seat"
+          }
+        ],
+        "sub": "Worksheet + 50-word list · link in bio",
+        "big": true
+      }
+    ]
+  }
+}

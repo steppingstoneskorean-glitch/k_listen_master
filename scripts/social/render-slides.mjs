@@ -107,9 +107,9 @@ function skBody(s, i, n) {
   if (s.type === 'blank') return frame(`<div class="c">${s.kicker ? `<div class="kick">${esc(s.kicker)}</div>` : ''}<h2>${s.title ?? ''}</h2>
     <div class="tile"><div class="ko blank">${esc(s.sentence).replace('___', '<u>&nbsp;?&nbsp;</u>')}</div>${s.meaning ? `<div class="mean">${esc(s.meaning)}</div>` : ''}</div>
     ${s.hint ? `<p class="note">${esc(s.hint)}</p>` : ''}</div>`);
-  if (s.type === 'ladder') return frame(`<div class="c"><h2>${s.title ?? ''}</h2><div class="ladder">${(s.steps ?? []).map((st, k) => {
+  if (s.type === 'ladder') return frame(`<div class="c${s.big ? ' big' : ''}"><h2>${s.title ?? ''}</h2><div class="ladder">${(s.steps ?? []).map((st, k) => {
       const [nm, col] = SK_LEVEL[st.level] ?? SK_LEVEL['ㄱㄴㄷ'];
-      return `<div class="step" style="margin-left:${k * 90}px;border-color:${col}"><b style="background:${col}">${esc(st.level)}</b><div><div class="sn">${nm}</div><div class="st">${esc(st.title)}</div></div></div>`;
+      return `<div class="step" style="margin-left:${k * (s.big ? 40 : 90)}px;border-color:${col}"><b style="background:${col}">${esc(st.level)}</b><div><div class="sn">${nm}</div><div class="st">${esc(st.title)}</div>${st.en ? `<div class="sen">${esc(st.en)}</div>` : ""}</div></div>`;
     }).join('')}</div>${s.sub ? `<p class="sub">${esc(s.sub)}</p>` : ''}</div>`);
   if (s.type === 'shot') return frame(`<div class="shotwrap"><h2>${esc(s.title)}</h2><div class="phone"><img src="${img(s.image)}" style="object-position:0 ${s.offsetY ?? 0}%"></div>${s.sub ? `<p class="sub small">${esc(s.sub)}</p>` : ''}</div>`);
   if (s.type === 'cta') return frame(`<div class="c end"><h1>${s.title}</h1>${s.sub ? `<p class="sub light">${esc(s.sub)}</p>` : ''}<div class="pill">${esc(s.button)}</div></div>`);
@@ -136,6 +136,7 @@ h1 strong{color:#DB1E21}
 .end h1{color:#fff}
 h2{font-size:62px;line-height:1.15;font-weight:800;color:#222;margin-bottom:48px;letter-spacing:-1px}
 h2 em{font-style:normal;color:#1E4BCD}
+h2 strong{color:#DB1E21}
 .sub{font-size:40px;line-height:1.4;margin-top:40px;font-weight:500}
 .sub.small{font-size:32px;margin-top:28px}
 .sub.light{color:#ffffffd9}
@@ -163,7 +164,12 @@ h2 em{font-style:normal;color:#1E4BCD}
 .step{display:flex;align-items:center;gap:26px;border:5px solid;border-radius:28px;padding:22px 34px 22px 22px;background:#fff;text-align:left}
 .step b{font-family:Pretendard;color:#fff;font-size:52px;font-weight:900;border-radius:18px;width:84px;height:84px;display:flex;align-items:center;justify-content:center}
 .sn{font-size:26px;font-weight:700;text-transform:uppercase;letter-spacing:2px;opacity:.7}
-.st{font-size:38px;font-weight:700;color:#222}
+.st{font-family:Pretendard,Poppins;font-size:38px;font-weight:800;color:#222}
+.sen{font-size:26px;margin-top:4px}
+.big h2{font-size:100px;line-height:1.08;margin-bottom:64px}
+.big .st{font-size:40px}
+.big .sen{font-size:28px}
+.big .sub{font-size:44px;font-weight:700;color:#DB1E21}
 .shotwrap{position:absolute;inset:170px 84px 200px;display:flex;flex-direction:column;align-items:center;text-align:center}
 .phone{width:620px;flex:1;border-radius:44px;border:12px solid #222;overflow:hidden;box-shadow:0 30px 80px #0003;background:#fff}
 .phone img{width:100%;height:100%;object-fit:cover}

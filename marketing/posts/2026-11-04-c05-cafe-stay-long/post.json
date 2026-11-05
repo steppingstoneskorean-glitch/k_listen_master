@@ -1,0 +1,116 @@
+{
+  "slug": "2026-11-04-c05-cafe-stay-long",
+  "status": "approved",
+  "design": "stepkorean",
+  "level": "ㄱ",
+  "logo": "headphone",
+  "creative": {
+    "id": "C05",
+    "name": "C05_C_카페_carousel_v1",
+    "persona": "C",
+    "angle": "카페 문화 (초급 EP.01 재가공)",
+    "format": "carousel"
+  },
+  "links": {
+    "ig": "https://payhip.com/StepKorean?utm_source=ig&utm_medium=organic&utm_campaign=2611_drop1&utm_content=C05_v1",
+    "tiktok": "https://payhip.com/StepKorean?utm_source=tiktok&utm_medium=organic&utm_campaign=2611_drop1&utm_content=C05_v1",
+    "threads": "https://payhip.com/StepKorean?utm_source=threads&utm_medium=organic&utm_campaign=2611_drop1&utm_content=C05_v1"
+  },
+  "schedule": [
+    {
+      "at": "2026-11-06T22:00:00+09:00",
+      "items": [
+        "instagram",
+        "threads:quiz"
+      ]
+    }
+  ],
+  "theme": "Why Koreans stay so long at cafés — 3 real café phrases (Beginner EP.01)",
+  "threads": [
+    {
+      "key": "quiz",
+      "angle": {
+        "who": "Learner planning a trip to Korea (persona C)",
+        "when": "Sitting in a Seoul café with a Korean friend after the coffee is gone",
+        "after": "Understands the friend's '조금 더 있어요' and why café visits last hours",
+        "hook": "Question opener — the reader's own situation"
+      },
+      "text": "You're at a café in Seoul ☕\nYour coffee is gone. You ask, \"이제 갈까요?\"\n\nYour Korean friend says: \"음… 조금 더 있어요.\"\n\nWhat does your friend want?\nA) Another coffee\nB) To stay a little longer\nC) To go to a quieter café\n\nAnswer below 👇",
+      "replies": [
+        "B 🙂 \"조금 더 있어요\" = \"Let's stay a little longer.\"\nIn Korea, a café isn't just for coffee — it's where friends talk, study, and rest. That's why one coffee can turn into three hours.\n\nFree café worksheet for your level 👉 https://payhip.com/StepKorean?utm_source=threads&utm_medium=organic&utm_campaign=2611_drop1&utm_content=C05_v1"
+      ]
+    }
+  ],
+  "instagram": {
+    "type": "carousel",
+    "angle": {
+      "who": "Learner planning a trip to Korea (persona C)",
+      "when": "First café visit in Korea — ordering, then wondering why nobody leaves",
+      "after": "Can order, ask to leave, and understand '조금 더 있어요' — and gets why Korean cafés are places to stay",
+      "hook": "Question opener — a cultural 'why' the reader has noticed"
+    },
+    "caption": "Why do Koreans stay at a café for hours? ☕\n\nYou finish your coffee. You're ready to go.\nYour Korean friend says: \"조금 더 있어요.\" (Let's stay a little longer.)\n\nIn Korea, a café isn't just for coffee — it's where people meet friends, study, and rest.\n\nSave these 3 café phrases for your trip 📌\nWhich one would you use first? Tell me below 👇\n\nFree café worksheet for your level (Beginner · Intermediate · Advanced) — link in bio.\n\n#learnkorean #koreanphrases #studykorean #koreancafe #koreanlanguage",
+    "slides": [
+      {
+        "type": "hook",
+        "kicker": "Korean café culture",
+        "title": "Why do Koreans stay at a café for <em>hours?</em>",
+        "sub": "3 phrases you'll hear before anyone leaves"
+      },
+      {
+        "type": "scene",
+        "kicker": "The scene",
+        "text": "Your coffee is gone.<br>You're ready to go.<br>Your Korean friend?<br><em>Not even close.</em>"
+      },
+      {
+        "type": "phrase",
+        "label": "Phrase 1 · Ordering",
+        "ko": "아이스 아메리카노 하나 주세요",
+        "meaning": "One iced Americano, please.",
+        "example": "얼마예요? — 사천오백 원이에요.",
+        "exampleEn": "How much is it? — It's 4,500 won."
+      },
+      {
+        "type": "phrase",
+        "label": "Phrase 2 · Two hours later",
+        "ko": "이제 갈까요?",
+        "meaning": "Shall we go now?",
+        "example": "두 시간이 지나요. 이제 갈까요?",
+        "exampleEn": "Two hours pass. Shall we go now?"
+      },
+      {
+        "type": "phrase",
+        "label": "Phrase 3 · The answer you'll get",
+        "ko": "조금 더 있어요",
+        "meaning": "Let's stay a little longer.",
+        "note": "In Korea, a café isn't just for coffee. It's where you meet friends, study, and rest."
+      },
+      {
+        "type": "ladder",
+        "level": "ㄱㄴㄷ",
+        "title": "Same café, <em>3 steps</em>",
+        "steps": [
+          {
+            "level": "ㄱ",
+            "title": "Why do Koreans stay so long?"
+          },
+          {
+            "level": "ㄴ",
+            "title": "Outlets before coffee"
+          },
+          {
+            "level": "ㄷ",
+            "title": "Cafés as Korea's living rooms"
+          }
+        ],
+        "sub": "A podcast + free worksheet for each level"
+      },
+      {
+        "type": "cta",
+        "title": "Catch real Korean,<br>one step at a time.",
+        "sub": "Free café worksheet for your level",
+        "button": "Link in bio"
+      }
+    ]
+  }
+}
