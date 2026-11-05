@@ -5,6 +5,8 @@
 //   · 프롬프트/검증 규칙을 한 곳에서만 고치도록 분리.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { pronounce, soundChangeNote, soundChangeScore } from './koPron.mjs'
+
 const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1'
 // 이전 모델(llama-3.3-nemotron-super-49b-v1.5)은 NVIDIA 측에서 폐기(HTTP 410, 2026-08-26 EOL)됨.
 // 그 후속인 nemotron-3-super-120b-a12b 도 2026-11 기준 목록엔 있지만 호출 시 404(Function not found).
@@ -21,19 +23,28 @@ You are a strict and expert Korean Language Curriculum Director for global K-pop
 
 [Level Criteria & Output Rules]
 1. Beginner Level (B) - Word Order:
-- Select a very short, simple sentence (2 to 5 words, everyday conversation).
+- Select a short, simple sentence (3 to 6 words, everyday conversation) — not a bare greeting or one-word reply.
 - Split it into 3 to 4 "Meaningful Chunks".
 - Output the original sentence and its chunks.
 
 2. Intermediate Level (I) - Easy Dictation:
 - Select a short-to-medium everyday sentence (3 to 6 words) spoken clearly, with common vocabulary and basic grammar.
-- Blank out ONE short "Meaningful Chunk" (1 to 2 words) — e.g. a common verb/adjective with its ending (먹었어요, 좋아해요) or a frequent expression (진짜 맛있다). Avoid heavy liaisons or rare words; it must be easier to hear than the Advanced items.
+- Blank out ONE short "Meaningful Chunk" (1 to 2 words) — e.g. a common verb/adjective with its ending (먹었어요, 좋아해요) or a frequent expression (진짜 맛있다). Prefer a blank where a COMMON, predictable sound change happens (e.g. 먹었어요 [머거써요], 감사합니다 [감사함니다], 좋아요 [조아요]); avoid rare words or stacked sound changes — it must be easier to hear than the Advanced items.
 - Output the full sentence and the correct answer chunk for the blank. Do not reuse the same sentence as an Advanced item.
 
 3. Advanced Level (A) - Dictation:
 - Select a longer sentence (5+ words) with natural liaisons (연음) or not easy structures.
-- Identify the "Meaningful Chunk" to hear and replace it with a blank. Do not blank out just a single word; blank out the whole clause.
+- Identify the "Meaningful Chunk" to hear and replace it with a blank. Do not blank out just a single word; blank out the whole clause. Prefer a clause where the sound clearly differs from the spelling — stacked or less obvious changes (e.g. 할 수 있을 것 같아요 [할 쑤 이쓸 껃 가타요], 못 했어요 [모태써요], 같이 [가치], 신라 [실라]).
 - Output the full sentence and the correct answer chunk for the blank.
+
+[Selection Priority — applies to every level]
+1. FIRST pick sentences whose pronunciation differs from the spelling (발음 변화): 연음 liaison (음악이 [으마기]), 비음화 nasalization (합니다 [함니다], 국물 [궁물]), 경음화 tensification (학교 [학꾜], 할 수 [할 쑤]), 격음화 aspiration (좋다 [조타], 못 해 [모태]), 구개음화 palatalization (같이 [가치]), ㅎ 탈락 (좋아요 [조아요]), 유음화 (설날 [설랄]). For Intermediate/Advanced, the blank MUST cover the part where the sound change happens.
+2. Only when such sentences run out, fill the rest with other sentences that fit the level.
+3. SKIP sentences that are too easy for the level, even if they contain a sound change:
+   · Beginner: bare greetings or set phrases on their own (안녕하세요, 감사합니다, 네 맞아요), one-word replies, fillers.
+   · Intermediate: anything a TOPIK 1 learner already knows by heart (greetings, 네/아니요 answers, single-noun answers) or sentences under 3 words.
+   · Advanced: short or textbook-basic sentences (under 5 words, or only TOPIK 1–2 grammar like -아요/-고 싶어요 with no real listening challenge).
+4. The user message lists "PRIORITY LINES" — transcript lines where a pronunciation rule engine found such changes, with the standard pronunciation in brackets. Choose from them first (they still must fit the level). The server writes the pronunciation note itself — do NOT write "Sounds like" lines.
 
 [App Integration Rules — REQUIRED for every item]
 - The transcript lines include timestamps. Every quiz item MUST include "startTime" and "endTime" in seconds, derived from those timestamps:
@@ -102,11 +113,21 @@ function orderChunks(sentence, chunks) {
 // 공백·문장부호를 뺀 글자 — 빈칸이 사실상 문장 전체인지 비교할 때 쓴다
 const bare = (s) => s.replace(/[\s.,!?~…'"“”‘’·]/g, '')
 
+// 발음 변화 — 규칙 엔진(koPron)으로 계산한다. LLM 의 발음 판단은 부정확해서 쓰지 않는다.
+//   _sound 는 출제 우선순위 점수 — 내부 값이라 generateLevel 이 고른 뒤 떼어낸다
+function withSound(item, text, from, to) {
+  const { note, rules } = soundChangeNote(text, from, to)
+  // 모델이 써 넣은 발음 줄은 틀리기 쉬워 지우고, 엔진 메모를 공식 줄 바로 뒤에 넣는다
+  const lines = (item.explanation || '').split('\n').filter((l) => !/^\s*sounds like\s*:/i.test(l))
+  if (note) lines.splice(lines[0] ? 1 : 0, 0, note)
+  return { ...item, explanation: lines.join('\n').trim(), _sound: soundChangeScore(rules) }
+}
+
 const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : NaN)
 const validTime = (q) => num(q.endTime) > num(q.startTime) && num(q.startTime) >= 0
 
-// ── NVIDIA 호출 (503/429 일시 오류 재시도) ───────────────────────────────────
-// NVIDIA 공용 NIM 엔드포인트는 혼잡 시 "Service temporarily overloaded"(503)를
+// ── NVIDIA 호출 (502/503/429 일시 오류 재시도) ───────────────────────────────────
+// NVIDIA 공용 NIM 엔드포인트는 혼잡 시 "Service temporarily overloaded"(503)·"Bad Gateway"(502)를
 // 즉시(≈0.2s) 돌려주므로 짧은 백오프로 몇 번 재시도하면 대부분 통과한다.
 async function callNvidia(body, apiKey, tries = 3) {
   let last = null
@@ -117,7 +138,7 @@ async function callNvidia(body, apiKey, tries = 3) {
       body: JSON.stringify(body),
     })
     if (last.ok) return last
-    if ((last.status === 503 || last.status === 429) && attempt < tries) {
+    if ((last.status === 502 || last.status === 503 || last.status === 429) && attempt < tries) {
       await new Promise((res) => setTimeout(res, 1200 * attempt))
       continue
     }
@@ -137,19 +158,21 @@ function mapToQuizItems(parsed, videoId) {
     if (!q || typeof q.targetSentence !== 'string' || !validTime(q)) continue
     const sentence = q.targetSentence.trim()
     const blocks = orderChunks(sentence, q.chunks)
-    if (!sentence || !blocks) continue
+    // 블록 2개짜리는 반반 찍기라 초급에도 너무 쉽다
+    if (!sentence || !blocks || blocks.length < 3) continue
     generated.B += 1
-    items.push({
+    const fullB = blocks.join(' ')
+    items.push(withSound({
       id: `${vid}_b${String(generated.B).padStart(2, '0')}`,
       videoId,
       mode: 'B',
       startTime: Math.max(0, num(q.startTime)),
       endTime: num(q.endTime),
-      fullSentence: blocks.join(' '),
+      fullSentence: fullB,
       blocks,
       explanation: typeof q.explanation === 'string' ? q.explanation : '',
       hasHardcodedSubs: true, // 대부분의 K-콘텐츠에 자막이 박혀 있음 — 스튜디오에서 수정 가능
-    })
+    }, fullB))
   }
 
   // I(쉬운 빈칸) · A(딕테이션) — 같은 스키마: blankChunk 가 fullSentence 의 부분 문자열이어야 함
@@ -165,8 +188,12 @@ function mapToQuizItems(parsed, videoId) {
       // 빈칸 길이 규칙 — 중급 1~2어절, 고급 2어절 이상 (스튜디오 검증과 동일)
       const words = blankWord.split(/\s+/).length
       if (mode === 'I' ? words > 2 : words < 2) continue
+      // 급수보다 너무 쉬운 짧은 문장은 버린다 — 중급 3어절, 고급 4어절 미만
+      if (fullSentence.split(/\s+/).length < (mode === 'I' ? 3 : 4)) continue
       generated[mode] += 1
-      items.push({
+      // 중급·고급은 빈칸 안의 발음 변화만 센다 — 받아 쓰는 곳이 바로 그 소리여야 한다
+      const at = fullSentence.indexOf(blankWord)
+      items.push(withSound({
         id: `${vid}_${mode.toLowerCase()}${String(generated[mode]).padStart(2, '0')}`,
         videoId,
         mode,
@@ -177,7 +204,7 @@ function mapToQuizItems(parsed, videoId) {
         hint: typeof q.hint === 'string' ? q.hint : '',
         explanation: typeof q.explanation === 'string' ? q.explanation : '',
         hasHardcodedSubs: true,
-      })
+      }, fullSentence, at, at + blankWord.length))
     }
   }
 
@@ -278,11 +305,14 @@ async function generateLevel({ videoId, transcript, level, count, apiKey }) {
       items = await requestLevel({ videoId, transcript, level, ask: Math.ceil(shortfall * OVERASK), avoid, apiKey })
     } catch (err) {
       if (picked.length) break // 보충 요청만 실패 — 이미 뽑은 문항은 살린다
+      // 첫 응답의 JSON 이 깨진 경우(가끔 발생)는 같은 요청을 한 번 더 해 본다
+      if (err instanceof QuizGenError && err.httpStatus === 502 && round < MAX_ROUNDS - 1) continue
       throw err
     }
     for (const q of items) {
-      const key = `${q.fullSentence}|${q.blankWord ?? ''}`
-      if (seen.has(key) || picked.length >= count) continue
+      // 한 레벨에서 같은 문장은 빈칸만 바꿔 두 번 내지 않는다 — 문장부호만 다른 경우('여러분' / '여러분,')도 같은 문장
+      const key = bare(q.fullSentence)
+      if (seen.has(key)) continue
       seen.add(key)
       picked.push(q)
     }
@@ -290,11 +320,28 @@ async function generateLevel({ videoId, transcript, level, count, apiKey }) {
   if (picked.length === 0) {
     throw new QuizGenError(422, `유효한 ${level} 문항을 생성하지 못했습니다. 자막에 타임스탬프가 포함되어 있는지 확인해 주세요.`)
   }
+  // 출제 우선순위: 글자와 발음이 다른 문항(_sound 점수 높은 순) 먼저 채우고, 모자라면 나머지로 채운다 (sort 는 안정 정렬)
+  const chosen = picked.sort((a, b) => b._sound - a._sound).slice(0, count)
   // 라운드마다 번호가 1부터 다시 시작하므로 영상 순서대로 정렬해 id 를 다시 매긴다
   const vid = videoId.slice(0, 6).toLowerCase()
-  return picked
+  return chosen
     .sort((a, b) => a.startTime - b.startTime)
-    .map((q, i) => ({ ...q, id: `${vid}_${level.toLowerCase()}${String(i + 1).padStart(2, '0')}` }))
+    .map(({ _sound, ...q }, i) => ({ ...q, id: `${vid}_${level.toLowerCase()}${String(i + 1).padStart(2, '0')}` }))
+}
+
+// 자막에서 발음 변화가 뚜렷한 줄(연음만 있는 줄 제외)을 골라 모델에게 우선 후보로 알려 준다
+const PRIORITY_LINE_MAX = 80
+function priorityLines(transcript) {
+  const out = []
+  for (const line of transcript.split(/\r?\n/)) {
+    const m = line.match(/^\s*(\[[^\]]*\])\s*(.+)$/)
+    if (!m) continue
+    const text = m[2].trim()
+    if (soundChangeScore(soundChangeNote(text).rules) < 2) continue
+    out.push(`${m[1]} ${text}  →  [${pronounce(text).pron}]`)
+    if (out.length >= PRIORITY_LINE_MAX) break
+  }
+  return out.length ? `=== PRIORITY LINES (pronunciation differs from spelling) ===\n${out.join('\n')}\n\n` : ''
 }
 
 /** NVIDIA 1회 호출 → 이 레벨의 검증 통과 문항 (개수 제한 없음) */
@@ -307,6 +354,7 @@ async function requestLevel({ videoId, transcript, level, ask, avoid, apiKey }) 
       ? `These sentences are already used — pick DIFFERENT sentences:\n${avoid.map((t) => `- ${t}`).join('\n')}\n`
       : '') +
     `Use ids like "${videoId.slice(0, 6).toLowerCase()}_${level.toLowerCase()}01", ordered by startTime.\n\n` +
+    priorityLines(transcript) +
     `=== TRANSCRIPT (timestamp + text lines) ===\n${transcript.slice(0, 60000)}`
 
   // 비스트리밍, 응답 텍스트에서 JSON 블록만 추출
