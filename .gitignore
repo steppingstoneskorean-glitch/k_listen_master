@@ -79,3 +79,6 @@ marketing/os/10_daily/*
 !marketing/os/10_daily/README.md
 marketing/os/11_dashboard/*.csv
 marketing/os/12_period/review_2*.md
+
+# Weekly upload package pages (base64 images)
+marketing/weekly/

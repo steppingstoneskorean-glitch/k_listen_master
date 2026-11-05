@@ -13,9 +13,9 @@
 #   ※ GitHub Actions 크론은 '베스트 에포트'라 수 분~수십 분 늦을 수 있다. 수동 실행으로 테스트 가능.
 name: SNS daily package
 
+# 2026-11-05 매일 자동 전송 중단 — 오너 요청으로 일주일치를 Claude 앱에서 한 번에 보여 줌
+# (scripts/social/weekly-package.mjs). 필요할 때만 수동 실행.
 on:
-  schedule:
-    - cron: '0 1 * * *' # 10:00 KST
   workflow_dispatch: {}
 
 concurrency:
