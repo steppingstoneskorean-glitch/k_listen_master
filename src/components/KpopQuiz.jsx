@@ -815,6 +815,9 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
   }
 
   const currentKind = quiz ? kindOf(quiz) : null;
+  // 팟캐스트(라디오 모드) 중·고급 받아쓰기는 힌트 버튼이 영어 힌트 대신 정답 초성을 보여 준다 (기본 초성 표시 없음)
+  const initialsHint = Boolean(audioUrl) && currentKind === 'cloze' && Boolean(quiz?.blankWord) && (activeMode === 'I' || activeMode === 'A');
+  const hasHint = initialsHint || Boolean(quiz?.hint && quiz.hint.trim());
 
   // 빈칸 받아쓰기(A·신규 I): fullSentence 를 blankWord 기준으로 분해.
   //   정답 단어가 문장에 두 번 이상 나오면(예: "자, 끝났어. 너는 이제 끝났어." → "끝났어")
@@ -1258,8 +1261,8 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               ))}
             </div>
 
-            {/* 중급(I): 정답 초성을 기본 제공 (감점 없음) */}
-            {activeMode === 'I' && quiz.blankWord && (
+            {/* 중급(I): 정답 초성을 기본 제공 (감점 없음) — 팟캐스트는 초성이 힌트 버튼 안에 있다 */}
+            {activeMode === 'I' && quiz.blankWord && !initialsHint && (
               <p className="mt-2 text-sm font-semibold text-slate-500">
                 {t('kpop.initials')}:{' '}
                 <span translate="no" className="notranslate font-black tracking-widest text-indigo-600">
@@ -1289,7 +1292,7 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               >
                 ⌨️ {kbOpen ? t('kbd.close') : t('kbd.open')}
               </button>
-              {quiz.hint && quiz.hint.trim() && (
+              {hasHint && (
                 <button
                   onClick={() => {
                     if (!hintShown) setHintUsed(true);
@@ -1319,9 +1322,18 @@ export default function KpopQuiz({ isLoggedIn: isLoggedInProp, user: userProp })
               )}
             </div>
 
-            {hintShown && quiz.hint && quiz.hint.trim() && (
+            {hintShown && hasHint && (
               <p className="kq-pop mt-3 rounded-xl bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800">
-                💡 {quiz.hint}
+                {initialsHint ? (
+                  <>
+                    💡 {t('kpop.initials')}:{' '}
+                    <span translate="no" className="notranslate font-black tracking-widest text-amber-900">
+                      {initialsOf(quiz.blankWord)}
+                    </span>
+                  </>
+                ) : (
+                  <>💡 {quiz.hint}</>
+                )}
               </p>
             )}
 
