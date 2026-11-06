@@ -8,7 +8,7 @@
 //   · SDK(~1MB)는 채점 시점에만 동적 import 하여 초기 번들에 넣지 않는다.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { auth } from './firebase'
+import { auth, getAppCheckToken } from './firebase'
 import { trackEvent } from './analytics'
 
 export interface WordScore {
@@ -50,9 +50,14 @@ async function getAuth(): Promise<Auth> {
   if (user) {
     const idToken = await user.getIdToken()
     trackEvent('speech_token_request') // 비용(Azure) 발생 지점 카운트
+    // App Check 토큰을 함께 보내 복제앱/스크립트의 비용 남용을 막는다(서버가 강제 모드일 때 검증).
+    const appCheckToken = await getAppCheckToken()
     const r = await fetch('/api/speech-token', {
       method: 'POST',
-      headers: { authorization: `Bearer ${idToken}` },
+      headers: {
+        authorization: `Bearer ${idToken}`,
+        ...(appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}),
+      },
     })
     if (r.ok) {
       const d = (await r.json()) as { token: string; region: string }

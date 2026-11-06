@@ -17,6 +17,8 @@
 //     (공식 문서: real-time STT·pronunciation assessment — no data at rest)
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { requireAppCheck } from './_lib/verifyAppCheck.mjs'
+
 // ── Firebase ID 토큰 검증 (로그인 여부만 확인 — 관리자 제한 없음) ─────────────
 async function verifyUser(idToken) {
   const key = process.env.FIREBASE_API_KEY
@@ -39,6 +41,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
+
+  // App Check — 복제앱/스크립트의 Azure 비용 남용 차단(강제 모드일 때만 거부, 기본은 모니터).
+  if (!(await requireAppCheck(req, res))) return
 
   // trim() — 환경변수에 붙여넣을 때 섞인 앞뒤 공백/개행이 헤더값에 들어가면
   //          Azure STS 가 키를 거부해 401 이 난다(가장 흔한 오설정).
