@@ -8,6 +8,8 @@
 //   4) kartistQuizzes/{videoId}.draft 에만 저장 — ⭐ 배포(published)는 절대 하지 않는다.
 //      오너가 스튜디오에서 검수 후 직접 배포한다. 이미 초안이 있는 영상은 건드리지 않는다.
 //   5) 텔레그램으로 검수 링크 보고
+//   6) 팟캐스트가 아닌 K-content 퀴즈에 제목이 없으면 카드 제목을 제안(titleSuggestion)하고 승인 요청
+//      — title 은 오너가 스튜디오에서 승인할 때만 써진다
 //
 //   실행: node scripts/staff/quiz-writer.mjs [--dry-run] [--since-days 30] [--max 3] [VIDEOID...]
 //         --redo VIDEOID...  손대지 않은 미배포 AI 초안을 지금 규칙으로 다시 만든다
@@ -192,6 +194,8 @@ async function main() {
   }
   if (!dryRun) writeState('quiz-writer', state)
 
+  await proposeTitles(db)
+
   if (done.length) {
     const lines = done.map(
       (v) =>
@@ -205,6 +209,44 @@ async function main() {
   } else {
     console.log(`새로 만든 초안 없음${waiting.length ? ` (자막 대기 ${waiting.length}개)` : ''}`)
   }
+}
+
+// 팟캐스트가 아닌 K-content 퀴즈 중 제목이 없는 것 → 카드 제목 제안 + 승인 요청 (한 번만, 실행당 최대 3개)
+//   코드(src/data/kArtistLive.ts)에 등록된 영상은 이미 제목이 있으니 건너뛴다.
+async function proposeTitles(db) {
+  const codeIds = new Set([...fs.readFileSync(path.join(ROOT, 'src', 'data', 'kArtistLive.ts'), 'utf8').matchAll(/videoId: '([\w-]{11})'/g)].map((m) => m[1]))
+  const { suggestTitle } = await import('../../api/_lib/titleGen.mjs')
+  const apiKey = (process.env.NVIDIA_API_KEY || '').trim()
+  const snap = await db.collection('kartistQuizzes').get()
+  const proposed = []
+  for (const docSnap of snap.docs) {
+    if (proposed.length >= 3) break
+    const d = docSnap.data()
+    const hasItems = (d.published ?? []).length || (d.draft ?? []).length
+    const isPodcast = Boolean(d.audioUrl) || /podcast/i.test(d.aiDraft?.title ?? '')
+    if (!hasItems || isPodcast || codeIds.has(docSnap.id) || (d.title ?? '').trim() || d.titleSuggestion) continue
+    try {
+      const sug = await suggestTitle({ videoId: docSnap.id, apiKey })
+      console.log(`   ✎ 제목 제안 ${docSnap.id}: ${sug.en} / ${sug.ko} [${sug.artist}]`)
+      if (!dryRun) {
+        await docSnap.ref.set({ titleSuggestion: { ...sug, at: FieldValue.serverTimestamp() } }, { merge: true })
+      }
+      proposed.push({ videoId: docSnap.id, ...sug })
+    } catch (err) {
+      console.error(`   ✖ 제목 제안 실패 ${docSnap.id}: ${err.message}`)
+    }
+  }
+  if (!proposed.length) return
+  const lines = proposed.map(
+    (p) =>
+      `• 원제: ${p.sourceTitle} (${p.channel})\n  제안: ${p.en}\n        ${p.ko}  [${p.artist}]\n  승인: ${APP_URL}/quiz-studio?v=${p.videoId}`,
+  )
+  const text =
+    `🏷️ 퀴즈 담당 — 제목 없는 K-content 퀴즈 ${proposed.length}개에 카드 제목을 제안해요${dryRun ? ' (테스트, 저장 안 함)' : ''}\n\n` +
+    `${lines.join('\n\n')}\n\n` +
+    `스튜디오 Step 1 에서 '승인'을 누르면 카드에 반영돼요. 고치고 싶으면 직접 입력해 저장해 주세요.`
+  if (dryRun) console.log(text)
+  else await report(text)
 }
 
 main().catch(async (err) => {

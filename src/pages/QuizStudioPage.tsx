@@ -16,7 +16,7 @@
 //   접근 제한: ADMIN_EMAIL 로그인 시에만 렌더링
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/lib/auth'
 import {
@@ -25,6 +25,7 @@ import {
   loadQuizCardInfo,
   quizCardTitle,
   saveQuizTitle,
+  approveTitleSuggestion,
   saveModeItems,
   unpublishModeItems,
   itemMode,
@@ -235,10 +236,29 @@ export default function QuizStudioPage() {
     setBusy('title')
     try {
       await saveQuizTitle(videoId, titleInput)
-      setCardInfo((prev) => (prev ? { ...prev, title: titleInput.trim() } : prev))
+      setCardInfo((prev) => (prev ? { ...prev, title: titleInput.trim(), titleI18n: {} } : prev))
       say('ok', '퀴즈 제목을 저장했습니다 — 홈/게임 카드에 바로 반영됩니다')
     } catch (err) {
       say('err', `제목 저장 실패: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setBusy('')
+    }
+  }
+
+  // 퀴즈 담당의 제목 제안 승인 → 4개 언어 제목 + 아티스트 태그 확정
+  const approveSuggestion = async () => {
+    const sug = cardInfo?.suggestion
+    if (!sug) return
+    setBusy('title')
+    try {
+      await approveTitleSuggestion(videoId, sug)
+      setCardInfo((prev) =>
+        prev ? { ...prev, title: sug.en, titleI18n: { ko: sug.ko, es: sug.es, ja: sug.ja }, artist: sug.artist, suggestion: null } : prev,
+      )
+      setTitleInput(sug.en)
+      say('ok', '제안된 제목을 승인했습니다 — 홈/게임 카드에 바로 반영됩니다')
+    } catch (err) {
+      say('err', `승인 실패: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setBusy('')
     }
@@ -510,6 +530,39 @@ export default function QuizStudioPage() {
                 카드 제목 미리보기: <b className="text-slate-600">{quizCardTitle({ ...cardInfo, title: titleInput.trim() })}</b>
                 {cardInfo.isPodcast && ' · 팟캐스트는 Podcast_레벨_제목 형식으로 자동으로 붙어요'}
               </span>
+            )}
+            {cardInfo?.suggestion && !cardInfo.isPodcast && !cardInfo.title && (
+              <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm">
+                <p className="text-xs font-bold text-amber-700">🏷️ 퀴즈 담당의 제목 제안 — 승인해야 카드에 보여요</p>
+                <p className="mt-1 text-[11px] text-amber-600">
+                  원제: {cardInfo.suggestion.sourceTitle} ({cardInfo.suggestion.channel})
+                </p>
+                <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-slate-700">
+                  {(['en', 'ko', 'es', 'ja'] as const).map((k) => (
+                    <Fragment key={k}>
+                      <dt className="text-xs font-bold uppercase text-slate-400">{k}</dt>
+                      <dd>{cardInfo.suggestion?.[k]}</dd>
+                    </Fragment>
+                  ))}
+                  <dt className="text-xs font-bold text-slate-400">태그</dt>
+                  <dd>{cardInfo.suggestion.artist}</dd>
+                </dl>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    onClick={approveSuggestion}
+                    disabled={busy !== ''}
+                    className="rounded-xl bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-600 disabled:opacity-40"
+                  >
+                    ✔ 이 제목으로 승인
+                  </button>
+                  <button
+                    onClick={() => setTitleInput(cardInfo.suggestion?.en ?? '')}
+                    className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-amber-700 shadow hover:bg-amber-100"
+                  >
+                    ✎ 입력란으로 가져와 고치기
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         )}

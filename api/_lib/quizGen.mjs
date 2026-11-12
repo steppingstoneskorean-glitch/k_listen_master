@@ -129,7 +129,7 @@ const validTime = (q) => num(q.endTime) > num(q.startTime) && num(q.startTime) >
 // ── NVIDIA 호출 (502/503/429 일시 오류 재시도) ───────────────────────────────────
 // NVIDIA 공용 NIM 엔드포인트는 혼잡 시 "Service temporarily overloaded"(503)·"Bad Gateway"(502)를
 // 즉시(≈0.2s) 돌려주므로 짧은 백오프로 몇 번 재시도하면 대부분 통과한다.
-async function callNvidia(body, apiKey, tries = 3) {
+export async function callNvidia(body, apiKey, tries = 3) {
   let last = null
   for (let attempt = 1; attempt <= tries; attempt++) {
     last = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
@@ -215,7 +215,7 @@ function mapToQuizItems(parsed, videoId) {
 // "detailed thinking off" 지시에도 Nemotron 계열은 가끔 <think>...</think> 블록을
 // 남긴다. 그 안에 의사코드용 중괄호가 섞여 있으면 아래의 순진한 JSON 추출 정규식이
 // 엉뚱한 시작 지점을 잡아 파싱에 실패하므로, 매칭 전에 먼저 잘라낸다.
-function stripThinking(raw) {
+export function stripThinking(raw) {
   const closeIdx = raw.lastIndexOf('</think>')
   return closeIdx === -1 ? raw : raw.slice(closeIdx + '</think>'.length)
 }

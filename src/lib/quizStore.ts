@@ -15,9 +15,9 @@
 //   · 저장/배포는 모드 단위 병합(saveModeItems) — 다른 모드의 기존 문항을 보존한다
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { collection, doc, getDoc, getDocs, setDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, deleteField, doc, getDoc, getDocs, setDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
-import type { GameMode } from '@/data/kArtistLive'
+import type { GameMode, Localized } from '@/data/kArtistLive'
 
 /** 카드 배지 계산에 필요한 영상별 배포 요약
  *  (문서의 modeStars 필드는 2026-11 난이도 별 제거 이후 읽지도 쓰지도 않는다) */
@@ -37,6 +37,22 @@ export interface QuizCardInfo {
   level: GameMode | null
   /** 퀴즈 담당이 저장한 유튜브 원제 (제목 미입력 시 대체용) */
   sourceTitle: string
+  /** 승인된 제목의 다른 언어판 (ko/es/ja) — 없으면 title 을 모든 언어에 쓴다 */
+  titleI18n: Partial<Record<'ko' | 'es' | 'ja', string>>
+  /** 카드 아티스트 태그 (예: 'SKZ') — 없으면 'K-Content' */
+  artist: string
+  /** 퀴즈 담당이 제안한, 아직 승인 안 된 제목 (팟캐스트가 아닌 영상만) */
+  suggestion: TitleSuggestion | null
+}
+
+export interface TitleSuggestion {
+  en: string
+  ko: string
+  es: string
+  ja: string
+  artist: string
+  sourceTitle: string
+  channel: string
 }
 
 const LEVEL_KO: Record<GameMode, string> = { B: '초급', I: '중급', A: '고급' }
@@ -45,11 +61,28 @@ const AI_LEVEL: Record<string, GameMode> = { beginner: 'B', intermediate: 'I', a
 function cardInfoOf(d: Record<string, unknown>, items: QuizItem[]): QuizCardInfo {
   const ai = (d.aiDraft ?? {}) as { level?: string; title?: string }
   const modes = [...new Set(items.map(itemMode))]
+  const sug = d.titleSuggestion as Partial<TitleSuggestion> | undefined
+  const str = (v: unknown) => (typeof v === 'string' ? v : '')
+  const i18n = (d.titleI18n ?? {}) as Record<string, unknown>
   return {
     title: typeof d.title === 'string' ? d.title.trim() : '',
     isPodcast: (typeof d.audioUrl === 'string' && Boolean(d.audioUrl)) || /podcast/i.test(ai.title ?? ''),
     level: AI_LEVEL[ai.level ?? ''] ?? (modes.length === 1 ? modes[0] : null),
     sourceTitle: typeof ai.title === 'string' ? ai.title : '',
+    titleI18n: Object.fromEntries((['ko', 'es', 'ja'] as const).filter(k => str(i18n[k])).map(k => [k, str(i18n[k])])),
+    artist: str(d.artist),
+    suggestion:
+      sug && str(sug.en)
+        ? {
+            en: str(sug.en),
+            ko: str(sug.ko),
+            es: str(sug.es),
+            ja: str(sug.ja),
+            artist: str(sug.artist),
+            sourceTitle: str(sug.sourceTitle),
+            channel: str(sug.channel),
+          }
+        : null,
   }
 }
 
@@ -67,6 +100,12 @@ export function quizCardTitle(c: QuizCardInfo): string {
   return ['Podcast', c.level ? LEVEL_KO[c.level] : null, name].filter(Boolean).join('_')
 }
 
+/** 카드 제목(다국어) — 팟캐스트는 형식상 한 가지, 그 외는 승인된 제목의 언어판을 쓴다 */
+export function quizCardLocalizedTitle(c: QuizCardInfo): Localized {
+  const en = quizCardTitle(c)
+  return c.isPodcast || !c.title ? { en } : { en, ...c.titleI18n }
+}
+
 /** 운영자용: 카드 제목 재료 (스튜디오의 제목 입력란·미리보기) */
 export async function loadQuizCardInfo(videoId: string): Promise<QuizCardInfo | null> {
   if (!db) return null
@@ -78,9 +117,27 @@ export async function loadQuizCardInfo(videoId: string): Promise<QuizCardInfo | 
   return cardInfoOf(d, published.length ? published : draft)
 }
 
-/** 운영자용: 퀴즈 제목 저장 — 문항(초안·배포본)은 건드리지 않는다 */
+/**
+ * 운영자용: 직접 입력한 퀴즈 제목 저장 — 문항(초안·배포본)은 건드리지 않는다.
+ * 손으로 쓴 제목은 모든 언어에 그대로 보이도록 이전 다국어판은 지운다.
+ */
 export async function saveQuizTitle(videoId: string, title: string): Promise<void> {
-  await setDoc(quizDoc(videoId), { videoId, title: title.trim() }, { merge: true })
+  await setDoc(quizDoc(videoId), { videoId, title: title.trim(), titleI18n: deleteField() }, { merge: true })
+}
+
+/** 운영자용: 퀴즈 담당의 제목 제안 승인 → title·다국어판·아티스트 태그로 확정 */
+export async function approveTitleSuggestion(videoId: string, s: TitleSuggestion): Promise<void> {
+  await setDoc(
+    quizDoc(videoId),
+    {
+      videoId,
+      title: s.en,
+      titleI18n: Object.fromEntries((['ko', 'es', 'ja'] as const).filter(k => s[k]).map(k => [k, s[k]])),
+      artist: s.artist || 'K-Content',
+      titleSuggestion: deleteField(),
+    },
+    { merge: true },
+  )
 }
 
 export interface QuizItem {

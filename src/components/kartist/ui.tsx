@@ -109,9 +109,9 @@ export function FilterDropdown<T extends string | number>({
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md cursor-pointer"
+        className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border-2 border-indigo-300 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 shadow-sm shadow-indigo-100 transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500 hover:bg-indigo-100 hover:shadow-md cursor-pointer"
       >
-        <span className="whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</span>
+        <span className="whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-indigo-400">{label}</span>
         <span className="flex items-center whitespace-nowrap">{renderOption(value)}</span>
         <Chevron open={open} />
       </button>
