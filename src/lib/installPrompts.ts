@@ -27,3 +27,14 @@ export function isInstallModalHidden() {
 export function hideInstallModalForHours(hours = 24) {
   hideFor(MODAL_HIDE_KEY, hours * 60 * 60 * 1000)
 }
+
+// iOS Safari 전용 "홈 화면에 추가" 힌트 — beforeinstallprompt 가 없는 iOS 의 공백을 메운다.
+const IOS_HINT_HIDE_KEY = 'klisten_ios_hint_hide_until'
+
+export function isIosHintHidden() {
+  return isHidden(IOS_HINT_HIDE_KEY)
+}
+
+export function hideIosHintForDays(days = 14) {
+  hideFor(IOS_HINT_HIDE_KEY, days * 24 * 60 * 60 * 1000)
+}

@@ -1034,6 +1034,12 @@ const TRANSLATIONS = {
     es: 'En iPhone, toca el botón Compartir [↑] en Safari y luego elige "Añadir a pantalla de inicio"',
     ja: 'iPhoneでは、Safari下部の共有[↑]ボタンをタップし、「ホーム画面に追加」を選んでください！',
   },
+  'install.iosBannerLead': {
+    en: 'Add K-Listen to your Home Screen',
+    ko: 'K-Listen을 홈 화면에 추가하세요',
+    es: 'Añade K-Listen a tu pantalla de inicio',
+    ja: 'K-Listenをホーム画面に追加',
+  },
 
   // ── Real Sound Master (레벨 카드 섹션 타이틀) ──
   'realsound.subtitle': {
