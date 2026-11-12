@@ -10,7 +10,7 @@
 //     완전히 새 영상은 배포해도 홈/허브 어디에도 나타나지 않는 파이프라인 단절이 생긴다.
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { loadAllVideoQuizMeta, type VideoQuizMeta } from '@/lib/quizStore'
+import { loadAllVideoQuizMeta, quizCardTitle, type VideoQuizMeta } from '@/lib/quizStore'
 import { resolveModeInfos } from '@/lib/quizResolve'
 import { LIVE_VIDEOS, type LiveVideo, type ModeInfo } from '@/data/kArtistLive'
 
@@ -41,9 +41,10 @@ export function useVideoModes() {
     const known = new Set(LIVE_VIDEOS.map(v => v.videoId))
     const extra: LiveVideo[] = Object.entries(meta)
       .filter(([videoId, m]) => videoId && !known.has(videoId) && m.published.length > 0)
-      .map(([videoId], i) => ({
+      .map(([videoId, m], i) => ({
         id: 100000 + i,
-        title: { en: `New K-Content Quiz` },
+        // 팟캐스트는 'Podcast_초급_제목' — 제목은 스튜디오 Step 1 에서 입력
+        title: { en: quizCardTitle(m.card) },
         artist: 'K-Content',
         availableModes: [],
         url: `/kpop-quiz/${videoId}`,

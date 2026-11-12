@@ -23,6 +23,64 @@ import type { GameMode } from '@/data/kArtistLive'
  *  (문서의 modeStars 필드는 2026-11 난이도 별 제거 이후 읽지도 쓰지도 않는다) */
 export interface VideoQuizMeta {
   published: QuizItem[]
+  /** 카드 제목 재료 — quizCardTitle() 참고 */
+  card: QuizCardInfo
+}
+
+/** 카드 제목 재료: 스튜디오에서 입력한 제목 + 팟캐스트 여부·레벨 */
+export interface QuizCardInfo {
+  /** 스튜디오에서 입력한 퀴즈 제목 (예: '한국 카페, 왜 오래 있어요?') */
+  title: string
+  /** 팟캐스트 영상인가 — 라디오 음원이 있거나 유튜브 원제에 'Podcast' 가 있으면 */
+  isPodcast: boolean
+  /** 팟캐스트 레벨 — 퀴즈 담당이 영상 제목에서 읽은 값, 없으면 배포 모드로 추정 */
+  level: GameMode | null
+  /** 퀴즈 담당이 저장한 유튜브 원제 (제목 미입력 시 대체용) */
+  sourceTitle: string
+}
+
+const LEVEL_KO: Record<GameMode, string> = { B: '초급', I: '중급', A: '고급' }
+const AI_LEVEL: Record<string, GameMode> = { beginner: 'B', intermediate: 'I', advanced: 'A' }
+
+function cardInfoOf(d: Record<string, unknown>, items: QuizItem[]): QuizCardInfo {
+  const ai = (d.aiDraft ?? {}) as { level?: string; title?: string }
+  const modes = [...new Set(items.map(itemMode))]
+  return {
+    title: typeof d.title === 'string' ? d.title.trim() : '',
+    isPodcast: (typeof d.audioUrl === 'string' && Boolean(d.audioUrl)) || /podcast/i.test(ai.title ?? ''),
+    level: AI_LEVEL[ai.level ?? ''] ?? (modes.length === 1 ? modes[0] : null),
+    sourceTitle: typeof ai.title === 'string' ? ai.title : '',
+  }
+}
+
+/**
+ * 카드에 보일 퀴즈 제목
+ *   팟캐스트: 'Podcast_초급_한국 카페, 왜 오래 있어요?' (제목 미입력이면 유튜브 원제에서 '_ Korean Podcast for …' 를 뗀 것)
+ *   그 외:    입력한 제목, 없으면 'New K-Content Quiz'
+ */
+export function quizCardTitle(c: QuizCardInfo): string {
+  if (!c.isPodcast) return c.title || 'New K-Content Quiz'
+  const name =
+    c.title ||
+    c.sourceTitle.replace(/_?\s*Korean Podcast for.*$/i, '').replace(/[_\s]+$/, '').trim() ||
+    'K-Content'
+  return ['Podcast', c.level ? LEVEL_KO[c.level] : null, name].filter(Boolean).join('_')
+}
+
+/** 운영자용: 카드 제목 재료 (스튜디오의 제목 입력란·미리보기) */
+export async function loadQuizCardInfo(videoId: string): Promise<QuizCardInfo | null> {
+  if (!db) return null
+  const snap = await getDoc(quizDoc(videoId))
+  if (!snap.exists()) return null
+  const d = snap.data()
+  const published = Array.isArray(d.published) ? (d.published as QuizItem[]) : []
+  const draft = Array.isArray(d.draft) ? (d.draft as QuizItem[]) : []
+  return cardInfoOf(d, published.length ? published : draft)
+}
+
+/** 운영자용: 퀴즈 제목 저장 — 문항(초안·배포본)은 건드리지 않는다 */
+export async function saveQuizTitle(videoId: string, title: string): Promise<void> {
+  await setDoc(quizDoc(videoId), { videoId, title: title.trim() }, { merge: true })
 }
 
 export interface QuizItem {
@@ -112,7 +170,7 @@ export async function loadAllVideoQuizMeta(): Promise<Record<string, VideoQuizMe
   snaps.forEach(s => {
     const d = s.data()
     const published = Array.isArray(d.published) ? (d.published as QuizItem[]) : []
-    out[s.id] = { published }
+    out[s.id] = { published, card: cardInfoOf(d, published) }
   })
   return out
 }

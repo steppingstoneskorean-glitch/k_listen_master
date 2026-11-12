@@ -22,10 +22,14 @@ import { useAuth } from '@/lib/auth'
 import {
   loadDraft,
   loadPublishedQuizzes,
+  loadQuizCardInfo,
+  quizCardTitle,
+  saveQuizTitle,
   saveModeItems,
   unpublishModeItems,
   itemMode,
   isChoiceItem,
+  type QuizCardInfo,
   type QuizItem,
 } from '@/lib/quizStore'
 import type { GameMode } from '@/data/kArtistLive'
@@ -176,7 +180,11 @@ export default function QuizStudioPage() {
   // 불러온 시점의 빈칸 문항 키 — 빈칸 길이 규칙 도입 전 문항은 그대로 저장/배포할 수 있게 한다
   const [legacyBlanks, setLegacyBlanks] = useState<Set<string>>(new Set())
 
-  const [busy, setBusy] = useState<'' | 'generate' | 'save' | 'publish' | 'translate' | 'unpublish'>('')
+  // 카드에 보일 퀴즈 제목 — 팟캐스트는 'Podcast_초급_제목' 으로 붙는다
+  const [cardInfo, setCardInfo] = useState<QuizCardInfo | null>(null)
+  const [titleInput, setTitleInput] = useState('')
+
+  const [busy, setBusy] = useState<'' | 'generate' | 'save' | 'publish' | 'translate' | 'unpublish' | 'title'>('')
   const [notice, setNotice] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
   const [previewSrc, setPreviewSrc] = useState('')
 
@@ -211,10 +219,30 @@ export default function QuizStudioPage() {
         }
       })
       .catch(() => {})
+    loadQuizCardInfo(videoId)
+      .then((info) => {
+        if (cancelled) return
+        setCardInfo(info)
+        setTitleInput(info?.title ?? '')
+      })
+      .catch(() => {})
     return () => {
       cancelled = true
     }
   }, [videoId, isAdmin])
+
+  const saveTitle = async () => {
+    setBusy('title')
+    try {
+      await saveQuizTitle(videoId, titleInput)
+      setCardInfo((prev) => (prev ? { ...prev, title: titleInput.trim() } : prev))
+      say('ok', '퀴즈 제목을 저장했습니다 — 홈/게임 카드에 바로 반영됩니다')
+    } catch (err) {
+      say('err', `제목 저장 실패: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setBusy('')
+    }
+  }
 
   // ── AI 초안 생성 (B/I/A 3레벨 파이프라인) ────────────────────────────────────
   const generate = useCallback(async () => {
@@ -456,6 +484,35 @@ export default function QuizStudioPage() {
             </span>
           )}
         </label>
+        {videoId && (
+          <div className="mt-4">
+            <label className="block text-xs font-semibold text-slate-500" htmlFor="quiz-title">
+              퀴즈 제목 (홈/게임 카드에 표시)
+            </label>
+            <div className="mt-1 flex gap-2">
+              <input
+                id="quiz-title"
+                className={field}
+                value={titleInput}
+                onChange={(e) => setTitleInput(e.target.value)}
+                placeholder="예: 한국 카페, 왜 오래 있어요?"
+              />
+              <button
+                onClick={saveTitle}
+                disabled={busy !== '' || titleInput.trim() === (cardInfo?.title ?? '')}
+                className="shrink-0 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {busy === 'title' ? '저장 중…' : '제목 저장'}
+              </button>
+            </div>
+            {cardInfo && (
+              <span className="mt-1 block text-[11px] font-medium text-slate-400">
+                카드 제목 미리보기: <b className="text-slate-600">{quizCardTitle({ ...cardInfo, title: titleInput.trim() })}</b>
+                {cardInfo.isPodcast && ' · 팟캐스트는 Podcast_레벨_제목 형식으로 자동으로 붙어요'}
+              </span>
+            )}
+          </div>
+        )}
       </section>
 
       {/* 알림 */}
