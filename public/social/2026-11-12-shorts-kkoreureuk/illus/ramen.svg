@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+<rect width="400" height="400" rx="44" fill="#3a2414"/>
+<circle cx="200" cy="210" r="150" fill="#ffb36b" opacity=".12"/>
+<path d="M92 92l14-14 14 14 14-14 14 14 14-14 14 14 14-14 14 14 14-14 14 14 14-14 14 14 14-14 14 14 14-14 14 14v222l-14 14-14-14-14 14-14-14-14 14-14-14-14 14-14-14-14 14-14-14-14 14-14-14-14 14-14-14-14 14-14-14z" fill="#DB1E21"/>
+<rect x="110" y="104" width="180" height="46" rx="10" fill="#ffe14d"/>
+<text x="200" y="138" font-family="Pretendard,'Malgun Gothic',sans-serif" font-weight="900" font-size="34" text-anchor="middle" fill="#7a1010">라면</text>
+<path d="M126 220h148a74 60 0 0 1-148 0z" fill="#fff"/>
+<path d="M136 222q8-12 16 0t16 0t16 0t16 0t16 0t16 0t16 0t16 0" stroke="#ffd36b" stroke-width="7" fill="none" stroke-linecap="round"/>
+<ellipse cx="174" cy="214" rx="14" ry="9" fill="#ffffff"/><ellipse cx="174" cy="214" rx="6" ry="4" fill="#ffb21e"/>
+<path d="M228 210l18-4 4 8-18 4z" fill="#4caf50"/>
+<path d="M214 214L284 160M228 218L298 168" stroke="#f3e1c0" stroke-width="7" stroke-linecap="round"/>
+<g stroke="#ffffffaa" stroke-width="6" fill="none" stroke-linecap="round"><path d="M164 196q-10-14 0-26"/><path d="M200 192q-10-14 0-26"/></g>
+<text x="200" y="320" font-family="Poppins,Arial" font-weight="800" font-size="26" text-anchor="middle" fill="#ffffffcc">× 1</text>
+</svg>

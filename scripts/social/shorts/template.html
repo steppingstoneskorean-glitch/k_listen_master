@@ -1,0 +1,140 @@
+<!doctype html><html><head><meta charset="utf-8">
+<!-- 팟캐스트 클립형 쇼츠 화면 틀 (1080×1920). make-short.mjs 가 window.SPEC 을 넣고 render(t, env) 를 프레임마다 부른다.
+     형식 규칙: 퀴즈 요소 없음 · 위 머리글 + 장면 그림 + 노래방 자막 + 흐린 단어칩 + 플레이어 바 · 끝은 로고 + 링크 + 아이디 -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0e0f14}
+body{font-family:Poppins,Pretendard,sans-serif;color:#fff}
+.tint{position:absolute;inset:0;opacity:0}
+.head{position:absolute;top:92px;left:60px;right:150px}
+.head .ey{font-size:28px;font-weight:700;letter-spacing:4px;color:#9a9aa4}
+.head .ti{font-family:Pretendard;font-weight:800;font-size:50px;letter-spacing:-1px;margin-top:6px;word-break:keep-all}
+.ico{position:absolute;left:300px;top:250px;width:450px;height:450px;border-radius:40px;opacity:0;box-shadow:0 24px 60px #000a;object-fit:cover}
+.sub{position:absolute;top:745px;left:60px;right:150px;text-align:center}
+.ko{word-break:keep-all;font-family:Pretendard;font-weight:900;font-size:84px;line-height:1.28;letter-spacing:-1.5px}
+.ko span{color:#ffffff45}
+.ko span.on{color:#fff}
+.ko span.key.on{color:#111;background:#ffe14d;border-radius:14px;padding:0 14px}
+.en{margin-top:18px;font-size:40px;font-weight:600;color:#b9b9c2}
+.chip{position:absolute;left:495px;top:1110px;font-family:Pretendard;font-weight:800;color:#c4c4cc;background:#ffffff0d;border:2px solid #ffffff1a;border-radius:22px;
+  white-space:nowrap;font-size:44px;padding:10px 28px 12px;opacity:0}
+.chip small{font-family:Poppins;font-weight:600;font-size:30px;margin-left:12px;color:#8a8a94}
+.chip.key{color:#ecd76a;border-color:#ffe14d40;background:#ffe14d0f}
+.player{position:absolute;top:1250px;left:60px;right:150px;display:flex;align-items:center;gap:26px;background:#ffffff0f;border:2px solid #ffffff1a;border-radius:30px;padding:22px 28px}
+.player .pp{width:76px;height:76px;flex:none;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;gap:9px}
+.player .pp i{width:10px;height:30px;border-radius:3px;background:#111}
+.player .pp.paused i{display:none}
+.player .pp.paused::after{content:'';margin-left:8px;border-left:26px solid #111;border-top:16px solid transparent;border-bottom:16px solid transparent}
+.player .info{flex:1;min-width:0}
+.player .t1{font-size:30px;font-weight:700}
+.player .t2{font-size:24px;font-weight:600;color:#9a9aa4;margin-top:2px}
+.player .pb{margin-top:14px;height:8px;border-radius:4px;background:#ffffff22;position:relative}
+.player .pb i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,#1E4BCD,#703785,#DB1E21)}
+.player .tm{display:flex;justify-content:space-between;font-size:22px;font-weight:600;color:#9a9aa4;margin-top:8px}
+.player .bars{display:flex;gap:6px;align-items:center;height:48px}
+.player .bars b{width:7px;border-radius:4px;background:#ffe14d}
+.full{position:absolute;inset:0;background:#0c0c0e;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 150px 260px 60px}
+.full .lg{width:300px;height:300px;border-radius:44px;background:#fff;object-fit:contain}
+.full .go{margin-top:70px;display:inline-flex;gap:20px;align-items:center;font-size:44px;font-weight:700;border:3px solid #ffffff59;border-radius:999px;padding:18px 44px}
+.full .go span{font-weight:600;color:#ffe14d}
+.full .where{margin-top:30px;font-size:34px;font-weight:600;color:#8a8a94}
+.hide{display:none!important}
+</style></head><body>
+<div id="tints"></div>
+<div class="head" id="head"><div class="ey" id="hey"></div><div class="ti" id="hti"></div></div>
+<div id="imgs"></div>
+<div class="sub" id="sub"><div class="ko" id="ko"></div><div class="en" id="en"></div></div>
+<div id="chips"></div>
+<div class="player" id="player">
+  <div class="pp" id="pp"><i></i><i></i></div>
+  <div class="info"><div class="t1" id="pt1"></div><div class="t2" id="pt2"></div>
+    <div class="pb"><i id="pbar"></i></div><div class="tm"><span id="ptime">0:00</span><span id="plen"></span></div></div>
+  <div class="bars" id="bars"></div>
+</div>
+<div class="full hide" id="full">
+  <img class="lg" id="logo">
+  <div class="go" id="go"></div>
+  <div class="where" id="handle"></div>
+</div>
+<script>
+// 장면 배경색 프리셋 (가운데, 가장자리)
+const TINTS = { night: ['#1c2650', '#0d1124'], purple: ['#2c1d40', '#120d1c'], warm: ['#3a2a1a', '#140e09'],
+  teal: ['#123236', '#0b1516'], rose: ['#3a1a24', '#140910'], green: ['#1d3320', '#0b140c'], gray: ['#26272e', '#0e0f14'] };
+const cl = x => Math.min(Math.max(x, 0), 1);
+const ease = x => 1 - Math.pow(1 - cl(x), 3);
+const pop = x => { x = cl(x); return x < .6 ? ease(x / .6) * 1.06 : 1.06 - .06 * ease((x - .6) / .4); };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const fade = (t, a, b, k = .35) => ease((t - a) / k) * (1 - ease((t - b + k) / k));
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+let S, bars, scenes, tints, chips;
+
+window.setup = spec => {
+  S = spec;
+  // 영상 시각 → 원본 에피소드 시각 (clips 를 이어 붙인 순서대로)
+  S.srcTime = t => { let acc = 0; for (const [a, b] of S.clips) { if (t < acc + (b - a)) return a + (t - acc); acc += b - a; } return S.clips.at(-1)[1]; };
+  const ep = S.episode;
+  $('hey').textContent = `🎧 ${ep.level.toUpperCase()} PODCAST · ${ep.ep}`;
+  $('hti').textContent = ep.title;
+  $('pt1').textContent = `Step Korean Podcast · ${ep.ep}`;
+  $('pt2').textContent = `${ep.level} · ${ep.topic}`;
+  $('plen').textContent = mmss(Math.round(S.sourceLength));
+  $('logo').src = S.logoUrl;
+  $('go').innerHTML = `${esc(S.cta[0])}<span>→</span>${esc(S.cta[1])}`;
+  $('handle').textContent = S.handle;
+  // 장면: 이전 장면 끝 → until (마지막 장면은 FULL 까지)
+  let from = -1;
+  scenes = S.scenes.map((sc, i) => { const s = { ...sc, from, until: i === S.scenes.length - 1 ? S.FULL : sc.until }; from = s.until; return s; });
+  scenes.forEach((sc, i) => {
+    const [c1, c2] = TINTS[sc.tint] ?? TINTS.gray;
+    $('tints').insertAdjacentHTML('beforeend', `<div class="tint" style="background:radial-gradient(80% 50% at 50% 28%,${c1} 0%,${c2} 75%)"></div>`);
+    $('imgs').insertAdjacentHTML('beforeend', `<img class="ico" src="${sc.url}">`);
+  });
+  tints = [...$('tints').children]; scenes.forEach((sc, i) => { sc.el = $('imgs').children[i]; });
+  (S.chips ?? []).forEach(c => $('chips').insertAdjacentHTML('beforeend', `<div class="chip${c.key ? ' key' : ''}">${esc(c.ko)}<small>${esc(c.en)}</small></div>`));
+  chips = [...$('chips').children];
+  for (let i = 0; i < 7; i++) $('bars').appendChild(document.createElement('b'));
+  bars = [...$('bars').children];
+};
+
+window.render = (t, env = 0) => {
+  const { FULL, STOP } = S;
+  // 배경색 + 그림
+  scenes.forEach((sc, i) => {
+    const o = i === 0 && t < sc.until - .3 ? 1 : fade(t, sc.from, sc.until + .2, .4);
+    tints[i].style.opacity = o;
+    const io = i === 0 && t < sc.until - .3 ? 1 : fade(t, sc.from, sc.until, .3);
+    sc.el.style.opacity = t >= FULL ? 0 : io;
+    sc.el.style.transform = `translateY(${i === 0 ? 0 : (1 - ease((t - sc.from) / .45)) * 30}px) scale(${1 + .035 * cl((t - Math.max(sc.from, 0)) / (sc.until - Math.max(sc.from, 0)))})`;
+  });
+  $('head').style.opacity = ease(t / .3) * (1 - ease((t - FULL + .3) / .3));
+  // 노래방 자막
+  const L = S.lines.find(l => t >= l.from && t < l.to);
+  $('sub').classList.toggle('hide', !L || t >= FULL);
+  if (L) {
+    $('ko').innerHTML = L.words.map(w => w.br ? '<br>' : `<span class="${w.key ? 'key ' : ''}${t >= w.at ? 'on' : ''}">${esc(w.text)}</span>`).join(' ');
+    $('en').textContent = L.en;
+    $('sub').style.opacity = ease((t - L.from) / .2);
+    $('sub').style.transform = `translateY(${(1 - ease((t - L.from) / .2)) * 24}px)`;
+  }
+  // 단어칩 (보조, 효과음 없음)
+  (S.chips ?? []).forEach((c, i) => {
+    const on = t >= c.from && t < c.to && t < FULL;
+    chips[i].style.opacity = on ? 1 : 0;
+    chips[i].style.transform = `translateX(-50%) scale(${on ? pop((t - c.from) / .3) * (1 - cl((t - c.to + .12) / .12)) : 0})`;
+  });
+  // 플레이어: 원본 에피소드 속 실제 위치, 목소리 끝나면 일시정지
+  $('player').classList.toggle('hide', t >= FULL);
+  $('player').style.opacity = 1 - ease((t - FULL + .3) / .3);
+  $('pp').classList.toggle('paused', t >= STOP);
+  const src = S.srcTime(Math.min(t, STOP));
+  $('pbar').style.width = (src / S.sourceLength * 100) + '%';
+  $('ptime').textContent = mmss(src);
+  bars.forEach((b, i) => b.style.height = (10 + 38 * (t >= STOP ? 0 : env) * (.55 + .45 * Math.abs(Math.sin(t * 7 + i * 1.3)))) + 'px');
+  // 마지막 화면
+  $('full').classList.toggle('hide', t < FULL);
+  $('full').style.opacity = ease((t - FULL) / .35);
+  [...$('full').children].forEach((el, k) => { const x = (t - FULL - .1 - k * .14) / .45; el.style.opacity = ease(x); el.style.transform = `translateY(${(1 - ease(x)) * 26}px)`; });
+};
+</script></body></html>

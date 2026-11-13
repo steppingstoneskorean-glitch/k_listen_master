@@ -1,0 +1,26 @@
+{
+  "slug": "2026-11-12-shorts-kkoreureuk",
+  "episode": { "level": "Beginner", "ep": "EP.02", "title": "밤 11시, 야식 먹을까요?", "topic": "Late-night snacks" },
+  "source": "assets/팟캐스트영상/_처리완료/02.초급_2급_야식 문화_영상.mp4",
+  "clips": [[0.3, 13.5], [14.9, 19.6]],
+  "scenes": [
+    { "image": "img/scene-01.png", "until": 4.9, "tint": "night" },
+    { "image": "img/scene-02.png", "until": 9.5, "tint": "purple" },
+    { "image": "img/scene-03.png", "until": 11.5, "tint": "warm" },
+    { "image": "img/scene-04.png", "tint": "warm" }
+  ],
+  "lines": [
+    { "from": 0.2, "to": 4.9, "ko": "밤 열한 시예요. / 아직 숙제가 많아요.", "en": "It's 11 p.m., and I still have a lot of homework." },
+    { "from": 4.9, "to": 9.5, "ko": "그런데 배에서 / 꼬르륵 소리가 나요.", "en": "But then my stomach goes kko-reu-reuk.", "key": "꼬르륵" },
+    { "from": 9.5, "to": 13.3, "ko": "냉장고를 열어요. / 라면이 하나 있어요.", "en": "I open the fridge. There's one packet of ramyeon." },
+    { "from": 13.3, "to": "end", "ko": "\"지금 먹을까? / 아니면 내일 / 아침에 먹을까?\"", "en": "\"Should I eat it now? Or save it for tomorrow morning?\"" }
+  ],
+  "chips": [
+    { "ko": "숙제", "en": "homework", "from": 2.8, "to": 4.9 },
+    { "ko": "꼬르륵", "en": "stomach growl", "from": 7.1, "to": 9.5, "key": true },
+    { "ko": "냉장고", "en": "fridge", "from": 9.9, "to": 11.5 },
+    { "ko": "라면", "en": "ramyeon", "from": 11.6, "to": 13.3 }
+  ],
+  "handle": "@step.korean",
+  "coverAt": 3.5
+}

@@ -82,3 +82,6 @@ marketing/os/12_period/review_2*.md
 
 # Weekly upload package pages (base64 images)
 marketing/weekly/
+
+# Shorts videos (podcast audio) — regenerate with scripts/social/shorts/make-short.mjs
+public/social/**/*.mp4

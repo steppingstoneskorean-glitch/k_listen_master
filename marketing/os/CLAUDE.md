@@ -60,6 +60,10 @@
 - 슬래시 명령: `/mkt-brand-audit` `/mkt-competitor` `/mkt-brief` `/mkt-make-creative C01` `/mkt-daily` `/mkt-review` (저장소 루트에서 실행).
 - 소재 → 게시: `/mkt-make-creative` 가 `marketing/posts/<날짜>-<소재ID>-…/post.json`(draft) 을 만든다 → 오너 승인 → 매일 10시 텔레그램 업로드 패키지(소재 ID·플랫폼별 UTM 포함)로 오너에게 전달 → **오너가 직접 업로드**. API 자동 게시 금지(AI 생성 표시가 붙어 신뢰가 떨어짐).
 - 장표 디자인: `scripts/social/render-slides.mjs` 의 `"design": "stepkorean"` 테마가 brand_guide.md(흰 배경·Step Blue/Purple/Red·레벨 배지·로고)를 따른다. 이미지는 실제 앱 화면(`scripts/social/capture.mjs`) 또는 장표 — AI 생성 이미지 쓰지 않음.
+  장면 그림이 필요하면 **우리가 만든 것만** 쓴다(2026-11-12 오너 결정, 저작권 안전):
+  ① Claude 가 프롬프트를 주면 오너가 ChatGPT(GPT 이미지)로 만들어 `public/social/<슬러그>/img/scene-NN.png` 로 넣어 준다 — 기본 경로(이 경우에 한해 AI 이미지 허용, 사람 얼굴·실존 인물·상표·글자는 넣지 않음),
+  ② Claude 가 코드로 직접 그린 SVG 일러스트(예: `public/social/2026-11-12-shorts-kkoreureuk/illus/`), ③ 오너가 직접 찍은 사진. 스톡 사진·남의 그림은 쓰지 않는다.
+- 쇼츠/릴스: 팟캐스트 클립형 틀 — `marketing/shorts/<slug>.json` → `node scripts/social/shorts/make-short.mjs <json>` (설명 `scripts/social/shorts/README.md`). 퀴즈 요소 없음, 끝 화면은 로고 + Full episode → Link in bio + @step.korean.
 - UTM: `node scripts/marketing/utm.mjs <소재ID>_v<버전> <ig|fb|tiktok|yt|threads> [대상URL]` — 09_tracking 규칙 그대로 링크 생성.
 - 앱 쪽 추적: GA(동의 기반)가 UTM 을 자동 기록. K-Listen 게임 결과 화면의 "다음 계단: 1:1 말하기" 버튼 → Payhip(UTM). Meta 픽셀은 쿠키 동의 후에만 로드(`VITE_META_PIXEL_ID`).
 - 게시물 원칙은 `marketing/playbook.md` 의 Content principles(누가·언제·변화, 질문형 훅, 한 포인트)도 함께 따른다.

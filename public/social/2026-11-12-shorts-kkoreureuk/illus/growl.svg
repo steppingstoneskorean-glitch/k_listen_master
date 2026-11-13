@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+<rect width="400" height="400" rx="44" fill="#2c1d40"/>
+<path d="M110 400V178q0-40 40-52l22-8q28 22 56 0l22 8q40 12 40 52v222z" fill="#703785"/>
+<path d="M172 118q28 26 56 0" fill="none" stroke="#5a2a6c" stroke-width="8" stroke-linecap="round"/>
+<circle cx="200" cy="74" r="46" fill="#f2c9a5"/>
+<path d="M154 72q0-48 46-48t46 48q-16-22-46-22t-46 22z" fill="#2a1a12"/>
+<path d="M180 82q6 6 12 0M208 82q6 6 12 0" stroke="#2a1a12" stroke-width="4" fill="none" stroke-linecap="round"/>
+<path d="M190 102q10-6 20 0" stroke="#2a1a12" stroke-width="4" fill="none" stroke-linecap="round"/>
+<ellipse cx="200" cy="266" rx="62" ry="50" fill="#8a4aa0"/>
+<path d="M122 232q40 40 58 40" stroke="#f2c9a5" stroke-width="26" stroke-linecap="round" fill="none"/>
+<path d="M278 232q-40 40-58 40" stroke="#f2c9a5" stroke-width="26" stroke-linecap="round" fill="none"/>
+<g stroke="#ffe14d" stroke-width="7" stroke-linecap="round" fill="none">
+<path d="M86 252q-14 14 0 28"/><path d="M64 238q-26 28 0 56"/>
+<path d="M314 252q14 14 0 28"/><path d="M336 238q26 28 0 56"/></g>
+<circle cx="318" cy="96" r="34" fill="#ffe14d"/><text x="318" y="112" font-family="Poppins,Arial" font-weight="800" font-size="46" text-anchor="middle" fill="#2c1d40">?</text>
+</svg>
