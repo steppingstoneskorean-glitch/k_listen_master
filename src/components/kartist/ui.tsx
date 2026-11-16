@@ -230,24 +230,22 @@ export function VideoCard({
       </div>
 
       {/* 본문 */}
-      <div className={`flex flex-1 flex-col ${compact ? 'p-2.5 sm:p-4' : 'p-4'}`}>
+      <div className={`relative flex flex-1 flex-col ${compact ? 'p-2.5 sm:p-4' : 'p-4'}`}>
         <span className={`w-fit whitespace-nowrap rounded-full border border-indigo-200 bg-indigo-50 py-0.5 font-bold uppercase tracking-widest text-indigo-600 ${compact ? 'px-2 text-[9px] sm:px-2.5 sm:text-[10px]' : 'px-2.5 text-[10px]'}`} translate="no">
           {artist}
         </span>
         <h3 className={`break-keep font-black leading-snug text-slate-900 ${compact ? 'mt-2 line-clamp-2 text-[13px] sm:mt-2.5 sm:text-sm' : 'mt-2.5 text-sm'}`}>{title}</h3>
         {desc && <p className={`mt-1 leading-relaxed text-slate-500 ${compact ? 'line-clamp-2 text-[11px] sm:line-clamp-none sm:text-xs' : 'text-xs'}`}>{desc}</p>}
-        <div className={`mt-auto flex items-center justify-between text-xs ${compact ? 'pt-2 sm:pt-3' : 'pt-3'}`}>
-          {playable ? (
-            <>
-              <span className="text-slate-400">{t('kartist.tryQuiz')}</span>
-              <span className="font-bold text-indigo-500 opacity-0 transition-all duration-300 -translate-x-1.5 group-hover:translate-x-0 group-hover:opacity-100">
-                {t('kartist.play')}
-              </span>
-            </>
-          ) : (
+        {/* 플레이 가능한 카드는 안내 줄 없이 — 호버 시 'Play →' 만 오른쪽 아래에 떠오른다 */}
+        {playable ? (
+          <span className="pointer-events-none absolute bottom-2 right-3 text-xs font-bold text-indigo-500 opacity-0 transition-all duration-300 -translate-x-1.5 group-hover:translate-x-0 group-hover:opacity-100">
+            {t('kartist.play')}
+          </span>
+        ) : (
+          <div className={`mt-auto text-xs ${compact ? 'pt-2 sm:pt-3' : 'pt-3'}`}>
             <span className="text-slate-400">{t('kartist.comingSoonSub')}</span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </button>
   )

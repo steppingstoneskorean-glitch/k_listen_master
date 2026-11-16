@@ -1181,7 +1181,6 @@ const TRANSLATIONS = {
   // ── Result Image Card ──
   'resultCard.tagline': { en: 'Can you beat my score?', ko: '나를 이겨볼 수 있을까?', es: '¿Puedes superar mi puntuación?', ja: '私のスコアを超えられる？' },
   'challenge.shareX': { en: 'Share on 𝕏', ko: '𝕏 로 공유', es: 'Compartir en 𝕏', ja: '𝕏 でシェア' },
-  'kartist.tryQuiz': { en: 'Try the listening quiz', ko: '듣기 퀴즈 도전', es: 'Prueba el quiz de escucha', ja: 'リスニングクイズに挑戦' },
   'kartist.play': { en: 'Play →', ko: 'Play →', es: 'Jugar →', ja: 'プレイ →' },
   'kartist.comingSoon': { en: 'Coming Soon', ko: 'Coming Soon', es: 'Próximamente', ja: '近日公開' },
   'kartist.comingSoonSub': { en: 'This video is coming soon', ko: '곧 공개될 예정이에요', es: 'Este video llegará pronto', ja: 'まもなく公開予定です' },
